@@ -1,7 +1,7 @@
-name: multiQC_cut&tag
+name: DXR_project
 output_dir: ../docs
 navbar:
-  title: multiQC_cut&tag
+  title: DXR_project
   left:
   - text: Home
     href: index.html
@@ -12,7 +12,7 @@ navbar:
   right:
   - icon: fab fa-github
     text: Source code
-    href: https://github.com/infurnoheat/WardLab
+    href: https://github.com/reneeisnowhere/DXR_project
 output:
   workflowr::wflow_html:
     toc: yes
