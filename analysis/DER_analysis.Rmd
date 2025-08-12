@@ -1,0 +1,54 @@
+---
+title: "DER_analysis"
+author: "Renee Matthews"
+date: "2025-08-12"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r packages}
+
+library(tidyverse)
+library(readr)
+library(edgeR)
+library(ComplexHeatmap)
+library(data.table)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(viridis)
+library(DT)
+library(kableExtra)
+library(genomation)
+library(GenomicRanges)
+library(ggpubr) ## For customizing figures
+library(corrplot) ## For correlation plot
+library(ggpmisc)
+library(gcplyr)
+library(Rsubread)
+library(limma)
+library(ggrastr)
+library(cowplot)
+library(smplot2)
+library(ggVennDiagram)
+
+```
+

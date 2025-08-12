@@ -12,7 +12,7 @@ navbar:
   right:
   - icon: fab fa-github
     text: Source code
-    href: https://github.com/reneeisnowhere/DXR_project
+    href: https://github.com/reneeisnowhere/DXR_continue
 output:
   workflowr::wflow_html:
     toc: yes
