@@ -8,12 +8,12 @@ editor_options:
   chunk_output_type: console
 ---
 
-[Cut and Tag](https://infurnoheat.github.io/WardLab/docs/multiQC_cut_tag.html)
+[Cut and Tag](https://reneeisnowhere.github.io/DXR_continue/docs/multiQC_cut_tag.html)
 
-[Peak Cutoff](https://infurnoheat.github.io/WardLab/docs/peak_cutoff.html)
+[Peak Cutoff](https://reneeisnowhere.github.io/DXR_continue/docs/peak_cutoff.html)
 
-[Peak Variants Analysis](https://infurnoheat.github.io/WardLab/docs/peak_analysis.html)
+[Peak Variants Analysis](https://reneeisnowhere.github.io/DXR_continue/docs/peak_analysis.html)
 
-[Peak Width](https://infurnoheat.github.io/WardLab/docs/peak_width.html)
+[Peak Width](https://reneeisnowhere.github.io/DXR_continue/docs/peak_width.html)
 
-[Differential Analysis](https://infurnoheat.github.io/WardLab/docs/final_analysis.html)
+[Differential Analysis](https://reneeisnowhere.github.io/DXR_continue/docs/final_analysis.html)
