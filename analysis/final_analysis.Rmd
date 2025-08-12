@@ -376,19 +376,26 @@ all_peak_final %>%
 
 ### Differential Analysis
 
-#### Filtering Sex Chromosome
-```{r filtering Y}
+#### Filtering Sex Chromosomes
+
+Removing chrX and chrY
+```{r filtering x and Y}
 H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_cor)>0,]
 H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrY",rownames(H3K27ac_merged_raw)),]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrX",rownames(H3K27ac_merged_raw)),]
 
 H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_cor)>0,]
 H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrY",rownames(H3K27me3_merged_raw)),]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrX",rownames(H3K27me3_merged_raw)),]
+
 
 H3K36me3_merged_raw <- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_cor)>0,]
 H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrY",rownames(H3K36me3_merged_raw)),]
+H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrX",rownames(H3K36me3_merged_raw)),]
 
 H3K9me3_merged_raw <- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_cor)>0,]
 H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrY",rownames(H3K9me3_merged_raw)),]
+H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrX",rownames(H3K9me3_merged_raw)),]
 ```
 
 #### Setting up Matrix
@@ -500,6 +507,7 @@ efit2 <- eBayes(fit2)
 results = decideTests(efit2)
 
 summary(results)
+
 ```
 
 ```{r H3K27ac volcano 2}
@@ -535,6 +543,7 @@ efit2 <- eBayes(fit2)
 results = decideTests(efit2)
 
 summary(results)
+
 ```
 
 ```{r H3K27me3 volcano 2}
@@ -570,6 +579,7 @@ efit2 <- eBayes(fit2)
 results = decideTests(efit2)
 
 summary(results)
+
 ```
 
 ```{r H3K36me3 volcano 2}
@@ -605,6 +615,7 @@ efit2 <- eBayes(fit2)
 results = decideTests(efit2)
 
 summary(results)
+
 ```
 
 ```{r H3K9me3 volcano 2}
@@ -708,3 +719,20 @@ ggVennDiagram(list("24T regions"=genes_H3K36me3_24T,"24R regions"=genes_H3K36me3
 ```{r H3K9me3 Venn}
 ggVennDiagram(list("24T regions"=genes_H3K9me3_24T,"24R regions"=genes_H3K9me3_24R, "144R regions"=genes_H3K9me3_144R))
 ``` 
+```{r future dataframes, eval=FALSE}
+H3K27ac_toplist <- list("H3K27ac_24T"=H3K27ac_24T$data,"H3K27ac_24R"= H3K27ac_24R$data, "H3K27ac_144R"= H3K27ac_144R$data)
+saveRDS(H3K27ac_toplist, "data/DER_data/H3K27ac_toplist.RDS")
+
+H3K27me3_toplist <- list("H3K27me3_24T"=H3K27me3_24T$data,"H3K27me3_24R"= H3K27me3_24R$data, "H3K27me3_144R"= H3K27me3_144R$data)
+saveRDS(H3K27me3_toplist,"data/DER_data/H3K27me3_toplist.RDS")
+
+
+H3K36me3_toplist <- list("H3K36me3_24T"=H3K36me3_24T$data,"H3K36me3_24R"= H3K36me3_24R$data, "H3K36me3_144R"= H3K36me3_144R$data)
+saveRDS(H3K36me3_toplist,"data/DER_data/H3K36me3_toplist.RDS")
+
+H3K9me3_toplist <- list("H3K9me3_24T"=H3K9me3_24T$data,"H3K9me3_24R"= H3K9me3_24R$data, "H3K9me3_144R"= H3K9me3_144R$data)
+
+saveRDS(H3K9me3_toplist, "data/DER_data/H3K9me3_toplist.RDS")
+
+```
+
