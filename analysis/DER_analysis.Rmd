@@ -52,3 +52,339 @@ library(ggVennDiagram)
 
 ```
 
+
+Differential analysis data frames:
+```{r pulling in toplists}
+H3K27ac_toplist <- readRDS( "data/DER_data/H3K27ac_toplist.RDS")
+H3K27me3_toplist <- readRDS("data/DER_data/H3K27me3_toplist.RDS")
+H3K36me3_toplist <- readRDS("data/DER_data/H3K36me3_toplist.RDS")
+H3K9me3_toplist <- readRDS( "data/DER_data/H3K9me3_toplist.RDS")
+sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
+cell_line_info <- data.frame(Individual = c("Ind1","Ind2","Ind3","Ind4","Ind5"),Cell_line = c ("78-1","75-1","17-3","90-1","84-1"), sex = c("F","F","M","M","M")) 
+# write_delim(cell_line_info,"data/cell_line_info_.tsv",delim = "\t")
+H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
+H3K27me3_toptable_list <- bind_rows(H3K27me3_toplist, .id = "group")
+H3K36me3_toptable_list <- bind_rows(H3K36me3_toplist, .id = "group")
+H3K9me3_toptable_list <- bind_rows(H3K9me3_toplist, .id = "group")
+
+
+```
+
+counts data frames:
+
+```{r counts dfs}
+H3K27ac_merged <- read_delim("data/peaks/H3K27ac_FINAL_counts.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE, skip = 1)
+H3K27me3_merged <- read_delim("data/peaks/H3K27me3_FINAL_counts.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE, skip = 1)
+H3K36me3_merged <- read_delim("data/peaks/H3K36me3_FINAL_counts.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE, skip = 1)
+H3K9me3_merged <- read_delim("data/peaks/H3K9me3_FINAL_counts.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE, skip = 1)
+rename_list <- sampleinfo %>% 
+  mutate(stem= "_nobl.bam") %>% 
+  mutate(prefix=paste0("/scratch/10819/styu/MW_multiQC/peaks/",Histone_Mark,"/",Treatment,"/",Timepoint,"/")) %>%
+  mutate(oldname=paste0(prefix,`Library ID`,"/",`Library ID`,stem)) %>% 
+  mutate(newname=paste0(Individual,"_",Treatment,"_",Timepoint)) %>% 
+  dplyr::select(oldname,newname)
+rename_vec <- setNames(rename_list$newname, rename_list$oldname)
+names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)] <- rename_vec[names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)]]
+names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)]]
+names(H3K36me3_merged)[names(H3K36me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K36me3_merged)[names(H3K36me3_merged) %in% names(rename_vec)]]
+names(H3K9me3_merged)[names(H3K9me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K9me3_merged)[names(H3K9me3_merged) %in% names(rename_vec)]]
+```
+Removing chrX and chrY
+```{r making merged raw lcpm}
+H3K27ac_merged_raw <- H3K27ac_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  as.matrix()
+H3K27ac_merged_lcpm <- H3K27ac_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  cpm(., log = TRUE)
+H3K27ac_merged_cor <- H3K27ac_merged_lcpm %>% 
+  cor()
+
+
+H3K27me3_merged_raw <- H3K27me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  as.matrix()
+H3K27me3_merged_lcpm <- H3K27me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  cpm(., log = TRUE)
+H3K27me3_merged_cor <- H3K27me3_merged_lcpm %>% 
+  cor()
+
+H3K36me3_merged_raw <- H3K36me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  as.matrix()
+H3K36me3_merged_lcpm <- H3K36me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  cpm(., log = TRUE)
+H3K36me3_merged_cor <- H3K36me3_merged_lcpm %>% 
+  cor()
+
+H3K9me3_merged_raw <- H3K9me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  as.matrix()
+H3K9me3_merged_lcpm <- H3K9me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  cpm(., log = TRUE)
+H3K9me3_merged_cor <- H3K9me3_merged_lcpm %>% 
+  cor()
+
+
+
+
+```
+
+```{r filtering and lcpm of filtered frame}
+H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_cor)>0,]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrY",rownames(H3K27ac_merged_raw)),]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrX",rownames(H3K27ac_merged_raw)),]
+H3K27ac_merged_filt_lcpm <- H3K27ac_merged_raw %>% cpm(., log = TRUE)
+
+H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_cor)>0,]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrY",rownames(H3K27me3_merged_raw)),]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrX",rownames(H3K27me3_merged_raw)),]
+H3K27me3_merged_filt_lcpm <- H3K27me3_merged_raw %>% cpm(., log = TRUE)
+
+
+H3K36me3_merged_raw <- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_cor)>0,]
+H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrY",rownames(H3K36me3_merged_raw)),]
+H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrX",rownames(H3K36me3_merged_raw)),]
+H3K36me3_merged_filt_lcpm <- H3K36me3_merged_raw %>% cpm(., log = TRUE)
+
+H3K9me3_merged_raw <- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_cor)>0,]
+H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrY",rownames(H3K9me3_merged_raw)),]
+H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrX",rownames(H3K9me3_merged_raw)),]
+H3K9me3_merged_filt_lcpm <- H3K9me3_merged_raw %>% cpm(., log = TRUE)
+
+```
+
+
+
+
+### H3K27ac LFC correlation
+
+```{r  H3K27ac LFC correlation}
+
+
+H3K27ac_cor_mat <- H3K27ac_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>% 
+  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix() %>% 
+  cor()
+
+ComplexHeatmap::Heatmap(H3K27ac_cor_mat,
+                        column_title = "H3K27ac correlation of LFC")
+
+```
+
+#### Example log2cpm top
+
+```{r H3K27ac example lcpm function, fig.width = 8, fig.height=8}
+### getting the Top3 DERs by 24T, 24R, or 144R (Time point)
+Top_H3K27ac <- H3K27ac_toptable_list %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(genes, group, adj.P.Val) %>% 
+  separate_wider_delim(., cols=group, delim="_",names=c("histone","cond"),cols_remove=FALSE) %>% 
+  group_by(cond) %>% 
+  slice_head(n=3)
+### filtering the lcpm matrix by Top3 DERs for TP
+H3K27ac_merged_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K27ac_merged_filt_lcpm) %in% Top_H3K27ac$genes) %>% 
+  ###pivot and add additional information from Top3 dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  left_join(., Top_H3K27ac, by = c("Peakid"="genes")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot()+
+  facet_wrap(group~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))
+  
+```
+
+
+### H3K27me3 LFC correlation
+
+```{r  H3K27me3 LFC correlation}
+
+
+H3K27me3_cor_mat <- H3K27me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>% 
+  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix() %>% 
+  cor()
+
+ComplexHeatmap::Heatmap(H3K27me3_cor_mat, 
+                        column_title = "H3K27me3 correlation of LFC")
+
+```
+
+#### Example log2cpm top
+
+```{r H3K27me3 example lcpm function, fig.width = 8, fig.height=8}
+### getting the Top3 DERs by 24T, 24R, or 144R (Time point)
+Top_H3K27me3 <- H3K27me3_toptable_list %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(genes, group, adj.P.Val) %>% 
+  separate_wider_delim(., cols=group, delim="_",names=c("histone","cond"),cols_remove=FALSE) %>% 
+  group_by(cond) %>% 
+  slice_head(n=3)
+### filtering the lcpm matrix by Top3 DERs for TP
+H3K27me3_merged_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K27me3_merged_filt_lcpm) %in% Top_H3K27me3$genes) %>% 
+  ###pivot and add additional information from Top3 dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  left_join(., Top_H3K27me3, by = c("Peakid"="genes")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot()+
+  facet_wrap(group~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))
+  
+```
+
+### H3K36me3 LFC correlation
+
+```{r  H3K36me3 LFC correlation}
+
+
+H3K36me3_cor_mat <- H3K36me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>% 
+  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix() %>% 
+  cor()
+
+ComplexHeatmap::Heatmap(H3K36me3_cor_mat, 
+                        column_title = "H3K36me3 correlation of LFC")
+
+```
+
+#### Example log2cpm top
+
+```{r H3K36me3 example lcpm function, fig.width = 8, fig.height=8}
+### getting the Top3 DERs by 24T, 24R, or 144R (Time point)
+Top_H3K36me3 <- H3K36me3_toptable_list %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(genes, group, adj.P.Val) %>% 
+  separate_wider_delim(., cols=group, delim="_",names=c("histone","cond"),cols_remove=FALSE) %>% 
+  group_by(cond) %>% 
+  slice_head(n=3)
+### filtering the lcpm matrix by Top3 DERs for TP
+H3K36me3_merged_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K36me3_merged_filt_lcpm) %in% Top_H3K36me3$genes) %>% 
+  ###pivot and add additional information from Top3 dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  left_join(., Top_H3K36me3, by = c("Peakid"="genes")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot()+
+  facet_wrap(group~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))
+  
+```
+
+### H3K9me3 LFC correlation
+
+```{r  H3K9me3 LFC correlation}
+
+
+H3K9me3_cor_mat <- H3K9me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>% 
+  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix() %>% 
+  cor()
+
+ComplexHeatmap::Heatmap(H3K9me3_cor_mat, 
+                        column_title = "H3K9me3 correlation of LFC")
+
+```
+
+#### Example log2cpm top
+
+```{r H3K9me3 example lcpm function, fig.width = 8, fig.height=8}
+### getting the Top3 DERs by 24T, 24R, or 144R (Time point)
+Top_H3K9me3 <- H3K9me3_toptable_list %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(genes, group, adj.P.Val) %>% 
+  separate_wider_delim(., cols=group, delim="_",names=c("histone","cond"),cols_remove=FALSE) %>% 
+  group_by(cond) %>% 
+  slice_head(n=3)
+### filtering the lcpm matrix by Top3 DERs for TP
+H3K9me3_merged_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K9me3_merged_filt_lcpm) %in% Top_H3K9me3$genes) %>% 
+  ###pivot and add additional information from Top3 dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  left_join(., Top_H3K9me3, by = c("Peakid"="genes")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot()+
+  facet_wrap(group~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))
+  
+```
