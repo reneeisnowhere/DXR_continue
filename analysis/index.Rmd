@@ -19,3 +19,5 @@ editor_options:
 [Differential Analysis and PCA](https://reneeisnowhere.github.io/DXR_continue/docs/final_analysis.html)
 
 [Examining DERs by histone](https://reneeisnowhere.github.io/DXR_continue/docs/DER_analysis.html)
+
+Here is my [test link](https://reneeisnowhere.github.io/DXR_continue/docs/test.html).
