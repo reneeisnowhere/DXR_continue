@@ -189,7 +189,28 @@ H3K27ac_cor_mat <- H3K27ac_toptable_list %>%
   cor()
 
 ComplexHeatmap::Heatmap(H3K27ac_cor_mat,
-                        column_title = "H3K27ac correlation of LFC")
+                        column_title = "H3K27ac correlation of LFC",
+                        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(sprintf("%.2f", H3K27ac_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
+        })
+
+```
+Absolute LFC correlation
+```{r H3K27ac abs LFC corr}
+
+H3K27ac_abs_cor_mat <- H3K27ac_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>% 
+  mutate(logFC= abs(logFC)) %>% 
+  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix() %>% 
+  cor()
+
+ComplexHeatmap::Heatmap(H3K27ac_abs_cor_mat,
+                        column_title = "H3K27ac correlation of absolute LFC",
+                        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(sprintf("%.2f", H3K27ac_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
+        })
 
 ```
 
@@ -243,9 +264,32 @@ H3K27me3_cor_mat <- H3K27me3_toptable_list %>%
   cor()
 
 ComplexHeatmap::Heatmap(H3K27me3_cor_mat, 
-                        column_title = "H3K27me3 correlation of LFC")
+                        column_title = "H3K27me3 correlation of LFC",
+                        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(sprintf("%.2f", H3K27me3_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
+        })
 
 ```
+
+Absolute LFC correlation
+```{r H3K27me3 abs LFC corr}
+
+H3K27me3_abs_cor_mat <- H3K27me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>% 
+  mutate(logFC= abs(logFC)) %>% 
+  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix() %>% 
+  cor()
+
+ComplexHeatmap::Heatmap(H3K27me3_abs_cor_mat,
+                        column_title = "H3K27me3 correlation of absolute LFC",
+                        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(sprintf("%.2f", H3K27me3_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
+        })
+
+```
+
 
 #### Example log2cpm top
 
@@ -296,7 +340,29 @@ H3K36me3_cor_mat <- H3K36me3_toptable_list %>%
   cor()
 
 ComplexHeatmap::Heatmap(H3K36me3_cor_mat, 
-                        column_title = "H3K36me3 correlation of LFC")
+                        column_title = "H3K36me3 correlation of LFC",
+                        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(sprintf("%.2f", H3K36me3_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
+        })
+
+```
+
+Absolute LFC correlation
+```{r H3K36me3 abs LFC corr}
+
+H3K36me3_abs_cor_mat <- H3K36me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>% 
+  mutate(logFC= abs(logFC)) %>% 
+  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix() %>% 
+  cor()
+
+ComplexHeatmap::Heatmap(H3K36me3_abs_cor_mat,
+                        column_title = "H3K36me3 correlation of absolute LFC",
+                        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(sprintf("%.2f", H3K36me3_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
+        })
 
 ```
 
@@ -349,9 +415,31 @@ H3K9me3_cor_mat <- H3K9me3_toptable_list %>%
   cor()
 
 ComplexHeatmap::Heatmap(H3K9me3_cor_mat, 
-                        column_title = "H3K9me3 correlation of LFC")
+                        column_title = "H3K9me3 correlation of LFC",
+                        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(sprintf("%.2f", H3K9me3_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
+        })
 
 ```
+Absolute LFC correlation
+```{r H3K9me3 abs LFC corr}
+
+H3K9me3_abs_cor_mat <- H3K9me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>% 
+  mutate(logFC= abs(logFC)) %>% 
+  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix() %>% 
+  cor()
+
+ComplexHeatmap::Heatmap(H3K9me3_abs_cor_mat,
+                        column_title = "H3K9me3 correlation of absolute LFC",
+                        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(sprintf("%.2f", H3K9me3_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
+        })
+
+```
+
 
 #### Example log2cpm top
 
