@@ -16,8 +16,8 @@ editor_options:
 
 [Peak Width](https://reneeisnowhere.github.io/DXR_continue/docs/peak_width.html)
 
-[Differential Analysis and PCA](https://reneeisnowhere.github.io/DXR_continue/docs/final_analysis.html)
+[Differential Analysis and PCA](https://reneeisnowhere.github.io/DXR_continue/final_analysis.html)
 
-[Examining DERs by histone](https://reneeisnowhere.github.io/DXR_continue/docs/DER_analysis.html)
+[Examining DERs by histone](https://reneeisnowhere.github.io/DXR_continue/DER_analysis.html)
 
-Here is my [test link](https://reneeisnowhere.github.io/DXR_continue/docs/test.html).
+Here is my [test link](https://reneeisnowhere.github.io/DXR_continue/test.html).
