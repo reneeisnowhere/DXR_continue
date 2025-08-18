@@ -49,6 +49,7 @@ library(ggrastr)
 library(cowplot)
 library(smplot2)
 library(ggVennDiagram)
+library(ggsignif)
 
 ```
 
@@ -195,22 +196,41 @@ ComplexHeatmap::Heatmap(H3K27ac_cor_mat,
         })
 
 ```
-Absolute LFC correlation
+#### LFC and abs LFC by trt time
 ```{r H3K27ac abs LFC corr}
 
-H3K27ac_abs_cor_mat <- H3K27ac_toptable_list %>% 
-  dplyr::select(group,genes,logFC) %>% 
-  mutate(logFC= abs(logFC)) %>% 
-  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
-  column_to_rownames("genes") %>% 
-  as.matrix() %>% 
-  cor()
 
-ComplexHeatmap::Heatmap(H3K27ac_abs_cor_mat,
-                        column_title = "H3K27ac correlation of absolute LFC",
-                        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(sprintf("%.2f", H3K27ac_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
-        })
+H3K27ac_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R"))) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K27ac_24T", "H3K27ac_144R"),
+                                 c("H3K27ac_24T","H3K27ac_24R"),
+                                 c("H3K27ac_24R", "H3K27ac_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("LFC across time for H3K27ac")
+
+
+H3K27ac_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K27ac_24T", "H3K27ac_144R"),
+                                 c("H3K27ac_24T","H3K27ac_24R"),
+                                 c("H3K27ac_24R", "H3K27ac_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K27ac")
+  
+
 
 ```
 
@@ -250,6 +270,24 @@ H3K27ac_merged_filt_lcpm %>%
   
 ```
 
+#### Proportion of H3K27ac DERs by time
+
+```{r H3K27ac prop}
+H3K27ac_toptable_list %>% 
+  dplyr::select(group,genes,logFC,adj.P.Val) %>% 
+  mutate(sig_val=if_else(adj.P.Val<0.05,"sig","not_sig")) %>% 
+  mutate(
+    sig_val = factor(sig_val, levels = c("not_sig", "sig")),
+    group = factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R"))) %>%
+  ggplot(aes(x = group, fill = sig_val)) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  ggtitle("H3K27ac") +
+  ylab("Proportion") +
+  scale_y_continuous(labels = scales::percent)
+
+```
+
 
 ### H3K27me3 LFC correlation
 
@@ -271,25 +309,43 @@ ComplexHeatmap::Heatmap(H3K27me3_cor_mat,
 
 ```
 
-Absolute LFC correlation
+#### LFC and abs LFC by trt time
 ```{r H3K27me3 abs LFC corr}
 
-H3K27me3_abs_cor_mat <- H3K27me3_toptable_list %>% 
-  dplyr::select(group,genes,logFC) %>% 
-  mutate(logFC= abs(logFC)) %>% 
-  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
-  column_to_rownames("genes") %>% 
-  as.matrix() %>% 
-  cor()
 
-ComplexHeatmap::Heatmap(H3K27me3_abs_cor_mat,
-                        column_title = "H3K27me3 correlation of absolute LFC",
-                        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(sprintf("%.2f", H3K27me3_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
-        })
+H3K27me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K27me3_24T","H3K27me3_24R","H3K27me3_144R"))) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K27me3_24T", "H3K27me3_144R"),
+                                 c("H3K27me3_24T","H3K27me3_24R"),
+                                 c("H3K27me3_24R", "H3K27me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("LFC across time for H3K27me3")
+
+
+H3K27me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K27me3_24T","H3K27me3_24R","H3K27me3_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K27me3_24T", "H3K27me3_144R"),
+                                 c("H3K27me3_24T","H3K27me3_24R"),
+                                 c("H3K27me3_24R", "H3K27me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K27me3")
+  
+
 
 ```
-
 
 #### Example log2cpm top
 
@@ -327,6 +383,26 @@ H3K27me3_merged_filt_lcpm %>%
   
 ```
 
+#### Proportion of H3K27me3 DERs by time
+
+```{r H3K27me3 prop}
+H3K27me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC,adj.P.Val) %>% 
+  mutate(sig_val=if_else(adj.P.Val<0.05,"sig","not_sig")) %>% 
+  mutate(
+    sig_val = factor(sig_val, levels = c("not_sig", "sig")),
+    group = factor(group, levels = c("H3K27me3_24T","H3K27me3_24R","H3K27me3_144R"))) %>%
+  ggplot(aes(x = group, fill = sig_val)) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  ggtitle("H3K27me3") +
+  ylab("Proportion") +
+  scale_y_continuous(labels = scales::percent)
+
+```
+
+
+
 ### H3K36me3 LFC correlation
 
 ```{r  H3K36me3 LFC correlation}
@@ -347,24 +423,44 @@ ComplexHeatmap::Heatmap(H3K36me3_cor_mat,
 
 ```
 
-Absolute LFC correlation
+#### LFC and abs LFC by trt time
 ```{r H3K36me3 abs LFC corr}
 
-H3K36me3_abs_cor_mat <- H3K36me3_toptable_list %>% 
-  dplyr::select(group,genes,logFC) %>% 
-  mutate(logFC= abs(logFC)) %>% 
-  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
-  column_to_rownames("genes") %>% 
-  as.matrix() %>% 
-  cor()
 
-ComplexHeatmap::Heatmap(H3K36me3_abs_cor_mat,
-                        column_title = "H3K36me3 correlation of absolute LFC",
-                        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(sprintf("%.2f", H3K36me3_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
-        })
+H3K36me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K36me3_24T","H3K36me3_24R","H3K36me3_144R"))) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K36me3_24T", "H3K36me3_144R"),
+                                 c("H3K36me3_24T","H3K36me3_24R"),
+                                 c("H3K36me3_24R", "H3K36me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("LFC across time for H3K36me3")
+
+
+H3K36me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K36me3_24T","H3K36me3_24R","H3K36me3_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K36me3_24T", "H3K36me3_144R"),
+                                 c("H3K36me3_24T","H3K36me3_24R"),
+                                 c("H3K36me3_24R", "H3K36me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K36me3")
+  
+
 
 ```
+
 
 #### Example log2cpm top
 
@@ -402,6 +498,26 @@ H3K36me3_merged_filt_lcpm %>%
   
 ```
 
+#### Proportion of H3K36me3 DERs by time
+
+```{r H3K36me3 prop}
+H3K36me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC,adj.P.Val) %>% 
+  mutate(sig_val=if_else(adj.P.Val<0.05,"sig","not_sig")) %>% 
+  mutate(
+    sig_val = factor(sig_val, levels = c("not_sig", "sig")),
+    group = factor(group, levels = c("H3K36me3_24T","H3K36me3_24R","H3K36me3_144R"))) %>%
+  ggplot(aes(x = group, fill = sig_val)) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  ggtitle("H3K36me3") +
+  ylab("Proportion") +
+  scale_y_continuous(labels = scales::percent)
+
+```
+
+
+
 ### H3K9me3 LFC correlation
 
 ```{r  H3K9me3 LFC correlation}
@@ -421,24 +537,44 @@ ComplexHeatmap::Heatmap(H3K9me3_cor_mat,
         })
 
 ```
-Absolute LFC correlation
+#### LFC and abs LFC by trt time
 ```{r H3K9me3 abs LFC corr}
 
-H3K9me3_abs_cor_mat <- H3K9me3_toptable_list %>% 
-  dplyr::select(group,genes,logFC) %>% 
-  mutate(logFC= abs(logFC)) %>% 
-  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %>% 
-  column_to_rownames("genes") %>% 
-  as.matrix() %>% 
-  cor()
 
-ComplexHeatmap::Heatmap(H3K9me3_abs_cor_mat,
-                        column_title = "H3K9me3 correlation of absolute LFC",
-                        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(sprintf("%.2f", H3K9me3_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = "black"))
-        })
+H3K9me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R"))) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K9me3_24T", "H3K9me3_144R"),
+                                 c("H3K9me3_24T","H3K9me3_24R"),
+                                 c("H3K9me3_24R", "H3K9me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("LFC across time for H3K9me3")
+
+
+H3K9me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K9me3_24T", "H3K9me3_144R"),
+                                 c("H3K9me3_24T","H3K9me3_24R"),
+                                 c("H3K9me3_24R", "H3K9me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K9me3")
+  
+
 
 ```
+
 
 
 #### Example log2cpm top
@@ -476,3 +612,23 @@ H3K9me3_merged_filt_lcpm %>%
   theme(axis.text.x=element_text(angle = 90))
   
 ```
+
+#### Proportion of H3K9me3 DERs by time
+
+```{r H3K9me3 prop}
+H3K9me3_toptable_list %>% 
+  dplyr::select(group,genes,logFC,adj.P.Val) %>% 
+  mutate(sig_val=if_else(adj.P.Val<0.05,"sig","not_sig")) %>% 
+  mutate(
+    sig_val = factor(sig_val, levels = c("not_sig", "sig")),
+    group = factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R"))) %>%
+  ggplot(aes(x = group, fill = sig_val)) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  ggtitle("H3K9me3") +
+  ylab("Proportion") +
+  scale_y_continuous(labels = scales::percent)
+
+```
+
+
