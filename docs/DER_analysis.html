@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-13
+<strong>Last updated:</strong> 2025-08-18
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreead6bf1a43312a42aceb5980023b8168fb776f89etargetblankad6bf1aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree52b0f2cca1150153b93ea499e60d9814cc03012atargetblank52b0f2ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/ad6bf1a43312a42aceb5980023b8168fb776f89e" target="_blank">ad6bf1a</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/52b0f2cca1150153b93ea499e60d9814cc03012a" target="_blank">52b0f2c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreead6bf1a43312a42aceb5980023b8168fb776f89etargetblankad6bf1aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree52b0f2cca1150153b93ea499e60d9814cc03012atargetblank52b0f2ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/ad6bf1a43312a42aceb5980023b8168fb776f89e" target="_blank">ad6bf1a</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/52b0f2cca1150153b93ea499e60d9814cc03012a" target="_blank">52b0f2c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -605,6 +605,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/52b0f2cca1150153b93ea499e60d9814cc03012a/analysis/DER_analysis.Rmd" target="_blank">52b0f2c</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-18
+</td>
+<td>
+wflow_publish("analysis/DER_analysis.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/9f5827e753dea8b79dc7f4ca86f4fa0bf05ca32d/docs/DER_analysis.html" target="_blank">9f5827e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -746,7 +780,8 @@ library(limma)
 library(ggrastr)
 library(cowplot)
 library(smplot2)
-library(ggVennDiagram)</code></pre>
+library(ggVennDiagram)
+library(ggsignif)</code></pre>
 <p>Differential analysis data frames:</p>
 <pre class="r"><code>H3K27ac_toplist &lt;- readRDS( &quot;data/DER_data/H3K27ac_toplist.RDS&quot;)
 H3K27me3_toplist &lt;- readRDS(&quot;data/DER_data/H3K27me3_toplist.RDS&quot;)
@@ -887,6 +922,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/9f5827e753dea8b79dc7f4ca86f4fa0bf05ca32d/docs/figure/DER_analysis.Rmd/H3K27ac LFC correlation-1.png" target="_blank">9f5827e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/3b2a52bea72ce1cb860744465560c05a106789bc/docs/figure/DER_analysis.Rmd/H3K27ac LFC correlation-1.png" target="_blank">3b2a52b</a>
 </td>
 <td>
@@ -900,21 +946,75 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<p>Absolute LFC correlation</p>
-<pre class="r"><code>H3K27ac_abs_cor_mat &lt;- H3K27ac_toptable_list %&gt;% 
-  dplyr::select(group,genes,logFC) %&gt;% 
-  mutate(logFC= abs(logFC)) %&gt;% 
-  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %&gt;% 
-  column_to_rownames(&quot;genes&quot;) %&gt;% 
-  as.matrix() %&gt;% 
-  cor()
-
-ComplexHeatmap::Heatmap(H3K27ac_abs_cor_mat,
-                        column_title = &quot;H3K27ac correlation of absolute LFC&quot;,
-                        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(sprintf(&quot;%.2f&quot;, H3K27ac_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = &quot;black&quot;))
-        })</code></pre>
+<div id="lfc-and-abs-lfc-by-trt-time" class="section level4">
+<h4>LFC and abs LFC by trt time</h4>
+<pre class="r"><code>H3K27ac_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC) %&gt;%
+  mutate(group=factor(group, levels = c(&quot;H3K27ac_24T&quot;,&quot;H3K27ac_24R&quot;,&quot;H3K27ac_144R&quot;))) %&gt;% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c(&quot;H3K27ac_24T&quot;, &quot;H3K27ac_144R&quot;),
+                                 c(&quot;H3K27ac_24T&quot;,&quot;H3K27ac_24R&quot;),
+                                 c(&quot;H3K27ac_24R&quot;, &quot;H3K27ac_144R&quot;)),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = &quot;wilcox.test&quot;)+
+  theme_bw()+
+  ggtitle(&quot;LFC across time for H3K27ac&quot;)</code></pre>
 <p><img src="figure/DER_analysis.Rmd/H3K27ac%20abs%20LFC%20corr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-abs-LFC-corr-1">
+Past versions of "H3K27ac abs LFC corr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27ac-abs-LFC-corr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/9f5827e753dea8b79dc7f4ca86f4fa0bf05ca32d/docs/figure/DER_analysis.Rmd/H3K27ac abs LFC corr-1.png" target="_blank">9f5827e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>H3K27ac_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC) %&gt;%
+  mutate(group=factor(group, levels = c(&quot;H3K27ac_24T&quot;,&quot;H3K27ac_24R&quot;,&quot;H3K27ac_144R&quot;)),
+         logFC=abs(logFC)) %&gt;% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c(&quot;H3K27ac_24T&quot;, &quot;H3K27ac_144R&quot;),
+                                 c(&quot;H3K27ac_24T&quot;,&quot;H3K27ac_24R&quot;),
+                                 c(&quot;H3K27ac_24R&quot;, &quot;H3K27ac_144R&quot;)),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = &quot;wilcox.test&quot;)+
+  theme_bw()+
+  ggtitle(&quot;Absolute LFC across time for H3K27ac&quot;)</code></pre>
+<p><img src="figure/DER_analysis.Rmd/H3K27ac%20abs%20LFC%20corr-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="example-log2cpm-top" class="section level4">
 <h4>Example log2cpm top</h4>
 <pre class="r"><code>### getting the Top3 DERs by 24T, 24R, or 144R (Time point)
@@ -987,6 +1087,22 @@ reneeisnowhere
 </div>
 </div>
 </div>
+<div id="proportion-of-h3k27ac-ders-by-time" class="section level4">
+<h4>Proportion of H3K27ac DERs by time</h4>
+<pre class="r"><code>H3K27ac_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC,adj.P.Val) %&gt;% 
+  mutate(sig_val=if_else(adj.P.Val&lt;0.05,&quot;sig&quot;,&quot;not_sig&quot;)) %&gt;% 
+  mutate(
+    sig_val = factor(sig_val, levels = c(&quot;not_sig&quot;, &quot;sig&quot;)),
+    group = factor(group, levels = c(&quot;H3K27ac_24T&quot;,&quot;H3K27ac_24R&quot;,&quot;H3K27ac_144R&quot;))) %&gt;%
+  ggplot(aes(x = group, fill = sig_val)) +
+  geom_bar(position = &quot;fill&quot;) +
+  theme_bw() +
+  ggtitle(&quot;H3K27ac&quot;) +
+  ylab(&quot;Proportion&quot;) +
+  scale_y_continuous(labels = scales::percent)</code></pre>
+<p><img src="figure/DER_analysis.Rmd/H3K27ac%20prop-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="h3k27me3-lfc-correlation" class="section level3">
 <h3>H3K27me3 LFC correlation</h3>
@@ -1027,6 +1143,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/9f5827e753dea8b79dc7f4ca86f4fa0bf05ca32d/docs/figure/DER_analysis.Rmd/H3K27me3 LFC correlation-1.png" target="_blank">9f5827e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/3b2a52bea72ce1cb860744465560c05a106789bc/docs/figure/DER_analysis.Rmd/H3K27me3 LFC correlation-1.png" target="_blank">3b2a52b</a>
 </td>
 <td>
@@ -1040,21 +1167,75 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<p>Absolute LFC correlation</p>
-<pre class="r"><code>H3K27me3_abs_cor_mat &lt;- H3K27me3_toptable_list %&gt;% 
-  dplyr::select(group,genes,logFC) %&gt;% 
-  mutate(logFC= abs(logFC)) %&gt;% 
-  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %&gt;% 
-  column_to_rownames(&quot;genes&quot;) %&gt;% 
-  as.matrix() %&gt;% 
-  cor()
-
-ComplexHeatmap::Heatmap(H3K27me3_abs_cor_mat,
-                        column_title = &quot;H3K27me3 correlation of absolute LFC&quot;,
-                        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(sprintf(&quot;%.2f&quot;, H3K27me3_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = &quot;black&quot;))
-        })</code></pre>
+<div id="lfc-and-abs-lfc-by-trt-time-1" class="section level4">
+<h4>LFC and abs LFC by trt time</h4>
+<pre class="r"><code>H3K27me3_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC) %&gt;%
+  mutate(group=factor(group, levels = c(&quot;H3K27me3_24T&quot;,&quot;H3K27me3_24R&quot;,&quot;H3K27me3_144R&quot;))) %&gt;% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c(&quot;H3K27me3_24T&quot;, &quot;H3K27me3_144R&quot;),
+                                 c(&quot;H3K27me3_24T&quot;,&quot;H3K27me3_24R&quot;),
+                                 c(&quot;H3K27me3_24R&quot;, &quot;H3K27me3_144R&quot;)),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = &quot;wilcox.test&quot;)+
+  theme_bw()+
+  ggtitle(&quot;LFC across time for H3K27me3&quot;)</code></pre>
 <p><img src="figure/DER_analysis.Rmd/H3K27me3%20abs%20LFC%20corr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-abs-LFC-corr-1">
+Past versions of "H3K27me3 abs LFC corr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27me3-abs-LFC-corr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/9f5827e753dea8b79dc7f4ca86f4fa0bf05ca32d/docs/figure/DER_analysis.Rmd/H3K27me3 abs LFC corr-1.png" target="_blank">9f5827e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>H3K27me3_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC) %&gt;%
+  mutate(group=factor(group, levels = c(&quot;H3K27me3_24T&quot;,&quot;H3K27me3_24R&quot;,&quot;H3K27me3_144R&quot;)),
+         logFC=abs(logFC)) %&gt;% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c(&quot;H3K27me3_24T&quot;, &quot;H3K27me3_144R&quot;),
+                                 c(&quot;H3K27me3_24T&quot;,&quot;H3K27me3_24R&quot;),
+                                 c(&quot;H3K27me3_24R&quot;, &quot;H3K27me3_144R&quot;)),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = &quot;wilcox.test&quot;)+
+  theme_bw()+
+  ggtitle(&quot;Absolute LFC across time for H3K27me3&quot;)</code></pre>
+<p><img src="figure/DER_analysis.Rmd/H3K27me3%20abs%20LFC%20corr-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="example-log2cpm-top-1" class="section level4">
 <h4>Example log2cpm top</h4>
 <pre class="r"><code>### getting the Top3 DERs by 24T, 24R, or 144R (Time point)
@@ -1127,6 +1308,22 @@ reneeisnowhere
 </div>
 </div>
 </div>
+<div id="proportion-of-h3k27me3-ders-by-time" class="section level4">
+<h4>Proportion of H3K27me3 DERs by time</h4>
+<pre class="r"><code>H3K27me3_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC,adj.P.Val) %&gt;% 
+  mutate(sig_val=if_else(adj.P.Val&lt;0.05,&quot;sig&quot;,&quot;not_sig&quot;)) %&gt;% 
+  mutate(
+    sig_val = factor(sig_val, levels = c(&quot;not_sig&quot;, &quot;sig&quot;)),
+    group = factor(group, levels = c(&quot;H3K27me3_24T&quot;,&quot;H3K27me3_24R&quot;,&quot;H3K27me3_144R&quot;))) %&gt;%
+  ggplot(aes(x = group, fill = sig_val)) +
+  geom_bar(position = &quot;fill&quot;) +
+  theme_bw() +
+  ggtitle(&quot;H3K27me3&quot;) +
+  ylab(&quot;Proportion&quot;) +
+  scale_y_continuous(labels = scales::percent)</code></pre>
+<p><img src="figure/DER_analysis.Rmd/H3K27me3%20prop-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="h3k36me3-lfc-correlation" class="section level3">
 <h3>H3K36me3 LFC correlation</h3>
@@ -1167,6 +1364,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/9f5827e753dea8b79dc7f4ca86f4fa0bf05ca32d/docs/figure/DER_analysis.Rmd/H3K36me3 LFC correlation-1.png" target="_blank">9f5827e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/3b2a52bea72ce1cb860744465560c05a106789bc/docs/figure/DER_analysis.Rmd/H3K36me3 LFC correlation-1.png" target="_blank">3b2a52b</a>
 </td>
 <td>
@@ -1180,21 +1388,75 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<p>Absolute LFC correlation</p>
-<pre class="r"><code>H3K36me3_abs_cor_mat &lt;- H3K36me3_toptable_list %&gt;% 
-  dplyr::select(group,genes,logFC) %&gt;% 
-  mutate(logFC= abs(logFC)) %&gt;% 
-  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %&gt;% 
-  column_to_rownames(&quot;genes&quot;) %&gt;% 
-  as.matrix() %&gt;% 
-  cor()
-
-ComplexHeatmap::Heatmap(H3K36me3_abs_cor_mat,
-                        column_title = &quot;H3K36me3 correlation of absolute LFC&quot;,
-                        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(sprintf(&quot;%.2f&quot;, H3K36me3_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = &quot;black&quot;))
-        })</code></pre>
+<div id="lfc-and-abs-lfc-by-trt-time-2" class="section level4">
+<h4>LFC and abs LFC by trt time</h4>
+<pre class="r"><code>H3K36me3_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC) %&gt;%
+  mutate(group=factor(group, levels = c(&quot;H3K36me3_24T&quot;,&quot;H3K36me3_24R&quot;,&quot;H3K36me3_144R&quot;))) %&gt;% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c(&quot;H3K36me3_24T&quot;, &quot;H3K36me3_144R&quot;),
+                                 c(&quot;H3K36me3_24T&quot;,&quot;H3K36me3_24R&quot;),
+                                 c(&quot;H3K36me3_24R&quot;, &quot;H3K36me3_144R&quot;)),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = &quot;wilcox.test&quot;)+
+  theme_bw()+
+  ggtitle(&quot;LFC across time for H3K36me3&quot;)</code></pre>
 <p><img src="figure/DER_analysis.Rmd/H3K36me3%20abs%20LFC%20corr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-abs-LFC-corr-1">
+Past versions of "H3K36me3 abs LFC corr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-abs-LFC-corr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/9f5827e753dea8b79dc7f4ca86f4fa0bf05ca32d/docs/figure/DER_analysis.Rmd/H3K36me3 abs LFC corr-1.png" target="_blank">9f5827e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>H3K36me3_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC) %&gt;%
+  mutate(group=factor(group, levels = c(&quot;H3K36me3_24T&quot;,&quot;H3K36me3_24R&quot;,&quot;H3K36me3_144R&quot;)),
+         logFC=abs(logFC)) %&gt;% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c(&quot;H3K36me3_24T&quot;, &quot;H3K36me3_144R&quot;),
+                                 c(&quot;H3K36me3_24T&quot;,&quot;H3K36me3_24R&quot;),
+                                 c(&quot;H3K36me3_24R&quot;, &quot;H3K36me3_144R&quot;)),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = &quot;wilcox.test&quot;)+
+  theme_bw()+
+  ggtitle(&quot;Absolute LFC across time for H3K36me3&quot;)</code></pre>
+<p><img src="figure/DER_analysis.Rmd/H3K36me3%20abs%20LFC%20corr-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="example-log2cpm-top-2" class="section level4">
 <h4>Example log2cpm top</h4>
 <pre class="r"><code>### getting the Top3 DERs by 24T, 24R, or 144R (Time point)
@@ -1267,6 +1529,22 @@ reneeisnowhere
 </div>
 </div>
 </div>
+<div id="proportion-of-h3k36me3-ders-by-time" class="section level4">
+<h4>Proportion of H3K36me3 DERs by time</h4>
+<pre class="r"><code>H3K36me3_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC,adj.P.Val) %&gt;% 
+  mutate(sig_val=if_else(adj.P.Val&lt;0.05,&quot;sig&quot;,&quot;not_sig&quot;)) %&gt;% 
+  mutate(
+    sig_val = factor(sig_val, levels = c(&quot;not_sig&quot;, &quot;sig&quot;)),
+    group = factor(group, levels = c(&quot;H3K36me3_24T&quot;,&quot;H3K36me3_24R&quot;,&quot;H3K36me3_144R&quot;))) %&gt;%
+  ggplot(aes(x = group, fill = sig_val)) +
+  geom_bar(position = &quot;fill&quot;) +
+  theme_bw() +
+  ggtitle(&quot;H3K36me3&quot;) +
+  ylab(&quot;Proportion&quot;) +
+  scale_y_continuous(labels = scales::percent)</code></pre>
+<p><img src="figure/DER_analysis.Rmd/H3K36me3%20prop-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="h3k9me3-lfc-correlation" class="section level3">
 <h3>H3K9me3 LFC correlation</h3>
@@ -1307,6 +1585,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/9f5827e753dea8b79dc7f4ca86f4fa0bf05ca32d/docs/figure/DER_analysis.Rmd/H3K9me3 LFC correlation-1.png" target="_blank">9f5827e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/3b2a52bea72ce1cb860744465560c05a106789bc/docs/figure/DER_analysis.Rmd/H3K9me3 LFC correlation-1.png" target="_blank">3b2a52b</a>
 </td>
 <td>
@@ -1320,21 +1609,75 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<p>Absolute LFC correlation</p>
-<pre class="r"><code>H3K9me3_abs_cor_mat &lt;- H3K9me3_toptable_list %&gt;% 
-  dplyr::select(group,genes,logFC) %&gt;% 
-  mutate(logFC= abs(logFC)) %&gt;% 
-  pivot_wider(id_cols = genes, values_from = logFC, names_from = group) %&gt;% 
-  column_to_rownames(&quot;genes&quot;) %&gt;% 
-  as.matrix() %&gt;% 
-  cor()
-
-ComplexHeatmap::Heatmap(H3K9me3_abs_cor_mat,
-                        column_title = &quot;H3K9me3 correlation of absolute LFC&quot;,
-                        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(sprintf(&quot;%.2f&quot;, H3K9me3_abs_cor_mat[i, j]), x, y, gp = gpar(fontsize = 8, col = &quot;black&quot;))
-        })</code></pre>
+<div id="lfc-and-abs-lfc-by-trt-time-3" class="section level4">
+<h4>LFC and abs LFC by trt time</h4>
+<pre class="r"><code>H3K9me3_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC) %&gt;%
+  mutate(group=factor(group, levels = c(&quot;H3K9me3_24T&quot;,&quot;H3K9me3_24R&quot;,&quot;H3K9me3_144R&quot;))) %&gt;% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c(&quot;H3K9me3_24T&quot;, &quot;H3K9me3_144R&quot;),
+                                 c(&quot;H3K9me3_24T&quot;,&quot;H3K9me3_24R&quot;),
+                                 c(&quot;H3K9me3_24R&quot;, &quot;H3K9me3_144R&quot;)),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = &quot;wilcox.test&quot;)+
+  theme_bw()+
+  ggtitle(&quot;LFC across time for H3K9me3&quot;)</code></pre>
 <p><img src="figure/DER_analysis.Rmd/H3K9me3%20abs%20LFC%20corr-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-abs-LFC-corr-1">
+Past versions of "H3K9me3 abs LFC corr-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-abs-LFC-corr-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/9f5827e753dea8b79dc7f4ca86f4fa0bf05ca32d/docs/figure/DER_analysis.Rmd/H3K9me3 abs LFC corr-1.png" target="_blank">9f5827e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>H3K9me3_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC) %&gt;%
+  mutate(group=factor(group, levels = c(&quot;H3K9me3_24T&quot;,&quot;H3K9me3_24R&quot;,&quot;H3K9me3_144R&quot;)),
+         logFC=abs(logFC)) %&gt;% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c(&quot;H3K9me3_24T&quot;, &quot;H3K9me3_144R&quot;),
+                                 c(&quot;H3K9me3_24T&quot;,&quot;H3K9me3_24R&quot;),
+                                 c(&quot;H3K9me3_24R&quot;, &quot;H3K9me3_144R&quot;)),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = &quot;wilcox.test&quot;)+
+  theme_bw()+
+  ggtitle(&quot;Absolute LFC across time for H3K9me3&quot;)</code></pre>
+<p><img src="figure/DER_analysis.Rmd/H3K9me3%20abs%20LFC%20corr-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="example-log2cpm-top-3" class="section level4">
 <h4>Example log2cpm top</h4>
 <pre class="r"><code>### getting the Top3 DERs by 24T, 24R, or 144R (Time point)
@@ -1406,6 +1749,22 @@ reneeisnowhere
 </table>
 </div>
 </div>
+</div>
+<div id="proportion-of-h3k9me3-ders-by-time" class="section level4">
+<h4>Proportion of H3K9me3 DERs by time</h4>
+<pre class="r"><code>H3K9me3_toptable_list %&gt;% 
+  dplyr::select(group,genes,logFC,adj.P.Val) %&gt;% 
+  mutate(sig_val=if_else(adj.P.Val&lt;0.05,&quot;sig&quot;,&quot;not_sig&quot;)) %&gt;% 
+  mutate(
+    sig_val = factor(sig_val, levels = c(&quot;not_sig&quot;, &quot;sig&quot;)),
+    group = factor(group, levels = c(&quot;H3K9me3_24T&quot;,&quot;H3K9me3_24R&quot;,&quot;H3K9me3_144R&quot;))) %&gt;%
+  ggplot(aes(x = group, fill = sig_val)) +
+  geom_bar(position = &quot;fill&quot;) +
+  theme_bw() +
+  ggtitle(&quot;H3K9me3&quot;) +
+  ylab(&quot;Proportion&quot;) +
+  scale_y_continuous(labels = scales::percent)</code></pre>
+<p><img src="figure/DER_analysis.Rmd/H3K9me3%20prop-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1437,18 +1796,18 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] ggVennDiagram_1.5.4   smplot2_0.2.5         cowplot_1.2.0        
- [4] ggrastr_1.0.2         Rsubread_2.20.0       gcplyr_1.12.0        
- [7] ggpmisc_0.6.2         ggpp_0.5.9            corrplot_0.95        
-[10] ggpubr_0.6.1          GenomicRanges_1.58.0  GenomeInfoDb_1.42.3  
-[13] IRanges_2.40.1        S4Vectors_0.44.0      BiocGenerics_0.52.0  
-[16] genomation_1.38.0     kableExtra_1.4.0      DT_0.33              
-[19] viridis_0.6.5         viridisLite_0.4.2     data.table_1.17.8    
-[22] ComplexHeatmap_2.22.0 edgeR_4.4.2           limma_3.62.2         
-[25] lubridate_1.9.4       forcats_1.0.0         stringr_1.5.1        
-[28] dplyr_1.1.4           purrr_1.1.0           readr_2.1.5          
-[31] tidyr_1.3.1           tibble_3.3.0          ggplot2_3.5.2        
-[34] tidyverse_2.0.0       workflowr_1.7.1      
+ [1] ggsignif_0.6.4        ggVennDiagram_1.5.4   smplot2_0.2.5        
+ [4] cowplot_1.2.0         ggrastr_1.0.2         Rsubread_2.20.0      
+ [7] gcplyr_1.12.0         ggpmisc_0.6.2         ggpp_0.5.9           
+[10] corrplot_0.95         ggpubr_0.6.1          GenomicRanges_1.58.0 
+[13] GenomeInfoDb_1.42.3   IRanges_2.40.1        S4Vectors_0.44.0     
+[16] BiocGenerics_0.52.0   genomation_1.38.0     kableExtra_1.4.0     
+[19] DT_0.33               viridis_0.6.5         viridisLite_0.4.2    
+[22] data.table_1.17.8     ComplexHeatmap_2.22.0 edgeR_4.4.2          
+[25] limma_3.62.2          lubridate_1.9.4       forcats_1.0.0        
+[28] stringr_1.5.1         dplyr_1.1.4           purrr_1.1.0          
+[31] readr_2.1.5           tidyr_1.3.1           tibble_3.3.0         
+[34] ggplot2_3.5.2         tidyverse_2.0.0       workflowr_1.7.1      
 
 loaded via a namespace (and not attached):
   [1] splines_4.4.2               later_1.4.2                
@@ -1509,18 +1868,17 @@ loaded via a namespace (and not attached):
 [111] cli_3.6.5                   locfit_1.5-9.12            
 [113] compiler_4.4.2              Rsamtools_2.22.0           
 [115] rlang_1.1.6                 crayon_1.5.3               
-[117] ggsignif_0.6.4              labeling_0.4.3             
-[119] ps_1.9.1                    getPass_0.2-4              
-[121] plyr_1.8.9                  fs_1.6.6                   
-[123] ggbeeswarm_0.7.2            stringi_1.8.7              
-[125] gridBase_0.4-7              BiocParallel_1.40.2        
-[127] Biostrings_2.74.1           quantreg_6.1               
-[129] Matrix_1.7-3                BSgenome_1.74.0            
-[131] patchwork_1.3.1             hms_1.1.3                  
-[133] bit64_4.6.0-1               statmod_1.5.0              
-[135] SummarizedExperiment_1.36.0 broom_1.0.9                
-[137] bslib_0.9.0                 bit_4.6.0                  
-[139] polynom_1.4-1              </code></pre>
+[117] labeling_0.4.3              ps_1.9.1                   
+[119] getPass_0.2-4               plyr_1.8.9                 
+[121] fs_1.6.6                    ggbeeswarm_0.7.2           
+[123] stringi_1.8.7               gridBase_0.4-7             
+[125] BiocParallel_1.40.2         Biostrings_2.74.1          
+[127] quantreg_6.1                Matrix_1.7-3               
+[129] BSgenome_1.74.0             patchwork_1.3.1            
+[131] hms_1.1.3                   bit64_4.6.0-1              
+[133] statmod_1.5.0               SummarizedExperiment_1.36.0
+[135] broom_1.0.9                 bslib_0.9.0                
+[137] bit_4.6.0                   polynom_1.4-1              </code></pre>
 </div>
 </div>
 </div>
