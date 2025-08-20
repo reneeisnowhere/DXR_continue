@@ -225,6 +225,8 @@ combo_trim_df %>%
                               fixedHeader= TRUE),
             extensions = c("FixedColumns","Scroller"),
             class = "display")
+
+# write_delim(combo_trim_df,"data/multiqc_data_trim/Summary_of_multiqcfiles.txt",delim = "\t")
 ```
 
 ```{r trim info 4, fig.width = 14}
@@ -341,6 +343,8 @@ for_plots <- alignResult %>%
   dplyr::select(ID:aligned_concordant_0,aligned_concordant_1, aligned_concordant_g1,percent_alignment, Histone_Mark, Individual, Treatment, Timepoint) %>% 
   distinct()
 for_plots <- for_plots[(!for_plots$Treatment %in% "5FU"),]
+
+# write_delim(for_plots,"data/alignment_summary.txt",delim= "\t")
 ```
 
 #### Read Visualization
@@ -523,7 +527,9 @@ for (s in peaks$sample) {
 }
 questionable_frag = peaks[(peaks$peakNum == 0),]
 questionable_frag %>%
-  left_join(., sampleinfo, by =c("sample"="Library ID"))
+  left_join(., sampleinfo, by =c("sample"="Library ID")) 
+
+
 ```
 
 ### Read Analysisafter Filtering
@@ -671,4 +677,6 @@ for (s in peaks$sample) {
 questionable_frag_filter = peaks[(peaks$peakNum == 0),]
 questionable_frag_filter %>%
   left_join(., sampleinfo, by =c("sample"="Library ID"))
+
+# write_delim(peaks,"data/number_frag_peaks_summary.txt",delim="\t")
 ```
