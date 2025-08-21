@@ -1,7 +1,7 @@
 ---
-title: "Final Analysis"
-author: "Steven Yu, Renee Matthews edits"
-date: "2025-08-01"
+title: "Outlier removal"
+author: " Renee Matthews edits"
+date: "2025-08-21"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: inline
@@ -156,64 +156,8 @@ volcanosig <- function(df, psig.lvl) {
 
 ```
 
-### Final Analysis
+### Feature Counts  
 
-```{r peak data FINAL 1}
-peak_ct <- read_delim("data/peaks/peaks_cts_FINAL.txt", delim = "\t")
-H3K27ac_peaks <- read_delim("data/peaks/H3K27ac_FINAl_results.tsv",delim = "\t")
-H3K27me3_peaks <- read_delim("data/peaks/H3K27me3_FINAL_results.tsv",delim = "\t")
-H3K36me3_peaks <- read_delim("data/peaks/H3K36me3_FINAL_results.tsv",delim = "\t")
-H3K9me3_peaks <- read_delim("data/peaks/H3K9me3_FINAL_results.tsv",delim = "\t")
-
-all_peak_final <- rbind(H3K27ac_peaks, H3K27me3_peaks, H3K36me3_peaks, H3K9me3_peaks)
-
-all_peak_final <- all_peak_final %>%
-  dplyr::select(Sample, Total_Reads, Fragments, Reads_in_Peaks, FRiP) %>%
-  left_join(.,sampleinfo, by=c("Sample"="Library ID")) %>%
-  left_join(.,peak_ct, by=c("Sample"="Sample"))
-all_peak_final <- all_peak_final[(!all_peak_final$Treatment %in% "5FU"),]
-# write_delim(all_peak_final,"data/all_peak_final_dataframe.txt",delim = "\t")
-```
-
-```{r peak ct final, fig.width=14}
-all_peak_final %>% 
-   ggplot(.,aes(x=Sample, y=Count,fill=Histone_Mark))+
-   geom_col()+
-   ylab("Count")+
-   theme_classic()+
-  # facet_wrap(~histone)+
-  ggtitle("Peak number for all samples")+ 
-  theme(axis.text.x=element_text(vjust = .2,angle=90))+
-  scale_y_continuous( expand = expansion(mult = c(0, .1)))
-```
-
-```{r peak ct grouptx final}
-all_peak_final %>% 
-  ggplot(., aes (x=Treatment, y = Count, fill = Histone_Mark))+
-  geom_boxplot()+
-   ylab("Count")+
-   theme_classic()+
-  # facet_wrap(~histone)+
-  ggtitle("Peak count across histones")
-```
-
-```{r peak ct grouptime 1e3_narrow}
-all_peak_final %>% 
-  ggplot(., aes (x=Timepoint, y = Count, fill = Histone_Mark))+
-  geom_boxplot()+
-   ylab("Count")+
-   theme_classic()+
-  # facet_wrap(~histone)+
-  ggtitle("Peak count across histones")
-```
-
-#### Tagging Questionable Libraries by FRiP
-```{r frip tag}
-questionable_frip = all_peak_final[(all_peak_final$FRiP < 0.02),]
-questionable_frip
-```
-
-### Feature Counts
 ```{r feature_cts}
 H3K27ac_merged <- read_delim("data/peaks/H3K27ac_FINAL_counts.txt", 
     delim = "\t", escape_double = FALSE, 
@@ -240,6 +184,25 @@ names(H3K36me3_merged)[names(H3K36me3_merged) %in% names(rename_vec)] <- rename_
 names(H3K9me3_merged)[names(H3K9me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K9me3_merged)[names(H3K9me3_merged) %in% names(rename_vec)]]
 ```
 
+### Removing outliers and reanalyzing
+
+This is removing outliers in H3K36me3: Ind1_VEH_144R
+and in H3K9me3: Ind1_VEH_24T, Ind3_DOX_24T, Ind5_DOX_144R
+
+
+```{r removing outliers}
+
+
+H3K36me3_merged <- H3K36me3_merged %>% 
+  dplyr::select(!Ind1_VEH_144R)
+
+H3K9me3_merged<- H3K9me3_merged %>%
+  dplyr::select(!Ind1_VEH_24T) %>% 
+  dplyr::select(!Ind3_DOX_24T) %>% 
+  dplyr::select(!Ind5_DOX_144R)
+```
+
+
 ### H3K27ac Count Analysis
 ```{r H3K27ac HeatMap 1, fig.width=14,fig.height=14}
 H3K27ac_merged_raw <- H3K27ac_merged %>% 
@@ -263,7 +226,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K27ac_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K27ac with Standard Merging")
+        column_title="Unfiltered log2cpm H3K27ac, no removal")
 ```
 
 ### H3K27me3 Count Analysis
@@ -289,7 +252,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K27me3_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K27me3 with Standard Merging")
+        column_title="Unfiltered log2cpm H3K27me3 with no removal")
 ```
 
 ### H3K36me3 Count Analysis
@@ -315,7 +278,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K36me3_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K36me3 with Standard Merging")
+        column_title="Unfiltered log2cpm H3K36me3 with removal of 1 sample")
 ```
 
 ### H3K9me3 Count Analysis
@@ -341,38 +304,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K9me3_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K9me3 with Standard Merging")
-```
-
-### Fragment Analysis
-```{r frag ct, fig.width=14}
-all_peak_final %>%
-  mutate(Fragments=Fragments/1000000) %>% 
-  ggplot(., aes(x=interaction(Individual,Treatment,Timepoint), y=Fragments, fill=Treatment, group = Treatment))+
-  geom_col()+
-  geom_text(aes(y = 0,label = Sample), vjust = 0.2, size = 3, angle = 90)+
-  theme_classic()+
-  facet_wrap(~Histone_Mark)+
-  ggtitle("Fragment count by histone and sample")+
-  ylab("Count of Fragments * 10^6")+
-  xlab("Samples")+
-  theme(axis.text.x=element_text(vjust = .2,angle=90))+
-  scale_y_continuous( expand = expansion(mult = c(0, .1)))
-```
-
-```{r frag frip, fig.width=14}
-all_peak_final %>%
-  mutate(FRiP=FRiP * 100) %>% 
-  ggplot(., aes(x=interaction(Individual,Treatment,Timepoint), y=FRiP, fill=Treatment, group = Treatment))+
-  geom_col()+
-  geom_text(aes(y = 0,label = Sample), vjust = 0.2, size = 3, angle = 90)+
-  theme_classic()+
-  facet_wrap(~Histone_Mark)+
-  ggtitle("Frip Percent by histone and sample")+
-  ylab("Frip %")+
-  xlab("Samples")+
-  theme(axis.text.x=element_text(vjust = .2,angle=90))+
-  scale_y_continuous( expand = expansion(mult = c(0, .1)))
+        column_title="Unfiltered log2cpm H3K9me3 with Outlier removal")
 ```
 
 ### Differential Analysis
@@ -397,6 +329,48 @@ H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrX",rownames(H3K36me3_merge
 H3K9me3_merged_raw <- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_cor)>0,]
 H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrY",rownames(H3K9me3_merged_raw)),]
 H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrX",rownames(H3K9me3_merged_raw)),]
+```
+
+```{r H3K36me3 HeatMap 2, fig.width=14,fig.height=14}
+
+
+H3K36me3_merged_raw_lcpm <- H3K36me3_merged_raw %>% 
+  cpm(., log = TRUE)
+
+H3K36me3_merged_filt_cor <- H3K36me3_merged_raw_lcpm %>% 
+  cor()
+
+annomat <- data.frame(sample=colnames(H3K36me3_merged_filt_cor)) %>% 
+  separate_wider_delim(sample,delim="_",names=c("Ind","Treatment","Timepoint"),cols_remove = FALSE) %>% 
+  mutate(Treatment=factor(Treatment, levels = c("VEH","5FU","DOX")),
+         Timepoint=factor(Timepoint, levels =c("24T","24R","144R"))) %>% 
+  column_to_rownames("sample")
+heatmap_second <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
+
+Heatmap(H3K36me3_merged_filt_cor, 
+        top_annotation = heatmap_second,
+        column_title="Filtered log2cpm H3K36me3 with removal of 1 sample")
+```
+
+```{r H3K9me3 HeatMap 2, fig.width=14,fig.height=14}
+
+
+H3K9me3_merged_raw_lcpm <- H3K9me3_merged_raw %>% 
+  cpm(., log = TRUE)
+
+H3K9me3_merged_filt_cor <- H3K9me3_merged_raw_lcpm %>% 
+  cor()
+
+annomat <- data.frame(sample=colnames(H3K9me3_merged_filt_cor)) %>% 
+  separate_wider_delim(sample,delim="_",names=c("Ind","Treatment","Timepoint"),cols_remove = FALSE) %>% 
+  mutate(Treatment=factor(Treatment, levels = c("VEH","5FU","DOX")),
+         Timepoint=factor(Timepoint, levels =c("24T","24R","144R"))) %>% 
+  column_to_rownames("sample")
+heatmap_second <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
+
+Heatmap(H3K9me3_merged_filt_cor, 
+        top_annotation = heatmap_second,
+        column_title="Filtered log2cpm H3K9me3 with removal of 3 samples")
 ```
 
 #### Setting up Matrix
@@ -465,21 +439,21 @@ H3K9me3_annomat$group <- H3K9me3_annomat$group %>%
   gsub("VEH_24R", "5", .) %>%
   gsub("VEH_144R", "6", .)
 
-dge_H3K27ac <- edgeR::DGEList(counts = H3K27ac_merged_raw, group = H3K27ac_annomat$group, genes = row.names(H3K27ac_merged_raw))
-dge_H3K27me3 <- edgeR::DGEList(counts = H3K27me3_merged_raw, group = H3K27me3_annomat$group, genes = row.names(H3K27me3_merged_raw))
+# dge_H3K27ac <- edgeR::DGEList(counts = H3K27ac_merged_raw, group = H3K27ac_annomat$group, genes = row.names(H3K27ac_merged_raw))
+# dge_H3K27me3 <- edgeR::DGEList(counts = H3K27me3_merged_raw, group = H3K27me3_annomat$group, genes = row.names(H3K27me3_merged_raw))
 dge_H3K36me3 <- edgeR::DGEList(counts = H3K36me3_merged_raw, group = H3K36me3_annomat$group, genes = row.names(H3K36me3_merged_raw))
 dge_H3K9me3 <- edgeR::DGEList(counts = H3K9me3_merged_raw, group = H3K9me3_annomat$group, genes = row.names(H3K9me3_merged_raw))
 
-dge_H3K27ac <- edgeR::calcNormFactors(dge_H3K27ac)
-dge_H3K27me3 <- edgeR::calcNormFactors(dge_H3K27me3)
+# dge_H3K27ac <- edgeR::calcNormFactors(dge_H3K27ac)
+# dge_H3K27me3 <- edgeR::calcNormFactors(dge_H3K27me3)
 dge_H3K36me3 <- edgeR::calcNormFactors(dge_H3K36me3)
 dge_H3K9me3 <- edgeR::calcNormFactors(dge_H3K9me3)
 
-mm_H3K27ac <- model.matrix(~0 + H3K27ac_annomat$txtime)
-colnames(mm_H3K27ac) <- H3K27ac_annomat$txtime %>% unique()
+# mm_H3K27ac <- model.matrix(~0 + H3K27ac_annomat$txtime)
+# colnames(mm_H3K27ac) <- H3K27ac_annomat$txtime %>% unique()
 
-mm_H3K27me3 <- model.matrix(~0 + H3K27me3_annomat$txtime)
-colnames(mm_H3K27me3) <- H3K27me3_annomat$txtime %>% unique()
+# mm_H3K27me3 <- model.matrix(~0 + H3K27me3_annomat$txtime)
+# colnames(mm_H3K27me3) <- H3K27me3_annomat$txtime %>% unique()
 
 mm_H3K36me3 <- model.matrix(~0 + H3K36me3_annomat$txtime)
 colnames(mm_H3K36me3) <- H3K36me3_annomat$txtime %>% unique()
@@ -491,7 +465,7 @@ colnames(mm_H3K9me3) <- H3K9me3_annomat$txtime %>% unique()
 ### Volcano Plots
 
 #### H3K27ac
-```{r H3K27ac volcano 1}
+```{r H3K27ac volcano 1, eval=FALSE}
 y <- voom(dge_H3K27ac, mm_H3K27ac, plot = FALSE)
 corfit <- duplicateCorrelation(y, mm_H3K27ac, block = H3K27ac_annomat$ind)
 v <- voom(dge_H3K27ac, mm_H3K27ac, block = H3K27ac_annomat$ind, correlation = corfit$consensus.correlation)
@@ -511,11 +485,11 @@ summary(results)
 
 ```
 
-```{r H3K27ac volcano 2}
+```{r H3K27ac volcano 2, eval=FALSE}
 plotSA(efit2, main="Mean-Variance trend for final model for H3K27ac")
 ```
 
-```{r H3K27ac volcano 3, fig.width=14}
+```{r H3K27ac volcano 3, fig.width=14, eval=FALSE}
 V.24T.top= topTable(efit2, coef=1, adjust.method="BH", number=Inf, sort.by="p")
 V.24R.top= topTable(efit2, coef=2, adjust.method="BH", number=Inf, sort.by="p")
 V.144R.top= topTable(efit2, coef=3, adjust.method="BH", number=Inf, sort.by="p")
@@ -527,7 +501,7 @@ plot_grid(H3K27ac_24T, H3K27ac_24R, H3K27ac_144R, rel_widths =c(1,1,1))
 ```
 
 #### H3K27me3
-```{r H3K27me3 volcano 1}
+```{r H3K27me3 volcano 1, eval=FALSE}
 y <- voom(dge_H3K27me3, mm_H3K27me3, plot = FALSE)
 corfit <- duplicateCorrelation(y, mm_H3K27me3, block = H3K27me3_annomat$ind)
 v <- voom(dge_H3K27me3, mm_H3K27me3, block = H3K27me3_annomat$ind, correlation = corfit$consensus.correlation)
@@ -547,11 +521,11 @@ summary(results)
 
 ```
 
-```{r H3K27me3 volcano 2}
+```{r H3K27me3 volcano 2, eval=FALSE}
 plotSA(efit2, main="Mean-Variance trend for final model for H3K27me3")
 ```
 
-```{r H3K27me3 volcano 3, fig.width=14}
+```{r H3K27me3 volcano 3, fig.width=14, eval=FALSE}
 V.24T.top= topTable(efit2, coef=1, adjust.method="BH", number=Inf, sort.by="p")
 V.24R.top= topTable(efit2, coef=2, adjust.method="BH", number=Inf, sort.by="p")
 V.144R.top= topTable(efit2, coef=3, adjust.method="BH", number=Inf, sort.by="p")
@@ -637,16 +611,16 @@ plot_grid(H3K9me3_24T, H3K9me3_24R, H3K9me3_144R, rel_widths =c(1,1,1))
 ### PCA Plots
 
 #### H3K27ac
-```{r H3K27ac PCA_var}
+```{r H3K27ac PCA_var,eval=FALSE}
 pca_H3K27ac <- calc_pca(t(H3K27ac_merged_lcpm))
 pca_var_plot(pca_H3K27ac)
 ```
 
-```{r H3K27ac PCA}
+```{r H3K27ac PCA,eval=FALSE}
 pca_H3K27ac <- pca_H3K27ac$x %>% cbind(., H3K27ac_annomat)
 pca_plot(pca_H3K27ac, col_var = "time", shape_var = "tx", text_var = pca_H3K27ac$ind, title = "H3K27ac lcpm PCA")
 ```
-```{r H3K27ac HeatMap 2, fig.width=14,fig.height=14}
+```{r H3K27ac HeatMap 2,eval=FALSE ,fig.width=14,fig.height=14}
 
 
 H3K27ac_merged_raw_lcpm <- H3K27ac_merged_raw %>% 
@@ -667,35 +641,16 @@ Heatmap(H3K27ac_merged_filt_cor,
         column_title="Filtered log2cpm H3K27ac with Standard Merging")
 ```
 #### H3K27me3
-```{r H3K27me3 PCA_var}
+```{r H3K27me3 PCA_var,eval=FALSE}
 pca_H3K27me3 <- calc_pca(t(H3K27me3_merged_lcpm))
 pca_var_plot(pca_H3K27me3)
 ```
 
-```{r H3K27me3 PCA}
+```{r H3K27me3 PCA,eval=FALSE}
 pca_H3K27me3 <- pca_H3K27me3$x %>% cbind(., H3K27me3_annomat)
 pca_plot(pca_H3K27me3, col_var = "time", shape_var = "tx", text_var = pca_H3K27me3$ind, title = "H3K27me3 lcpm PCA")
 ```
-```{r H3K27me3 HeatMap 2, fig.width=14,fig.height=14}
 
-
-H3K27me3_merged_raw_lcpm <- H3K27me3_merged_raw %>% 
-  cpm(., log = TRUE)
-
-H3K27me3_merged_filt_cor <- H3K27me3_merged_raw_lcpm %>% 
-  cor()
-
-annomat <- data.frame(sample=colnames(H3K27me3_merged_filt_cor)) %>% 
-  separate_wider_delim(sample,delim="_",names=c("Ind","Treatment","Timepoint"),cols_remove = FALSE) %>% 
-  mutate(Treatment=factor(Treatment, levels = c("VEH","5FU","DOX")),
-         Timepoint=factor(Timepoint, levels =c("24T","24R","144R"))) %>% 
-  column_to_rownames("sample")
-heatmap_second <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
-
-Heatmap(H3K27me3_merged_filt_cor, 
-        top_annotation = heatmap_second,
-        column_title="Filtered log2cpm H3K27me3 with Standard Merging")
-```
 #### H3K36me3
 ```{r H3K36me3 PCA_var}
 pca_H3K36me3 <- calc_pca(t(H3K36me3_merged_lcpm))
@@ -706,26 +661,7 @@ pca_var_plot(pca_H3K36me3)
 pca_H3K36me3 <- pca_H3K36me3$x %>% cbind(., H3K36me3_annomat)
 pca_plot(pca_H3K36me3, col_var = "time", shape_var = "tx", text_var = pca_H3K36me3$ind, title = "H3K36me3 lcpm PCA")
 ```
-```{r H3K36me3 HeatMap 2, fig.width=14,fig.height=14}
 
-
-H3K36me3_merged_raw_lcpm <- H3K36me3_merged_raw %>% 
-  cpm(., log = TRUE)
-
-H3K36me3_merged_filt_cor <- H3K36me3_merged_raw_lcpm %>% 
-  cor()
-
-annomat <- data.frame(sample=colnames(H3K36me3_merged_filt_cor)) %>% 
-  separate_wider_delim(sample,delim="_",names=c("Ind","Treatment","Timepoint"),cols_remove = FALSE) %>% 
-  mutate(Treatment=factor(Treatment, levels = c("VEH","5FU","DOX")),
-         Timepoint=factor(Timepoint, levels =c("24T","24R","144R"))) %>% 
-  column_to_rownames("sample")
-heatmap_second <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
-
-Heatmap(H3K36me3_merged_filt_cor, 
-        top_annotation = heatmap_second,
-        column_title="Filtered log2cpm H3K36me3")
-```
 #### H3K9me3
 ```{r H3K9me3 PCA_var}
 pca_H3K9me3 <- calc_pca(t(H3K9me3_merged_lcpm))
@@ -737,38 +673,17 @@ pca_H3K9me3 <- pca_H3K9me3$x %>% cbind(., H3K9me3_annomat)
 pca_plot(pca_H3K9me3, col_var = "time", shape_var = "tx", text_var = pca_H3K9me3$ind, title = "H3K9me3 lcpm PCA")
 ```
 
-```{r H3K9me3 HeatMap 2, fig.width=14,fig.height=14}
-
-
-H3K9me3_merged_raw_lcpm <- H3K9me3_merged_raw %>% 
-  cpm(., log = TRUE)
-
-H3K9me3_merged_filt_cor <- H3K9me3_merged_raw_lcpm %>% 
-  cor()
-
-annomat <- data.frame(sample=colnames(H3K9me3_merged_filt_cor)) %>% 
-  separate_wider_delim(sample,delim="_",names=c("Ind","Treatment","Timepoint"),cols_remove = FALSE) %>% 
-  mutate(Treatment=factor(Treatment, levels = c("VEH","5FU","DOX")),
-         Timepoint=factor(Timepoint, levels =c("24T","24R","144R"))) %>% 
-  column_to_rownames("sample")
-heatmap_second <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
-
-Heatmap(H3K9me3_merged_filt_cor, 
-        top_annotation = heatmap_second,
-        column_title="Filtered log2cpm H3K9me3 with Standard Merging")
-```
-
 ### Venn Diagrams
 
 #### Venn Set Up
 ```{r Venn Set Up}
-genes_H3K27ac_24T <- H3K27ac_24T$data$genes[(H3K27ac_24T$data$adj.P.Val < 0.05)]
-genes_H3K27ac_24R <- H3K27ac_24R$data$genes[(H3K27ac_24R$data$adj.P.Val < 0.05)]
-genes_H3K27ac_144R <- H3K27ac_144R$data$genes[(H3K27ac_144R$data$adj.P.Val < 0.05)]
+# genes_H3K27ac_24T <- H3K27ac_24T$data$genes[(H3K27ac_24T$data$adj.P.Val < 0.05)]
+# genes_H3K27ac_24R <- H3K27ac_24R$data$genes[(H3K27ac_24R$data$adj.P.Val < 0.05)]
+# genes_H3K27ac_144R <- H3K27ac_144R$data$genes[(H3K27ac_144R$data$adj.P.Val < 0.05)]
 
-genes_H3K27me3_24T <- H3K27me3_24T$data$genes[(H3K27me3_24T$data$adj.P.Val < 0.05)]
-genes_H3K27me3_24R <- H3K27me3_24R$data$genes[(H3K27me3_24R$data$adj.P.Val < 0.05)]
-genes_H3K27me3_144R <- H3K27me3_144R$data$genes[(H3K27me3_144R$data$adj.P.Val < 0.05)]
+# genes_H3K27me3_24T <- H3K27me3_24T$data$genes[(H3K27me3_24T$data$adj.P.Val < 0.05)]
+# genes_H3K27me3_24R <- H3K27me3_24R$data$genes[(H3K27me3_24R$data$adj.P.Val < 0.05)]
+# genes_H3K27me3_144R <- H3K27me3_144R$data$genes[(H3K27me3_144R$data$adj.P.Val < 0.05)]
 
 genes_H3K36me3_24T <- H3K36me3_24T$data$genes[(H3K36me3_24T$data$adj.P.Val < 0.05)]
 genes_H3K36me3_24R <- H3K36me3_24R$data$genes[(H3K36me3_24R$data$adj.P.Val < 0.05)]
@@ -780,12 +695,12 @@ genes_H3K9me3_144R <- H3K9me3_144R$data$genes[(H3K9me3_144R$data$adj.P.Val < 0.0
 ```
 
 #### H3K27ac Venn Diagrams
-```{r H3K27ac Venn}
+```{r H3K27ac Venn,eval=FALSE}
 ggVennDiagram(list("24T regions"=genes_H3K27ac_24T,"24R regions"=genes_H3K27ac_24R, "144R regions"=genes_H3K27ac_144R))
 ```
 
 #### H3K27me3 Venn Diagrams
-```{r H3K27me3 Venn}
+```{r H3K27me3 Venn,eval=FALSE}
 ggVennDiagram(list("24T regions"=genes_H3K27me3_24T,"24R regions"=genes_H3K27me3_24R, "144R regions"=genes_H3K27me3_144R))
 ``` 
 
@@ -799,19 +714,19 @@ ggVennDiagram(list("24T regions"=genes_H3K36me3_24T,"24R regions"=genes_H3K36me3
 ggVennDiagram(list("24T regions"=genes_H3K9me3_24T,"24R regions"=genes_H3K9me3_24R, "144R regions"=genes_H3K9me3_144R))
 ``` 
 ```{r future dataframes, eval=FALSE}
-H3K27ac_toplist <- list("H3K27ac_24T"=H3K27ac_24T$data,"H3K27ac_24R"= H3K27ac_24R$data, "H3K27ac_144R"= H3K27ac_144R$data)
-saveRDS(H3K27ac_toplist, "data/DER_data/H3K27ac_toplist.RDS")
+# H3K27ac_toplist <- list("H3K27ac_24T"=H3K27ac_24T$data,"H3K27ac_24R"= H3K27ac_24R$data, "H3K27ac_144R"= H3K27ac_144R$data)
+# saveRDS(H3K27ac_toplist, "data/DER_data/H3K27ac_toplist_nooutlier.RDS")
 
-H3K27me3_toplist <- list("H3K27me3_24T"=H3K27me3_24T$data,"H3K27me3_24R"= H3K27me3_24R$data, "H3K27me3_144R"= H3K27me3_144R$data)
-saveRDS(H3K27me3_toplist,"data/DER_data/H3K27me3_toplist.RDS")
+# H3K27me3_toplist <- list("H3K27me3_24T"=H3K27me3_24T$data,"H3K27me3_24R"= H3K27me3_24R$data, "H3K27me3_144R"= H3K27me3_144R$data)
+# saveRDS(H3K27me3_toplist,"data/DER_data/H3K27me3_toplist_nooutlier.RDS")
 
 
 H3K36me3_toplist <- list("H3K36me3_24T"=H3K36me3_24T$data,"H3K36me3_24R"= H3K36me3_24R$data, "H3K36me3_144R"= H3K36me3_144R$data)
-saveRDS(H3K36me3_toplist,"data/DER_data/H3K36me3_toplist.RDS")
+saveRDS(H3K36me3_toplist,"data/DER_data/H3K36me3_toplist_nooutlier.RDS")
 
 H3K9me3_toplist <- list("H3K9me3_24T"=H3K9me3_24T$data,"H3K9me3_24R"= H3K9me3_24R$data, "H3K9me3_144R"= H3K9me3_144R$data)
 
-saveRDS(H3K9me3_toplist, "data/DER_data/H3K9me3_toplist.RDS")
+saveRDS(H3K9me3_toplist, "data/DER_data/H3K9me3_toplist_nooutlier.RDS")
 
 ```
 
