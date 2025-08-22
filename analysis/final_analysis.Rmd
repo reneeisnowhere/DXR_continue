@@ -209,7 +209,7 @@ all_peak_final %>%
 
 #### Tagging Questionable Libraries by FRiP
 ```{r frip tag}
-questionable_frip = all_peak_final[(all_peak_final$FRiP < 0.02),]
+questionable_frip = all_peak_final[(all_peak_final$FRiP < 0.2),]
 questionable_frip
 ```
 
@@ -638,13 +638,15 @@ plot_grid(H3K9me3_24T, H3K9me3_24R, H3K9me3_144R, rel_widths =c(1,1,1))
 
 #### H3K27ac
 ```{r H3K27ac PCA_var}
-pca_H3K27ac <- calc_pca(t(H3K27ac_merged_lcpm))
+
+H3K27ac_merged_filt_lcpm <- H3K27ac_merged_raw %>% cpm(., log = TRUE)
+pca_H3K27ac <- calc_pca(t(H3K27ac_merged_filt_lcpm))
 pca_var_plot(pca_H3K27ac)
 ```
 
 ```{r H3K27ac PCA}
 pca_H3K27ac <- pca_H3K27ac$x %>% cbind(., H3K27ac_annomat)
-pca_plot(pca_H3K27ac, col_var = "time", shape_var = "tx", text_var = pca_H3K27ac$ind, title = "H3K27ac lcpm PCA")
+pca_plot(pca_H3K27ac, col_var = "time", shape_var = "tx", text_var = pca_H3K27ac$ind, title = "H3K27ac filtered lcpm PCA")
 ```
 ```{r H3K27ac HeatMap 2, fig.width=14,fig.height=14}
 
@@ -668,13 +670,14 @@ Heatmap(H3K27ac_merged_filt_cor,
 ```
 #### H3K27me3
 ```{r H3K27me3 PCA_var}
-pca_H3K27me3 <- calc_pca(t(H3K27me3_merged_lcpm))
+H3K27me3_merged_filt_lcpm <- H3K27me3_merged_raw %>% cpm(., log = TRUE)
+pca_H3K27me3 <- calc_pca(t(H3K27me3_merged_filt_lcpm))
 pca_var_plot(pca_H3K27me3)
 ```
 
 ```{r H3K27me3 PCA}
 pca_H3K27me3 <- pca_H3K27me3$x %>% cbind(., H3K27me3_annomat)
-pca_plot(pca_H3K27me3, col_var = "time", shape_var = "tx", text_var = pca_H3K27me3$ind, title = "H3K27me3 lcpm PCA")
+pca_plot(pca_H3K27me3, col_var = "time", shape_var = "tx", text_var = pca_H3K27me3$ind, title = "H3K27me3 filtered lcpm PCA")
 ```
 ```{r H3K27me3 HeatMap 2, fig.width=14,fig.height=14}
 
@@ -698,7 +701,8 @@ Heatmap(H3K27me3_merged_filt_cor,
 ```
 #### H3K36me3
 ```{r H3K36me3 PCA_var}
-pca_H3K36me3 <- calc_pca(t(H3K36me3_merged_lcpm))
+H3K36me3_merged_filt_lcpm <- H3K36me3_merged_raw %>% cpm(., log = TRUE)
+pca_H3K36me3 <- calc_pca(t(H3K36me3_merged_filt_lcpm))
 pca_var_plot(pca_H3K36me3)
 ```
 
@@ -728,7 +732,8 @@ Heatmap(H3K36me3_merged_filt_cor,
 ```
 #### H3K9me3
 ```{r H3K9me3 PCA_var}
-pca_H3K9me3 <- calc_pca(t(H3K9me3_merged_lcpm))
+H3K9me3_merged_filt_lcpm <- H3K9me3_merged_raw %>% cpm(., log = TRUE)
+pca_H3K9me3 <- calc_pca(t(H3K9me3_merged_filt_lcpm))
 pca_var_plot(pca_H3K9me3)
 ```
 
@@ -798,7 +803,7 @@ ggVennDiagram(list("24T regions"=genes_H3K36me3_24T,"24R regions"=genes_H3K36me3
 ```{r H3K9me3 Venn}
 ggVennDiagram(list("24T regions"=genes_H3K9me3_24T,"24R regions"=genes_H3K9me3_24R, "144R regions"=genes_H3K9me3_144R))
 ``` 
-```{r future dataframes, eval=FALSE}
+```{r future dataframes, eval=TRUE}
 H3K27ac_toplist <- list("H3K27ac_24T"=H3K27ac_24T$data,"H3K27ac_24R"= H3K27ac_24R$data, "H3K27ac_144R"= H3K27ac_144R$data)
 saveRDS(H3K27ac_toplist, "data/DER_data/H3K27ac_toplist.RDS")
 
