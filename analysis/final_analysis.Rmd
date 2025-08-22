@@ -381,20 +381,20 @@ all_peak_final %>%
 
 Removing chrX and chrY
 ```{r filtering x and Y}
-H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_cor)>0,]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_lcpm)>0,]
 H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrY",rownames(H3K27ac_merged_raw)),]
 H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrX",rownames(H3K27ac_merged_raw)),]
 
-H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_cor)>0,]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_lcpm)>0,]
 H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrY",rownames(H3K27me3_merged_raw)),]
 H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrX",rownames(H3K27me3_merged_raw)),]
 
 
-H3K36me3_merged_raw <- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_cor)>0,]
+H3K36me3_merged_raw <- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_lcpm)>0,]
 H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrY",rownames(H3K36me3_merged_raw)),]
 H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrX",rownames(H3K36me3_merged_raw)),]
 
-H3K9me3_merged_raw <- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_cor)>0,]
+H3K9me3_merged_raw <- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_lcpm)>0,]
 H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrY",rownames(H3K9me3_merged_raw)),]
 H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrX",rownames(H3K9me3_merged_raw)),]
 ```
@@ -515,7 +515,7 @@ summary(results)
 plotSA(efit2, main="Mean-Variance trend for final model for H3K27ac")
 ```
 
-```{r H3K27ac volcano 3, fig.width=14}
+```{r H3K27ac volcano 3, fig.width=8}
 V.24T.top= topTable(efit2, coef=1, adjust.method="BH", number=Inf, sort.by="p")
 V.24R.top= topTable(efit2, coef=2, adjust.method="BH", number=Inf, sort.by="p")
 V.144R.top= topTable(efit2, coef=3, adjust.method="BH", number=Inf, sort.by="p")
@@ -551,7 +551,7 @@ summary(results)
 plotSA(efit2, main="Mean-Variance trend for final model for H3K27me3")
 ```
 
-```{r H3K27me3 volcano 3, fig.width=14}
+```{r H3K27me3 volcano 3, fig.width=8}
 V.24T.top= topTable(efit2, coef=1, adjust.method="BH", number=Inf, sort.by="p")
 V.24R.top= topTable(efit2, coef=2, adjust.method="BH", number=Inf, sort.by="p")
 V.144R.top= topTable(efit2, coef=3, adjust.method="BH", number=Inf, sort.by="p")
@@ -587,7 +587,7 @@ summary(results)
 plotSA(efit2, main="Mean-Variance trend for final model for H3K36me3")
 ```
 
-```{r H3K36me3 volcano 3, fig.width=14}
+```{r H3K36me3 volcano 3, fig.width=8}
 V.24T.top= topTable(efit2, coef=1, adjust.method="BH", number=Inf, sort.by="p")
 V.24R.top= topTable(efit2, coef=2, adjust.method="BH", number=Inf, sort.by="p")
 V.144R.top= topTable(efit2, coef=3, adjust.method="BH", number=Inf, sort.by="p")
@@ -623,7 +623,7 @@ summary(results)
 plotSA(efit2, main="Mean-Variance trend for final model for H3K9me3")
 ```
 
-```{r H3K9me3 volcano 3, fig.width=14}
+```{r H3K9me3 volcano 3, fig.width=8}
 V.24T.top= topTable(efit2, coef=1, adjust.method="BH", number=Inf, sort.by="p")
 V.24R.top= topTable(efit2, coef=2, adjust.method="BH", number=Inf, sort.by="p")
 V.144R.top= topTable(efit2, coef=3, adjust.method="BH", number=Inf, sort.by="p")
