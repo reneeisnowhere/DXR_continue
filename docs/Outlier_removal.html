@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-21
+<strong>Last updated:</strong> 2025-08-22
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree7e4a4f4a7621cc0689c20702af0e4cd2152f3ff6targetblank7e4a4f4a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeb8ad1c28484317e84aefd8d2dbeacd678640a5aftargetblankb8ad1c2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/7e4a4f4a7621cc0689c20702af0e4cd2152f3ff6" target="_blank">7e4a4f4</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/b8ad1c28484317e84aefd8d2dbeacd678640a5af" target="_blank">b8ad1c2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree7e4a4f4a7621cc0689c20702af0e4cd2152f3ff6targetblank7e4a4f4a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeb8ad1c28484317e84aefd8d2dbeacd678640a5aftargetblankb8ad1c2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/7e4a4f4a7621cc0689c20702af0e4cd2152f3ff6" target="_blank">7e4a4f4</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/b8ad1c28484317e84aefd8d2dbeacd678640a5af" target="_blank">b8ad1c2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -565,11 +565,13 @@ Ignored files:
     Ignored:    data/number_frag_peaks_summary.txt
 
 Untracked files:
-    Untracked:  analysis/Cormotif_analysis.Rmd
+    Untracked:  analysis/Cormotif_outlier_removal.Rmd
     Untracked:  code/corMotifcustom.R
     Untracked:  code/making_analysis_file_summary.R
 
 Unstaged changes:
+    Modified:   analysis/final_analysis.Rmd
+    Modified:   analysis/index.Rmd
     Modified:   analysis/multiQC_cut_tag.Rmd
 
 </code></pre>
@@ -615,6 +617,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b8ad1c28484317e84aefd8d2dbeacd678640a5af/analysis/Outlier_removal.Rmd" target="_blank">b8ad1c2</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+outlier updates to code
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/Outlier_removal.html" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -810,7 +846,7 @@ Ind1_VEH_24T, Ind3_DOX_24T, Ind5_DOX_144R</p>
 
 H3K9me3_merged&lt;- H3K9me3_merged %&gt;%
   dplyr::select(!Ind1_VEH_24T) %&gt;% 
-  dplyr::select(!Ind3_DOX_24T) %&gt;% 
+  dplyr::select(!Ind3_DOX_24T) %&gt;%
   dplyr::select(!Ind5_DOX_144R)</code></pre>
 </div>
 <div id="h3k27ac-count-analysis" class="section level3">
@@ -837,7 +873,6 @@ heatmap_first &lt;- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 Heatmap(H3K27ac_merged_cor, 
         top_annotation = heatmap_first,
         column_title=&quot;Unfiltered log2cpm H3K27ac, no removal&quot;)</code></pre>
-<p><img src="figure/Outlier_removal.Rmd/H3K27ac%20HeatMap%201-1.png" width="1344" style="display: block; margin: auto;" /></p>
 </div>
 <div id="h3k27me3-count-analysis" class="section level3">
 <h3>H3K27me3 Count Analysis</h3>
@@ -863,7 +898,6 @@ heatmap_first &lt;- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 Heatmap(H3K27me3_merged_cor, 
         top_annotation = heatmap_first,
         column_title=&quot;Unfiltered log2cpm H3K27me3 with no removal&quot;)</code></pre>
-<p><img src="figure/Outlier_removal.Rmd/H3K27me3%20HeatMap%201-1.png" width="1344" style="display: block; margin: auto;" /></p>
 </div>
 <div id="h3k36me3-count-analysis" class="section level3">
 <h3>H3K36me3 Count Analysis</h3>
@@ -890,6 +924,43 @@ Heatmap(H3K36me3_merged_cor,
         top_annotation = heatmap_first,
         column_title=&quot;Unfiltered log2cpm H3K36me3 with removal of 1 sample&quot;)</code></pre>
 <p><img src="figure/Outlier_removal.Rmd/H3K36me3%20HeatMap%201-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-HeatMap-1-1">
+Past versions of "H3K36me3 HeatMap 1-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-HeatMap-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K36me3 HeatMap 1-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="h3k9me3-count-analysis" class="section level3">
 <h3>H3K9me3 Count Analysis</h3>
@@ -916,26 +987,63 @@ Heatmap(H3K9me3_merged_cor,
         top_annotation = heatmap_first,
         column_title=&quot;Unfiltered log2cpm H3K9me3 with Outlier removal&quot;)</code></pre>
 <p><img src="figure/Outlier_removal.Rmd/H3K9me3%20HeatMap%201-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-HeatMap-1-1">
+Past versions of "H3K9me3 HeatMap 1-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-HeatMap-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K9me3 HeatMap 1-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="differential-analysis" class="section level3">
 <h3>Differential Analysis</h3>
 <div id="filtering-sex-chromosomes" class="section level4">
 <h4>Filtering Sex Chromosomes</h4>
 <p>Removing chrX and chrY</p>
-<pre class="r"><code>H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_cor)&gt;0,]
-H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K27ac_merged_raw)),]
-H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K27ac_merged_raw)),]
+<pre class="r"><code># H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_lcpm)&gt;0,]
+# H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K27ac_merged_raw)),]
+# H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K27ac_merged_raw)),]
 
-H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_cor)&gt;0,]
-H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K27me3_merged_raw)),]
-H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K27me3_merged_raw)),]
+# H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_lcpm)&gt;0,]
+# H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K27me3_merged_raw)),]
+# H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K27me3_merged_raw)),]
 
 
-H3K36me3_merged_raw &lt;- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_cor)&gt;0,]
+H3K36me3_merged_raw &lt;- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_lcpm)&gt;0,]
 H3K36me3_merged_raw &lt;- H3K36me3_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K36me3_merged_raw)),]
 H3K36me3_merged_raw &lt;- H3K36me3_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K36me3_merged_raw)),]
 
-H3K9me3_merged_raw &lt;- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_cor)&gt;0,]
+H3K9me3_merged_raw &lt;- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_lcpm)&gt;0,]
 H3K9me3_merged_raw &lt;- H3K9me3_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K9me3_merged_raw)),]
 H3K9me3_merged_raw &lt;- H3K9me3_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K9me3_merged_raw)),]</code></pre>
 <pre class="r"><code>H3K36me3_merged_raw_lcpm &lt;- H3K36me3_merged_raw %&gt;% 
@@ -955,6 +1063,43 @@ Heatmap(H3K36me3_merged_filt_cor,
         top_annotation = heatmap_second,
         column_title=&quot;Filtered log2cpm H3K36me3 with removal of 1 sample&quot;)</code></pre>
 <p><img src="figure/Outlier_removal.Rmd/H3K36me3%20HeatMap%202-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-HeatMap-2-1">
+Past versions of "H3K36me3 HeatMap 2-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-HeatMap-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K36me3 HeatMap 2-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K9me3_merged_raw_lcpm &lt;- H3K9me3_merged_raw %&gt;% 
   cpm(., log = TRUE)
 
@@ -972,40 +1117,77 @@ Heatmap(H3K9me3_merged_filt_cor,
         top_annotation = heatmap_second,
         column_title=&quot;Filtered log2cpm H3K9me3 with removal of 3 samples&quot;)</code></pre>
 <p><img src="figure/Outlier_removal.Rmd/H3K9me3%20HeatMap%202-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-HeatMap-2-1">
+Past versions of "H3K9me3 HeatMap 2-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-HeatMap-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K9me3 HeatMap 2-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="setting-up-matrix" class="section level4">
 <h4>Setting up Matrix</h4>
-<pre class="r"><code>H3K27ac_annomat &lt;- data.frame(timeset=colnames(H3K27ac_merged_raw)) %&gt;% 
-  mutate(sample=timeset) %&gt;% 
-  separate(timeset, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;% 
-  mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
-         time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
-  mutate(ind = gsub(&quot;Ind&quot;, &quot;&quot;, ind)) %&gt;%
-  mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;%
-  mutate(group = txtime)
-H3K27ac_annomat$group &lt;- H3K27ac_annomat$group %&gt;%
-  gsub(&quot;DOX_24T&quot;, &quot;1&quot;, .) %&gt;%
-  gsub(&quot;DOX_24R&quot;, &quot;2&quot;, .) %&gt;%
-  gsub(&quot;DOX_144R&quot;, &quot;3&quot;, .) %&gt;%
-  gsub(&quot;VEH_24T&quot;, &quot;4&quot;, .) %&gt;%
-  gsub(&quot;VEH_24R&quot;, &quot;5&quot;, .) %&gt;%
-  gsub(&quot;VEH_144R&quot;, &quot;6&quot;, .)
-
-H3K27me3_annomat &lt;- data.frame(timeset=colnames(H3K27me3_merged_raw)) %&gt;% 
-  mutate(sample=timeset) %&gt;% 
-  separate(timeset, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;% 
-  mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
-         time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
-  mutate(ind = gsub(&quot;Ind&quot;, &quot;&quot;, ind)) %&gt;%
-  mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;%
-  mutate(group = txtime)
-H3K27me3_annomat$group &lt;- H3K27me3_annomat$group %&gt;%
-  gsub(&quot;DOX_24T&quot;, &quot;1&quot;, .) %&gt;%
-  gsub(&quot;DOX_24R&quot;, &quot;2&quot;, .) %&gt;%
-  gsub(&quot;DOX_144R&quot;, &quot;3&quot;, .) %&gt;%
-  gsub(&quot;VEH_24T&quot;, &quot;4&quot;, .) %&gt;%
-  gsub(&quot;VEH_24R&quot;, &quot;5&quot;, .) %&gt;%
-  gsub(&quot;VEH_144R&quot;, &quot;6&quot;, .)
+<pre class="r"><code># H3K27ac_annomat &lt;- data.frame(timeset=colnames(H3K27ac_merged_raw)) %&gt;% 
+#   mutate(sample=timeset) %&gt;% 
+#   separate(timeset, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;% 
+#   mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
+#          time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
+#   mutate(ind = gsub(&quot;Ind&quot;, &quot;&quot;, ind)) %&gt;%
+#   mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;%
+#   mutate(group = txtime)
+# H3K27ac_annomat$group &lt;- H3K27ac_annomat$group %&gt;%
+#   gsub(&quot;DOX_24T&quot;, &quot;1&quot;, .) %&gt;%
+#   gsub(&quot;DOX_24R&quot;, &quot;2&quot;, .) %&gt;%
+#   gsub(&quot;DOX_144R&quot;, &quot;3&quot;, .) %&gt;%
+#   gsub(&quot;VEH_24T&quot;, &quot;4&quot;, .) %&gt;%
+#   gsub(&quot;VEH_24R&quot;, &quot;5&quot;, .) %&gt;%
+#   gsub(&quot;VEH_144R&quot;, &quot;6&quot;, .)
+# 
+# H3K27me3_annomat &lt;- data.frame(timeset=colnames(H3K27me3_merged_raw)) %&gt;% 
+#   mutate(sample=timeset) %&gt;% 
+#   separate(timeset, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;% 
+#   mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
+#          time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
+#   mutate(ind = gsub(&quot;Ind&quot;, &quot;&quot;, ind)) %&gt;%
+#   mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;%
+#   mutate(group = txtime)
+# H3K27me3_annomat$group &lt;- H3K27me3_annomat$group %&gt;%
+#   gsub(&quot;DOX_24T&quot;, &quot;1&quot;, .) %&gt;%
+#   gsub(&quot;DOX_24R&quot;, &quot;2&quot;, .) %&gt;%
+#   gsub(&quot;DOX_144R&quot;, &quot;3&quot;, .) %&gt;%
+#   gsub(&quot;VEH_24T&quot;, &quot;4&quot;, .) %&gt;%
+#   gsub(&quot;VEH_24R&quot;, &quot;5&quot;, .) %&gt;%
+#   gsub(&quot;VEH_144R&quot;, &quot;6&quot;, .)
 
 H3K36me3_annomat &lt;- data.frame(timeset=colnames(H3K36me3_merged_raw)) %&gt;% 
   mutate(sample=timeset) %&gt;% 
@@ -1062,9 +1244,209 @@ mm_H3K9me3 &lt;- model.matrix(~0 + H3K9me3_annomat$txtime)
 colnames(mm_H3K9me3) &lt;- H3K9me3_annomat$txtime %&gt;% unique()</code></pre>
 </div>
 </div>
-<div id="volcano-plots" class="section level3">
-<h3>Volcano Plots</h3>
+<div id="pca-plots" class="section level3">
+<h3>PCA Plots</h3>
 <div id="h3k27ac" class="section level4">
+<h4>H3K27ac</h4>
+<pre class="r"><code># pca_H3K27ac &lt;- calc_pca(t(H3K27ac_merged_lcpm))
+# pca_var_plot(pca_H3K27ac)</code></pre>
+<pre class="r"><code># pca_H3K27ac &lt;- pca_H3K27ac$x %&gt;% cbind(., H3K27ac_annomat)
+# pca_plot(pca_H3K27ac, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K27ac$ind, title = &quot;H3K27ac lcpm PCA&quot;)</code></pre>
+<pre class="r"><code>H3K27ac_merged_raw_lcpm &lt;- H3K27ac_merged_raw %&gt;% 
+  cpm(., log = TRUE)
+
+H3K27ac_merged_filt_cor &lt;- H3K27ac_merged_raw_lcpm %&gt;% 
+  cor()
+
+annomat &lt;- data.frame(sample=colnames(H3K27ac_merged_filt_cor)) %&gt;% 
+  separate_wider_delim(sample,delim=&quot;_&quot;,names=c(&quot;Ind&quot;,&quot;Treatment&quot;,&quot;Timepoint&quot;),cols_remove = FALSE) %&gt;% 
+  mutate(Treatment=factor(Treatment, levels = c(&quot;VEH&quot;,&quot;5FU&quot;,&quot;DOX&quot;)),
+         Timepoint=factor(Timepoint, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;% 
+  column_to_rownames(&quot;sample&quot;)
+heatmap_second &lt;- ComplexHeatmap::HeatmapAnnotation(df = annomat)
+
+Heatmap(H3K27ac_merged_filt_cor, 
+        top_annotation = heatmap_second,
+        column_title=&quot;Filtered log2cpm H3K27ac with Standard Merging&quot;)</code></pre>
+</div>
+<div id="h3k27me3" class="section level4">
+<h4>H3K27me3</h4>
+<pre class="r"><code>pca_H3K27me3 &lt;- calc_pca(t(H3K27me3_merged_lcpm))
+pca_var_plot(pca_H3K27me3)</code></pre>
+<pre class="r"><code>pca_H3K27me3 &lt;- pca_H3K27me3$x %&gt;% cbind(., H3K27me3_annomat)
+pca_plot(pca_H3K27me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K27me3$ind, title = &quot;H3K27me3 lcpm PCA&quot;)</code></pre>
+</div>
+<div id="h3k36me3" class="section level4">
+<h4>H3K36me3</h4>
+<pre class="r"><code>pca_H3K36me3 &lt;- calc_pca(t(H3K36me3_merged_lcpm))
+pca_var_plot(pca_H3K36me3)</code></pre>
+<p><img src="figure/Outlier_removal.Rmd/H3K36me3%20PCA_var-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-PCA_var-1">
+Past versions of "H3K36me3 PCA_var-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-PCA_var-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K36me3 PCA_var-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>pca_H3K36me3 &lt;- pca_H3K36me3$x %&gt;% cbind(., H3K36me3_annomat)
+pca_plot(pca_H3K36me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K36me3$ind, title = &quot;H3K36me3 lcpm PCA&quot;)</code></pre>
+<p><img src="figure/Outlier_removal.Rmd/H3K36me3%20PCA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-PCA-1">
+Past versions of "H3K36me3 PCA-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-PCA-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K36me3 PCA-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="h3k9me3" class="section level4">
+<h4>H3K9me3</h4>
+<pre class="r"><code>pca_H3K9me3 &lt;- calc_pca(t(H3K9me3_merged_lcpm))
+pca_var_plot(pca_H3K9me3)</code></pre>
+<p><img src="figure/Outlier_removal.Rmd/H3K9me3%20PCA_var-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-PCA_var-1">
+Past versions of "H3K9me3 PCA_var-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-PCA_var-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K9me3 PCA_var-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>pca_H3K9me3 &lt;- pca_H3K9me3$x %&gt;% cbind(., H3K9me3_annomat)
+pca_plot(pca_H3K9me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K9me3$ind, title = &quot;H3K9me3 lcpm PCA&quot;)</code></pre>
+<p><img src="figure/Outlier_removal.Rmd/H3K9me3%20PCA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-PCA-1">
+Past versions of "H3K9me3 PCA-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-PCA-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K9me3 PCA-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="differential-enrichment-and-volcano-plots"
+class="section level3">
+<h3>Differential Enrichment and Volcano Plots</h3>
+<div id="h3k27ac-1" class="section level4">
 <h4>H3K27ac</h4>
 <pre class="r"><code>y &lt;- voom(dge_H3K27ac, mm_H3K27ac, plot = FALSE)
 corfit &lt;- duplicateCorrelation(y, mm_H3K27ac, block = H3K27ac_annomat$ind)
@@ -1092,7 +1474,7 @@ H3K27ac_24R &lt;- volcanosig(V.24R.top, 0.05)+ ggtitle(&quot;DOX 24R&quot;)+ylab
 H3K27ac_144R &lt;- volcanosig(V.144R.top, 0.05)+ ggtitle(&quot;DOX 144R&quot;)+ylab(&quot;&quot;)
 plot_grid(H3K27ac_24T, H3K27ac_24R, H3K27ac_144R, rel_widths =c(1,1,1))</code></pre>
 </div>
-<div id="h3k27me3" class="section level4">
+<div id="h3k27me3-1" class="section level4">
 <h4>H3K27me3</h4>
 <pre class="r"><code>y &lt;- voom(dge_H3K27me3, mm_H3K27me3, plot = FALSE)
 corfit &lt;- duplicateCorrelation(y, mm_H3K27me3, block = H3K27me3_annomat$ind)
@@ -1120,7 +1502,7 @@ H3K27me3_24R &lt;- volcanosig(V.24R.top, 0.05)+ ggtitle(&quot;DOX 24R&quot;)+yla
 H3K27me3_144R &lt;- volcanosig(V.144R.top, 0.05)+ ggtitle(&quot;DOX 144R&quot;)+ylab(&quot;&quot;)
 plot_grid(H3K27me3_24T, H3K27me3_24R, H3K27me3_144R, rel_widths =c(1,1,1))</code></pre>
 </div>
-<div id="h3k36me3" class="section level4">
+<div id="h3k36me3-1" class="section level4">
 <h4>H3K36me3</h4>
 <pre class="r"><code>y &lt;- voom(dge_H3K36me3, mm_H3K36me3, plot = FALSE)
 corfit &lt;- duplicateCorrelation(y, mm_H3K36me3, block = H3K36me3_annomat$ind)
@@ -1144,6 +1526,43 @@ NotSig          184086          186161            186722
 Up                1097             354                 0</code></pre>
 <pre class="r"><code>plotSA(efit2, main=&quot;Mean-Variance trend for final model for H3K36me3&quot;)</code></pre>
 <p><img src="figure/Outlier_removal.Rmd/H3K36me3%20volcano%202-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-volcano-2-1">
+Past versions of "H3K36me3 volcano 2-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-volcano-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K36me3 volcano 2-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>V.24T.top= topTable(efit2, coef=1, adjust.method=&quot;BH&quot;, number=Inf, sort.by=&quot;p&quot;)
 V.24R.top= topTable(efit2, coef=2, adjust.method=&quot;BH&quot;, number=Inf, sort.by=&quot;p&quot;)
 V.144R.top= topTable(efit2, coef=3, adjust.method=&quot;BH&quot;, number=Inf, sort.by=&quot;p&quot;)
@@ -1153,8 +1572,45 @@ H3K36me3_24R &lt;- volcanosig(V.24R.top, 0.05)+ ggtitle(&quot;DOX 24R&quot;)+yla
 H3K36me3_144R &lt;- volcanosig(V.144R.top, 0.05)+ ggtitle(&quot;DOX 144R&quot;)+ylab(&quot;&quot;)
 plot_grid(H3K36me3_24T, H3K36me3_24R, H3K36me3_144R, rel_widths =c(1,1,1))</code></pre>
 <p><img src="figure/Outlier_removal.Rmd/H3K36me3%20volcano%203-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-volcano-3-1">
+Past versions of "H3K36me3 volcano 3-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-volcano-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K36me3 volcano 3-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="h3k9me3" class="section level4">
+</div>
+</div>
+<div id="h3k9me3-1" class="section level4">
 <h4>H3K9me3</h4>
 <pre class="r"><code>y &lt;- voom(dge_H3K9me3, mm_H3K9me3, plot = FALSE)
 corfit &lt;- duplicateCorrelation(y, mm_H3K9me3, block = H3K9me3_annomat$ind)
@@ -1178,6 +1634,43 @@ NotSig          198298          218099            218647
 Up               17819             538                 0</code></pre>
 <pre class="r"><code>plotSA(efit2, main=&quot;Mean-Variance trend for final model for H3K9me3&quot;)</code></pre>
 <p><img src="figure/Outlier_removal.Rmd/H3K9me3%20volcano%202-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-volcano-2-1">
+Past versions of "H3K9me3 volcano 2-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-volcano-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K9me3 volcano 2-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>V.24T.top= topTable(efit2, coef=1, adjust.method=&quot;BH&quot;, number=Inf, sort.by=&quot;p&quot;)
 V.24R.top= topTable(efit2, coef=2, adjust.method=&quot;BH&quot;, number=Inf, sort.by=&quot;p&quot;)
 V.144R.top= topTable(efit2, coef=3, adjust.method=&quot;BH&quot;, number=Inf, sort.by=&quot;p&quot;)
@@ -1187,57 +1680,43 @@ H3K9me3_24R &lt;- volcanosig(V.24R.top, 0.05)+ ggtitle(&quot;DOX 24R&quot;)+ylab
 H3K9me3_144R &lt;- volcanosig(V.144R.top, 0.05)+ ggtitle(&quot;DOX 144R&quot;)+ylab(&quot;&quot;)
 plot_grid(H3K9me3_24T, H3K9me3_24R, H3K9me3_144R, rel_widths =c(1,1,1))</code></pre>
 <p><img src="figure/Outlier_removal.Rmd/H3K9me3%20volcano%203-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-volcano-3-1">
+Past versions of "H3K9me3 volcano 3-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-volcano-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K9me3 volcano 3-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div id="pca-plots" class="section level3">
-<h3>PCA Plots</h3>
-<div id="h3k27ac-1" class="section level4">
-<h4>H3K27ac</h4>
-<pre class="r"><code>pca_H3K27ac &lt;- calc_pca(t(H3K27ac_merged_lcpm))
-pca_var_plot(pca_H3K27ac)</code></pre>
-<pre class="r"><code>pca_H3K27ac &lt;- pca_H3K27ac$x %&gt;% cbind(., H3K27ac_annomat)
-pca_plot(pca_H3K27ac, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K27ac$ind, title = &quot;H3K27ac lcpm PCA&quot;)</code></pre>
-<pre class="r"><code>H3K27ac_merged_raw_lcpm &lt;- H3K27ac_merged_raw %&gt;% 
-  cpm(., log = TRUE)
-
-H3K27ac_merged_filt_cor &lt;- H3K27ac_merged_raw_lcpm %&gt;% 
-  cor()
-
-annomat &lt;- data.frame(sample=colnames(H3K27ac_merged_filt_cor)) %&gt;% 
-  separate_wider_delim(sample,delim=&quot;_&quot;,names=c(&quot;Ind&quot;,&quot;Treatment&quot;,&quot;Timepoint&quot;),cols_remove = FALSE) %&gt;% 
-  mutate(Treatment=factor(Treatment, levels = c(&quot;VEH&quot;,&quot;5FU&quot;,&quot;DOX&quot;)),
-         Timepoint=factor(Timepoint, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;% 
-  column_to_rownames(&quot;sample&quot;)
-heatmap_second &lt;- ComplexHeatmap::HeatmapAnnotation(df = annomat)
-
-Heatmap(H3K27ac_merged_filt_cor, 
-        top_annotation = heatmap_second,
-        column_title=&quot;Filtered log2cpm H3K27ac with Standard Merging&quot;)</code></pre>
-</div>
-<div id="h3k27me3-1" class="section level4">
-<h4>H3K27me3</h4>
-<pre class="r"><code>pca_H3K27me3 &lt;- calc_pca(t(H3K27me3_merged_lcpm))
-pca_var_plot(pca_H3K27me3)</code></pre>
-<pre class="r"><code>pca_H3K27me3 &lt;- pca_H3K27me3$x %&gt;% cbind(., H3K27me3_annomat)
-pca_plot(pca_H3K27me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K27me3$ind, title = &quot;H3K27me3 lcpm PCA&quot;)</code></pre>
-</div>
-<div id="h3k36me3-1" class="section level4">
-<h4>H3K36me3</h4>
-<pre class="r"><code>pca_H3K36me3 &lt;- calc_pca(t(H3K36me3_merged_lcpm))
-pca_var_plot(pca_H3K36me3)</code></pre>
-<p><img src="figure/Outlier_removal.Rmd/H3K36me3%20PCA_var-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>pca_H3K36me3 &lt;- pca_H3K36me3$x %&gt;% cbind(., H3K36me3_annomat)
-pca_plot(pca_H3K36me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K36me3$ind, title = &quot;H3K36me3 lcpm PCA&quot;)</code></pre>
-<p><img src="figure/Outlier_removal.Rmd/H3K36me3%20PCA-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="h3k9me3-1" class="section level4">
-<h4>H3K9me3</h4>
-<pre class="r"><code>pca_H3K9me3 &lt;- calc_pca(t(H3K9me3_merged_lcpm))
-pca_var_plot(pca_H3K9me3)</code></pre>
-<p><img src="figure/Outlier_removal.Rmd/H3K9me3%20PCA_var-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>pca_H3K9me3 &lt;- pca_H3K9me3$x %&gt;% cbind(., H3K9me3_annomat)
-pca_plot(pca_H3K9me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K9me3$ind, title = &quot;H3K9me3 lcpm PCA&quot;)</code></pre>
-<p><img src="figure/Outlier_removal.Rmd/H3K9me3%20PCA-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="venn-diagrams" class="section level3">
@@ -1270,13 +1749,88 @@ genes_H3K9me3_144R &lt;- H3K9me3_144R$data$genes[(H3K9me3_144R$data$adj.P.Val &l
 </div>
 <div id="h3k36me3-venn-diagrams" class="section level4">
 <h4>H3K36me3 Venn Diagrams</h4>
-<pre class="r"><code>ggVennDiagram(list(&quot;24T regions&quot;=genes_H3K36me3_24T,&quot;24R regions&quot;=genes_H3K36me3_24R, &quot;144R regions&quot;=genes_H3K36me3_144R))</code></pre>
+<pre class="r"><code>ggVennDiagram(list(&quot;24T regions&quot;=genes_H3K36me3_24T,&quot;24R regions&quot;=genes_H3K36me3_24R, &quot;144R regions&quot;=genes_H3K36me3_144R))+
+  ggtitle(&quot;H3K36me3&quot;)</code></pre>
 <p><img src="figure/Outlier_removal.Rmd/H3K36me3%20Venn-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-Venn-1">
+Past versions of "H3K36me3 Venn-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-Venn-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K36me3 Venn-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="h3k9me3-venn-diagrams" class="section level4">
 <h4>H3K9me3 Venn Diagrams</h4>
-<pre class="r"><code>ggVennDiagram(list(&quot;24T regions&quot;=genes_H3K9me3_24T,&quot;24R regions&quot;=genes_H3K9me3_24R, &quot;144R regions&quot;=genes_H3K9me3_144R))</code></pre>
+<pre class="r"><code>ggVennDiagram(list(&quot;24T regions&quot;=genes_H3K9me3_24T,&quot;24R regions&quot;=genes_H3K9me3_24R, &quot;144R regions&quot;=genes_H3K9me3_144R))+ ggtitle(&quot;H3K9me3&quot;)</code></pre>
 <p><img src="figure/Outlier_removal.Rmd/H3K9me3%20Venn-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-Venn-1">
+Past versions of "H3K9me3 Venn-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-Venn-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/Outlier_removal.Rmd/H3K9me3 Venn-1.png" target="_blank">ac6eb8d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># H3K27ac_toplist &lt;- list(&quot;H3K27ac_24T&quot;=H3K27ac_24T$data,&quot;H3K27ac_24R&quot;= H3K27ac_24R$data, &quot;H3K27ac_144R&quot;= H3K27ac_144R$data)
 # saveRDS(H3K27ac_toplist, &quot;data/DER_data/H3K27ac_toplist_nooutlier.RDS&quot;)
 
