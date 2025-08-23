@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree911559423cff07fe9693364ef3db6c5bc7e8037etargetblank9115594a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree19dbd3a5b1ba958b2c114b0a19f8e16fb97ffac8targetblank19dbd3aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/911559423cff07fe9693364ef3db6c5bc7e8037e" target="_blank">9115594</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/19dbd3a5b1ba958b2c114b0a19f8e16fb97ffac8" target="_blank">19dbd3a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree911559423cff07fe9693364ef3db6c5bc7e8037etargetblank9115594a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree19dbd3a5b1ba958b2c114b0a19f8e16fb97ffac8targetblank19dbd3aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/911559423cff07fe9693364ef3db6c5bc7e8037e" target="_blank">9115594</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/19dbd3a5b1ba958b2c114b0a19f8e16fb97ffac8" target="_blank">19dbd3a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -571,7 +571,9 @@ Untracked files:
     Untracked:  code/making_analysis_file_summary.R
 
 Unstaged changes:
+    Modified:   analysis/DER_analysis.Rmd
     Modified:   analysis/Outlier_removal.Rmd
+    Modified:   analysis/index.Rmd
     Modified:   analysis/multiQC_cut_tag.Rmd
 
 </code></pre>
@@ -617,6 +619,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/19dbd3a5b1ba958b2c114b0a19f8e16fb97ffac8/analysis/final_analysis.Rmd" target="_blank">19dbd3a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+wflow_publish("analysis/final_analysis.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/final_analysis.html" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1085,12 +1121,23 @@ infurnoheat
 </div>
 <div id="tagging-questionable-libraries-by-frip" class="section level4">
 <h4>Tagging Questionable Libraries by FRiP</h4>
-<pre class="r"><code>questionable_frip = all_peak_final[(all_peak_final$FRiP &lt; 0.02),]
+<pre class="r"><code>questionable_frip = all_peak_final[(all_peak_final$FRiP &lt; 0.2),]
 questionable_frip</code></pre>
-<pre><code># A tibble: 0 × 10
-# ℹ 10 variables: Sample &lt;chr&gt;, Total_Reads &lt;dbl&gt;, Fragments &lt;dbl&gt;,
-#   Reads_in_Peaks &lt;dbl&gt;, FRiP &lt;dbl&gt;, Histone_Mark &lt;chr&gt;, Individual &lt;chr&gt;,
-#   Treatment &lt;chr&gt;, Timepoint &lt;chr&gt;, Count &lt;dbl&gt;</code></pre>
+<pre><code># A tibble: 28 × 10
+   Sample    Total_Reads Fragments Reads_in_Peaks   FRiP Histone_Mark Individual
+   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;          &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;     
+ 1 MCW_CT_R…     8333500   8333500        1412823 0.170  H3K36me3     Ind1      
+ 2 MCW_CT_R…     6705202   6705202        1250936 0.186  H3K36me3     Ind4      
+ 3 MCW_CT_R…      951069    951069         130753 0.137  H3K36me3     Ind1      
+ 4 MCW_CT_R…     8360401   8360401        1063627 0.127  H3K36me3     Ind3      
+ 5 MCW_CT_R…     7240342   7240342        1032016 0.142  H3K36me3     Ind1      
+ 6 MCW_CT_R…    13447374  13447374        2214575 0.165  H3K36me3     Ind2      
+ 7 MCW_CT_R…     5545665   5545665         644296 0.116  H3K36me3     Ind4      
+ 8 MCW_CT_R…     8211417   8211417         672532 0.0819 H3K36me3     Ind2      
+ 9 MCW_CT_R…     9520493   9520493        1332644 0.140  H3K36me3     Ind4      
+10 MCW_CT_R…    23130869  23130869        3401081 0.147  H3K9me3      Ind1      
+# ℹ 18 more rows
+# ℹ 3 more variables: Treatment &lt;chr&gt;, Timepoint &lt;chr&gt;, Count &lt;dbl&gt;</code></pre>
 </div>
 </div>
 <div id="feature-counts" class="section level3">
@@ -1635,6 +1682,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/figure/final_analysis.Rmd/H3K27ac volcano 2-1.png" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/fda033f1fad0f95652093d3e1728d2d5ad6447e1/docs/figure/final_analysis.Rmd/H3K27ac volcano 2-1.png" target="_blank">fda033f</a>
 </td>
 <td>
@@ -1690,6 +1748,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/figure/final_analysis.Rmd/H3K27ac volcano 3-1.png" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/fda033f1fad0f95652093d3e1728d2d5ad6447e1/docs/figure/final_analysis.Rmd/H3K27ac volcano 3-1.png" target="_blank">fda033f</a>
@@ -1765,6 +1834,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/figure/final_analysis.Rmd/H3K27me3 volcano 2-1.png" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/fda033f1fad0f95652093d3e1728d2d5ad6447e1/docs/figure/final_analysis.Rmd/H3K27me3 volcano 2-1.png" target="_blank">fda033f</a>
 </td>
 <td>
@@ -1820,6 +1900,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/figure/final_analysis.Rmd/H3K27me3 volcano 3-1.png" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/fda033f1fad0f95652093d3e1728d2d5ad6447e1/docs/figure/final_analysis.Rmd/H3K27me3 volcano 3-1.png" target="_blank">fda033f</a>
@@ -1952,6 +2043,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/figure/final_analysis.Rmd/H3K36me3 volcano 3-1.png" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/fda033f1fad0f95652093d3e1728d2d5ad6447e1/docs/figure/final_analysis.Rmd/H3K36me3 volcano 3-1.png" target="_blank">fda033f</a>
 </td>
 <td>
@@ -2082,6 +2184,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/figure/final_analysis.Rmd/H3K9me3 volcano 3-1.png" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/fda033f1fad0f95652093d3e1728d2d5ad6447e1/docs/figure/final_analysis.Rmd/H3K9me3 volcano 3-1.png" target="_blank">fda033f</a>
 </td>
 <td>
@@ -2112,7 +2225,8 @@ infurnoheat
 <h3>PCA Plots</h3>
 <div id="h3k27ac-1" class="section level4">
 <h4>H3K27ac</h4>
-<pre class="r"><code>pca_H3K27ac &lt;- calc_pca(t(H3K27ac_merged_lcpm))
+<pre class="r"><code>H3K27ac_merged_filt_lcpm &lt;- H3K27ac_merged_raw %&gt;% cpm(., log = TRUE)
+pca_H3K27ac &lt;- calc_pca(t(H3K27ac_merged_filt_lcpm))
 pca_var_plot(pca_H3K27ac)</code></pre>
 <p><img src="figure/final_analysis.Rmd/H3K27ac%20PCA_var-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -2153,7 +2267,7 @@ infurnoheat
 </div>
 </div>
 <pre class="r"><code>pca_H3K27ac &lt;- pca_H3K27ac$x %&gt;% cbind(., H3K27ac_annomat)
-pca_plot(pca_H3K27ac, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K27ac$ind, title = &quot;H3K27ac lcpm PCA&quot;)</code></pre>
+pca_plot(pca_H3K27ac, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K27ac$ind, title = &quot;H3K27ac filtered lcpm PCA&quot;)</code></pre>
 <p><img src="figure/final_analysis.Rmd/H3K27ac%20PCA-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-PCA-1">
@@ -2244,6 +2358,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/figure/final_analysis.Rmd/H3K27ac HeatMap 2-1.png" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/final_analysis.Rmd/H3K27ac HeatMap 2-1.png" target="_blank">ac6eb8d</a>
 </td>
 <td>
@@ -2260,7 +2385,8 @@ reneeisnowhere
 </div>
 <div id="h3k27me3-1" class="section level4">
 <h4>H3K27me3</h4>
-<pre class="r"><code>pca_H3K27me3 &lt;- calc_pca(t(H3K27me3_merged_lcpm))
+<pre class="r"><code>H3K27me3_merged_filt_lcpm &lt;- H3K27me3_merged_raw %&gt;% cpm(., log = TRUE)
+pca_H3K27me3 &lt;- calc_pca(t(H3K27me3_merged_filt_lcpm))
 pca_var_plot(pca_H3K27me3)</code></pre>
 <p><img src="figure/final_analysis.Rmd/H3K27me3%20PCA_var-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -2301,7 +2427,7 @@ infurnoheat
 </div>
 </div>
 <pre class="r"><code>pca_H3K27me3 &lt;- pca_H3K27me3$x %&gt;% cbind(., H3K27me3_annomat)
-pca_plot(pca_H3K27me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K27me3$ind, title = &quot;H3K27me3 lcpm PCA&quot;)</code></pre>
+pca_plot(pca_H3K27me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K27me3$ind, title = &quot;H3K27me3 filtered lcpm PCA&quot;)</code></pre>
 <p><img src="figure/final_analysis.Rmd/H3K27me3%20PCA-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-PCA-1">
@@ -2392,6 +2518,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/figure/final_analysis.Rmd/H3K27me3 HeatMap 2-1.png" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/final_analysis.Rmd/H3K27me3 HeatMap 2-1.png" target="_blank">ac6eb8d</a>
 </td>
 <td>
@@ -2408,7 +2545,8 @@ reneeisnowhere
 </div>
 <div id="h3k36me3-1" class="section level4">
 <h4>H3K36me3</h4>
-<pre class="r"><code>pca_H3K36me3 &lt;- calc_pca(t(H3K36me3_merged_lcpm))
+<pre class="r"><code>H3K36me3_merged_filt_lcpm &lt;- H3K36me3_merged_raw %&gt;% cpm(., log = TRUE)
+pca_H3K36me3 &lt;- calc_pca(t(H3K36me3_merged_filt_lcpm))
 pca_var_plot(pca_H3K36me3)</code></pre>
 <p><img src="figure/final_analysis.Rmd/H3K36me3%20PCA_var-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -2567,7 +2705,8 @@ reneeisnowhere
 </div>
 <div id="h3k9me3-1" class="section level4">
 <h4>H3K9me3</h4>
-<pre class="r"><code>pca_H3K9me3 &lt;- calc_pca(t(H3K9me3_merged_lcpm))
+<pre class="r"><code>H3K9me3_merged_filt_lcpm &lt;- H3K9me3_merged_raw %&gt;% cpm(., log = TRUE)
+pca_H3K9me3 &lt;- calc_pca(t(H3K9me3_merged_filt_lcpm))
 pca_var_plot(pca_H3K9me3)</code></pre>
 <p><img src="figure/final_analysis.Rmd/H3K9me3%20PCA_var-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -2773,6 +2912,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/figure/final_analysis.Rmd/H3K27ac Venn-1.png" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/fda033f1fad0f95652093d3e1728d2d5ad6447e1/docs/figure/final_analysis.Rmd/H3K27ac Venn-1.png" target="_blank">fda033f</a>
 </td>
 <td>
@@ -2824,6 +2974,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c9656792d5d77fa55b3fbe512e205d59ddab6b3/docs/figure/final_analysis.Rmd/H3K27me3 Venn-1.png" target="_blank">8c96567</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/fda033f1fad0f95652093d3e1728d2d5ad6447e1/docs/figure/final_analysis.Rmd/H3K27me3 Venn-1.png" target="_blank">fda033f</a>
@@ -3027,83 +3188,84 @@ loaded via a namespace (and not attached):
   [3] DirichletMultinomial_1.48.0 TFBSTools_1.44.0           
   [5] httr_1.4.7                  RColorBrewer_1.1-3         
   [7] doParallel_1.0.17           tools_4.4.2                
-  [9] backports_1.5.0             R6_2.6.1                   
- [11] lazyeval_0.2.2              GetoptLong_1.0.5           
- [13] withr_3.0.2                 gridExtra_2.3              
- [15] quantreg_6.1                cli_3.6.5                  
- [17] textshaping_1.0.1           Cairo_1.6-5                
- [19] labeling_0.4.3              sass_0.4.10                
- [21] Rsamtools_2.22.0            systemfonts_1.2.3          
- [23] foreign_0.8-90              svglite_2.2.1              
- [25] R.utils_2.13.0              dichromat_2.0-0.1          
- [27] plotrix_3.8-4               BSgenome_1.74.0            
- [29] pwr_1.3-0                   rstudioapi_0.17.1          
- [31] impute_1.80.0               RSQLite_2.4.3              
- [33] generics_0.1.4              shape_1.4.6.1              
- [35] BiocIO_1.16.0               vroom_1.6.5                
- [37] gtools_3.9.5                car_3.1-3                  
- [39] GO.db_3.20.0                Matrix_1.7-3               
- [41] ggbeeswarm_0.7.2            abind_1.4-8                
- [43] R.methodsS3_1.8.2           lifecycle_1.0.4            
- [45] whisker_0.4.1               yaml_2.3.10                
- [47] carData_3.0-5               SparseArray_1.6.2          
- [49] blob_1.2.4                  promises_1.3.3             
- [51] crayon_1.5.3                pwalign_1.2.0              
- [53] miniUI_0.1.2                lattice_0.22-7             
- [55] annotate_1.84.0             KEGGREST_1.46.0            
- [57] magick_2.8.7                pillar_1.11.0              
- [59] knitr_1.50                  rjson_0.2.23               
- [61] codetools_0.2-20            glue_1.8.0                 
- [63] getPass_0.2-4               vctrs_0.6.5                
- [65] png_0.1-8                   gtable_0.3.6               
- [67] poweRlaw_1.0.0              cachem_1.1.0               
- [69] xfun_0.52                   S4Arrays_1.6.0             
- [71] mime_0.13                   survival_3.8-3             
- [73] iterators_1.0.14            statmod_1.5.0              
- [75] bit64_4.6.0-1               rprojroot_2.1.0            
- [77] bslib_0.9.0                 vipor_0.4.7                
- [79] KernSmooth_2.23-26          rpart_4.1.24               
- [81] colorspace_2.1-1            seqLogo_1.72.0             
- [83] DBI_1.2.3                   Hmisc_5.2-3                
- [85] seqPattern_1.38.0           nnet_7.3-20                
- [87] tidyselect_1.2.1            processx_3.8.6             
- [89] bit_4.6.0                   compiler_4.4.2             
- [91] curl_7.0.0                  git2r_0.36.2               
- [93] htmlTable_2.4.3             SparseM_1.84-2             
- [95] xml2_1.4.0                  DelayedArray_0.32.0        
- [97] plotly_4.11.0               rtracklayer_1.66.0         
- [99] checkmate_2.3.3             scales_1.4.0               
-[101] caTools_1.18.3              callr_3.7.6                
-[103] digest_0.6.37               rmarkdown_2.29             
-[105] XVector_0.46.0              htmltools_0.5.8.1          
-[107] pkgconfig_2.0.3             base64enc_0.1-3            
-[109] fastmap_1.2.0               rlang_1.1.6                
-[111] GlobalOptions_0.1.2         htmlwidgets_1.6.4          
-[113] UCSC.utils_1.2.0            shiny_1.11.1               
-[115] farver_2.1.2                jquerylib_0.1.4            
-[117] zoo_1.8-14                  jsonlite_2.0.0             
-[119] BiocParallel_1.40.2         R.oo_1.27.1                
-[121] RCurl_1.98-1.17             magrittr_2.0.3             
-[123] polynom_1.4-1               Formula_1.2-5              
-[125] GenomeInfoDbData_1.2.13     patchwork_1.3.1            
-[127] Rcpp_1.1.0                  stringi_1.8.7              
-[129] zlibbioc_1.52.0             MASS_7.3-65                
-[131] plyr_1.8.9                  ggrepel_0.9.6              
-[133] parallel_4.4.2              CNEr_1.42.0                
-[135] Biostrings_2.74.1           splines_4.4.2              
-[137] hms_1.1.3                   circlize_0.4.16            
-[139] locfit_1.5-9.12             ps_1.9.1                   
-[141] ggsignif_0.6.4              reshape2_1.4.4             
-[143] TFMPvalue_0.0.9             XML_3.99-0.18              
-[145] evaluate_1.0.4              tzdb_0.5.0                 
-[147] foreach_1.5.2               httpuv_1.6.16              
-[149] MatrixModels_0.5-4          clue_0.3-66                
-[151] gridBase_0.4-7              broom_1.0.9                
-[153] xtable_1.8-4                restfulr_0.0.16            
-[155] rstatix_0.7.2               later_1.4.2                
-[157] memoise_2.0.1               beeswarm_0.4.0             
-[159] AnnotationDbi_1.68.0        GenomicAlignments_1.42.0   
-[161] cluster_2.1.8.1             timechange_0.3.0           </code></pre>
+  [9] backports_1.5.0             utf8_1.2.6                 
+ [11] R6_2.6.1                    lazyeval_0.2.2             
+ [13] GetoptLong_1.0.5            withr_3.0.2                
+ [15] gridExtra_2.3               quantreg_6.1               
+ [17] cli_3.6.5                   textshaping_1.0.1          
+ [19] Cairo_1.6-5                 labeling_0.4.3             
+ [21] sass_0.4.10                 Rsamtools_2.22.0           
+ [23] systemfonts_1.2.3           foreign_0.8-90             
+ [25] svglite_2.2.1               R.utils_2.13.0             
+ [27] dichromat_2.0-0.1           plotrix_3.8-4              
+ [29] BSgenome_1.74.0             pwr_1.3-0                  
+ [31] rstudioapi_0.17.1           impute_1.80.0              
+ [33] RSQLite_2.4.3               generics_0.1.4             
+ [35] shape_1.4.6.1               BiocIO_1.16.0              
+ [37] vroom_1.6.5                 gtools_3.9.5               
+ [39] car_3.1-3                   GO.db_3.20.0               
+ [41] Matrix_1.7-3                ggbeeswarm_0.7.2           
+ [43] abind_1.4-8                 R.methodsS3_1.8.2          
+ [45] lifecycle_1.0.4             whisker_0.4.1              
+ [47] yaml_2.3.10                 carData_3.0-5              
+ [49] SparseArray_1.6.2           blob_1.2.4                 
+ [51] promises_1.3.3              crayon_1.5.3               
+ [53] pwalign_1.2.0               miniUI_0.1.2               
+ [55] lattice_0.22-7              annotate_1.84.0            
+ [57] KEGGREST_1.46.0             magick_2.8.7               
+ [59] pillar_1.11.0               knitr_1.50                 
+ [61] rjson_0.2.23                codetools_0.2-20           
+ [63] glue_1.8.0                  getPass_0.2-4              
+ [65] vctrs_0.6.5                 png_0.1-8                  
+ [67] gtable_0.3.6                poweRlaw_1.0.0             
+ [69] cachem_1.1.0                xfun_0.52                  
+ [71] S4Arrays_1.6.0              mime_0.13                  
+ [73] survival_3.8-3              iterators_1.0.14           
+ [75] statmod_1.5.0               bit64_4.6.0-1              
+ [77] rprojroot_2.1.0             bslib_0.9.0                
+ [79] vipor_0.4.7                 KernSmooth_2.23-26         
+ [81] rpart_4.1.24                colorspace_2.1-1           
+ [83] seqLogo_1.72.0              DBI_1.2.3                  
+ [85] Hmisc_5.2-3                 seqPattern_1.38.0          
+ [87] nnet_7.3-20                 tidyselect_1.2.1           
+ [89] processx_3.8.6              bit_4.6.0                  
+ [91] compiler_4.4.2              curl_7.0.0                 
+ [93] git2r_0.36.2                htmlTable_2.4.3            
+ [95] SparseM_1.84-2              xml2_1.4.0                 
+ [97] DelayedArray_0.32.0         plotly_4.11.0              
+ [99] rtracklayer_1.66.0          checkmate_2.3.3            
+[101] scales_1.4.0                caTools_1.18.3             
+[103] callr_3.7.6                 digest_0.6.37              
+[105] rmarkdown_2.29              XVector_0.46.0             
+[107] htmltools_0.5.8.1           pkgconfig_2.0.3            
+[109] base64enc_0.1-3             fastmap_1.2.0              
+[111] rlang_1.1.6                 GlobalOptions_0.1.2        
+[113] htmlwidgets_1.6.4           UCSC.utils_1.2.0           
+[115] shiny_1.11.1                farver_2.1.2               
+[117] jquerylib_0.1.4             zoo_1.8-14                 
+[119] jsonlite_2.0.0              BiocParallel_1.40.2        
+[121] R.oo_1.27.1                 RCurl_1.98-1.17            
+[123] magrittr_2.0.3              polynom_1.4-1              
+[125] Formula_1.2-5               GenomeInfoDbData_1.2.13    
+[127] patchwork_1.3.1             Rcpp_1.1.0                 
+[129] stringi_1.8.7               zlibbioc_1.52.0            
+[131] MASS_7.3-65                 plyr_1.8.9                 
+[133] ggrepel_0.9.6               parallel_4.4.2             
+[135] CNEr_1.42.0                 Biostrings_2.74.1          
+[137] splines_4.4.2               hms_1.1.3                  
+[139] circlize_0.4.16             locfit_1.5-9.12            
+[141] ps_1.9.1                    ggsignif_0.6.4             
+[143] reshape2_1.4.4              TFMPvalue_0.0.9            
+[145] XML_3.99-0.18               evaluate_1.0.4             
+[147] tzdb_0.5.0                  foreach_1.5.2              
+[149] httpuv_1.6.16               MatrixModels_0.5-4         
+[151] clue_0.3-66                 gridBase_0.4-7             
+[153] broom_1.0.9                 xtable_1.8-4               
+[155] restfulr_0.0.16             rstatix_0.7.2              
+[157] later_1.4.2                 memoise_2.0.1              
+[159] beeswarm_0.4.0              AnnotationDbi_1.68.0       
+[161] GenomicAlignments_1.42.0    cluster_2.1.8.1            
+[163] timechange_0.3.0           </code></pre>
 </div>
 </div>
 </div>
