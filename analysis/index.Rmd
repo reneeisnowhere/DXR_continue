@@ -8,6 +8,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+### QC and peak analysis
+
 [Cut and Tag QC](https://reneeisnowhere.github.io/DXR_continue/multiQC_cut_tag.html)
 
 [Peak Cutoffs](https://reneeisnowhere.github.io/DXR_continue/peak_cutoff.html)
@@ -16,8 +18,20 @@ editor_options:
 
 [Peak Width](https://reneeisnowhere.github.io/DXR_continue/peak_width.html)
 
-[Differential Analysis and PCA](https://reneeisnowhere.github.io/DXR_continue/final_analysis.html)
+### Region selection and Differential analysis
+
+[Pairwise differential analysis and PCA](https://reneeisnowhere.github.io/DXR_continue/final_analysis.html)
+
+[Pairwise differential analysis and PCA: removing outliers](https://reneeisnowhere.github.io/DXR_continue/Outlier_removal.html)  
+only H3K9me3 and H3K36me3
 
 [Examining DERs by histone](https://reneeisnowhere.github.io/DXR_continue/DER_analysis.html)
 
-Here is my [test link](https://reneeisnowhere.github.io/DXR_continue/test.html).
+[Cormotif analysis with all samples](https://reneeisnowhere.github.io/DXR_continue/Cormotif_analysis.html)  
+
+[Cormotif analysis with removal of outliers](https://reneeisnowhere.github.io/DXR_continue/Cormotif_outlier_removal.html)
+only H3K9me3 and H3K36me3
+
+[Examining Cormotif results]link pending
+
+
