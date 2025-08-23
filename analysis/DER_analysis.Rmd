@@ -151,23 +151,23 @@ H3K9me3_merged_cor <- H3K9me3_merged_lcpm %>%
 ```
 
 ```{r filtering and lcpm of filtered frame}
-H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_cor)>0,]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_lcpm)>0,]
 H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrY",rownames(H3K27ac_merged_raw)),]
 H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrX",rownames(H3K27ac_merged_raw)),]
 H3K27ac_merged_filt_lcpm <- H3K27ac_merged_raw %>% cpm(., log = TRUE)
 
-H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_cor)>0,]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_lcpm)>0,]
 H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrY",rownames(H3K27me3_merged_raw)),]
 H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrX",rownames(H3K27me3_merged_raw)),]
 H3K27me3_merged_filt_lcpm <- H3K27me3_merged_raw %>% cpm(., log = TRUE)
 
 
-H3K36me3_merged_raw <- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_cor)>0,]
+H3K36me3_merged_raw <- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_lcpm)>0,]
 H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrY",rownames(H3K36me3_merged_raw)),]
 H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrX",rownames(H3K36me3_merged_raw)),]
 H3K36me3_merged_filt_lcpm <- H3K36me3_merged_raw %>% cpm(., log = TRUE)
 
-H3K9me3_merged_raw <- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_cor)>0,]
+H3K9me3_merged_raw <- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_lcpm)>0,]
 H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrY",rownames(H3K9me3_merged_raw)),]
 H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrX",rownames(H3K9me3_merged_raw)),]
 H3K9me3_merged_filt_lcpm <- H3K9me3_merged_raw %>% cpm(., log = TRUE)
@@ -376,7 +376,7 @@ H3K27me3_merged_filt_lcpm %>%
         "DOX_144R",  "VEH_144R"))) %>% 
   
   ggplot(., aes(x=group_graph, y=lcpm)) +
-  geom_boxplot()+
+   geom_boxplot(aes(fill=tx))+
   facet_wrap(group~Peakid, scales="free")+
   theme_bw()+
   theme(axis.text.x=element_text(angle = 90))
@@ -491,7 +491,7 @@ H3K36me3_merged_filt_lcpm %>%
         "DOX_144R",  "VEH_144R"))) %>% 
   
   ggplot(., aes(x=group_graph, y=lcpm)) +
-  geom_boxplot()+
+   geom_boxplot(aes(fill=tx))+
   facet_wrap(group~Peakid, scales="free")+
   theme_bw()+
   theme(axis.text.x=element_text(angle = 90))
@@ -606,7 +606,7 @@ H3K9me3_merged_filt_lcpm %>%
         "DOX_144R",  "VEH_144R"))) %>% 
   
   ggplot(., aes(x=group_graph, y=lcpm)) +
-  geom_boxplot()+
+  geom_boxplot(aes(fill=tx))+
   facet_wrap(group~Peakid, scales="free")+
   theme_bw()+
   theme(axis.text.x=element_text(angle = 90))
