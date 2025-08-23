@@ -1,0 +1,338 @@
+---
+title: "Cormotif_analysis"
+author: "Renee Matthews"
+date: "2025-08-19"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r packages}
+
+library(tidyverse)
+library(readr)
+library(edgeR)
+library(ComplexHeatmap)
+library(data.table)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(viridis)
+library(DT)
+library(kableExtra)
+library(genomation)
+library(GenomicRanges)
+library(ggpubr) ## For customizing figures
+library(corrplot) ## For correlation plot
+library(ggpmisc)
+library(gcplyr)
+library(Rsubread)
+library(limma)
+library(ggrastr)
+library(cowplot)
+library(smplot2)
+library(ggVennDiagram)
+library(ggsignif)
+library(BiocParallel)
+
+```
+
+```{r data add}
+sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
+```
+
+### Cormotif code
+
+```{r echo=TRUE, file='code/corMotifcustom.R'}
+
+```
+
+
+### Feature Counts 
+
+```{r feature_cts}
+H3K27ac_merged <- read_delim("data/peaks/H3K27ac_FINAL_counts.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE, skip = 1)
+H3K27me3_merged <- read_delim("data/peaks/H3K27me3_FINAL_counts.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE, skip = 1)
+H3K36me3_merged <- read_delim("data/peaks/H3K36me3_FINAL_counts.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE, skip = 1)
+H3K9me3_merged <- read_delim("data/peaks/H3K9me3_FINAL_counts.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE, skip = 1)
+rename_list <- sampleinfo %>% 
+  mutate(stem= "_nobl.bam") %>% 
+  mutate(prefix=paste0("/scratch/10819/styu/MW_multiQC/peaks/",Histone_Mark,"/",Treatment,"/",Timepoint,"/")) %>%
+  mutate(oldname=paste0(prefix,`Library ID`,"/",`Library ID`,stem)) %>% 
+  mutate(newname=paste0(Individual,"_",Treatment,"_",Timepoint)) %>% 
+  dplyr::select(oldname,newname)
+rename_vec <- setNames(rename_list$newname, rename_list$oldname)
+names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)] <- rename_vec[names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)]]
+names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)]]
+names(H3K36me3_merged)[names(H3K36me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K36me3_merged)[names(H3K36me3_merged) %in% names(rename_vec)]]
+names(H3K9me3_merged)[names(H3K9me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K9me3_merged)[names(H3K9me3_merged) %in% names(rename_vec)]]
+```
+
+
+```{r making merged raw lcpm}
+H3K27ac_merged_raw <- H3K27ac_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  as.matrix()
+H3K27ac_merged_lcpm <- H3K27ac_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  cpm(., log = TRUE)
+H3K27ac_merged_cor <- H3K27ac_merged_lcpm %>% 
+  cor()
+
+
+H3K27me3_merged_raw <- H3K27me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  as.matrix()
+H3K27me3_merged_lcpm <- H3K27me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  cpm(., log = TRUE)
+H3K27me3_merged_cor <- H3K27me3_merged_lcpm %>% 
+  cor()
+
+H3K36me3_merged_raw <- H3K36me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  as.matrix()
+H3K36me3_merged_lcpm <- H3K36me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  cpm(., log = TRUE)
+H3K36me3_merged_cor <- H3K36me3_merged_lcpm %>% 
+  cor()
+
+H3K9me3_merged_raw <- H3K9me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  as.matrix()
+H3K9me3_merged_lcpm <- H3K9me3_merged %>% 
+  dplyr::select(Geneid,contains("Ind")) %>% 
+  column_to_rownames("Geneid") %>% 
+  cpm(., log = TRUE)
+H3K9me3_merged_cor <- H3K9me3_merged_lcpm %>% 
+  cor()
+
+```
+
+Removing chrX and chrY
+```{r filtering x and Y}
+
+
+H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_lcpm)>0,]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrY",rownames(H3K27ac_merged_raw)),]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrX",rownames(H3K27ac_merged_raw)),]
+
+H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_lcpm)>0,]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrY",rownames(H3K27me3_merged_raw)),]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrX",rownames(H3K27me3_merged_raw)),]
+
+
+H3K36me3_merged_raw <- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_lcpm)>0,]
+H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrY",rownames(H3K36me3_merged_raw)),]
+H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrX",rownames(H3K36me3_merged_raw)),]
+
+H3K9me3_merged_raw <- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_lcpm)>0,]
+H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrY",rownames(H3K9me3_merged_raw)),]
+H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrX",rownames(H3K9me3_merged_raw)),]
+```
+
+#### Setting up Matrix
+```{r matrix}
+H3K27ac_annomat <- data.frame(timeset=colnames(H3K27ac_merged_raw)) %>% 
+  mutate(sample=timeset) %>% 
+  separate(timeset, into = c("ind","tx","time")) %>% 
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(ind = gsub("Ind", "", ind)) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>%
+  mutate(group = txtime)
+H3K27ac_annomat$group <- H3K27ac_annomat$group %>%
+  gsub("DOX_24T", "1", .) %>%
+  gsub("DOX_24R", "2", .) %>%
+  gsub("DOX_144R", "3", .) %>%
+  gsub("VEH_24T", "4", .) %>%
+  gsub("VEH_24R", "5", .) %>%
+  gsub("VEH_144R", "6", .)
+
+H3K27me3_annomat <- data.frame(timeset=colnames(H3K27me3_merged_raw)) %>% 
+  mutate(sample=timeset) %>% 
+  separate(timeset, into = c("ind","tx","time")) %>% 
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(ind = gsub("Ind", "", ind)) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>%
+  mutate(group = txtime)
+H3K27me3_annomat$group <- H3K27me3_annomat$group %>%
+  gsub("DOX_24T", "1", .) %>%
+  gsub("DOX_24R", "2", .) %>%
+  gsub("DOX_144R", "3", .) %>%
+  gsub("VEH_24T", "4", .) %>%
+  gsub("VEH_24R", "5", .) %>%
+  gsub("VEH_144R", "6", .)
+
+H3K36me3_annomat <- data.frame(timeset=colnames(H3K36me3_merged_raw)) %>% 
+  mutate(sample=timeset) %>% 
+  separate(timeset, into = c("ind","tx","time")) %>% 
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(ind = gsub("Ind", "", ind)) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>%
+  mutate(group = txtime)
+H3K36me3_annomat$group <- H3K36me3_annomat$group %>%
+  gsub("DOX_24T", "1", .) %>%
+  gsub("DOX_24R", "2", .) %>%
+  gsub("DOX_144R", "3", .) %>%
+  gsub("VEH_24T", "4", .) %>%
+  gsub("VEH_24R", "5", .) %>%
+  gsub("VEH_144R", "6", .)
+
+H3K9me3_annomat <- data.frame(timeset=colnames(H3K9me3_merged_raw)) %>% 
+  mutate(sample=timeset) %>% 
+  separate(timeset, into = c("ind","tx","time")) %>% 
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(ind = gsub("Ind", "", ind)) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>%
+  mutate(group = txtime)
+H3K9me3_annomat$group <- H3K9me3_annomat$group %>%
+  gsub("DOX_24T", "1", .) %>%
+  gsub("DOX_24R", "2", .) %>%
+  gsub("DOX_144R", "3", .) %>%
+  gsub("VEH_24T", "4", .) %>%
+  gsub("VEH_24R", "5", .) %>%
+  gsub("VEH_144R", "6", .)
+
+dge_H3K27ac <- edgeR::DGEList(counts = H3K27ac_merged_raw, group = H3K27ac_annomat$group, genes = row.names(H3K27ac_merged_raw))
+dge_H3K27me3 <- edgeR::DGEList(counts = H3K27me3_merged_raw, group = H3K27me3_annomat$group, genes = row.names(H3K27me3_merged_raw))
+dge_H3K36me3 <- edgeR::DGEList(counts = H3K36me3_merged_raw, group = H3K36me3_annomat$group, genes = row.names(H3K36me3_merged_raw))
+dge_H3K9me3 <- edgeR::DGEList(counts = H3K9me3_merged_raw, group = H3K9me3_annomat$group, genes = row.names(H3K9me3_merged_raw))
+
+dge_H3K27ac <- edgeR::calcNormFactors(dge_H3K27ac)
+dge_H3K27me3 <- edgeR::calcNormFactors(dge_H3K27me3)
+dge_H3K36me3 <- edgeR::calcNormFactors(dge_H3K36me3)
+dge_H3K9me3 <- edgeR::calcNormFactors(dge_H3K9me3)
+
+# mm_H3K27ac <- model.matrix(~0 + H3K27ac_annomat$txtime)
+# colnames(mm_H3K27ac) <- H3K27ac_annomat$txtime %>% unique()
+# 
+# mm_H3K27me3 <- model.matrix(~0 + H3K27me3_annomat$txtime)
+# colnames(mm_H3K27me3) <- H3K27me3_annomat$txtime %>% unique()
+# 
+# mm_H3K36me3 <- model.matrix(~0 + H3K36me3_annomat$txtime)
+# colnames(mm_H3K36me3) <- H3K36me3_annomat$txtime %>% unique()
+# 
+# mm_H3K9me3 <- model.matrix(~0 + H3K9me3_annomat$txtime)
+# colnames(mm_H3K9me3) <- H3K9me3_annomat$txtime %>% unique()
+```
+
+
+making comparison and group matrices
+```{r compid and groupid}
+lcpm_dge_H3K27ac <- cpm(dge_H3K27ac, log = TRUE)
+lcpm_dge_H3K27me3 <- cpm(dge_H3K27me3, log = TRUE)
+lcpm_dge_H3K36me3 <- cpm(dge_H3K36me3, log = TRUE)
+lcpm_dge_H3K9me3 <- cpm(dge_H3K9me3, log = TRUE)
+
+H3K27ac_group <- H3K27ac_annomat$group
+H3K27me3_group <- H3K27me3_annomat$group
+H3K36me3_group <- H3K36me3_annomat$group
+H3K9me3_group <- H3K9me3_annomat$group
+
+compid <- data.frame(c1= c(1,2,3), c2 = c( 4,5,6))
+compid
+```
+
+### H3K27ac cormotif  
+
+```{r H3K27ac cormotif, eval=FALSE, include=TRUE}
+set.seed(31415)
+cormotif_initial_H3K27ac <- cormotiffit(exprs = lcpm_dge_H3K27ac, groupid = H3K27ac_group, compid = compid, K=1:8, max.iter = 500, runtype = "logCPM")
+
+saveRDS(cormotif_initial_H3K27ac,"data/Cormotif_data/Cormotif_initial_H3K27ac.RDS")
+```
+```{r H3K27ac plots}
+cormotif_initial_H3K27ac <- readRDS("data/Cormotif_data/Cormotif_initial_H3K27ac.RDS")
+plotIC(cormotif_initial_H3K27ac)
+plotMotif(cormotif_initial_H3K27ac)
+```
+### H3K27me3 cormotif  
+
+```{r H3K27me3 cormotif, eval=FALSE, include=TRUE}
+set.seed(31415)
+cormotif_initial_H3K27me3 <- cormotiffit(exprs = lcpm_dge_H3K27me3, groupid = H3K27me3_group, compid = compid, K=1:8, max.iter = 500, runtype = "logCPM")
+
+saveRDS(cormotif_initial_H3K27me3,"data/Cormotif_data/Cormotif_initial_H3K27me3.RDS")
+```
+
+```{r H3K27me3 plots}
+cormotif_initial_H3K27me3 <- readRDS("data/Cormotif_data/Cormotif_initial_H3K27me3.RDS")
+plotIC(cormotif_initial_H3K27me3)
+plotMotif(cormotif_initial_H3K27me3)
+```
+
+### H3K36me3 cormotif  
+
+```{r H3K36me3 cormotif, eval=FALSE, include=TRUE}
+set.seed(31415)
+cormotif_initial_H3K36me3 <- cormotiffit(exprs = lcpm_dge_H3K36me3, groupid = H3K36me3_group, compid = compid, K=1:8, max.iter = 500, runtype = "logCPM")
+
+saveRDS(cormotif_initial_H3K36me3,"data/Cormotif_data/Cormotif_initial_H3K36me3.RDS")
+```
+
+```{r  H3K36me3 plots}
+
+cormotif_initial_H3K36me3 <- readRDS("data/Cormotif_data/Cormotif_initial_H3K36me3.RDS")
+myColors <-  rev(c("#FFFFFF", "#E6E6E6" ,"#CCCCCC", "#B3B3B3", "#999999", "#808080", "#666666","#4C4C4C", "#333333", "#191919","#000000"))
+
+plot.new()
+legend('center',fill=myColors, legend =rev(c("0", "0.1", "0.2", "0.3", "0.4",  "0.5", "0.6", "0.7", "0.8","0.9", "1")), box.col="white",title = "Probability\nlegend", horiz=FALSE,title.cex=.8)
+
+plotIC(cormotif_initial_H3K36me3)
+plotMotif(cormotif_initial_H3K36me3)
+```
+
+### H3K9me3 cormotif  
+
+```{r H3K9me3 cormotif,eval=FALSE, include=TRUE}
+set.seed(31415)
+cormotif_initial_H3K9me3 <- cormotiffit(exprs = lcpm_dge_H3K9me3, groupid = H3K9me3_group, compid = compid, K=1:8, max.iter = 500, runtype = "logCPM")
+
+saveRDS(cormotif_initial_H3K9me3,"data/Cormotif_data/Cormotif_initial_H3K9me3.RDS")
+```
+
+```{r H3K9me3 cormotifplots}
+
+cormotif_initial_H3K9me3 <- readRDS("data/Cormotif_data/Cormotif_initial_H3K9me3.RDS")
+plotIC(cormotif_initial_H3K9me3)
+plotMotif(cormotif_initial_H3K9me3)
+```
+
+
