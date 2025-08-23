@@ -310,7 +310,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-13
+<strong>Last updated:</strong> 2025-08-22
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -357,15 +357,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreea91d0d34cf2778af46d135f0e04149cb9759c46dtargetblanka91d0d3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec146c0aaab71c3ba8d5431ab815bc510e846cab2targetblankc146c0aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/a91d0d34cf2778af46d135f0e04149cb9759c46d" target="_blank">a91d0d3</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c146c0aaab71c3ba8d5431ab815bc510e846cab2" target="_blank">c146c0a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreea91d0d34cf2778af46d135f0e04149cb9759c46dtargetblanka91d0d3a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec146c0aaab71c3ba8d5431ab815bc510e846cab2targetblankc146c0aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -375,7 +375,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/a91d0d34cf2778af46d135f0e04149cb9759c46d" target="_blank">a91d0d3</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c146c0aaab71c3ba8d5431ab815bc510e846cab2" target="_blank">c146c0a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -392,11 +392,21 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
+    Ignored:    data/alignment_summary.txt
+    Ignored:    data/all_peak_final_dataframe.txt
     Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/number_frag_peaks_summary.txt
+
+Untracked files:
+    Untracked:  code/corMotifcustom.R
+    Untracked:  code/making_analysis_file_summary.R
 
 Unstaged changes:
     Modified:   analysis/final_analysis.Rmd
+    Modified:   analysis/multiQC_cut_tag.Rmd
 
 </code></pre>
 <p>
@@ -440,6 +450,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/c146c0aaab71c3ba8d5431ab815bc510e846cab2/analysis/index.Rmd" target="_blank">c146c0a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+new index
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/53071c5803a83bfee8135b9bd6f775c9172c622b/docs/index.html" target="_blank">53071c5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -906,6 +950,8 @@ Start workflowr project.
 </div>
 </div>
 </div>
+<div id="qc-and-peak-analysis" class="section level3">
+<h3>QC and peak analysis</h3>
 <p><a
 href="https://reneeisnowhere.github.io/DXR_continue/multiQC_cut_tag.html">Cut
 and Tag QC</a></p>
@@ -918,15 +964,28 @@ Variants Analysis</a></p>
 <p><a
 href="https://reneeisnowhere.github.io/DXR_continue/peak_width.html">Peak
 Width</a></p>
+</div>
+<div id="region-selection-and-differential-analysis"
+class="section level3">
+<h3>Region selection and Differential analysis</h3>
 <p><a
-href="https://reneeisnowhere.github.io/DXR_continue/final_analysis.html">Differential
-Analysis and PCA</a></p>
+href="https://reneeisnowhere.github.io/DXR_continue/final_analysis.html">Pairwise
+differential analysis and PCA</a></p>
+<p><a
+href="https://reneeisnowhere.github.io/DXR_continue/Outlier_removal.html">Pairwise
+differential analysis and PCA: removing outliers</a><br />
+only H3K9me3 and H3K36me3</p>
 <p><a
 href="https://reneeisnowhere.github.io/DXR_continue/DER_analysis.html">Examining
 DERs by histone</a></p>
-<p>Here is my <a
-href="https://reneeisnowhere.github.io/DXR_continue/test.html">test
-link</a>.</p>
+<p><a
+href="https://reneeisnowhere.github.io/DXR_continue/Cormotif_analysis.html">Cormotif
+analysis with all samples</a></p>
+<p><a
+href="https://reneeisnowhere.github.io/DXR_continue/Cormotif_outlier_removal.html">Cormotif
+analysis with removal of outliers</a> only H3K9me3 and H3K36me3</p>
+<p>[Examining Cormotif results]link pending</p>
+</div>
 </div>
 </div>
 </div>
