@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-22
+<strong>Last updated:</strong> 2025-08-25
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree19dbd3a5b1ba958b2c114b0a19f8e16fb97ffac8targetblank19dbd3aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5383e33c329146ce60996828c8ee11a74e5fdd6atargetblank5383e33a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/19dbd3a5b1ba958b2c114b0a19f8e16fb97ffac8" target="_blank">19dbd3a</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5383e33c329146ce60996828c8ee11a74e5fdd6a" target="_blank">5383e33</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree19dbd3a5b1ba958b2c114b0a19f8e16fb97ffac8targetblank19dbd3aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5383e33c329146ce60996828c8ee11a74e5fdd6atargetblank5383e33a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/19dbd3a5b1ba958b2c114b0a19f8e16fb97ffac8" target="_blank">19dbd3a</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5383e33c329146ce60996828c8ee11a74e5fdd6a" target="_blank">5383e33</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -562,18 +562,17 @@ Ignored files:
     Ignored:    data/all_peak_final_dataframe.txt
     Ignored:    data/cell_line_info_.tsv
     Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/motif_lists/
     Ignored:    data/number_frag_peaks_summary.txt
 
 Untracked files:
-    Untracked:  analysis/Cormotif_analysis.Rmd
-    Untracked:  analysis/Cormotif_outlier_removal.Rmd
+    Untracked:  analysis/Motif_cluster_analysis.Rmd
     Untracked:  code/corMotifcustom.R
     Untracked:  code/making_analysis_file_summary.R
 
 Unstaged changes:
-    Modified:   analysis/DER_analysis.Rmd
-    Modified:   analysis/Outlier_removal.Rmd
-    Modified:   analysis/index.Rmd
+    Modified:   analysis/Cormotif_analysis.Rmd
+    Modified:   analysis/Cormotif_outlier_removal.Rmd
     Modified:   analysis/multiQC_cut_tag.Rmd
 
 </code></pre>
@@ -619,6 +618,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/5383e33c329146ce60996828c8ee11a74e5fdd6a/analysis/final_analysis.Rmd" target="_blank">5383e33</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-25
+</td>
+<td>
+adding PC percentages on plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/26071941082bdb026aed90acf50301887dafff95/docs/final_analysis.html" target="_blank">2607194</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -868,25 +901,31 @@ library(ggVennDiagram)</code></pre>
 <div id="functions" class="section level4">
 <h4>Functions</h4>
 <pre class="r"><code>drug_pal &lt;- c(&quot;#8B006D&quot;,&quot;#DF707E&quot;,&quot;#F1B72B&quot;, &quot;#3386DD&quot;,&quot;#707031&quot;,&quot;#41B333&quot;)
-pca_plot &lt;-
-  function(df,
-           col_var = NULL,
-           shape_var = NULL,
-           text_var = NULL,
-           title = &quot;&quot;) {
-    ggplot(df, aes_string(x = &quot;PC1&quot;, y = &quot;PC2&quot;)) +
-      geom_point(aes_string(color = col_var, shape = shape_var), size = 5) +
-      labs(title = title, x = &quot;PC 1&quot;, y = &quot;PC 2&quot;) +
-      ggrepel::geom_text_repel(label = text_var, vjust = -.5, max.overlaps = 30) +
-      scale_color_manual(values = c(
-        &quot;#8B006D&quot;,
-        &quot;#DF707E&quot;,
-        &quot;#F1B72B&quot;,
-        &quot;#3386DD&quot;,
-        &quot;#707031&quot;,
-        &quot;#41B333&quot;
-      ))
-  }
+pca_plot &lt;- function(pca_obj, df,
+                     col_var = NULL,
+                     shape_var = NULL,
+                     text_var = NULL,
+                     title = &quot;&quot;) {
+  
+  # variance explained
+  a &lt;- prop_var_percent(pca_obj)
+  
+  ggplot(df, aes_string(x = &quot;PC1&quot;, y = &quot;PC2&quot;)) +
+    geom_point(aes_string(color = col_var, shape = shape_var), size = 5) +
+    ggrepel::geom_text_repel(aes_string(label = text_var),
+                             vjust = -.5,
+                             max.overlaps = 30) +
+    labs(
+      title = title,
+      x = paste0(&quot;PC1 (&quot;, round(a[1], 1), &quot;%)&quot;),
+      y = paste0(&quot;PC2 (&quot;, round(a[2], 1), &quot;%)&quot;)
+    ) +
+    scale_color_manual(values = c(
+      &quot;#8B006D&quot;, &quot;#DF707E&quot;, &quot;#F1B72B&quot;,
+      &quot;#3386DD&quot;, &quot;#707031&quot;, &quot;#41B333&quot;
+    ))
+}
+
 pca_var_plot &lt;- function(pca) {
   # x: class == prcomp
   pca.var &lt;- pca$sdev ^ 2
@@ -912,6 +951,21 @@ get_regr_pval &lt;- function(mod) {
   fstat &lt;- summary(mod)$fstatistic
   pval &lt;- 1 - pf(fstat[1], fstat[2], fstat[3])
   return(pval)
+}
+
+prop_var_percent &lt;- function(pca_result){ 
+  # Ensure the input is a PCA result object
+  if (!inherits(pca_result, &quot;prcomp&quot;)) {
+    stop(&quot;Input must be a result from prcomp()&quot;)
+  }
+  
+  # Get the standard deviations from the PCA result
+  sdev &lt;- pca_result$sdev
+  
+  # Calculate the proportion of variance
+  proportion_variance &lt;- (sdev^2) / sum(sdev^2)*100
+  
+  return(proportion_variance)
 }
 
 plot_versus_pc &lt;- function(df, pc_num, fac) {
@@ -2253,6 +2307,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26071941082bdb026aed90acf50301887dafff95/docs/figure/final_analysis.Rmd/H3K27ac PCA_var-1.png" target="_blank">2607194</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6c6c7f4f7edf92a3b547b8f04f0b414654daa0df/docs/figure/final_analysis.Rmd/H3K27ac PCA_var-1.png" target="_blank">6c6c7f4</a>
 </td>
 <td>
@@ -2266,8 +2331,15 @@ infurnoheat
 </table>
 </div>
 </div>
-<pre class="r"><code>pca_H3K27ac &lt;- pca_H3K27ac$x %&gt;% cbind(., H3K27ac_annomat)
-pca_plot(pca_H3K27ac, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K27ac$ind, title = &quot;H3K27ac filtered lcpm PCA&quot;)</code></pre>
+<pre class="r"><code>pca_H3K27ac_df &lt;- data.frame(pca_H3K27ac$x , H3K27ac_annomat)
+pca_plot(
+  pca_H3K27ac,
+  pca_H3K27ac_df,
+  col_var = &quot;time&quot;,
+  shape_var = &quot;tx&quot;,
+  text_var = &quot;ind&quot;,   # &lt;-- string, not vector
+  title = &quot;H3K27ac filtered lcpm PCA&quot;
+)        </code></pre>
 <p><img src="figure/final_analysis.Rmd/H3K27ac%20PCA-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-PCA-1">
@@ -2291,6 +2363,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26071941082bdb026aed90acf50301887dafff95/docs/figure/final_analysis.Rmd/H3K27ac PCA-1.png" target="_blank">2607194</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/fda033f1fad0f95652093d3e1728d2d5ad6447e1/docs/figure/final_analysis.Rmd/H3K27ac PCA-1.png" target="_blank">fda033f</a>
@@ -2413,6 +2496,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26071941082bdb026aed90acf50301887dafff95/docs/figure/final_analysis.Rmd/H3K27me3 PCA_var-1.png" target="_blank">2607194</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6c6c7f4f7edf92a3b547b8f04f0b414654daa0df/docs/figure/final_analysis.Rmd/H3K27me3 PCA_var-1.png" target="_blank">6c6c7f4</a>
 </td>
 <td>
@@ -2426,8 +2520,15 @@ infurnoheat
 </table>
 </div>
 </div>
-<pre class="r"><code>pca_H3K27me3 &lt;- pca_H3K27me3$x %&gt;% cbind(., H3K27me3_annomat)
-pca_plot(pca_H3K27me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K27me3$ind, title = &quot;H3K27me3 filtered lcpm PCA&quot;)</code></pre>
+<pre class="r"><code>pca_H3K27me3_df &lt;- data.frame(pca_H3K27me3$x , H3K27me3_annomat)
+pca_plot(
+  pca_H3K27me3,
+  pca_H3K27me3_df,
+  col_var = &quot;time&quot;,
+  shape_var = &quot;tx&quot;,
+  text_var = &quot;ind&quot;,   # &lt;-- string, not vector
+  title = &quot;H3K27me3 filtered lcpm PCA&quot;
+)        </code></pre>
 <p><img src="figure/final_analysis.Rmd/H3K27me3%20PCA-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-PCA-1">
@@ -2451,6 +2552,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26071941082bdb026aed90acf50301887dafff95/docs/figure/final_analysis.Rmd/H3K27me3 PCA-1.png" target="_blank">2607194</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/final_analysis.Rmd/H3K27me3 PCA-1.png" target="_blank">ac6eb8d</a>
@@ -2573,6 +2685,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26071941082bdb026aed90acf50301887dafff95/docs/figure/final_analysis.Rmd/H3K36me3 PCA_var-1.png" target="_blank">2607194</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6c6c7f4f7edf92a3b547b8f04f0b414654daa0df/docs/figure/final_analysis.Rmd/H3K36me3 PCA_var-1.png" target="_blank">6c6c7f4</a>
 </td>
 <td>
@@ -2586,8 +2709,15 @@ infurnoheat
 </table>
 </div>
 </div>
-<pre class="r"><code>pca_H3K36me3 &lt;- pca_H3K36me3$x %&gt;% cbind(., H3K36me3_annomat)
-pca_plot(pca_H3K36me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K36me3$ind, title = &quot;H3K36me3 lcpm PCA&quot;)</code></pre>
+<pre class="r"><code>pca_H3K36me3_df &lt;- data.frame(pca_H3K36me3$x , H3K36me3_annomat)
+pca_plot(
+  pca_H3K36me3,
+  pca_H3K36me3_df,
+  col_var = &quot;time&quot;,
+  shape_var = &quot;tx&quot;,
+  text_var = &quot;ind&quot;,   # &lt;-- string, not vector
+  title = &quot;H3K36me3 filtered lcpm PCA&quot;
+)        </code></pre>
 <p><img src="figure/final_analysis.Rmd/H3K36me3%20PCA-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-PCA-1">
@@ -2611,6 +2741,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26071941082bdb026aed90acf50301887dafff95/docs/figure/final_analysis.Rmd/H3K36me3 PCA-1.png" target="_blank">2607194</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/final_analysis.Rmd/H3K36me3 PCA-1.png" target="_blank">ac6eb8d</a>
@@ -2733,6 +2874,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26071941082bdb026aed90acf50301887dafff95/docs/figure/final_analysis.Rmd/H3K9me3 PCA_var-1.png" target="_blank">2607194</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6c6c7f4f7edf92a3b547b8f04f0b414654daa0df/docs/figure/final_analysis.Rmd/H3K9me3 PCA_var-1.png" target="_blank">6c6c7f4</a>
 </td>
 <td>
@@ -2746,8 +2898,15 @@ infurnoheat
 </table>
 </div>
 </div>
-<pre class="r"><code>pca_H3K9me3 &lt;- pca_H3K9me3$x %&gt;% cbind(., H3K9me3_annomat)
-pca_plot(pca_H3K9me3, col_var = &quot;time&quot;, shape_var = &quot;tx&quot;, text_var = pca_H3K9me3$ind, title = &quot;H3K9me3 lcpm PCA&quot;)</code></pre>
+<pre class="r"><code>pca_H3K9me3_df &lt;- data.frame(pca_H3K9me3$x , H3K9me3_annomat)
+pca_plot(
+  pca_H3K9me3,
+  pca_H3K9me3_df,
+  col_var = &quot;time&quot;,
+  shape_var = &quot;tx&quot;,
+  text_var = &quot;ind&quot;,   # &lt;-- string, not vector
+  title = &quot;H3K9me3 filtered lcpm PCA&quot;
+)        </code></pre>
 <p><img src="figure/final_analysis.Rmd/H3K9me3%20PCA-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-PCA-1">
@@ -2771,6 +2930,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26071941082bdb026aed90acf50301887dafff95/docs/figure/final_analysis.Rmd/H3K9me3 PCA-1.png" target="_blank">2607194</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ac6eb8d549e5dddcc1a8be877511a162431a2b96/docs/figure/final_analysis.Rmd/H3K9me3 PCA-1.png" target="_blank">ac6eb8d</a>
