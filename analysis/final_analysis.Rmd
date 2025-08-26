@@ -55,25 +55,31 @@ sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
 #### Functions
 ```{r functions}
 drug_pal <- c("#8B006D","#DF707E","#F1B72B", "#3386DD","#707031","#41B333")
-pca_plot <-
-  function(df,
-           col_var = NULL,
-           shape_var = NULL,
-           text_var = NULL,
-           title = "") {
-    ggplot(df, aes_string(x = "PC1", y = "PC2")) +
-      geom_point(aes_string(color = col_var, shape = shape_var), size = 5) +
-      labs(title = title, x = "PC 1", y = "PC 2") +
-      ggrepel::geom_text_repel(label = text_var, vjust = -.5, max.overlaps = 30) +
-      scale_color_manual(values = c(
-        "#8B006D",
-        "#DF707E",
-        "#F1B72B",
-        "#3386DD",
-        "#707031",
-        "#41B333"
-      ))
-  }
+pca_plot <- function(pca_obj, df,
+                     col_var = NULL,
+                     shape_var = NULL,
+                     text_var = NULL,
+                     title = "") {
+  
+  # variance explained
+  a <- prop_var_percent(pca_obj)
+  
+  ggplot(df, aes_string(x = "PC1", y = "PC2")) +
+    geom_point(aes_string(color = col_var, shape = shape_var), size = 5) +
+    ggrepel::geom_text_repel(aes_string(label = text_var),
+                             vjust = -.5,
+                             max.overlaps = 30) +
+    labs(
+      title = title,
+      x = paste0("PC1 (", round(a[1], 1), "%)"),
+      y = paste0("PC2 (", round(a[2], 1), "%)")
+    ) +
+    scale_color_manual(values = c(
+      "#8B006D", "#DF707E", "#F1B72B",
+      "#3386DD", "#707031", "#41B333"
+    ))
+}
+
 pca_var_plot <- function(pca) {
   # x: class == prcomp
   pca.var <- pca$sdev ^ 2
@@ -99,6 +105,21 @@ get_regr_pval <- function(mod) {
   fstat <- summary(mod)$fstatistic
   pval <- 1 - pf(fstat[1], fstat[2], fstat[3])
   return(pval)
+}
+
+prop_var_percent <- function(pca_result){ 
+  # Ensure the input is a PCA result object
+  if (!inherits(pca_result, "prcomp")) {
+    stop("Input must be a result from prcomp()")
+  }
+  
+  # Get the standard deviations from the PCA result
+  sdev <- pca_result$sdev
+  
+  # Calculate the proportion of variance
+  proportion_variance <- (sdev^2) / sum(sdev^2)*100
+  
+  return(proportion_variance)
 }
 
 plot_versus_pc <- function(df, pc_num, fac) {
@@ -152,6 +173,8 @@ volcanosig <- function(df, psig.lvl) {
               plot.title = element_text(size = rel(1.5), hjust = 0.5),
               axis.title = element_text(size = rel(0.8))) 
 }
+
+
 
 
 ```
@@ -645,8 +668,15 @@ pca_var_plot(pca_H3K27ac)
 ```
 
 ```{r H3K27ac PCA}
-pca_H3K27ac <- pca_H3K27ac$x %>% cbind(., H3K27ac_annomat)
-pca_plot(pca_H3K27ac, col_var = "time", shape_var = "tx", text_var = pca_H3K27ac$ind, title = "H3K27ac filtered lcpm PCA")
+pca_H3K27ac_df <- data.frame(pca_H3K27ac$x , H3K27ac_annomat)
+pca_plot(
+  pca_H3K27ac,
+  pca_H3K27ac_df,
+  col_var = "time",
+  shape_var = "tx",
+  text_var = "ind",   # <-- string, not vector
+  title = "H3K27ac filtered lcpm PCA"
+)        
 ```
 ```{r H3K27ac HeatMap 2, fig.width=14,fig.height=14}
 
@@ -676,8 +706,15 @@ pca_var_plot(pca_H3K27me3)
 ```
 
 ```{r H3K27me3 PCA}
-pca_H3K27me3 <- pca_H3K27me3$x %>% cbind(., H3K27me3_annomat)
-pca_plot(pca_H3K27me3, col_var = "time", shape_var = "tx", text_var = pca_H3K27me3$ind, title = "H3K27me3 filtered lcpm PCA")
+pca_H3K27me3_df <- data.frame(pca_H3K27me3$x , H3K27me3_annomat)
+pca_plot(
+  pca_H3K27me3,
+  pca_H3K27me3_df,
+  col_var = "time",
+  shape_var = "tx",
+  text_var = "ind",   # <-- string, not vector
+  title = "H3K27me3 filtered lcpm PCA"
+)        
 ```
 ```{r H3K27me3 HeatMap 2, fig.width=14,fig.height=14}
 
@@ -707,8 +744,15 @@ pca_var_plot(pca_H3K36me3)
 ```
 
 ```{r H3K36me3 PCA}
-pca_H3K36me3 <- pca_H3K36me3$x %>% cbind(., H3K36me3_annomat)
-pca_plot(pca_H3K36me3, col_var = "time", shape_var = "tx", text_var = pca_H3K36me3$ind, title = "H3K36me3 lcpm PCA")
+pca_H3K36me3_df <- data.frame(pca_H3K36me3$x , H3K36me3_annomat)
+pca_plot(
+  pca_H3K36me3,
+  pca_H3K36me3_df,
+  col_var = "time",
+  shape_var = "tx",
+  text_var = "ind",   # <-- string, not vector
+  title = "H3K36me3 filtered lcpm PCA"
+)        
 ```
 ```{r H3K36me3 HeatMap 2, fig.width=14,fig.height=14}
 
@@ -738,8 +782,15 @@ pca_var_plot(pca_H3K9me3)
 ```
 
 ```{r H3K9me3 PCA}
-pca_H3K9me3 <- pca_H3K9me3$x %>% cbind(., H3K9me3_annomat)
-pca_plot(pca_H3K9me3, col_var = "time", shape_var = "tx", text_var = pca_H3K9me3$ind, title = "H3K9me3 lcpm PCA")
+pca_H3K9me3_df <- data.frame(pca_H3K9me3$x , H3K9me3_annomat)
+pca_plot(
+  pca_H3K9me3,
+  pca_H3K9me3_df,
+  col_var = "time",
+  shape_var = "tx",
+  text_var = "ind",   # <-- string, not vector
+  title = "H3K9me3 filtered lcpm PCA"
+)        
 ```
 
 ```{r H3K9me3 HeatMap 2, fig.width=14,fig.height=14}
@@ -803,7 +854,7 @@ ggVennDiagram(list("24T regions"=genes_H3K36me3_24T,"24R regions"=genes_H3K36me3
 ```{r H3K9me3 Venn}
 ggVennDiagram(list("24T regions"=genes_H3K9me3_24T,"24R regions"=genes_H3K9me3_24R, "144R regions"=genes_H3K9me3_144R))
 ``` 
-```{r future dataframes, eval=TRUE}
+```{r future dataframes, eval=FALSE}
 H3K27ac_toplist <- list("H3K27ac_24T"=H3K27ac_24T$data,"H3K27ac_24R"= H3K27ac_24R$data, "H3K27ac_144R"= H3K27ac_144R$data)
 saveRDS(H3K27ac_toplist, "data/DER_data/H3K27ac_toplist.RDS")
 
