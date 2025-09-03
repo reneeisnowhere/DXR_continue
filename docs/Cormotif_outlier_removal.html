@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-22
+<strong>Last updated:</strong> 2025-09-03
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec146c0aaab71c3ba8d5431ab815bc510e846cab2targetblankc146c0aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree92846f07cf58fc282eca15ccf27bce95775287d6targetblank92846f0a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c146c0aaab71c3ba8d5431ab815bc510e846cab2" target="_blank">c146c0a</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/92846f07cf58fc282eca15ccf27bce95775287d6" target="_blank">92846f0</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec146c0aaab71c3ba8d5431ab815bc510e846cab2targetblankc146c0aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree92846f07cf58fc282eca15ccf27bce95775287d6targetblank92846f0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c146c0aaab71c3ba8d5431ab815bc510e846cab2" target="_blank">c146c0a</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/92846f07cf58fc282eca15ccf27bce95775287d6" target="_blank">92846f0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -562,14 +562,16 @@ Ignored files:
     Ignored:    data/all_peak_final_dataframe.txt
     Ignored:    data/cell_line_info_.tsv
     Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/motif_lists/
     Ignored:    data/number_frag_peaks_summary.txt
 
 Untracked files:
+    Untracked:  analysis/proteomics.Rmd
     Untracked:  code/corMotifcustom.R
     Untracked:  code/making_analysis_file_summary.R
 
 Unstaged changes:
-    Modified:   analysis/final_analysis.Rmd
+    Modified:   analysis/Outlier_removal.Rmd
     Modified:   analysis/multiQC_cut_tag.Rmd
 
 </code></pre>
@@ -616,6 +618,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/92846f07cf58fc282eca15ccf27bce95775287d6/analysis/Cormotif_outlier_removal.Rmd" target="_blank">92846f0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-03
+</td>
+<td>
+wflow_publish("analysis/Cormotif_outlier_removal.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/1e6a88fc9d8e43ffcaef453f0d9143927b6a352b/docs/Cormotif_outlier_removal.html" target="_blank">1e6a88f</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -674,7 +710,8 @@ library(cowplot)
 library(smplot2)
 library(ggVennDiagram)
 library(ggsignif)
-library(BiocParallel)</code></pre>
+library(BiocParallel)
+library(gridExtra)</code></pre>
 <pre class="r"><code>sampleinfo &lt;- read_delim(&quot;data/sample_info.tsv&quot;, delim = &quot;\t&quot;)</code></pre>
 <div id="cormotif-code" class="section level3">
 <h3>Cormotif code</h3>
@@ -1457,14 +1494,14 @@ plotMotifnew&lt;-function(fitted_cormotif,title=&quot;&quot;)
        labels=floor(fitted_cormotif$motif.p*Ng))
 }</code></pre>
 </div>
-<div id="feature-counts" class="section level3">
-<h3>Feature Counts</h3>
-<pre class="r"><code># H3K27ac_merged &lt;- read_delim(&quot;data/peaks/H3K27ac_FINAL_counts.txt&quot;, 
-#     delim = &quot;\t&quot;, escape_double = FALSE, 
-#     trim_ws = TRUE, skip = 1)
-# H3K27me3_merged &lt;- read_delim(&quot;data/peaks/H3K27me3_FINAL_counts.txt&quot;, 
-#     delim = &quot;\t&quot;, escape_double = FALSE, 
-#     trim_ws = TRUE, skip = 1)
+<div id="feature-counts-loading" class="section level3">
+<h3>Feature Counts loading</h3>
+<pre class="r"><code>H3K27ac_merged &lt;- read_delim(&quot;data/peaks/H3K27ac_FINAL_counts.txt&quot;,
+    delim = &quot;\t&quot;, escape_double = FALSE,
+    trim_ws = TRUE, skip = 1)
+H3K27me3_merged &lt;- read_delim(&quot;data/peaks/H3K27me3_FINAL_counts.txt&quot;,
+    delim = &quot;\t&quot;, escape_double = FALSE,
+    trim_ws = TRUE, skip = 1)
 H3K36me3_merged &lt;- read_delim(&quot;data/peaks/H3K36me3_FINAL_counts.txt&quot;, 
     delim = &quot;\t&quot;, escape_double = FALSE, 
     trim_ws = TRUE, skip = 1)
@@ -1478,8 +1515,8 @@ rename_list &lt;- sampleinfo %&gt;%
   mutate(newname=paste0(Individual,&quot;_&quot;,Treatment,&quot;_&quot;,Timepoint)) %&gt;% 
   dplyr::select(oldname,newname)
 rename_vec &lt;- setNames(rename_list$newname, rename_list$oldname)
-# names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)] &lt;- rename_vec[names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)]]
-# names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)] &lt;- rename_vec[names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)]]
+names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)] &lt;- rename_vec[names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)]]
+names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)] &lt;- rename_vec[names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)]]
 names(H3K36me3_merged)[names(H3K36me3_merged) %in% names(rename_vec)] &lt;- rename_vec[names(H3K36me3_merged)[names(H3K36me3_merged) %in% names(rename_vec)]]
 names(H3K9me3_merged)[names(H3K9me3_merged) %in% names(rename_vec)] &lt;- rename_vec[names(H3K9me3_merged)[names(H3K9me3_merged) %in% names(rename_vec)]]</code></pre>
 </div>
@@ -1492,28 +1529,28 @@ H3K9me3_merged&lt;- H3K9me3_merged %&gt;%
   dplyr::select(!Ind1_VEH_24T) %&gt;% 
   dplyr::select(!Ind3_DOX_24T) %&gt;%
   dplyr::select(!Ind5_DOX_144R)</code></pre>
-<pre class="r"><code># H3K27ac_merged_raw &lt;- H3K27ac_merged %&gt;% 
-#   dplyr::select(Geneid,contains(&quot;Ind&quot;)) %&gt;% 
-#   column_to_rownames(&quot;Geneid&quot;) %&gt;% 
-#   as.matrix()
-# H3K27ac_merged_lcpm &lt;- H3K27ac_merged %&gt;% 
-#   dplyr::select(Geneid,contains(&quot;Ind&quot;)) %&gt;% 
-#   column_to_rownames(&quot;Geneid&quot;) %&gt;% 
-#   cpm(., log = TRUE)
-# H3K27ac_merged_cor &lt;- H3K27ac_merged_lcpm %&gt;% 
-#   cor()
+<pre class="r"><code>H3K27ac_merged_raw &lt;- H3K27ac_merged %&gt;%
+  dplyr::select(Geneid,contains(&quot;Ind&quot;)) %&gt;%
+  column_to_rownames(&quot;Geneid&quot;) %&gt;%
+  as.matrix()
+H3K27ac_merged_lcpm &lt;- H3K27ac_merged %&gt;%
+  dplyr::select(Geneid,contains(&quot;Ind&quot;)) %&gt;%
+  column_to_rownames(&quot;Geneid&quot;) %&gt;%
+  cpm(., log = TRUE)
+H3K27ac_merged_cor &lt;- H3K27ac_merged_lcpm %&gt;%
+  cor()
 
 
-# H3K27me3_merged_raw &lt;- H3K27me3_merged %&gt;% 
-#   dplyr::select(Geneid,contains(&quot;Ind&quot;)) %&gt;% 
-#   column_to_rownames(&quot;Geneid&quot;) %&gt;% 
-#   as.matrix()
-# H3K27me3_merged_lcpm &lt;- H3K27me3_merged %&gt;% 
-#   dplyr::select(Geneid,contains(&quot;Ind&quot;)) %&gt;% 
-#   column_to_rownames(&quot;Geneid&quot;) %&gt;% 
-#   cpm(., log = TRUE)
-# H3K27me3_merged_cor &lt;- H3K27me3_merged_lcpm %&gt;% 
-#   cor()
+H3K27me3_merged_raw &lt;- H3K27me3_merged %&gt;%
+  dplyr::select(Geneid,contains(&quot;Ind&quot;)) %&gt;%
+  column_to_rownames(&quot;Geneid&quot;) %&gt;%
+  as.matrix()
+H3K27me3_merged_lcpm &lt;- H3K27me3_merged %&gt;%
+  dplyr::select(Geneid,contains(&quot;Ind&quot;)) %&gt;%
+  column_to_rownames(&quot;Geneid&quot;) %&gt;%
+  cpm(., log = TRUE)
+H3K27me3_merged_cor &lt;- H3K27me3_merged_lcpm %&gt;%
+  cor()
 
 H3K36me3_merged_raw &lt;- H3K36me3_merged %&gt;% 
   dplyr::select(Geneid,contains(&quot;Ind&quot;)) %&gt;% 
@@ -1537,13 +1574,13 @@ H3K9me3_merged_lcpm &lt;- H3K9me3_merged %&gt;%
 H3K9me3_merged_cor &lt;- H3K9me3_merged_lcpm %&gt;% 
   cor()</code></pre>
 <p>Removing chrX and chrY</p>
-<pre class="r"><code># H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_cor)&gt;0,]
-# H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K27ac_merged_raw)),]
-# H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K27ac_merged_raw)),]
-# 
-# H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_cor)&gt;0,]
-# H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K27me3_merged_raw)),]
-# H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K27me3_merged_raw)),]
+<pre class="r"><code>H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_lcpm)&gt;0,]
+H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K27ac_merged_raw)),]
+H3K27ac_merged_raw &lt;- H3K27ac_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K27ac_merged_raw)),]
+
+H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_lcpm)&gt;0,]
+H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K27me3_merged_raw)),]
+H3K27me3_merged_raw &lt;- H3K27me3_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K27me3_merged_raw)),]
 
 
 H3K36me3_merged_raw &lt;- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_lcpm)&gt;0,]
@@ -1555,37 +1592,37 @@ H3K9me3_merged_raw &lt;- H3K9me3_merged_raw[!grepl(&quot;chrY&quot;,rownames(H3K
 H3K9me3_merged_raw &lt;- H3K9me3_merged_raw[!grepl(&quot;chrX&quot;,rownames(H3K9me3_merged_raw)),]</code></pre>
 <div id="setting-up-matrix" class="section level4">
 <h4>Setting up Matrix</h4>
-<pre class="r"><code># H3K27ac_annomat &lt;- data.frame(timeset=colnames(H3K27ac_merged_raw)) %&gt;% 
-#   mutate(sample=timeset) %&gt;% 
-#   separate(timeset, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;% 
-#   mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
-#          time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
-#   mutate(ind = gsub(&quot;Ind&quot;, &quot;&quot;, ind)) %&gt;%
-#   mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;%
-#   mutate(group = txtime)
-# H3K27ac_annomat$group &lt;- H3K27ac_annomat$group %&gt;%
-#   gsub(&quot;DOX_24T&quot;, &quot;1&quot;, .) %&gt;%
-#   gsub(&quot;DOX_24R&quot;, &quot;2&quot;, .) %&gt;%
-#   gsub(&quot;DOX_144R&quot;, &quot;3&quot;, .) %&gt;%
-#   gsub(&quot;VEH_24T&quot;, &quot;4&quot;, .) %&gt;%
-#   gsub(&quot;VEH_24R&quot;, &quot;5&quot;, .) %&gt;%
-#   gsub(&quot;VEH_144R&quot;, &quot;6&quot;, .)
-# 
-# H3K27me3_annomat &lt;- data.frame(timeset=colnames(H3K27me3_merged_raw)) %&gt;% 
-#   mutate(sample=timeset) %&gt;% 
-#   separate(timeset, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;% 
-#   mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
-#          time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
-#   mutate(ind = gsub(&quot;Ind&quot;, &quot;&quot;, ind)) %&gt;%
-#   mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;%
-#   mutate(group = txtime)
-# H3K27me3_annomat$group &lt;- H3K27me3_annomat$group %&gt;%
-#   gsub(&quot;DOX_24T&quot;, &quot;1&quot;, .) %&gt;%
-#   gsub(&quot;DOX_24R&quot;, &quot;2&quot;, .) %&gt;%
-#   gsub(&quot;DOX_144R&quot;, &quot;3&quot;, .) %&gt;%
-#   gsub(&quot;VEH_24T&quot;, &quot;4&quot;, .) %&gt;%
-#   gsub(&quot;VEH_24R&quot;, &quot;5&quot;, .) %&gt;%
-#   gsub(&quot;VEH_144R&quot;, &quot;6&quot;, .)
+<pre class="r"><code>H3K27ac_annomat &lt;- data.frame(timeset=colnames(H3K27ac_merged_raw)) %&gt;%
+  mutate(sample=timeset) %&gt;%
+  separate(timeset, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;%
+  mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
+         time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
+  mutate(ind = gsub(&quot;Ind&quot;, &quot;&quot;, ind)) %&gt;%
+  mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;%
+  mutate(group = txtime)
+H3K27ac_annomat$group &lt;- H3K27ac_annomat$group %&gt;%
+  gsub(&quot;DOX_24T&quot;, &quot;1&quot;, .) %&gt;%
+  gsub(&quot;DOX_24R&quot;, &quot;2&quot;, .) %&gt;%
+  gsub(&quot;DOX_144R&quot;, &quot;3&quot;, .) %&gt;%
+  gsub(&quot;VEH_24T&quot;, &quot;4&quot;, .) %&gt;%
+  gsub(&quot;VEH_24R&quot;, &quot;5&quot;, .) %&gt;%
+  gsub(&quot;VEH_144R&quot;, &quot;6&quot;, .)
+
+H3K27me3_annomat &lt;- data.frame(timeset=colnames(H3K27me3_merged_raw)) %&gt;%
+  mutate(sample=timeset) %&gt;%
+  separate(timeset, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;%
+  mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
+         time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
+  mutate(ind = gsub(&quot;Ind&quot;, &quot;&quot;, ind)) %&gt;%
+  mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;%
+  mutate(group = txtime)
+H3K27me3_annomat$group &lt;- H3K27me3_annomat$group %&gt;%
+  gsub(&quot;DOX_24T&quot;, &quot;1&quot;, .) %&gt;%
+  gsub(&quot;DOX_24R&quot;, &quot;2&quot;, .) %&gt;%
+  gsub(&quot;DOX_144R&quot;, &quot;3&quot;, .) %&gt;%
+  gsub(&quot;VEH_24T&quot;, &quot;4&quot;, .) %&gt;%
+  gsub(&quot;VEH_24R&quot;, &quot;5&quot;, .) %&gt;%
+  gsub(&quot;VEH_144R&quot;, &quot;6&quot;, .)
 
 H3K36me3_annomat &lt;- data.frame(timeset=colnames(H3K36me3_merged_raw)) %&gt;% 
   mutate(sample=timeset) %&gt;% 
@@ -1619,35 +1656,23 @@ H3K9me3_annomat$group &lt;- H3K9me3_annomat$group %&gt;%
   gsub(&quot;VEH_24R&quot;, &quot;5&quot;, .) %&gt;%
   gsub(&quot;VEH_144R&quot;, &quot;6&quot;, .)
 
-# dge_H3K27ac &lt;- edgeR::DGEList(counts = H3K27ac_merged_raw, group = H3K27ac_annomat$group, genes = row.names(H3K27ac_merged_raw))
-# dge_H3K27me3 &lt;- edgeR::DGEList(counts = H3K27me3_merged_raw, group = H3K27me3_annomat$group, genes = row.names(H3K27me3_merged_raw))
+dge_H3K27ac &lt;- edgeR::DGEList(counts = H3K27ac_merged_raw, group = H3K27ac_annomat$group, genes = row.names(H3K27ac_merged_raw))
+dge_H3K27me3 &lt;- edgeR::DGEList(counts = H3K27me3_merged_raw, group = H3K27me3_annomat$group, genes = row.names(H3K27me3_merged_raw))
 dge_H3K36me3 &lt;- edgeR::DGEList(counts = H3K36me3_merged_raw, group = H3K36me3_annomat$group, genes = row.names(H3K36me3_merged_raw))
 dge_H3K9me3 &lt;- edgeR::DGEList(counts = H3K9me3_merged_raw, group = H3K9me3_annomat$group, genes = row.names(H3K9me3_merged_raw))
 
-# dge_H3K27ac &lt;- edgeR::calcNormFactors(dge_H3K27ac)
-# dge_H3K27me3 &lt;- edgeR::calcNormFactors(dge_H3K27me3)
+dge_H3K27ac &lt;- edgeR::calcNormFactors(dge_H3K27ac)
+dge_H3K27me3 &lt;- edgeR::calcNormFactors(dge_H3K27me3)
 dge_H3K36me3 &lt;- edgeR::calcNormFactors(dge_H3K36me3)
-dge_H3K9me3 &lt;- edgeR::calcNormFactors(dge_H3K9me3)
-
-# mm_H3K27ac &lt;- model.matrix(~0 + H3K27ac_annomat$txtime)
-# colnames(mm_H3K27ac) &lt;- H3K27ac_annomat$txtime %&gt;% unique()
-# 
-# mm_H3K27me3 &lt;- model.matrix(~0 + H3K27me3_annomat$txtime)
-# colnames(mm_H3K27me3) &lt;- H3K27me3_annomat$txtime %&gt;% unique()
-# 
-# mm_H3K36me3 &lt;- model.matrix(~0 + H3K36me3_annomat$txtime)
-# colnames(mm_H3K36me3) &lt;- H3K36me3_annomat$txtime %&gt;% unique()
-# 
-# mm_H3K9me3 &lt;- model.matrix(~0 + H3K9me3_annomat$txtime)
-# colnames(mm_H3K9me3) &lt;- H3K9me3_annomat$txtime %&gt;% unique()</code></pre>
+dge_H3K9me3 &lt;- edgeR::calcNormFactors(dge_H3K9me3)</code></pre>
 <p>making comparison and group matrices</p>
-<pre class="r"><code># lcpm_dge_H3K27ac &lt;- cpm(dge_H3K27ac, log = TRUE)
-# lcpm_dge_H3K27me3 &lt;- cpm(dge_H3K27me3, log = TRUE)
+<pre class="r"><code>lcpm_dge_H3K27ac &lt;- cpm(dge_H3K27ac, log = TRUE)
+lcpm_dge_H3K27me3 &lt;- cpm(dge_H3K27me3, log = TRUE)
 lcpm_dge_H3K36me3 &lt;- cpm(dge_H3K36me3, log = TRUE)
 lcpm_dge_H3K9me3 &lt;- cpm(dge_H3K9me3, log = TRUE)
 
-# H3K27ac_group &lt;- H3K27ac_annomat$group
-# H3K27me3_group &lt;- H3K27me3_annomat$group
+H3K27ac_group &lt;- H3K27ac_annomat$group
+H3K27me3_group &lt;- H3K27me3_annomat$group
 H3K36me3_group &lt;- H3K36me3_annomat$group
 H3K9me3_group &lt;- H3K9me3_annomat$group
 
@@ -1665,17 +1690,21 @@ compid</code></pre>
 cormotif_initial_H3K27ac &lt;- cormotiffit(exprs = lcpm_dge_H3K27ac, groupid = H3K27ac_group, compid = compid, K=1:8, max.iter = 500, runtype = &quot;logCPM&quot;)
 
 saveRDS(cormotif_initial_H3K27ac,&quot;data/Cormotif_data/Cormotif_initial_H3K27ac.RDS&quot;)</code></pre>
-<pre class="r"><code>plotIC(cormotif_initial_H3K27ac)
-plotMotif(cormotif_initial_H3K27ac)</code></pre>
-</div>
-<div id="h3k27me3-cormotif" class="section level3">
-<h3>H3K27me3 cormotif</h3>
+<pre class="r"><code>cormotif_initial_H3K27ac &lt;- readRDS(&quot;data/Cormotif_data/Cormotif_initial_H3K27ac.RDS&quot;)
+plotIC(cormotif_initial_H3K27ac)</code></pre>
+<p><img src="figure/Cormotif_outlier_removal.Rmd/H3K27ac%20plots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMotif(cormotif_initial_H3K27ac)</code></pre>
+<p><img src="figure/Cormotif_outlier_removal.Rmd/H3K27ac%20plots-2.png" width="672" style="display: block; margin: auto;" />
+### H3K27me3 cormotif</p>
 <pre class="r"><code>set.seed(31415)
 cormotif_initial_H3K27me3 &lt;- cormotiffit(exprs = lcpm_dge_H3K27me3, groupid = H3K27me3_group, compid = compid, K=1:8, max.iter = 500, runtype = &quot;logCPM&quot;)
 
 saveRDS(cormotif_initial_H3K27me3,&quot;data/Cormotif_data/Cormotif_initial_H3K27me3.RDS&quot;)</code></pre>
-<pre class="r"><code>plotIC(cormotif_initial_H3K27me3)
-plotMotif(cormotif_initial_H3K27me3)</code></pre>
+<pre class="r"><code>cormotif_initial_H3K27me3 &lt;- readRDS(&quot;data/Cormotif_data/Cormotif_initial_H3K27me3.RDS&quot;)
+plotIC(cormotif_initial_H3K27me3)</code></pre>
+<p><img src="figure/Cormotif_outlier_removal.Rmd/H3K27me3%20plots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotMotif(cormotif_initial_H3K27me3)</code></pre>
+<p><img src="figure/Cormotif_outlier_removal.Rmd/H3K27me3%20plots-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="h3k36me3-cormotif" class="section level3">
 <h3>H3K36me3 cormotif</h3>
@@ -1690,10 +1719,121 @@ myColors &lt;-  rev(c(&quot;#FFFFFF&quot;, &quot;#E6E6E6&quot; ,&quot;#CCCCCC&qu
 plot.new()
 legend(&#39;center&#39;,fill=myColors, legend =rev(c(&quot;0&quot;, &quot;0.1&quot;, &quot;0.2&quot;, &quot;0.3&quot;, &quot;0.4&quot;,  &quot;0.5&quot;, &quot;0.6&quot;, &quot;0.7&quot;, &quot;0.8&quot;,&quot;0.9&quot;, &quot;1&quot;)), box.col=&quot;white&quot;,title = &quot;Probability\nlegend&quot;, horiz=FALSE,title.cex=.8)</code></pre>
 <p><img src="figure/Cormotif_outlier_removal.Rmd/H3K36me3%20plots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-plots-1">
+Past versions of "H3K36me3 plots-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-plots-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1e6a88fc9d8e43ffcaef453f0d9143927b6a352b/docs/figure/Cormotif_outlier_removal.Rmd/H3K36me3 plots-1.png" target="_blank">1e6a88f</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotIC(cormotif_initial_H3K36me3)</code></pre>
 <p><img src="figure/Cormotif_outlier_removal.Rmd/H3K36me3%20plots-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-plots-2">
+Past versions of "H3K36me3 plots-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-plots-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1e6a88fc9d8e43ffcaef453f0d9143927b6a352b/docs/figure/Cormotif_outlier_removal.Rmd/H3K36me3 plots-2.png" target="_blank">1e6a88f</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotMotif(cormotif_initial_H3K36me3)</code></pre>
 <p><img src="figure/Cormotif_outlier_removal.Rmd/H3K36me3%20plots-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-plots-3">
+Past versions of "H3K36me3 plots-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-plots-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1e6a88fc9d8e43ffcaef453f0d9143927b6a352b/docs/figure/Cormotif_outlier_removal.Rmd/H3K36me3 plots-3.png" target="_blank">1e6a88f</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="h3k9me3-cormotif" class="section level3">
 <h3>H3K9me3 cormotif</h3>
@@ -1704,8 +1844,456 @@ saveRDS(cormotif_initial_H3K9me3,&quot;data/Cormotif_data/Cormotif_initial_H3K9m
 <pre class="r"><code>cormotif_initial_H3K9me3 &lt;- readRDS(&quot;data/Cormotif_data/Cormotif_initial_H3K9me3_nooutlier.RDS&quot;)
 plotIC(cormotif_initial_H3K9me3)</code></pre>
 <p><img src="figure/Cormotif_outlier_removal.Rmd/H3K9me3%20cormotifplots-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-cormotifplots-1">
+Past versions of "H3K9me3 cormotifplots-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-cormotifplots-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1e6a88fc9d8e43ffcaef453f0d9143927b6a352b/docs/figure/Cormotif_outlier_removal.Rmd/H3K9me3 cormotifplots-1.png" target="_blank">1e6a88f</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotMotif(cormotif_initial_H3K9me3)</code></pre>
 <p><img src="figure/Cormotif_outlier_removal.Rmd/H3K9me3%20cormotifplots-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-cormotifplots-2">
+Past versions of "H3K9me3 cormotifplots-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-cormotifplots-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1e6a88fc9d8e43ffcaef453f0d9143927b6a352b/docs/figure/Cormotif_outlier_removal.Rmd/H3K9me3 cormotifplots-2.png" target="_blank">1e6a88f</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="breaking-into-motif-modules" class="section level4">
+<h4>Breaking into motif modules</h4>
+<pre class="r"><code>row.names(cormotif_initial_H3K27ac$bestmotif$clustlike) &lt;- row.names(lcpm_dge_H3K27ac)
+row.names(cormotif_initial_H3K27ac$bestmotif$p.post) &lt;- row.names(lcpm_dge_H3K27ac)
+
+ row.names(cormotif_initial_H3K27me3$bestmotif$clustlike) &lt;- row.names(lcpm_dge_H3K27me3)
+ row.names(cormotif_initial_H3K27me3$bestmotif$p.post) &lt;- row.names(lcpm_dge_H3K27me3)
+
+row.names(cormotif_initial_H3K36me3$bestmotif$clustlike) &lt;- row.names(lcpm_dge_H3K36me3)
+row.names(cormotif_initial_H3K36me3$bestmotif$p.post) &lt;- row.names(lcpm_dge_H3K36me3)
+
+row.names(cormotif_initial_H3K9me3$bestmotif$clustlike) &lt;- row.names(lcpm_dge_H3K9me3)
+row.names(cormotif_initial_H3K9me3$bestmotif$p.post) &lt;- row.names(lcpm_dge_H3K9me3)</code></pre>
+</div>
+<div id="h3k27ac-motifs" class="section level4">
+<h4>H3K27ac motifs</h4>
+<pre class="r"><code>###goal is to get the intersection between clustlike and p.post
+H3K27ac_motif1 &lt;- cormotif_initial_H3K27ac$bestmotif$clustlike %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&gt;.6 &amp; V2&lt;.5 &amp; V3 &lt;.5) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K27ac_motif1_pp &lt;- cormotif_initial_H3K27ac$bestmotif$p.post %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&lt;.4 &amp; V2&lt;.4 &amp; V3 &lt;.4) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K27ac_motif2 &lt;- cormotif_initial_H3K27ac$bestmotif$clustlike %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&lt;.5 &amp; V2&gt;.6 &amp; V3 &lt;.5) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K27ac_motif2_pp &lt;- cormotif_initial_H3K27ac$bestmotif$p.post %&gt;% 
+  as.data.frame() %&gt;% 
+ dplyr::filter(V1&lt;.6 &amp; V2&gt;.5 &amp; V3 &gt;.5) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K27ac_motif3 &lt;- cormotif_initial_H3K27ac$bestmotif$clustlike %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&lt;.5 &amp; V2&lt;.5 &amp; V3 &gt;.6) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K27ac_motif3_pp &lt;- cormotif_initial_H3K27ac$bestmotif$p.post %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&gt;.9 &amp; V2&gt;.5 &amp; V3 &lt;.5) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+length(intersect(H3K27ac_motif1$Peakid,H3K27ac_motif1_pp$Peakid))</code></pre>
+<pre><code>[1] 110084</code></pre>
+<pre class="r"><code>H3K27ac_set1 &lt;- intersect(H3K27ac_motif1$Peakid,H3K27ac_motif1_pp$Peakid)%&gt;% as.data.frame()
+length(intersect(H3K27ac_motif2$Peakid,H3K27ac_motif2_pp$Peakid))</code></pre>
+<pre><code>[1] 1385</code></pre>
+<pre class="r"><code>H3K27ac_set2 &lt;- intersect(H3K27ac_motif2$Peakid,H3K27ac_motif2_pp$Peakid)%&gt;% as.data.frame()
+length(intersect(H3K27ac_motif3$Peakid,H3K27ac_motif3_pp$Peakid))</code></pre>
+<pre><code>[1] 6623</code></pre>
+<pre class="r"><code>H3K27ac_set3 &lt;- intersect(H3K27ac_motif3$Peakid,H3K27ac_motif3_pp$Peakid) %&gt;% as.data.frame()
+
+length(intersect(H3K27ac_motif1$Peakid,H3K27ac_motif2$Peakid))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>length(intersect(H3K27ac_motif3$Peakid,H3K27ac_motif2$Peakid))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>length(intersect(H3K27ac_motif3$Peakid,H3K27ac_motif2$Peakid))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>write_delim(H3K27ac_set1,&quot;data/motif_lists/H3K27ac_set1.txt&quot;,delim=&quot;\t&quot;)
+write_delim(H3K27ac_set2,&quot;data/motif_lists/H3K27ac_set2.txt&quot;,delim=&quot;\t&quot;)
+write_delim(H3K27ac_set3,&quot;data/motif_lists/H3K27ac_set3.txt&quot;,delim=&quot;\t&quot;)</code></pre>
+</div>
+<div id="h3k27me3-motifs" class="section level4">
+<h4>H3K27me3 motifs</h4>
+<pre class="r"><code>###goal is to get the intersection between clustlike and p.post
+H3K27me3_motif1 &lt;- cormotif_initial_H3K27me3$bestmotif$clustlike %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&gt;.6 &amp; V2&lt;.5) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K27me3_motif1_pp &lt;- cormotif_initial_H3K27me3$bestmotif$p.post %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&lt;.4 &amp; V2&lt;.4 &amp; V3 &lt;.4) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K27me3_motif2 &lt;- cormotif_initial_H3K27me3$bestmotif$clustlike %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&lt;.5 &amp; V2&gt;.6 ) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K27me3_motif2_pp &lt;- cormotif_initial_H3K27me3$bestmotif$p.post %&gt;% 
+  as.data.frame() %&gt;% 
+ dplyr::filter(V1&gt;.7 &amp; V2&gt;.7 &amp; V3 &gt;.7) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+
+length(intersect(H3K27me3_motif1$Peakid,H3K27me3_motif1_pp$Peakid))</code></pre>
+<pre><code>[1] 148911</code></pre>
+<pre class="r"><code>H3K27me3_set1 &lt;- intersect(H3K27me3_motif1$Peakid,H3K27me3_motif1_pp$Peakid)%&gt;% as.data.frame()
+length(intersect(H3K27me3_motif2$Peakid,H3K27me3_motif2_pp$Peakid))</code></pre>
+<pre><code>[1] 235</code></pre>
+<pre class="r"><code>H3K27me3_set2 &lt;- intersect(H3K27me3_motif2$Peakid,H3K27me3_motif2_pp$Peakid)%&gt;% as.data.frame()
+
+length(intersect(H3K27me3_motif1$Peakid,H3K27me3_motif2$Peakid))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>write_delim(H3K27me3_set1,&quot;data/motif_lists/H3K27me3_set1.txt&quot;,delim=&quot;\t&quot;)
+write_delim(H3K27me3_set2,&quot;data/motif_lists/H3K27me3_set2.txt&quot;,delim=&quot;\t&quot;)</code></pre>
+</div>
+<div id="h3k36me3-motifs" class="section level4">
+<h4>H3K36me3 motifs</h4>
+<pre class="r"><code>###goal is to get the intersection between clustlike and p.post
+H3K36me3_motif1 &lt;- cormotif_initial_H3K36me3$bestmotif$clustlike %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&gt;.6 &amp; V2&lt;.5) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K36me3_motif1_pp &lt;- cormotif_initial_H3K36me3$bestmotif$p.post %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&lt;.1 &amp; V2&lt;.1 &amp; V3 &lt;.1) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K36me3_motif2 &lt;- cormotif_initial_H3K36me3$bestmotif$clustlike %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&lt;.5 &amp; V2&gt;.6) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K36me3_motif2_pp &lt;- cormotif_initial_H3K36me3$bestmotif$p.post %&gt;% 
+  as.data.frame() %&gt;% 
+ dplyr::filter(V1&gt;.4 &amp; V2&gt;.4 &amp; V3 &lt;.1) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+
+
+length(intersect(H3K36me3_motif1$Peakid,H3K36me3_motif1_pp$Peakid))</code></pre>
+<pre><code>[1] 131856</code></pre>
+<pre class="r"><code>H3K36me3_set1 &lt;- intersect(H3K36me3_motif1$Peakid,H3K36me3_motif1_pp$Peakid)%&gt;% as.data.frame()
+length(intersect(H3K36me3_motif2$Peakid,H3K36me3_motif2_pp$Peakid))</code></pre>
+<pre><code>[1] 1558</code></pre>
+<pre class="r"><code>H3K36me3_set2 &lt;- intersect(H3K36me3_motif2$Peakid,H3K36me3_motif2_pp$Peakid)%&gt;% as.data.frame()
+
+length(intersect(H3K36me3_motif1$Peakid,H3K36me3_motif2$Peakid))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>write_delim(H3K36me3_set1,&quot;data/motif_lists/H3K36me3_set1.txt&quot;,delim=&quot;\t&quot;)
+write_delim(H3K36me3_set2,&quot;data/motif_lists/H3K36me3_set2.txt&quot;,delim=&quot;\t&quot;)</code></pre>
+</div>
+<div id="h3k9me3-motifs" class="section level4">
+<h4>H3K9me3 motifs</h4>
+<pre class="r"><code>###goal is to get the intersection between clustlike and p.post
+H3K9me3_motif1 &lt;- cormotif_initial_H3K9me3$bestmotif$clustlike %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&gt;.6 &amp; V2&lt;.5 &amp; V3 &lt;.5) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K9me3_motif1_pp &lt;- cormotif_initial_H3K9me3$bestmotif$p.post %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&lt;.4 &amp; V2&lt;.4 &amp; V3 &lt;.4) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K9me3_motif2 &lt;- cormotif_initial_H3K9me3$bestmotif$clustlike %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&lt;.5 &amp; V2&gt;.6 &amp; V3 &lt;.5) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K9me3_motif2_pp &lt;- cormotif_initial_H3K9me3$bestmotif$p.post %&gt;% 
+  as.data.frame() %&gt;% 
+ dplyr::filter(V1&gt;.8 &amp; V2&lt;.5 &amp; V3 &lt;.5) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K9me3_motif3 &lt;- cormotif_initial_H3K9me3$bestmotif$clustlike %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&lt;.5 &amp; V2&lt;.5 &amp; V3 &gt;.6) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+H3K9me3_motif3_pp &lt;- cormotif_initial_H3K9me3$bestmotif$p.post %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::filter(V1&gt;.9 &amp; V2&gt;.9 &amp; V3 &gt;.3) %&gt;% 
+  rownames_to_column(&quot;Peakid&quot;)
+
+length(intersect(H3K9me3_motif1$Peakid,H3K9me3_motif1_pp$Peakid))</code></pre>
+<pre><code>[1] 196147</code></pre>
+<pre class="r"><code>H3K9me3_set1 &lt;- intersect(H3K9me3_motif1$Peakid,H3K9me3_motif1_pp$Peakid)%&gt;% as.data.frame()
+length(intersect(H3K9me3_motif2$Peakid,H3K9me3_motif2_pp$Peakid))</code></pre>
+<pre><code>[1] 3494</code></pre>
+<pre class="r"><code>H3K9me3_set2 &lt;- intersect(H3K9me3_motif2$Peakid,H3K9me3_motif2_pp$Peakid)%&gt;% as.data.frame()
+length(intersect(H3K9me3_motif3$Peakid,H3K9me3_motif3_pp$Peakid))</code></pre>
+<pre><code>[1] 989</code></pre>
+<pre class="r"><code>H3K9me3_set3 &lt;- intersect(H3K9me3_motif3$Peakid,H3K9me3_motif3_pp$Peakid)%&gt;% as.data.frame()
+
+length(intersect(H3K9me3_motif1$Peakid,H3K9me3_motif2$Peakid))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>length(intersect(H3K9me3_motif3$Peakid,H3K9me3_motif2$Peakid))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>length(intersect(H3K9me3_motif3$Peakid,H3K9me3_motif2$Peakid))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>write_delim(H3K9me3_set1,&quot;data/motif_lists/H3K9me3_set1.txt&quot;,delim=&quot;\t&quot;)
+write_delim(H3K9me3_set2,&quot;data/motif_lists/H3K9me3_set2.txt&quot;,delim=&quot;\t&quot;)
+write_delim(H3K9me3_set3,&quot;data/motif_lists/H3K9me3_set3.txt&quot;,delim=&quot;\t&quot;)</code></pre>
+</div>
+</div>
+<div id="looking-at-pc-contributions-to-variation"
+class="section level3">
+<h3>Looking at PC contributions to variation</h3>
+<pre class="r"><code>pca_plot_new &lt;- function(df, pc_x = 1, pc_y = 2, col_var, shape_var, pca_obj, title = &quot;&quot;) {
+  # variance explained
+  var_expl &lt;- (pca_obj$sdev^2) / sum(pca_obj$sdev^2)
+  
+  # axis labels
+  x_lab &lt;- sprintf(&quot;PC%d (%.1f%%)&quot;, pc_x, var_expl[pc_x] * 100)
+  y_lab &lt;- sprintf(&quot;PC%d (%.1f%%)&quot;, pc_y, var_expl[pc_y] * 100)
+  
+  ggplot(df, aes(x = .data[[paste0(&quot;PC&quot;, pc_x)]], 
+                 y = .data[[paste0(&quot;PC&quot;, pc_y)]], 
+                 color = !!sym(col_var), 
+                 shape = !!sym(shape_var))) +
+    geom_point(size = 5) +
+    labs(title = title, x = x_lab, y = y_lab) +
+    scale_color_manual(values = c(
+      &quot;#8B006D&quot;,&quot;#DF707E&quot;,&quot;#F1B72B&quot;,
+      &quot;#3386DD&quot;,&quot;#707031&quot;,&quot;#41B333&quot;
+    ))
+}
+pca_plot &lt;-
+  function(df, col_var = NULL, shape_var = NULL, title = &quot;&quot;) {
+    ggplot(df) + geom_point(aes(
+      x = PC1,
+      y = PC2,
+      color = col_var,
+      shape = shape_var
+    ),
+    size = 5) +
+      labs(title = title, x = &quot;PC 1&quot;, y = &quot;PC 2&quot;) +
+      scale_color_manual(values = c(
+        &quot;#8B006D&quot;,
+        &quot;#DF707E&quot;,
+        &quot;#F1B72B&quot;,
+        &quot;#3386DD&quot;,
+        &quot;#707031&quot;,
+        &quot;#41B333&quot;
+      ))
+  }
+get_regr_pval &lt;- function(mod) {
+  # Returns the p-value for the Fstatistic of a linear model
+  # mod: class lm
+  stopifnot(class(mod) == &quot;lm&quot;)
+  fstat &lt;- summary(mod)$fstatistic
+  pval &lt;- 1 - pf(fstat[1], fstat[2], fstat[3])
+  return(pval)
+}
+
+plot_versus_pc &lt;- function(df, pc_num, fac) {
+  # df: data.frame
+  # pc_num: numeric, specific PC for plotting
+  # fac: column name of df for plotting against PC
+  pc_char &lt;- paste0(&quot;PC&quot;, pc_num)
+  # Calculate F-statistic p-value for linear model
+  pval &lt;- get_regr_pval(lm(df[[ pc_char]] ~ df[[ fac]]))
+  if (is.numeric(df[, fac])) {
+    ggplot(df, aes_string(x = fac, y = pc_char)) + geom_point() +
+      geom_smooth(method = &quot;lm&quot;) + labs(title = sprintf(&quot;p-val: %.2f&quot;, pval))
+  } else {
+    ggplot(df, aes_string(x = fac, y = pc_char)) + geom_boxplot() +
+      labs(title = sprintf(&quot;p-val: %.3f&quot;, pval))
+  }
+}</code></pre>
+<div id="h3k27ac-contribution" class="section level4">
+<h4>H3K27ac contribution</h4>
+<pre class="r"><code>H3K27ac_pr &lt;- prcomp(t(lcpm_dge_H3K27ac)) 
+
+H3K27ac_pr_anno &lt;- H3K27ac_pr$x %&gt;% 
+  as.data.frame() %&gt;% 
+  rownames_to_column(&quot;sample&quot;) %&gt;% 
+  separate(sample, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;%
+  mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
+         time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
+  mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;% 
+  mutate(sex=if_else(ind %in% c(&quot;Ind1&quot;,&quot;Ind2&quot;),&quot;F&quot;,&quot;M&quot;))%&gt;% 
+  mutate(sex=factor(sex, levels=c(&quot;F&quot;,&quot;M&quot;)))
+
+
+facs &lt;- c(&quot;ind&quot;, &quot;tx&quot;, &quot;time&quot;, &quot;sex&quot;)
+names(facs) &lt;- c(&quot;Individual&quot;, &quot;Treatment&quot;, &quot;Time&quot;,&quot;Sex&quot;)
+
+plots_H3K27ac &lt;- lapply(names(facs), function(f_label) {
+  f &lt;- facs[f_label]
+  f_v_pc1 &lt;- plot_versus_pc(H3K27ac_pr_anno, 1, f)
+  f_v_pc2 &lt;- plot_versus_pc(H3K27ac_pr_anno, 2, f)
+  f_v_pc3 &lt;- plot_versus_pc(H3K27ac_pr_anno, 3, f)
+  f_v_pc4 &lt;- plot_versus_pc(H3K27ac_pr_anno, 4, f)
+
+  grid.arrange(f_v_pc1, f_v_pc2, f_v_pc3,f_v_pc4, ncol = 2, top = paste0(f_label,&quot; H3K27ac&quot;))
+})</code></pre>
+<p><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K27ac-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K27ac-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K27ac-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K27ac-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="h3k27me-contrib." class="section level4">
+<h4>H3K27me contrib.</h4>
+<pre class="r"><code>H3K27me3_pr &lt;- prcomp(t(lcpm_dge_H3K27me3)) 
+
+H3K27me3_pr_anno &lt;- H3K27me3_pr$x %&gt;% 
+  as.data.frame() %&gt;% 
+  rownames_to_column(&quot;sample&quot;) %&gt;% 
+  separate(sample, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;%
+  mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
+         time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
+  mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;% 
+  mutate(sex=if_else(ind %in% c(&quot;Ind1&quot;,&quot;Ind2&quot;),&quot;F&quot;,&quot;M&quot;))%&gt;% 
+  mutate(sex=factor(sex, levels=c(&quot;F&quot;,&quot;M&quot;)))
+
+
+facs &lt;- c(&quot;ind&quot;, &quot;tx&quot;, &quot;time&quot;, &quot;sex&quot;)
+names(facs) &lt;- c(&quot;Individual&quot;, &quot;Treatment&quot;, &quot;Time&quot;,&quot;Sex&quot;)
+
+plots_H3K27me3 &lt;- lapply(names(facs), function(f_label) {
+  f &lt;- facs[f_label]
+  f_v_pc1 &lt;- plot_versus_pc(H3K27me3_pr_anno, 1, f)
+  f_v_pc2 &lt;- plot_versus_pc(H3K27me3_pr_anno, 2, f)
+  f_v_pc3 &lt;- plot_versus_pc(H3K27me3_pr_anno, 3, f)
+  f_v_pc4 &lt;- plot_versus_pc(H3K27me3_pr_anno, 4, f)
+
+  grid.arrange(f_v_pc1, f_v_pc2, f_v_pc3,f_v_pc4, ncol = 2, top = paste0(f_label,&quot; H3K27me3&quot;))
+})</code></pre>
+<p><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K27me3-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K27me3-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K27me3-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K27me3-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="h3k36me3-contrib." class="section level4">
+<h4>H3K36me3 contrib.</h4>
+<pre class="r"><code>H3K36me3_pr &lt;- prcomp(t(lcpm_dge_H3K36me3)) 
+
+H3K36me3_pr_anno &lt;- H3K36me3_pr$x %&gt;% 
+  as.data.frame() %&gt;% 
+  rownames_to_column(&quot;sample&quot;) %&gt;% 
+  separate(sample, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;%
+  mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
+         time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
+  mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;% 
+  mutate(sex=if_else(ind %in% c(&quot;Ind1&quot;,&quot;Ind2&quot;),&quot;F&quot;,&quot;M&quot;))%&gt;% 
+  mutate(sex=factor(sex, levels=c(&quot;F&quot;,&quot;M&quot;)))
+
+
+facs &lt;- c(&quot;ind&quot;, &quot;tx&quot;, &quot;time&quot;, &quot;sex&quot;)
+names(facs) &lt;- c(&quot;Individual&quot;, &quot;Treatment&quot;, &quot;Time&quot;,&quot;Sex&quot;)
+
+plots_H3K36me3 &lt;- lapply(names(facs), function(f_label) {
+  f &lt;- facs[f_label]
+  f_v_pc1 &lt;- plot_versus_pc(H3K36me3_pr_anno, 1, f)
+  f_v_pc2 &lt;- plot_versus_pc(H3K36me3_pr_anno, 2, f)
+  f_v_pc3 &lt;- plot_versus_pc(H3K36me3_pr_anno, 3, f)
+  f_v_pc4 &lt;- plot_versus_pc(H3K36me3_pr_anno, 4, f)
+
+  grid.arrange(f_v_pc1, f_v_pc2, f_v_pc3, f_v_pc4, ncol = 2, top = paste0(f_label,&quot; H3K36me3&quot;))
+})</code></pre>
+<p><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K36me3-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K36me3-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K36me3-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K36me3-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="h3k9me3" class="section level4">
+<h4>H3K9me3</h4>
+<pre class="r"><code>H3K9me3_pr &lt;- prcomp(t(lcpm_dge_H3K9me3)) 
+
+H3K9me3_pr_anno &lt;- H3K9me3_pr$x %&gt;% 
+  as.data.frame() %&gt;% 
+  rownames_to_column(&quot;sample&quot;) %&gt;% 
+  separate(sample, into = c(&quot;ind&quot;,&quot;tx&quot;,&quot;time&quot;)) %&gt;%
+  mutate(tx=factor(tx, levels = c(&quot;VEH&quot;, &quot;DOX&quot;)),
+         time=factor(time, levels =c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))) %&gt;%
+  mutate(txtime = paste0(tx, &quot;_&quot;, time)) %&gt;% 
+  mutate(sex=if_else(ind %in% c(&quot;Ind1&quot;,&quot;Ind2&quot;),&quot;F&quot;,&quot;M&quot;))%&gt;% 
+  mutate(sex=factor(sex, levels=c(&quot;F&quot;,&quot;M&quot;)))
+
+
+facs &lt;- c(&quot;ind&quot;, &quot;tx&quot;, &quot;time&quot;, &quot;sex&quot;)
+names(facs) &lt;- c(&quot;Individual&quot;, &quot;Treatment&quot;, &quot;Time&quot;,&quot;Sex&quot;)
+
+plots_H3K9me3 &lt;- lapply(names(facs), function(f_label) {
+  f &lt;- facs[f_label]
+  f_v_pc1 &lt;- plot_versus_pc(H3K9me3_pr_anno, 1, f)
+  f_v_pc2 &lt;- plot_versus_pc(H3K9me3_pr_anno, 2, f)
+  f_v_pc3 &lt;- plot_versus_pc(H3K9me3_pr_anno, 3, f)
+  f_v_pc4 &lt;- plot_versus_pc(H3K9me3_pr_anno, 4, f)
+
+  grid.arrange(f_v_pc1, f_v_pc2, f_v_pc3,f_v_pc4, ncol = 2, top = paste0(f_label,&quot; H3K9me3&quot;))
+})</code></pre>
+<p><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K9me3-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K9me3-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K9me3-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Cormotif_outlier_removal.Rmd/Looking%20at%20H3K9me3-4.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1737,19 +2325,19 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] BiocParallel_1.40.2   ggsignif_0.6.4        ggVennDiagram_1.5.4  
- [4] smplot2_0.2.5         cowplot_1.2.0         ggrastr_1.0.2        
- [7] Rsubread_2.20.0       gcplyr_1.12.0         ggpmisc_0.6.2        
-[10] ggpp_0.5.9            corrplot_0.95         ggpubr_0.6.1         
-[13] GenomicRanges_1.58.0  GenomeInfoDb_1.42.3   IRanges_2.40.1       
-[16] S4Vectors_0.44.0      BiocGenerics_0.52.0   genomation_1.38.0    
-[19] kableExtra_1.4.0      DT_0.33               viridis_0.6.5        
-[22] viridisLite_0.4.2     data.table_1.17.8     ComplexHeatmap_2.22.0
-[25] edgeR_4.4.2           limma_3.62.2          lubridate_1.9.4      
-[28] forcats_1.0.0         stringr_1.5.1         dplyr_1.1.4          
-[31] purrr_1.1.0           readr_2.1.5           tidyr_1.3.1          
-[34] tibble_3.3.0          ggplot2_3.5.2         tidyverse_2.0.0      
-[37] workflowr_1.7.1      
+ [1] gridExtra_2.3         BiocParallel_1.40.2   ggsignif_0.6.4       
+ [4] ggVennDiagram_1.5.4   smplot2_0.2.5         cowplot_1.2.0        
+ [7] ggrastr_1.0.2         Rsubread_2.20.0       gcplyr_1.12.0        
+[10] ggpmisc_0.6.2         ggpp_0.5.9            corrplot_0.95        
+[13] ggpubr_0.6.1          GenomicRanges_1.58.0  GenomeInfoDb_1.42.3  
+[16] IRanges_2.40.1        S4Vectors_0.44.0      BiocGenerics_0.52.0  
+[19] genomation_1.38.0     kableExtra_1.4.0      DT_0.33              
+[22] viridis_0.6.5         viridisLite_0.4.2     data.table_1.17.8    
+[25] ComplexHeatmap_2.22.0 edgeR_4.4.2           limma_3.62.2         
+[28] lubridate_1.9.4       forcats_1.0.0         stringr_1.5.1        
+[31] dplyr_1.1.4           purrr_1.1.0           readr_2.1.5          
+[34] tidyr_1.3.1           tibble_3.3.0          ggplot2_3.5.2        
+[37] tidyverse_2.0.0       workflowr_1.7.1      
 
 loaded via a namespace (and not attached):
   [1] splines_4.4.2               later_1.4.2                
@@ -1778,37 +2366,37 @@ loaded via a namespace (and not attached):
  [47] survival_3.8-3              iterators_1.0.14           
  [49] systemfonts_1.2.3           foreach_1.5.2              
  [51] tools_4.4.2                 Rcpp_1.1.0                 
- [53] glue_1.8.0                  gridExtra_2.3              
- [55] SparseArray_1.6.2           xfun_0.52                  
- [57] MatrixGenerics_1.18.1       withr_3.0.2                
- [59] fastmap_1.2.0               SparseM_1.84-2             
- [61] callr_3.7.6                 digest_0.6.37              
- [63] timechange_0.3.0            R6_2.6.1                   
- [65] seqPattern_1.38.0           textshaping_1.0.1          
- [67] colorspace_2.1-1            dichromat_2.0-0.1          
- [69] generics_0.1.4              rtracklayer_1.66.0         
- [71] httr_1.4.7                  htmlwidgets_1.6.4          
- [73] S4Arrays_1.6.0              whisker_0.4.1              
- [75] pkgconfig_2.0.3             gtable_0.3.6               
- [77] impute_1.80.0               XVector_0.46.0             
- [79] htmltools_0.5.8.1           carData_3.0-5              
- [81] pwr_1.3-0                   clue_0.3-66                
- [83] scales_1.4.0                Biobase_2.66.0             
- [85] png_0.1-8                   knitr_1.50                 
- [87] rstudioapi_0.17.1           tzdb_0.5.0                 
- [89] reshape2_1.4.4              rjson_0.2.23               
- [91] checkmate_2.3.3             curl_7.0.0                 
- [93] zoo_1.8-14                  cachem_1.1.0               
- [95] GlobalOptions_0.1.2         KernSmooth_2.23-26         
- [97] parallel_4.4.2              vipor_0.4.7                
- [99] foreign_0.8-90              restfulr_0.0.16            
-[101] pillar_1.11.0               vctrs_0.6.5                
-[103] promises_1.3.3              car_3.1-3                  
-[105] cluster_2.1.8.1             htmlTable_2.4.3            
-[107] beeswarm_0.4.0              evaluate_1.0.4             
-[109] cli_3.6.5                   locfit_1.5-9.12            
-[111] compiler_4.4.2              Rsamtools_2.22.0           
-[113] rlang_1.1.6                 crayon_1.5.3               
+ [53] glue_1.8.0                  SparseArray_1.6.2          
+ [55] xfun_0.52                   MatrixGenerics_1.18.1      
+ [57] withr_3.0.2                 fastmap_1.2.0              
+ [59] SparseM_1.84-2              callr_3.7.6                
+ [61] digest_0.6.37               timechange_0.3.0           
+ [63] R6_2.6.1                    seqPattern_1.38.0          
+ [65] textshaping_1.0.1           colorspace_2.1-1           
+ [67] dichromat_2.0-0.1           generics_0.1.4             
+ [69] rtracklayer_1.66.0          httr_1.4.7                 
+ [71] htmlwidgets_1.6.4           S4Arrays_1.6.0             
+ [73] whisker_0.4.1               pkgconfig_2.0.3            
+ [75] gtable_0.3.6                impute_1.80.0              
+ [77] XVector_0.46.0              htmltools_0.5.8.1          
+ [79] carData_3.0-5               pwr_1.3-0                  
+ [81] clue_0.3-66                 scales_1.4.0               
+ [83] Biobase_2.66.0              png_0.1-8                  
+ [85] knitr_1.50                  rstudioapi_0.17.1          
+ [87] tzdb_0.5.0                  reshape2_1.4.4             
+ [89] rjson_0.2.23                checkmate_2.3.3            
+ [91] curl_7.0.0                  zoo_1.8-14                 
+ [93] cachem_1.1.0                GlobalOptions_0.1.2        
+ [95] KernSmooth_2.23-26          parallel_4.4.2             
+ [97] vipor_0.4.7                 foreign_0.8-90             
+ [99] restfulr_0.0.16             pillar_1.11.0              
+[101] vctrs_0.6.5                 promises_1.3.3             
+[103] car_3.1-3                   cluster_2.1.8.1            
+[105] htmlTable_2.4.3             beeswarm_0.4.0             
+[107] evaluate_1.0.4              cli_3.6.5                  
+[109] locfit_1.5-9.12             compiler_4.4.2             
+[111] Rsamtools_2.22.0            rlang_1.1.6                
+[113] crayon_1.5.3                labeling_0.4.3             
 [115] ps_1.9.1                    getPass_0.2-4              
 [117] plyr_1.8.9                  fs_1.6.6                   
 [119] ggbeeswarm_0.7.2            stringi_1.8.7              
@@ -1819,6 +2407,7 @@ loaded via a namespace (and not attached):
 [129] statmod_1.5.0               SummarizedExperiment_1.36.0
 [131] broom_1.0.9                 bslib_0.9.0                
 [133] bit_4.6.0                   polynom_1.4-1              </code></pre>
+</div>
 </div>
 </div>
 </div>
