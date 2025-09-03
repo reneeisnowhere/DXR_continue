@@ -51,6 +51,7 @@ library(smplot2)
 library(ggVennDiagram)
 library(ggsignif)
 library(BiocParallel)
+library(gridExtra)
 
 ```
 
@@ -65,15 +66,16 @@ sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
 ```
 
 
-### Feature Counts 
+### Feature Counts loading  
+
 
 ```{r feature_cts}
-# H3K27ac_merged <- read_delim("data/peaks/H3K27ac_FINAL_counts.txt", 
-#     delim = "\t", escape_double = FALSE, 
-#     trim_ws = TRUE, skip = 1)
-# H3K27me3_merged <- read_delim("data/peaks/H3K27me3_FINAL_counts.txt", 
-#     delim = "\t", escape_double = FALSE, 
-#     trim_ws = TRUE, skip = 1)
+H3K27ac_merged <- read_delim("data/peaks/H3K27ac_FINAL_counts.txt",
+    delim = "\t", escape_double = FALSE,
+    trim_ws = TRUE, skip = 1)
+H3K27me3_merged <- read_delim("data/peaks/H3K27me3_FINAL_counts.txt",
+    delim = "\t", escape_double = FALSE,
+    trim_ws = TRUE, skip = 1)
 H3K36me3_merged <- read_delim("data/peaks/H3K36me3_FINAL_counts.txt", 
     delim = "\t", escape_double = FALSE, 
     trim_ws = TRUE, skip = 1)
@@ -87,8 +89,8 @@ rename_list <- sampleinfo %>%
   mutate(newname=paste0(Individual,"_",Treatment,"_",Timepoint)) %>% 
   dplyr::select(oldname,newname)
 rename_vec <- setNames(rename_list$newname, rename_list$oldname)
-# names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)] <- rename_vec[names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)]]
-# names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)]]
+names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)] <- rename_vec[names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)]]
+names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K27me3_merged)[names(H3K27me3_merged) %in% names(rename_vec)]]
 names(H3K36me3_merged)[names(H3K36me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K36me3_merged)[names(H3K36me3_merged) %in% names(rename_vec)]]
 names(H3K9me3_merged)[names(H3K9me3_merged) %in% names(rename_vec)] <- rename_vec[names(H3K9me3_merged)[names(H3K9me3_merged) %in% names(rename_vec)]]
 ```
@@ -106,28 +108,28 @@ H3K9me3_merged<- H3K9me3_merged %>%
 ```
 
 ```{r making merged raw lcpm}
-# H3K27ac_merged_raw <- H3K27ac_merged %>% 
-#   dplyr::select(Geneid,contains("Ind")) %>% 
-#   column_to_rownames("Geneid") %>% 
-#   as.matrix()
-# H3K27ac_merged_lcpm <- H3K27ac_merged %>% 
-#   dplyr::select(Geneid,contains("Ind")) %>% 
-#   column_to_rownames("Geneid") %>% 
-#   cpm(., log = TRUE)
-# H3K27ac_merged_cor <- H3K27ac_merged_lcpm %>% 
-#   cor()
+H3K27ac_merged_raw <- H3K27ac_merged %>%
+  dplyr::select(Geneid,contains("Ind")) %>%
+  column_to_rownames("Geneid") %>%
+  as.matrix()
+H3K27ac_merged_lcpm <- H3K27ac_merged %>%
+  dplyr::select(Geneid,contains("Ind")) %>%
+  column_to_rownames("Geneid") %>%
+  cpm(., log = TRUE)
+H3K27ac_merged_cor <- H3K27ac_merged_lcpm %>%
+  cor()
 
 
-# H3K27me3_merged_raw <- H3K27me3_merged %>% 
-#   dplyr::select(Geneid,contains("Ind")) %>% 
-#   column_to_rownames("Geneid") %>% 
-#   as.matrix()
-# H3K27me3_merged_lcpm <- H3K27me3_merged %>% 
-#   dplyr::select(Geneid,contains("Ind")) %>% 
-#   column_to_rownames("Geneid") %>% 
-#   cpm(., log = TRUE)
-# H3K27me3_merged_cor <- H3K27me3_merged_lcpm %>% 
-#   cor()
+H3K27me3_merged_raw <- H3K27me3_merged %>%
+  dplyr::select(Geneid,contains("Ind")) %>%
+  column_to_rownames("Geneid") %>%
+  as.matrix()
+H3K27me3_merged_lcpm <- H3K27me3_merged %>%
+  dplyr::select(Geneid,contains("Ind")) %>%
+  column_to_rownames("Geneid") %>%
+  cpm(., log = TRUE)
+H3K27me3_merged_cor <- H3K27me3_merged_lcpm %>%
+  cor()
 
 H3K36me3_merged_raw <- H3K36me3_merged %>% 
   dplyr::select(Geneid,contains("Ind")) %>% 
@@ -157,13 +159,13 @@ Removing chrX and chrY
 ```{r filtering x and Y}
 
 
-# H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_cor)>0,]
-# H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrY",rownames(H3K27ac_merged_raw)),]
-# H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrX",rownames(H3K27ac_merged_raw)),]
-# 
-# H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_cor)>0,]
-# H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrY",rownames(H3K27me3_merged_raw)),]
-# H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrX",rownames(H3K27me3_merged_raw)),]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_lcpm)>0,]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrY",rownames(H3K27ac_merged_raw)),]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrX",rownames(H3K27ac_merged_raw)),]
+
+H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_lcpm)>0,]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrY",rownames(H3K27me3_merged_raw)),]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrX",rownames(H3K27me3_merged_raw)),]
 
 
 H3K36me3_merged_raw <- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_lcpm)>0,]
@@ -177,37 +179,37 @@ H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrX",rownames(H3K9me3_merged_r
 
 #### Setting up Matrix
 ```{r matrix}
-# H3K27ac_annomat <- data.frame(timeset=colnames(H3K27ac_merged_raw)) %>% 
-#   mutate(sample=timeset) %>% 
-#   separate(timeset, into = c("ind","tx","time")) %>% 
-#   mutate(tx=factor(tx, levels = c("VEH", "DOX")),
-#          time=factor(time, levels =c("24T","24R","144R"))) %>%
-#   mutate(ind = gsub("Ind", "", ind)) %>%
-#   mutate(txtime = paste0(tx, "_", time)) %>%
-#   mutate(group = txtime)
-# H3K27ac_annomat$group <- H3K27ac_annomat$group %>%
-#   gsub("DOX_24T", "1", .) %>%
-#   gsub("DOX_24R", "2", .) %>%
-#   gsub("DOX_144R", "3", .) %>%
-#   gsub("VEH_24T", "4", .) %>%
-#   gsub("VEH_24R", "5", .) %>%
-#   gsub("VEH_144R", "6", .)
-# 
-# H3K27me3_annomat <- data.frame(timeset=colnames(H3K27me3_merged_raw)) %>% 
-#   mutate(sample=timeset) %>% 
-#   separate(timeset, into = c("ind","tx","time")) %>% 
-#   mutate(tx=factor(tx, levels = c("VEH", "DOX")),
-#          time=factor(time, levels =c("24T","24R","144R"))) %>%
-#   mutate(ind = gsub("Ind", "", ind)) %>%
-#   mutate(txtime = paste0(tx, "_", time)) %>%
-#   mutate(group = txtime)
-# H3K27me3_annomat$group <- H3K27me3_annomat$group %>%
-#   gsub("DOX_24T", "1", .) %>%
-#   gsub("DOX_24R", "2", .) %>%
-#   gsub("DOX_144R", "3", .) %>%
-#   gsub("VEH_24T", "4", .) %>%
-#   gsub("VEH_24R", "5", .) %>%
-#   gsub("VEH_144R", "6", .)
+H3K27ac_annomat <- data.frame(timeset=colnames(H3K27ac_merged_raw)) %>%
+  mutate(sample=timeset) %>%
+  separate(timeset, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(ind = gsub("Ind", "", ind)) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>%
+  mutate(group = txtime)
+H3K27ac_annomat$group <- H3K27ac_annomat$group %>%
+  gsub("DOX_24T", "1", .) %>%
+  gsub("DOX_24R", "2", .) %>%
+  gsub("DOX_144R", "3", .) %>%
+  gsub("VEH_24T", "4", .) %>%
+  gsub("VEH_24R", "5", .) %>%
+  gsub("VEH_144R", "6", .)
+
+H3K27me3_annomat <- data.frame(timeset=colnames(H3K27me3_merged_raw)) %>%
+  mutate(sample=timeset) %>%
+  separate(timeset, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(ind = gsub("Ind", "", ind)) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>%
+  mutate(group = txtime)
+H3K27me3_annomat$group <- H3K27me3_annomat$group %>%
+  gsub("DOX_24T", "1", .) %>%
+  gsub("DOX_24R", "2", .) %>%
+  gsub("DOX_144R", "3", .) %>%
+  gsub("VEH_24T", "4", .) %>%
+  gsub("VEH_24R", "5", .) %>%
+  gsub("VEH_144R", "6", .)
 
 H3K36me3_annomat <- data.frame(timeset=colnames(H3K36me3_merged_raw)) %>% 
   mutate(sample=timeset) %>% 
@@ -241,39 +243,29 @@ H3K9me3_annomat$group <- H3K9me3_annomat$group %>%
   gsub("VEH_24R", "5", .) %>%
   gsub("VEH_144R", "6", .)
 
-# dge_H3K27ac <- edgeR::DGEList(counts = H3K27ac_merged_raw, group = H3K27ac_annomat$group, genes = row.names(H3K27ac_merged_raw))
-# dge_H3K27me3 <- edgeR::DGEList(counts = H3K27me3_merged_raw, group = H3K27me3_annomat$group, genes = row.names(H3K27me3_merged_raw))
+dge_H3K27ac <- edgeR::DGEList(counts = H3K27ac_merged_raw, group = H3K27ac_annomat$group, genes = row.names(H3K27ac_merged_raw))
+dge_H3K27me3 <- edgeR::DGEList(counts = H3K27me3_merged_raw, group = H3K27me3_annomat$group, genes = row.names(H3K27me3_merged_raw))
 dge_H3K36me3 <- edgeR::DGEList(counts = H3K36me3_merged_raw, group = H3K36me3_annomat$group, genes = row.names(H3K36me3_merged_raw))
 dge_H3K9me3 <- edgeR::DGEList(counts = H3K9me3_merged_raw, group = H3K9me3_annomat$group, genes = row.names(H3K9me3_merged_raw))
 
-# dge_H3K27ac <- edgeR::calcNormFactors(dge_H3K27ac)
-# dge_H3K27me3 <- edgeR::calcNormFactors(dge_H3K27me3)
+dge_H3K27ac <- edgeR::calcNormFactors(dge_H3K27ac)
+dge_H3K27me3 <- edgeR::calcNormFactors(dge_H3K27me3)
 dge_H3K36me3 <- edgeR::calcNormFactors(dge_H3K36me3)
 dge_H3K9me3 <- edgeR::calcNormFactors(dge_H3K9me3)
 
-# mm_H3K27ac <- model.matrix(~0 + H3K27ac_annomat$txtime)
-# colnames(mm_H3K27ac) <- H3K27ac_annomat$txtime %>% unique()
-# 
-# mm_H3K27me3 <- model.matrix(~0 + H3K27me3_annomat$txtime)
-# colnames(mm_H3K27me3) <- H3K27me3_annomat$txtime %>% unique()
-# 
-# mm_H3K36me3 <- model.matrix(~0 + H3K36me3_annomat$txtime)
-# colnames(mm_H3K36me3) <- H3K36me3_annomat$txtime %>% unique()
-# 
-# mm_H3K9me3 <- model.matrix(~0 + H3K9me3_annomat$txtime)
-# colnames(mm_H3K9me3) <- H3K9me3_annomat$txtime %>% unique()
+
 ```
 
 
 making comparison and group matrices
 ```{r compid and groupid}
-# lcpm_dge_H3K27ac <- cpm(dge_H3K27ac, log = TRUE)
-# lcpm_dge_H3K27me3 <- cpm(dge_H3K27me3, log = TRUE)
+lcpm_dge_H3K27ac <- cpm(dge_H3K27ac, log = TRUE)
+lcpm_dge_H3K27me3 <- cpm(dge_H3K27me3, log = TRUE)
 lcpm_dge_H3K36me3 <- cpm(dge_H3K36me3, log = TRUE)
 lcpm_dge_H3K9me3 <- cpm(dge_H3K9me3, log = TRUE)
 
-# H3K27ac_group <- H3K27ac_annomat$group
-# H3K27me3_group <- H3K27me3_annomat$group
+H3K27ac_group <- H3K27ac_annomat$group
+H3K27me3_group <- H3K27me3_annomat$group
 H3K36me3_group <- H3K36me3_annomat$group
 H3K9me3_group <- H3K9me3_annomat$group
 
@@ -289,7 +281,11 @@ cormotif_initial_H3K27ac <- cormotiffit(exprs = lcpm_dge_H3K27ac, groupid = H3K2
 
 saveRDS(cormotif_initial_H3K27ac,"data/Cormotif_data/Cormotif_initial_H3K27ac.RDS")
 ```
-```{r H3K27ac plots, eval=FALSE}
+
+
+```{r H3K27ac plots}
+
+cormotif_initial_H3K27ac <- readRDS("data/Cormotif_data/Cormotif_initial_H3K27ac.RDS")
 plotIC(cormotif_initial_H3K27ac)
 plotMotif(cormotif_initial_H3K27ac)
 ```
@@ -302,7 +298,8 @@ cormotif_initial_H3K27me3 <- cormotiffit(exprs = lcpm_dge_H3K27me3, groupid = H3
 saveRDS(cormotif_initial_H3K27me3,"data/Cormotif_data/Cormotif_initial_H3K27me3.RDS")
 ```
 
-```{r H3K27me3 plots, eval=FALSE,}
+```{r H3K27me3 plots}
+cormotif_initial_H3K27me3 <- readRDS("data/Cormotif_data/Cormotif_initial_H3K27me3.RDS")
 plotIC(cormotif_initial_H3K27me3)
 plotMotif(cormotif_initial_H3K27me3)
 ```
@@ -343,5 +340,409 @@ cormotif_initial_H3K9me3 <- readRDS("data/Cormotif_data/Cormotif_initial_H3K9me3
 plotIC(cormotif_initial_H3K9me3)
 plotMotif(cormotif_initial_H3K9me3)
 ```
+#### Breaking into motif modules
+```{r motif_modules}
+
+row.names(cormotif_initial_H3K27ac$bestmotif$clustlike) <- row.names(lcpm_dge_H3K27ac)
+row.names(cormotif_initial_H3K27ac$bestmotif$p.post) <- row.names(lcpm_dge_H3K27ac)
+
+ row.names(cormotif_initial_H3K27me3$bestmotif$clustlike) <- row.names(lcpm_dge_H3K27me3)
+ row.names(cormotif_initial_H3K27me3$bestmotif$p.post) <- row.names(lcpm_dge_H3K27me3)
+
+row.names(cormotif_initial_H3K36me3$bestmotif$clustlike) <- row.names(lcpm_dge_H3K36me3)
+row.names(cormotif_initial_H3K36me3$bestmotif$p.post) <- row.names(lcpm_dge_H3K36me3)
+
+row.names(cormotif_initial_H3K9me3$bestmotif$clustlike) <- row.names(lcpm_dge_H3K9me3)
+row.names(cormotif_initial_H3K9me3$bestmotif$p.post) <- row.names(lcpm_dge_H3K9me3)
 
 
+```
+
+#### H3K27ac motifs  
+
+```{r H3K27ac motif module}
+###goal is to get the intersection between clustlike and p.post
+H3K27ac_motif1 <- cormotif_initial_H3K27ac$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1>.6 & V2<.5 & V3 <.5) %>% 
+  rownames_to_column("Peakid")
+
+H3K27ac_motif1_pp <- cormotif_initial_H3K27ac$bestmotif$p.post %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1<.4 & V2<.4 & V3 <.4) %>% 
+  rownames_to_column("Peakid")
+
+H3K27ac_motif2 <- cormotif_initial_H3K27ac$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1<.5 & V2>.6 & V3 <.5) %>% 
+  rownames_to_column("Peakid")
+
+H3K27ac_motif2_pp <- cormotif_initial_H3K27ac$bestmotif$p.post %>% 
+  as.data.frame() %>% 
+ dplyr::filter(V1<.6 & V2>.5 & V3 >.5) %>% 
+  rownames_to_column("Peakid")
+
+H3K27ac_motif3 <- cormotif_initial_H3K27ac$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1<.5 & V2<.5 & V3 >.6) %>% 
+  rownames_to_column("Peakid")
+
+H3K27ac_motif3_pp <- cormotif_initial_H3K27ac$bestmotif$p.post %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1>.9 & V2>.5 & V3 <.5) %>% 
+  rownames_to_column("Peakid")
+
+length(intersect(H3K27ac_motif1$Peakid,H3K27ac_motif1_pp$Peakid))
+H3K27ac_set1 <- intersect(H3K27ac_motif1$Peakid,H3K27ac_motif1_pp$Peakid)%>% as.data.frame()
+length(intersect(H3K27ac_motif2$Peakid,H3K27ac_motif2_pp$Peakid))
+H3K27ac_set2 <- intersect(H3K27ac_motif2$Peakid,H3K27ac_motif2_pp$Peakid)%>% as.data.frame()
+length(intersect(H3K27ac_motif3$Peakid,H3K27ac_motif3_pp$Peakid))
+H3K27ac_set3 <- intersect(H3K27ac_motif3$Peakid,H3K27ac_motif3_pp$Peakid) %>% as.data.frame()
+
+length(intersect(H3K27ac_motif1$Peakid,H3K27ac_motif2$Peakid))
+
+length(intersect(H3K27ac_motif3$Peakid,H3K27ac_motif2$Peakid))
+
+length(intersect(H3K27ac_motif3$Peakid,H3K27ac_motif2$Peakid))
+
+
+write_delim(H3K27ac_set1,"data/motif_lists/H3K27ac_set1.txt",delim="\t")
+write_delim(H3K27ac_set2,"data/motif_lists/H3K27ac_set2.txt",delim="\t")
+write_delim(H3K27ac_set3,"data/motif_lists/H3K27ac_set3.txt",delim="\t")
+
+```
+
+#### H3K27me3 motifs  
+
+```{r H3K27me3 motif module}
+###goal is to get the intersection between clustlike and p.post
+H3K27me3_motif1 <- cormotif_initial_H3K27me3$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1>.6 & V2<.5) %>% 
+  rownames_to_column("Peakid")
+
+H3K27me3_motif1_pp <- cormotif_initial_H3K27me3$bestmotif$p.post %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1<.4 & V2<.4 & V3 <.4) %>% 
+  rownames_to_column("Peakid")
+
+H3K27me3_motif2 <- cormotif_initial_H3K27me3$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1<.5 & V2>.6 ) %>% 
+  rownames_to_column("Peakid")
+
+H3K27me3_motif2_pp <- cormotif_initial_H3K27me3$bestmotif$p.post %>% 
+  as.data.frame() %>% 
+ dplyr::filter(V1>.7 & V2>.7 & V3 >.7) %>% 
+  rownames_to_column("Peakid")
+
+
+length(intersect(H3K27me3_motif1$Peakid,H3K27me3_motif1_pp$Peakid))
+H3K27me3_set1 <- intersect(H3K27me3_motif1$Peakid,H3K27me3_motif1_pp$Peakid)%>% as.data.frame()
+length(intersect(H3K27me3_motif2$Peakid,H3K27me3_motif2_pp$Peakid))
+H3K27me3_set2 <- intersect(H3K27me3_motif2$Peakid,H3K27me3_motif2_pp$Peakid)%>% as.data.frame()
+
+length(intersect(H3K27me3_motif1$Peakid,H3K27me3_motif2$Peakid))
+
+
+write_delim(H3K27me3_set1,"data/motif_lists/H3K27me3_set1.txt",delim="\t")
+write_delim(H3K27me3_set2,"data/motif_lists/H3K27me3_set2.txt",delim="\t")
+
+
+```
+
+#### H3K36me3 motifs  
+
+```{r H3K36me3 motif module}
+###goal is to get the intersection between clustlike and p.post
+H3K36me3_motif1 <- cormotif_initial_H3K36me3$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1>.6 & V2<.5) %>% 
+  rownames_to_column("Peakid")
+
+H3K36me3_motif1_pp <- cormotif_initial_H3K36me3$bestmotif$p.post %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1<.1 & V2<.1 & V3 <.1) %>% 
+  rownames_to_column("Peakid")
+
+H3K36me3_motif2 <- cormotif_initial_H3K36me3$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1<.5 & V2>.6) %>% 
+  rownames_to_column("Peakid")
+
+H3K36me3_motif2_pp <- cormotif_initial_H3K36me3$bestmotif$p.post %>% 
+  as.data.frame() %>% 
+ dplyr::filter(V1>.4 & V2>.4 & V3 <.1) %>% 
+  rownames_to_column("Peakid")
+
+
+
+length(intersect(H3K36me3_motif1$Peakid,H3K36me3_motif1_pp$Peakid))
+H3K36me3_set1 <- intersect(H3K36me3_motif1$Peakid,H3K36me3_motif1_pp$Peakid)%>% as.data.frame()
+length(intersect(H3K36me3_motif2$Peakid,H3K36me3_motif2_pp$Peakid))
+H3K36me3_set2 <- intersect(H3K36me3_motif2$Peakid,H3K36me3_motif2_pp$Peakid)%>% as.data.frame()
+
+length(intersect(H3K36me3_motif1$Peakid,H3K36me3_motif2$Peakid))
+
+
+write_delim(H3K36me3_set1,"data/motif_lists/H3K36me3_set1.txt",delim="\t")
+write_delim(H3K36me3_set2,"data/motif_lists/H3K36me3_set2.txt",delim="\t")
+
+
+
+```
+
+#### H3K9me3 motifs  
+
+```{r H3K9me3 motif module}
+###goal is to get the intersection between clustlike and p.post
+H3K9me3_motif1 <- cormotif_initial_H3K9me3$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1>.6 & V2<.5 & V3 <.5) %>% 
+  rownames_to_column("Peakid")
+
+H3K9me3_motif1_pp <- cormotif_initial_H3K9me3$bestmotif$p.post %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1<.4 & V2<.4 & V3 <.4) %>% 
+  rownames_to_column("Peakid")
+
+H3K9me3_motif2 <- cormotif_initial_H3K9me3$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1<.5 & V2>.6 & V3 <.5) %>% 
+  rownames_to_column("Peakid")
+
+H3K9me3_motif2_pp <- cormotif_initial_H3K9me3$bestmotif$p.post %>% 
+  as.data.frame() %>% 
+ dplyr::filter(V1>.8 & V2<.5 & V3 <.5) %>% 
+  rownames_to_column("Peakid")
+
+H3K9me3_motif3 <- cormotif_initial_H3K9me3$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1<.5 & V2<.5 & V3 >.6) %>% 
+  rownames_to_column("Peakid")
+
+H3K9me3_motif3_pp <- cormotif_initial_H3K9me3$bestmotif$p.post %>% 
+  as.data.frame() %>% 
+  dplyr::filter(V1>.9 & V2>.9 & V3 >.3) %>% 
+  rownames_to_column("Peakid")
+
+length(intersect(H3K9me3_motif1$Peakid,H3K9me3_motif1_pp$Peakid))
+H3K9me3_set1 <- intersect(H3K9me3_motif1$Peakid,H3K9me3_motif1_pp$Peakid)%>% as.data.frame()
+length(intersect(H3K9me3_motif2$Peakid,H3K9me3_motif2_pp$Peakid))
+H3K9me3_set2 <- intersect(H3K9me3_motif2$Peakid,H3K9me3_motif2_pp$Peakid)%>% as.data.frame()
+length(intersect(H3K9me3_motif3$Peakid,H3K9me3_motif3_pp$Peakid))
+H3K9me3_set3 <- intersect(H3K9me3_motif3$Peakid,H3K9me3_motif3_pp$Peakid)%>% as.data.frame()
+
+length(intersect(H3K9me3_motif1$Peakid,H3K9me3_motif2$Peakid))
+
+length(intersect(H3K9me3_motif3$Peakid,H3K9me3_motif2$Peakid))
+
+length(intersect(H3K9me3_motif3$Peakid,H3K9me3_motif2$Peakid))
+
+
+write_delim(H3K9me3_set1,"data/motif_lists/H3K9me3_set1.txt",delim="\t")
+write_delim(H3K9me3_set2,"data/motif_lists/H3K9me3_set2.txt",delim="\t")
+write_delim(H3K9me3_set3,"data/motif_lists/H3K9me3_set3.txt",delim="\t")
+
+```
+
+### Looking at PC contributions to variation  
+
+
+```{r contribution function}
+
+
+
+pca_plot_new <- function(df, pc_x = 1, pc_y = 2, col_var, shape_var, pca_obj, title = "") {
+  # variance explained
+  var_expl <- (pca_obj$sdev^2) / sum(pca_obj$sdev^2)
+  
+  # axis labels
+  x_lab <- sprintf("PC%d (%.1f%%)", pc_x, var_expl[pc_x] * 100)
+  y_lab <- sprintf("PC%d (%.1f%%)", pc_y, var_expl[pc_y] * 100)
+  
+  ggplot(df, aes(x = .data[[paste0("PC", pc_x)]], 
+                 y = .data[[paste0("PC", pc_y)]], 
+                 color = !!sym(col_var), 
+                 shape = !!sym(shape_var))) +
+    geom_point(size = 5) +
+    labs(title = title, x = x_lab, y = y_lab) +
+    scale_color_manual(values = c(
+      "#8B006D","#DF707E","#F1B72B",
+      "#3386DD","#707031","#41B333"
+    ))
+}
+pca_plot <-
+  function(df, col_var = NULL, shape_var = NULL, title = "") {
+    ggplot(df) + geom_point(aes(
+      x = PC1,
+      y = PC2,
+      color = col_var,
+      shape = shape_var
+    ),
+    size = 5) +
+      labs(title = title, x = "PC 1", y = "PC 2") +
+      scale_color_manual(values = c(
+        "#8B006D",
+        "#DF707E",
+        "#F1B72B",
+        "#3386DD",
+        "#707031",
+        "#41B333"
+      ))
+  }
+get_regr_pval <- function(mod) {
+  # Returns the p-value for the Fstatistic of a linear model
+  # mod: class lm
+  stopifnot(class(mod) == "lm")
+  fstat <- summary(mod)$fstatistic
+  pval <- 1 - pf(fstat[1], fstat[2], fstat[3])
+  return(pval)
+}
+
+plot_versus_pc <- function(df, pc_num, fac) {
+  # df: data.frame
+  # pc_num: numeric, specific PC for plotting
+  # fac: column name of df for plotting against PC
+  pc_char <- paste0("PC", pc_num)
+  # Calculate F-statistic p-value for linear model
+  pval <- get_regr_pval(lm(df[[ pc_char]] ~ df[[ fac]]))
+  if (is.numeric(df[, fac])) {
+    ggplot(df, aes_string(x = fac, y = pc_char)) + geom_point() +
+      geom_smooth(method = "lm") + labs(title = sprintf("p-val: %.2f", pval))
+  } else {
+    ggplot(df, aes_string(x = fac, y = pc_char)) + geom_boxplot() +
+      labs(title = sprintf("p-val: %.3f", pval))
+  }
+}
+  
+
+```
+
+
+#### H3K27ac contribution
+
+```{r Looking at H3K27ac}
+
+H3K27ac_pr <- prcomp(t(lcpm_dge_H3K27ac)) 
+
+H3K27ac_pr_anno <- H3K27ac_pr$x %>% 
+  as.data.frame() %>% 
+  rownames_to_column("sample") %>% 
+  separate(sample, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>% 
+  mutate(sex=if_else(ind %in% c("Ind1","Ind2"),"F","M"))%>% 
+  mutate(sex=factor(sex, levels=c("F","M")))
+
+
+facs <- c("ind", "tx", "time", "sex")
+names(facs) <- c("Individual", "Treatment", "Time","Sex")
+
+plots_H3K27ac <- lapply(names(facs), function(f_label) {
+  f <- facs[f_label]
+  f_v_pc1 <- plot_versus_pc(H3K27ac_pr_anno, 1, f)
+  f_v_pc2 <- plot_versus_pc(H3K27ac_pr_anno, 2, f)
+  f_v_pc3 <- plot_versus_pc(H3K27ac_pr_anno, 3, f)
+  f_v_pc4 <- plot_versus_pc(H3K27ac_pr_anno, 4, f)
+
+  grid.arrange(f_v_pc1, f_v_pc2, f_v_pc3,f_v_pc4, ncol = 2, top = paste0(f_label," H3K27ac"))
+})
+```
+
+#### H3K27me contrib.
+
+
+```{r Looking at H3K27me3}
+
+H3K27me3_pr <- prcomp(t(lcpm_dge_H3K27me3)) 
+
+H3K27me3_pr_anno <- H3K27me3_pr$x %>% 
+  as.data.frame() %>% 
+  rownames_to_column("sample") %>% 
+  separate(sample, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>% 
+  mutate(sex=if_else(ind %in% c("Ind1","Ind2"),"F","M"))%>% 
+  mutate(sex=factor(sex, levels=c("F","M")))
+
+
+facs <- c("ind", "tx", "time", "sex")
+names(facs) <- c("Individual", "Treatment", "Time","Sex")
+
+plots_H3K27me3 <- lapply(names(facs), function(f_label) {
+  f <- facs[f_label]
+  f_v_pc1 <- plot_versus_pc(H3K27me3_pr_anno, 1, f)
+  f_v_pc2 <- plot_versus_pc(H3K27me3_pr_anno, 2, f)
+  f_v_pc3 <- plot_versus_pc(H3K27me3_pr_anno, 3, f)
+  f_v_pc4 <- plot_versus_pc(H3K27me3_pr_anno, 4, f)
+
+  grid.arrange(f_v_pc1, f_v_pc2, f_v_pc3,f_v_pc4, ncol = 2, top = paste0(f_label," H3K27me3"))
+})
+
+
+```
+
+#### H3K36me3 contrib.
+
+```{r Looking at H3K36me3}
+
+H3K36me3_pr <- prcomp(t(lcpm_dge_H3K36me3)) 
+
+H3K36me3_pr_anno <- H3K36me3_pr$x %>% 
+  as.data.frame() %>% 
+  rownames_to_column("sample") %>% 
+  separate(sample, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>% 
+  mutate(sex=if_else(ind %in% c("Ind1","Ind2"),"F","M"))%>% 
+  mutate(sex=factor(sex, levels=c("F","M")))
+
+
+facs <- c("ind", "tx", "time", "sex")
+names(facs) <- c("Individual", "Treatment", "Time","Sex")
+
+plots_H3K36me3 <- lapply(names(facs), function(f_label) {
+  f <- facs[f_label]
+  f_v_pc1 <- plot_versus_pc(H3K36me3_pr_anno, 1, f)
+  f_v_pc2 <- plot_versus_pc(H3K36me3_pr_anno, 2, f)
+  f_v_pc3 <- plot_versus_pc(H3K36me3_pr_anno, 3, f)
+  f_v_pc4 <- plot_versus_pc(H3K36me3_pr_anno, 4, f)
+
+  grid.arrange(f_v_pc1, f_v_pc2, f_v_pc3, f_v_pc4, ncol = 2, top = paste0(f_label," H3K36me3"))
+})
+```
+
+#### H3K9me3
+
+```{r Looking at H3K9me3}
+
+H3K9me3_pr <- prcomp(t(lcpm_dge_H3K9me3)) 
+
+H3K9me3_pr_anno <- H3K9me3_pr$x %>% 
+  as.data.frame() %>% 
+  rownames_to_column("sample") %>% 
+  separate(sample, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>% 
+  mutate(sex=if_else(ind %in% c("Ind1","Ind2"),"F","M"))%>% 
+  mutate(sex=factor(sex, levels=c("F","M")))
+
+
+facs <- c("ind", "tx", "time", "sex")
+names(facs) <- c("Individual", "Treatment", "Time","Sex")
+
+plots_H3K9me3 <- lapply(names(facs), function(f_label) {
+  f <- facs[f_label]
+  f_v_pc1 <- plot_versus_pc(H3K9me3_pr_anno, 1, f)
+  f_v_pc2 <- plot_versus_pc(H3K9me3_pr_anno, 2, f)
+  f_v_pc3 <- plot_versus_pc(H3K9me3_pr_anno, 3, f)
+  f_v_pc4 <- plot_versus_pc(H3K9me3_pr_anno, 4, f)
+
+  grid.arrange(f_v_pc1, f_v_pc2, f_v_pc3,f_v_pc4, ncol = 2, top = paste0(f_label," H3K9me3"))
+})
+```
