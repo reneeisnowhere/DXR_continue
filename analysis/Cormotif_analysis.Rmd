@@ -162,6 +162,16 @@ H3K36me3_merged_raw <- H3K36me3_merged_raw[!grepl("chrX",rownames(H3K36me3_merge
 H3K9me3_merged_raw <- H3K9me3_merged_raw[rowMeans(H3K9me3_merged_lcpm)>0,]
 H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrY",rownames(H3K9me3_merged_raw)),]
 H3K9me3_merged_raw <- H3K9me3_merged_raw[!grepl("chrX",rownames(H3K9me3_merged_raw)),]
+
+# write_delim((H3K27ac_merged_raw %>% 
+#                as.data.frame(.) %>%
+#                rownames_to_column("Peakid")),"data/DER_data/H3K27ac_filtered_raw_counts.txt",delim = "\t")
+# write_delim((H3K27me3_merged_raw%>% as.data.frame(.)%>%
+#                rownames_to_column("Peakid")),"data/DER_data/H3K27me3_filtered_raw_counts.txt",delim = "\t")
+# write_delim((H3K36me3_merged_raw%>% as.data.frame(.)%>%
+#                rownames_to_column("Peakid")),"data/DER_data/H3K36me3_filtered_raw_counts.txt",delim = "\t")
+# write_delim((H3K9me3_merged_raw%>% as.data.frame(.)%>%
+#                rownames_to_column("Peakid")),"data/DER_data/H3K9me3_filtered_raw_counts.txt",delim = "\t")
 ```
 
 #### Setting up Matrix
