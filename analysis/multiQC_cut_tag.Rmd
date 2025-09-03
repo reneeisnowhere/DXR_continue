@@ -676,7 +676,8 @@ for (s in peaks$sample) {
 }
 questionable_frag_filter = peaks[(peaks$peakNum == 0),]
 questionable_frag_filter %>%
-  left_join(., sampleinfo, by =c("sample"="Library ID"))
+  left_join(., sampleinfo, by =c("sample"="Library ID")) %>% 
+  datatable()
 
 # write_delim(peaks,"data/number_frag_peaks_summary.txt",delim="\t")
 ```
