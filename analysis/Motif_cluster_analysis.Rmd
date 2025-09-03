@@ -1,0 +1,1186 @@
+---
+title: "Examining motif clusters"
+author: "Renee Matthews"
+date: "2025-08-25"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r packages}
+
+library(tidyverse)
+library(readr)
+library(edgeR)
+library(ComplexHeatmap)
+library(data.table)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(viridis)
+library(DT)
+library(kableExtra)
+library(genomation)
+library(GenomicRanges)
+library(ggpubr) ## For customizing figures
+library(corrplot) ## For correlation plot
+library(ggpmisc)
+library(gcplyr)
+library(Rsubread)
+library(limma)
+library(ggrastr)
+library(cowplot)
+library(smplot2)
+library(ggVennDiagram)
+library(ggsignif)
+library(BiocParallel)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(ChIPseeker)
+
+```
+
+
+```{r data add}
+# sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
+H3K27ac_set1 <- read_delim("data/motif_lists/H3K27ac_set1.txt",delim="\t")
+H3K27ac_set2 <- read_delim("data/motif_lists/H3K27ac_set2.txt",delim="\t")
+H3K27ac_set3 <- read_delim("data/motif_lists/H3K27ac_set3.txt",delim="\t")
+
+H3K27me3_set1 <- read_delim("data/motif_lists/H3K27me3_set1.txt",delim="\t")
+H3K27me3_set2 <- read_delim("data/motif_lists/H3K27me3_set2.txt",delim="\t")
+
+H3K36me3_set1 <- read_delim("data/motif_lists/H3K36me3_set1.txt",delim="\t")
+H3K36me3_set2 <- read_delim("data/motif_lists/H3K36me3_set2.txt",delim="\t")
+
+H3K9me3_set1 <- read_delim("data/motif_lists/H3K9me3_set1.txt",delim="\t")
+H3K9me3_set2 <- read_delim("data/motif_lists/H3K9me3_set2.txt",delim="\t")
+H3K9me3_set3 <- read_delim("data/motif_lists/H3K9me3_set3.txt",delim="\t")
+
+### loading filtered raw counts for visualization
+H3K27ac_filt_raw_counts <- read_delim("data/DER_data/H3K27ac_filtered_raw_counts.txt",delim = "\t") %>% column_to_rownames("Peakid")
+H3K27me3_filt_raw_counts <- read_delim("data/DER_data/H3K27me3_filtered_raw_counts.txt",delim = "\t")%>% column_to_rownames("Peakid")
+
+H3K36me3_filt_raw_counts <- read_delim("data/DER_data/H3K36me3_filtered_raw_counts.txt",delim = "\t")%>% column_to_rownames("Peakid")
+H3K9me3_filt_raw_counts <- read_delim( "data/DER_data/H3K9me3_filtered_raw_counts.txt",delim = "\t")%>% column_to_rownames("Peakid")
+
+all_H3K27ac_regions <- H3K27ac_filt_raw_counts %>% rownames_to_column("Peakid") %>% distinct(Peakid)
+all_H3K27me3_regions <- H3K27me3_filt_raw_counts %>% rownames_to_column("Peakid") %>% distinct(Peakid)
+all_H3K36me3_regions <- H3K36me3_filt_raw_counts %>% rownames_to_column("Peakid") %>% distinct(Peakid)
+all_H3K9me3_regions <- H3K9me3_filt_raw_counts %>% rownames_to_column("Peakid") %>% distinct(Peakid)
+
+H3K27ac_filt_lcpm <- cpm(H3K27ac_filt_raw_counts, log = TRUE)
+H3K27me3_filt_lcpm <- cpm(H3K27me3_filt_raw_counts, log = TRUE)
+H3K36me3_filt_lcpm <- cpm(H3K36me3_filt_raw_counts, log = TRUE)
+H3K9me3_filt_lcpm <- cpm(H3K9me3_filt_raw_counts, log = TRUE)
+
+H3K9me3_toplist <- readRDS( "data/DER_data/H3K9me3_toplist_nooutlier.RDS")
+H3K36me3_toplist <- readRDS( "data/DER_data/H3K36me3_toplist_nooutlier.RDS")
+H3K27me3_toplist <- readRDS( "data/DER_data/H3K27me3_toplist.RDS")
+H3K27ac_toplist <- readRDS( "data/DER_data/H3K27ac_toplist.RDS")
+
+H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
+H3K27me3_toptable_list <- bind_rows(H3K27me3_toplist, .id = "group")
+H3K36me3_toptable_list <- bind_rows(H3K36me3_toplist, .id = "group")
+H3K9me3_toptable_list <- bind_rows(H3K9me3_toplist, .id = "group")
+
+```
+
+###  H3K27ac motifs samples
+
+#### Set 1
+
+```{r H3K27ac set1}
+
+examp_H3K27ac_1 <-#slice_sample(H3K27ac_set1,n = 3, replace=FALSE)
+    c("chr1:77923740-77924468","chr20:25484622-25485357","chr1:229148017-229149226")
+examp_H3K27ac_2 <-#slice_sample(H3K27ac_set2,n = 3, replace=FALSE)
+  c("chr5:85451856-85453893","chr10:114271262-114272616", "chr3:63343167-63344341" )
+examp_H3K27ac_3 <- #slice_sample(H3K27ac_set3,n = 3, replace=FALSE)
+  c("chr8:8664034-8666371","chr3:141152796-141154087","chr21:43701994-43704465")
+
+
+H3K27ac_filt_lcpm %>% 
+  as.data.frame() %>% 
+   rownames_to_column("Peakid") %>%
+  dplyr::filter(Peakid %in% examp_H3K27ac_1) %>% 
+  ###pivot and add additional information from dataframe
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K27ac_",time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle("set 1 H3K27ac samples")
+```
+
+#### Set 2
+
+```{r H3K27ac set2}
+H3K27ac_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K27ac_filt_lcpm) %in% examp_H3K27ac_2) %>% 
+  ###pivot and add additional information from dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K27ac_",time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle("set 2 H3K27ac samples")
+```
+
+#### Set 3
+
+```{r H3K27ac set 3}
+H3K27ac_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K27ac_filt_lcpm) %in% examp_H3K27ac_3) %>% 
+  ###pivot and add additional information from dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K27ac_",time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle("set 3 H3K27ac samples")
+```
+
+Genomic regions
+
+```{r H3K27ac genomic regions}
+
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+all_H3K27ac_regions_gr <- all_H3K27ac_regions %>% 
+    tidyr::separate(., col = "Peakid", into=c("seqnames","range"), sep = ":", remove=FALSE) %>%
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>%
+  GRanges()
+
+
+H3K27ac_set1_gr <- H3K27ac_set1 %>% 
+  tidyr::separate(., col = ".", into=c("seqnames","range"), sep = ":", remove=FALSE) %>%
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>%
+  dplyr::rename("Peakid"=".") %>%
+  GRanges()
+
+H3K27ac_set2_gr <- H3K27ac_set2 %>% 
+  tidyr::separate(., col = ".", into=c("seqnames","range"), sep = ":", remove=FALSE) %>% 
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>% 
+  dplyr::rename("Peakid"=".") %>% 
+  GRanges()
+
+H3K27ac_set3_gr <- H3K27ac_set3 %>% 
+  tidyr::separate(., col = ".", into=c("seqnames","range"), sep = ":", remove=FALSE) %>% 
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>% 
+  dplyr::rename("Peakid"=".") %>% 
+  GRanges()
+H3K27ac_list <- list("Set_1"=H3K27ac_set1_gr,"Set_2"=H3K27ac_set2_gr,"Set_3"=H3K27ac_set3_gr,"all_H3K27ac"=all_H3K27ac_regions_gr)
+
+
+# peakAnnoList_H3K27ac <- lapply(H3K27ac_list, annotatePeak, tssRegion =c(-2000,2000), TxDb=txdb)
+
+# saveRDS(peakAnnoList_H3K27ac, "data/motif_lists/H3K27ac_annotated_peaks.RDS")
+peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+
+plotAnnoBar(peakAnnoList_H3K27ac[c(4,1,2,3)])+
+  ggtitle("H3K27ac Feature Distribution")
+
+# pie_plots_H3K27ac <-   map(peakAnnoList_H3K27ac, ~ plotAnnoPie(.x))
+for(nm in names(peakAnnoList_H3K27ac)) {
+  plotAnnoPie(peakAnnoList_H3K27ac[[nm]])
+  title(main = nm)  # base R title
+}
+```
+
+#### LFC H3K27ac
+  Set1
+```{r H3K27ac LFC set 1}
+# H3K27ac_toptable_list %>%
+#   dplyr::filter(genes %in% H3K27ac_set1$.) %>% 
+#   dplyr::select(group,genes,logFC) %>%
+#   mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R"))) %>% 
+#   ggplot(., aes(x=group, y=logFC))+
+#   geom_boxplot(aes(fill=group))+
+#   geom_signif(comparisons = list(c("H3K27ac_24T", "H3K27ac_144R"),
+#                                  c("H3K27ac_24T","H3K27ac_24R"),
+#                                  c("H3K27ac_24R", "H3K27ac_144R")),
+#                               step_increase = 0.1, 
+#               map_signif_level = FALSE, 
+#               test = "wilcox.test")+
+#   theme_bw()+
+#   ggtitle("LFC across time for H3K27ac set1")
+
+
+H3K27ac_toptable_list %>%
+  dplyr::filter(genes %in% H3K27ac_set1$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K27ac_24T", "H3K27ac_144R"),
+                                 c("H3K27ac_24T","H3K27ac_24R"),
+                                 c("H3K27ac_24R", "H3K27ac_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K27ac set1")
+```
+
+
+```{r H3K27ac line plot LFC set 1}
+   
+  set1_27ac <- H3K27ac_toptable_list %>%
+  dplyr::filter(genes %in% H3K27ac_set1$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+   mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group) %>% 
+  summarize(med_Set1=median(logFC),.groups="drop")
+
+
+
+```
+
+set2
+```{r H3K27ac LFC set 2}
+
+# H3K27ac_toptable_list %>%
+#   dplyr::filter(genes %in% H3K27ac_set2$.) %>% 
+#   dplyr::select(group,genes,logFC) %>%
+#   mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R"))) %>% 
+#   ggplot(., aes(x=group, y=logFC))+
+#   geom_boxplot(aes(fill=group))+
+#   geom_signif(comparisons = list(c("H3K27ac_24T", "H3K27ac_144R"),
+#                                  c("H3K27ac_24T","H3K27ac_24R"),
+#                                  c("H3K27ac_24R", "H3K27ac_144R")),
+#                               step_increase = 0.1, 
+#               map_signif_level = FALSE, 
+#               test = "wilcox.test")+
+#   theme_bw()+
+#   ggtitle("LFC across time for H3K27ac set2")
+
+
+H3K27ac_toptable_list %>%
+  dplyr::filter(genes %in% H3K27ac_set2$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K27ac_24T", "H3K27ac_144R"),
+                                 c("H3K27ac_24T","H3K27ac_24R"),
+                                 c("H3K27ac_24R", "H3K27ac_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K27ac set2")
+
+
+```
+
+```{r H3K27ac line plot LFC set 2}
+   
+  set2_27ac <- H3K27ac_toptable_list %>%
+  dplyr::filter(genes %in% H3K27ac_set2$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+   mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group) %>% 
+  summarize(med_Set2=median(logFC),.groups="drop")
+
+
+```
+
+
+
+set3
+```{r H3K27ac LFC set 3}
+
+# H3K27ac_toptable_list %>%
+#   dplyr::filter(genes %in% H3K27ac_set3$.) %>% 
+#   dplyr::select(group,genes,logFC) %>%
+#   mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R"))) %>% 
+#   ggplot(., aes(x=group, y=logFC))+
+#   geom_boxplot(aes(fill=group))+
+#   geom_signif(comparisons = list(c("H3K27ac_24T", "H3K27ac_144R"),
+#                                  c("H3K27ac_24T","H3K27ac_24R"),
+#                                  c("H3K27ac_24R", "H3K27ac_144R")),
+#                               step_increase = 0.1, 
+#               map_signif_level = FALSE, 
+#               test = "wilcox.test")+
+#   theme_bw()+
+#   ggtitle("LFC across time for H3K27ac set3")
+
+
+H3K27ac_toptable_list %>%
+  dplyr::filter(genes %in% H3K27ac_set3$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K27ac_24T", "H3K27ac_144R"),
+                                 c("H3K27ac_24T","H3K27ac_24R"),
+                                 c("H3K27ac_24R", "H3K27ac_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K27ac set3")
+
+
+```
+
+```{r H3K27ac line plot LFC set 3}
+   
+  H3K27ac_toptable_list %>%
+  dplyr::filter(genes %in% H3K27ac_set3$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group) %>% 
+  summarize(med_Set3=median(logFC),.groups="drop") %>% 
+  left_join(set1_27ac, by="group") %>% 
+  left_join(set2_27ac, by="group") %>% 
+  pivot_longer(cols=!group, values_to = "median_LFC", names_to = "set") %>% 
+  ggplot(., aes(x=group, y=median_LFC, group=set, color=set))+
+  geom_point()+
+  geom_line(aes(alpha = 0.3))+
+  theme_bw()+
+  ggtitle("LFC across time for H3K27ac sets")
+
+
+```
+
+##### Toptable top 100
+
+This is the calculation of Top 100 in each category, then united
+```{r, eval=FALSE}
+Sets_H3K27ac <- H3K27ac_toptable_list %>% 
+  mutate(cluster=case_when(genes %in% H3K27ac_set1$. ~ "Set1",
+                           genes %in% H3K27ac_set2$. ~ "Set2",
+                           genes %in% H3K27ac_set3$. ~ "Set3",
+                           TRUE ~ "not_assigned"))
+Sets_H3K27ac %>% 
+  dplyr::filter(cluster != "not_assigned") %>% 
+  group_by(group) %>% 
+  slice_min(.,order_by=adj.P.Val,n = 100) %>% 
+  ungroup() %>% 
+  group_by(cluster) %>% tally()
+  
+
+
+H3K27ac_toptable_list %>% 
+  group_by(group) %>% 
+  slice_min(.,order_by=adj.P.Val,n = 100) %>% 
+  ungroup() %>% 
+  distinct(genes)
+
+
+### Emma's way
+
+Sets_H3K27ac %>% 
+  dplyr::filter(cluster != "not_assigned") %>%
+  group_by(group, genes) %>% 
+  summarise("min.adj.P"= min(adj.P.Val), .groups="drop", cluster=unique(cluster)) %>% 
+  arrange(cluster, min.adj.P) %>%
+  group_by(cluster) %>%
+  slice_head(n = 100) %>% 
+  distinct (genes)
+  
+
+```
+
+
+
+###  H3K27me3 motifs samples
+
+#### Set 1
+
+```{r H3K27me3 set1}
+# slice_sample(H3K27me3_set2,n = 3, replace=FALSE)
+examp_H3K27me3_1 <-#slice_sample(H3K27me3_set1,n = 3, replace=FALSE)
+  c("chr17:8878023-8878923", "chr2:23436468-23436797","chr10:132830096-132830712")
+examp_H3K27me3_2 <-#slice_sample(H3K27me3_set2,n = 3, replace=FALSE)
+  c("chr5:141004122-141004627" ,  "chr6:101195726-101195968",  "chr3:139117155-139117784")
+
+
+
+H3K27me3_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K27me3_filt_lcpm) %in% examp_H3K27me3_1) %>% 
+  ###pivot and add additional information from dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K27me3_",time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle("set 1 H3K27me3 samples")
+```
+
+#### Set 2
+
+```{r H3K27me3 set2}
+H3K27me3_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K27me3_filt_lcpm) %in% examp_H3K27me3_2) %>% 
+  ###pivot and add additional information from dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K27me3_",time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle("set 2 H3K27me3 samples")
+```
+```{r H3K27me3 genomic regions}
+
+all_H3K27me3_regions_gr <- all_H3K27ac_regions %>% 
+    tidyr::separate(., col = "Peakid", into=c("seqnames","range"), sep = ":", remove=FALSE) %>%
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>%
+  GRanges()
+
+H3K27me3_set1_gr <- H3K27me3_set1 %>% 
+  tidyr::separate(., col = ".", into=c("seqnames","range"), sep = ":", remove=FALSE) %>% 
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>% 
+  dplyr::rename("Peakid"=".") %>% 
+  GRanges()
+
+H3K27me3_set2_gr <- H3K27me3_set2 %>% 
+  tidyr::separate(., col = ".", into=c("seqnames","range"), sep = ":", remove=FALSE) %>% 
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>% 
+  dplyr::rename("Peakid"=".") %>% 
+  GRanges()
+
+
+H3K27me3_list <- list("Set_1"=H3K27me3_set1_gr,"Set_2"=H3K27me3_set2_gr,"all_H3K27me3_regions"=all_H3K27me3_regions_gr)
+
+
+# peakAnnoList_H3K27me3 <- lapply(H3K27me3_list, annotatePeak, tssRegion =c(-2000,2000), TxDb=txdb)
+
+# saveRDS(peakAnnoList_H3K27me3, "data/motif_lists/H3K27me3_annotated_peaks.RDS")
+peakAnnoList_H3K27me3 <- readRDS("data/motif_lists/H3K27me3_annotated_peaks.RDS")
+
+plotAnnoBar(peakAnnoList_H3K27me3[c(3,1,2)])+
+  ggtitle("H3K27me3 Feature Distribution")
+
+
+# pie_plots_H3K27me3 <-   map(peakAnnoList_H3K27me3, ~ plotAnnoPie(.x))
+for(nm in names(peakAnnoList_H3K27me3)) {
+  plotAnnoPie(peakAnnoList_H3K27me3[[nm]])
+  title(main = nm)  # base R title
+}
+```
+
+#### LFC H3K27me3
+  Set1
+```{r H3K27me3 LFC set 1}
+# H3K27me3_toptable_list %>%
+#   dplyr::filter(genes %in% H3K27me3_set1$.) %>% 
+#   dplyr::select(group,genes,logFC) %>%
+#   mutate(group=factor(group, levels = c("H3K27me3_24T","H3K27me3_24R","H3K27me3_144R"))) %>% 
+#   ggplot(., aes(x=group, y=logFC))+
+#   geom_boxplot(aes(fill=group))+
+#   geom_signif(comparisons = list(c("H3K27me3_24T", "H3K27me3_144R"),
+#                                  c("H3K27me3_24T","H3K27me3_24R"),
+#                                  c("H3K27me3_24R", "H3K27me3_144R")),
+#                               step_increase = 0.1, 
+#               map_signif_level = FALSE, 
+#               test = "wilcox.test")+
+#   theme_bw()+
+#   ggtitle("LFC across time for H3K27me3 set1")
+
+
+H3K27me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K27me3_set1$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K27me3_24T","H3K27me3_24R","H3K27me3_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K27me3_24T", "H3K27me3_144R"),
+                                 c("H3K27me3_24T","H3K27me3_24R"),
+                                 c("H3K27me3_24R", "H3K27me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K27me3 set1")
+```
+
+
+```{r H3K27me line plot LFC set 1}
+   
+  set1_27me3 <- H3K27me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K27me3_set1$.) %>% 
+   dplyr::select(group,genes,logFC) %>%
+   mutate(group=factor(group, levels = c("H3K27me3_24T","H3K27me3_24R","H3K27me3_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group) %>% 
+  summarize(med_Set1=median(logFC),.groups="drop")
+
+```
+
+set2
+```{r H3K27me3 LFC set 2}
+
+# H3K27me3_toptable_list %>%
+#   dplyr::filter(genes %in% H3K27me3_set2$.) %>% 
+#   dplyr::select(group,genes,logFC) %>%
+#   mutate(group=factor(group, levels = c("H3K27me3_24T","H3K27me3_24R","H3K27me3_144R"))) %>% 
+#   ggplot(., aes(x=group, y=logFC))+
+#   geom_boxplot(aes(fill=group))+
+#   geom_signif(comparisons = list(c("H3K27me3_24T", "H3K27me3_144R"),
+#                                  c("H3K27me3_24T","H3K27me3_24R"),
+#                                  c("H3K27me3_24R", "H3K27me3_144R")),
+#                               step_increase = 0.1, 
+#               map_signif_level = FALSE, 
+#               test = "wilcox.test")+
+#   theme_bw()+
+#   ggtitle("LFC across time for H3K27me3 set2")
+
+
+H3K27me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K27me3_set2$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K27me3_24T","H3K27me3_24R","H3K27me3_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K27me3_24T", "H3K27me3_144R"),
+                                 c("H3K27me3_24T","H3K27me3_24R"),
+                                 c("H3K27me3_24R", "H3K27me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K27me3 set2")
+
+
+```
+
+```{r H3K27me3 line plot LFC set 2}
+   
+  H3K27me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K27me3_set2$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+   mutate(group=factor(group, levels = c("H3K27me3_24T","H3K27me3_24R","H3K27me3_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group) %>% 
+  summarize(med_Set2=median(logFC),.groups="drop") %>% 
+  left_join(set1_27me3,by = "group") %>% 
+  pivot_longer(cols=!group, values_to = "median_LFC", names_to = "set") %>% 
+  ggplot(., aes(x=group, y=median_LFC, group=set, color=set))+
+  geom_point()+
+  geom_line(aes(alpha = 0.3))+
+  theme_bw()+
+  ggtitle("LFC across time for H3K27me3 sets")
+
+
+```
+
+
+
+
+###  H3K36me3 motifs samples
+
+#### Set 1
+
+```{r H3K36me3 set1}
+# slice_sample(H3K36me3_set1,n = 3, replace=FALSE)
+examp_H3K36me3_1 <-#slice_sample(H3K36me3_set1,n = 3, replace=FALSE)
+  c("chr6:106975625-106975872","chr17:17259340-17260414","chr14:91506581-91506995")
+examp_H3K36me3_2 <-#slice_sample(H3K36me3_set2,n = 3, replace=FALSE)
+  # c("chr2:191013033-191013351","chr5:66597066-66597500","chr16:22232346-22233214")
+c("chr17:3656403-3665271","chr6:118573949-118574870","chr1:164799555-164800172")
+
+
+
+H3K36me3_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K36me3_filt_lcpm) %in% examp_H3K36me3_1) %>% 
+  ###pivot and add additional information from dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K36me3_",time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle("set 1 H3K36me3 samples")
+```
+
+#### Set 2
+
+```{r H3K36me3 set2}
+H3K36me3_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K36me3_filt_lcpm) %in% examp_H3K36me3_2) %>% 
+  ###pivot and add additional information from dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K36me3_",time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle("set 2 H3K36me3 samples")
+```
+```{r H3K36me3 genomic regions}
+
+
+all_H3K36me3_regions_gr <- all_H3K36me3_regions %>% 
+    tidyr::separate(., col = "Peakid", into=c("seqnames","range"), sep = ":", remove=FALSE) %>%
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>%
+  GRanges()
+
+H3K36me3_set1_gr <- H3K36me3_set1 %>% 
+  tidyr::separate(., col = ".", into=c("seqnames","range"), sep = ":", remove=FALSE) %>% 
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>% 
+  dplyr::rename("Peakid"=".") %>% 
+  GRanges()
+
+H3K36me3_set2_gr <- H3K36me3_set2 %>% 
+  tidyr::separate(., col = ".", into=c("seqnames","range"), sep = ":", remove=FALSE) %>% 
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>% 
+  dplyr::rename("Peakid"=".") %>% 
+  GRanges()
+
+
+H3K36me3_list <- list("Set_1"=H3K36me3_set1_gr,"Set_2"=H3K36me3_set2_gr, "all_H3K36me3_regions"=all_H3K36me3_regions_gr)
+
+
+# peakAnnoList_H3K36me3 <- lapply(H3K36me3_list, annotatePeak, tssRegion =c(-2000,2000), TxDb=txdb)
+# # 
+# saveRDS(peakAnnoList_H3K36me3, "data/motif_lists/H3K36me3_annotated_peaks.RDS")
+peakAnnoList_H3K36me3 <- readRDS("data/motif_lists/H3K36me3_annotated_peaks.RDS")
+
+plotAnnoBar(peakAnnoList_H3K36me3[c(3,1,2)])+
+  ggtitle("H3K36me3 Feature Distribution")
+# pie_plots_H3K36me3 <-   map(peakAnnoList_H3K36me3, ~ plotAnnoPie(.x))
+for(nm in names(peakAnnoList_H3K36me3)) {
+  plotAnnoPie(peakAnnoList_H3K36me3[[nm]])
+  title(main = nm)  # base R title
+}
+```
+
+#### LFC H3K36me3
+  Set1
+```{r H3K36me3 LFC set 1}
+# H3K36me3_toptable_list %>%
+#   dplyr::filter(genes %in% H3K36me3_set1$.) %>% 
+#   dplyr::select(group,genes,logFC) %>%
+#   mutate(group=factor(group, levels = c("H3K36me3_24T","H3K36me3_24R","H3K36me3_144R"))) %>% 
+#   ggplot(., aes(x=group, y=logFC))+
+#   geom_boxplot(aes(fill=group))+
+#   geom_signif(comparisons = list(c("H3K36me3_24T", "H3K36me3_144R"),
+#                                  c("H3K36me3_24T","H3K36me3_24R"),
+#                                  c("H3K36me3_24R", "H3K36me3_144R")),
+#                               step_increase = 0.1, 
+#               map_signif_level = FALSE, 
+#               test = "wilcox.test")+
+#   theme_bw()+
+#   ggtitle("LFC across time for H3K36me3 set1")
+
+
+H3K36me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K36me3_set1$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K36me3_24T","H3K36me3_24R","H3K36me3_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K36me3_24T", "H3K36me3_144R"),
+                                 c("H3K36me3_24T","H3K36me3_24R"),
+                                 c("H3K36me3_24R", "H3K36me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K36me3 set1")
+```
+
+
+```{r H3K36me3 line plot LFC set 1}
+   
+ set1_36me3 <- H3K36me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K36me3_set1$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+   mutate(group=factor(group, levels = c("H3K36me3_24T","H3K36me3_24R","H3K36me3_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group) %>% 
+  summarize(med_Set1=median(logFC),.groups="drop") 
+
+```
+
+set2
+```{r H3K36me3 LFC set 2}
+# 
+# H3K36me3_toptable_list %>%
+#   dplyr::filter(genes %in% H3K36me3_set2$.) %>% 
+#   dplyr::select(group,genes,logFC) %>%
+#   mutate(group=factor(group, levels = c("H3K36me3_24T","H3K36me3_24R","H3K36me3_144R"))) %>% 
+#   ggplot(., aes(x=group, y=logFC))+
+#   geom_boxplot(aes(fill=group))+
+#   geom_signif(comparisons = list(c("H3K36me3_24T", "H3K36me3_144R"),
+#                                  c("H3K36me3_24T","H3K36me3_24R"),
+#                                  c("H3K36me3_24R", "H3K36me3_144R")),
+#                               step_increase = 0.1, 
+#               map_signif_level = FALSE, 
+#               test = "wilcox.test")+
+#   theme_bw()+
+#   ggtitle("LFC across time for H3K36me3 set2")
+
+
+H3K36me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K36me3_set2$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K36me3_24T","H3K36me3_24R","H3K36me3_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K36me3_24T", "H3K36me3_144R"),
+                                 c("H3K36me3_24T","H3K36me3_24R"),
+                                 c("H3K36me3_24R", "H3K36me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K36me3 set2")
+
+
+```
+
+```{r H3K36me3 line plot LFC set 2}
+   
+ H3K36me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K36me3_set2$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+   mutate(group=factor(group, levels = c("H3K36me3_24T","H3K36me3_24R","H3K36me3_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group) %>% 
+  summarize(med_Set2=median(logFC),.groups="drop") %>% 
+  left_join(set1_36me3,by = "group") %>% 
+  pivot_longer(cols=!group, values_to = "median_LFC", names_to = "set") %>% 
+  ggplot(., aes(x=group, y=median_LFC, group=set, color=set))+
+  geom_point()+
+  geom_line(aes(alpha = 0.3))+
+  theme_bw()+
+  ggtitle("LFC across time for H3K36me3 sets")
+
+```
+
+
+
+
+
+###  H3K9me3 motifs samples
+
+#### Set 1
+
+```{r H3K9me3 set1}
+# slice_sample(H3K9me3_set3,n = 3, replace=FALSE)
+examp_H3K9me3_1 <-#slice_sample(H3K9me3_set1,n = 3, replace=FALSE)
+  c("chr7:101406339-101407813","chr6:147512995-147514238","chr10:66432792-66433011")
+examp_H3K9me3_2 <-#slice_sample(H3K9me3_set2,n = 3, replace=FALSE)
+  c("chr2:120985518-120985865" ,   "chr7:926998-927207","chr12:108895126-108895841")
+
+examp_H3K9me3_3 <- #slice_sample(H3K9me3_set3,n = 3, replace=FALSE)
+  c("chr6:44276324-44278629","chr7:906806-907939"  ,"chr20:63682374-63682947")
+
+
+
+H3K9me3_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K9me3_filt_lcpm) %in% examp_H3K9me3_1) %>% 
+  ###pivot and add additional information from dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K9me3_",time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle("set 1 H3K9me3 samples")
+```
+
+#### Set 2
+
+```{r H3K9me3 set2}
+
+H3K9me3_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K9me3_filt_lcpm) %in% examp_H3K9me3_2) %>% 
+  ###pivot and add additional information from dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K9me3_",time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle("set 2 H3K9me3 samples")
+```
+
+#### Set 3
+
+```{r H3K9me3 set 3}
+H3K9me3_filt_lcpm %>% 
+  as.data.frame() %>% 
+  dplyr::filter(row.names(H3K9me3_filt_lcpm) %in% examp_H3K9me3_3) %>% 
+  ###pivot and add additional information from dataframe
+  rownames_to_column("Peakid") %>% 
+  pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+  separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("DOX","VEH")),
+         time=factor(time, levels=c("24T","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K9me3_",time),
+      group_graph = factor(group_graph, levels = c(
+        "DOX_24T",  "VEH_24T",
+        "DOX_24R",  "VEH_24R",
+        "DOX_144R",  "VEH_144R"))) %>% 
+  
+  ggplot(., aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle("set 3 H3K9me3 samples")
+```
+
+
+```{r H3K9me3 genomic regions}
+
+all_H3K9me3_regions_gr <- all_H3K9me3_regions %>% 
+    tidyr::separate(., col = "Peakid", into=c("seqnames","range"), sep = ":", remove=FALSE) %>%
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>%
+  GRanges()
+
+
+H3K9me3_set1_gr <- H3K9me3_set1 %>% 
+  tidyr::separate(., col = ".", into=c("seqnames","range"), sep = ":", remove=FALSE) %>% 
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>% 
+  dplyr::rename("Peakid"=".") %>% 
+  GRanges()
+
+H3K9me3_set2_gr <- H3K9me3_set2 %>% 
+  tidyr::separate(., col = ".", into=c("seqnames","range"), sep = ":", remove=FALSE) %>% 
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>% 
+  dplyr::rename("Peakid"=".") %>% 
+  GRanges()
+
+H3K9me3_set3_gr <- H3K9me3_set3 %>% 
+  tidyr::separate(., col = ".", into=c("seqnames","range"), sep = ":", remove=FALSE) %>% 
+  tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>% 
+  dplyr::rename("Peakid"=".") %>% 
+  GRanges()
+H3K9me3_list <- list("Set_1"=H3K9me3_set1_gr,"Set_2"=H3K9me3_set2_gr,"Set_3"=H3K9me3_set3_gr,"all_H3K9me3_regions"=all_H3K9me3_regions_gr)
+
+
+# peakAnnoList_H3K9me3 <- lapply(H3K9me3_list, annotatePeak, tssRegion =c(-2000,2000), TxDb=txdb)
+# # 
+# saveRDS(peakAnnoList_H3K9me3, "data/motif_lists/H3K9me3_annotated_peaks.RDS")
+peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
+
+plotAnnoBar(peakAnnoList_H3K9me3[c(4,1,2,3)])+
+  ggtitle("H3K9me3 Feature Distribution")
+# pie_plots_H3K9me3 <-   map(peakAnnoList_H3K9me3, ~ plotAnnoPie(.x))
+for(nm in names(peakAnnoList_H3K9me3)) {
+  plotAnnoPie(peakAnnoList_H3K9me3[[nm]])
+  title(main = nm)  # base R title
+}
+```
+
+
+#### LFC H3K9me3
+  Set1
+```{r H3K9me3 LFC set 1}
+# H3K9me3_toptable_list %>%
+#   dplyr::filter(genes %in% H3K9me3_set1$.) %>% 
+#   dplyr::select(group,genes,logFC) %>%
+#   mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R"))) %>% 
+#   ggplot(., aes(x=group, y=logFC))+
+#   geom_boxplot(aes(fill=group))+
+#   geom_signif(comparisons = list(c("H3K9me3_24T", "H3K9me3_144R"),
+#                                  c("H3K9me3_24T","H3K9me3_24R"),
+#                                  c("H3K9me3_24R", "H3K9me3_144R")),
+#                               step_increase = 0.1, 
+#               map_signif_level = FALSE, 
+#               test = "wilcox.test")+
+#   theme_bw()+
+#   ggtitle("LFC across time for H3K9me3 set1")
+
+
+H3K9me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K9me3_set1$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K9me3_24T", "H3K9me3_144R"),
+                                 c("H3K9me3_24T","H3K9me3_24R"),
+                                 c("H3K9me3_24R", "H3K9me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K9me3 set1")
+```
+
+
+```{r H3K9me3 line plot LFC set 1}
+   
+  set1_9me3 <- H3K9me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K9me3_set1$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+   mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group) %>% 
+  summarize(med_Set1=median(logFC),.groups="drop")
+
+
+
+
+```
+
+set2
+```{r H3K9me3 LFC set 2}
+
+# H3K9me3_toptable_list %>%
+#   dplyr::filter(genes %in% H3K9me3_set2$.) %>% 
+#   dplyr::select(group,genes,logFC) %>%
+#   mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R"))) %>% 
+#   ggplot(., aes(x=group, y=logFC))+
+#   geom_boxplot(aes(fill=group))+
+#   geom_signif(comparisons = list(c("H3K9me3_24T", "H3K9me3_144R"),
+#                                  c("H3K9me3_24T","H3K9me3_24R"),
+#                                  c("H3K9me3_24R", "H3K9me3_144R")),
+#                               step_increase = 0.1, 
+#               map_signif_level = FALSE, 
+#               test = "wilcox.test")+
+#   theme_bw()+
+#   ggtitle("LFC across time for H3K9me3 set2")
+
+
+H3K9me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K9me3_set2$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K9me3_24T", "H3K9me3_144R"),
+                                 c("H3K9me3_24T","H3K9me3_24R"),
+                                 c("H3K9me3_24R", "H3K9me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K9me3 set2")
+
+
+```
+
+```{r H3K9me3 line plot LFC set 2}
+   
+  set2_9me3 <- H3K9me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K9me3_set2$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+   mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group) %>% 
+  summarize(med_Set2=median(logFC),.groups="drop")
+
+
+
+```
+
+
+
+set3
+```{r H3K9me3 LFC set 3}
+
+# H3K9me3_toptable_list %>%
+#   dplyr::filter(genes %in% H3K9me3_set3$.) %>% 
+#   dplyr::select(group,genes,logFC) %>%
+#   mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R"))) %>% 
+#   ggplot(., aes(x=group, y=logFC))+
+#   geom_boxplot(aes(fill=group))+
+#   geom_signif(comparisons = list(c("H3K9me3_24T", "H3K9me3_144R"),
+#                                  c("H3K9me3_24T","H3K9me3_24R"),
+#                                  c("H3K9me3_24R", "H3K9me3_144R")),
+#                               step_increase = 0.1, 
+#               map_signif_level = FALSE, 
+#               test = "wilcox.test")+
+#   theme_bw()+
+#   ggtitle("LFC across time for H3K9me3 set3")
+
+
+H3K9me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K9me3_set3$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R")),
+         logFC=abs(logFC)) %>% 
+  ggplot(., aes(x=group, y=logFC))+
+  geom_boxplot(aes(fill=group))+
+  geom_signif(comparisons = list(c("H3K9me3_24T", "H3K9me3_144R"),
+                                 c("H3K9me3_24T","H3K9me3_24R"),
+                                 c("H3K9me3_24R", "H3K9me3_144R")),
+                              step_increase = 0.1, 
+              map_signif_level = FALSE, 
+              test = "wilcox.test")+
+  theme_bw()+
+  ggtitle("Absolute LFC across time for H3K9me3 set3")
+
+
+```
+
+```{r H3K9me3 line plot LFC set 3}
+   
+  H3K9me3_toptable_list %>%
+  dplyr::filter(genes %in% H3K9me3_set3$.) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group) %>% 
+  summarize(med_Set3=median(logFC),.groups="drop") %>% 
+  left_join(set1_9me3, by="group") %>% 
+  left_join(set2_9me3, by="group") %>% 
+  pivot_longer(cols=!group, values_to = "median_LFC", names_to = "set") %>% 
+  ggplot(., aes(x=group, y=median_LFC, group=set, color=set))+
+  geom_point()+
+  geom_line(aes(alpha = 0.3))+
+  theme_bw()+
+  ggtitle("LFC across time for H3K9me3 sets")
+
+
+
+```
+
