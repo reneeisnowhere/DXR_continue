@@ -102,6 +102,41 @@ H3K9me3_toptable_list <- bind_rows(H3K9me3_toplist, .id = "group")
 
 ```
 
+```{r function code}
+standardizeAnnoList <- function(annoList, categories, color_pal = NULL) {
+  if (is.null(color_pal)) {
+    if (!requireNamespace("RColorBrewer", quietly = TRUE)) {
+      stop("Please install RColorBrewer to use the default palette")
+    }
+    color_pal <- RColorBrewer::brewer.pal(length(categories), "Set3")
+    names(color_pal) <- categories
+  }
+
+  for (nm in names(annoList)) {
+    annoStat <- annoList[[nm]]@annoStat
+    
+    # pad missing categories
+    missing_cats <- setdiff(categories, as.character(annoStat$Feature))
+    if (length(missing_cats) > 0) {
+      pad <- data.frame(Feature = missing_cats, Frequency = 0)
+      annoStat <- rbind(annoStat, pad)
+    }
+    
+    # factor + reorder rows
+    annoStat$Feature <- factor(annoStat$Feature, levels = categories)
+    annoStat <- annoStat[order(match(annoStat$Feature, categories)), ]
+    
+    annoList[[nm]]@annoStat <- annoStat
+  }
+  
+  return(list(
+    annoList = annoList,
+    color_pal = color_pal
+  ))
+}
+
+```
+
 ###  H3K27ac motifs samples
 
 #### Set 1
@@ -234,14 +269,42 @@ H3K27ac_list <- list("Set_1"=H3K27ac_set1_gr,"Set_2"=H3K27ac_set2_gr,"Set_3"=H3K
 # saveRDS(peakAnnoList_H3K27ac, "data/motif_lists/H3K27ac_annotated_peaks.RDS")
 peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
 
-plotAnnoBar(peakAnnoList_H3K27ac[c(4,1,2,3)])+
+categories <- c(
+  "Distal Intergenic", "Downstream (<=300)", 
+  "Other Intron", "1st Intron", 
+  "Other Exon", "1st Exon", 
+  "3' UTR", "5' UTR", 
+  "Promoter (1-2kb)", "Promoter (<=1kb)"
+)
+
+# Optional: custom color palette
+color_pal <- c(
+  "#6a3d9a", "#cab2d6",
+  "#ff7f00", "#fdbf6f",
+  "#e31a1c", "#fb9a99",
+  "#33a02c", "#b2df8a",
+  "#1f78b4", "#a6cee3"
+)
+names(color_pal) <- categories
+
+res <- standardizeAnnoList(peakAnnoList_H3K27ac, categories, color_pal)
+peakAnnoList_H3K27ac_std <- res$annoList
+color_pal_std <- res$color_pal
+
+# bar plot
+plotAnnoBar(peakAnnoList_H3K27ac_std[c(4,1,2,3)]) +
+  scale_fill_manual(values=color_pal_std) +
   ggtitle("H3K27ac Feature Distribution")
 
-# pie_plots_H3K27ac <-   map(peakAnnoList_H3K27ac, ~ plotAnnoPie(.x))
-for(nm in names(peakAnnoList_H3K27ac)) {
-  plotAnnoPie(peakAnnoList_H3K27ac[[nm]])
-  title(main = nm)  # base R title
+# pie plots
+for (nm in names(peakAnnoList_H3K27ac_std)) {
+  plotAnnoPie(peakAnnoList_H3K27ac_std[[nm]], col=color_pal_std)
+  title(main = nm, line = -2)
 }
+
+
+
+
 ```
 
 #### LFC H3K27ac
@@ -400,50 +463,61 @@ H3K27ac_toptable_list %>%
   pivot_longer(cols=!group, values_to = "median_LFC", names_to = "set") %>% 
   ggplot(., aes(x=group, y=median_LFC, group=set, color=set))+
   geom_point()+
-  geom_line(aes(alpha = 0.3))+
+  geom_line(aes(alpha = 0.8))+
   theme_bw()+
   ggtitle("LFC across time for H3K27ac sets")
 
 
 ```
 
-##### Toptable top 100
+##### Top 100
 
 This is the calculation of Top 100 in each category, then united
-```{r, eval=FALSE}
+```{r H3K27ac top100}
+cormotif_initial_H3K27ac <- readRDS("data/Cormotif_data/Cormotif_initial_H3K27ac.RDS")
+row.names(cormotif_initial_H3K27ac$bestmotif$clustlike) <- row.names(H3K27ac_filt_lcpm)
+H3K27ac_clustlike <- cormotif_initial_H3K27ac$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  rownames_to_column("Peakid")
+
+H3K27ac_clusters <- list(
+  Set1="V1",
+  Set2="V2",
+  Set3="V3")
+
+
 Sets_H3K27ac <- H3K27ac_toptable_list %>% 
   mutate(cluster=case_when(genes %in% H3K27ac_set1$. ~ "Set1",
                            genes %in% H3K27ac_set2$. ~ "Set2",
                            genes %in% H3K27ac_set3$. ~ "Set3",
-                           TRUE ~ "not_assigned"))
-Sets_H3K27ac %>% 
-  dplyr::filter(cluster != "not_assigned") %>% 
-  group_by(group) %>% 
-  slice_min(.,order_by=adj.P.Val,n = 100) %>% 
-  ungroup() %>% 
-  group_by(cluster) %>% tally()
-  
+                           TRUE ~ "not_assigned")) %>% 
+  left_join(., H3K27ac_clustlike,by=c("genes"="Peakid")) %>% 
+  dplyr::filter(cluster!="not_assigned")
 
+###This code uses the H3K27ac_clusters list and filters through Sets_H3K27ac data frame by selecting
+Sets_H3K27ac_top <- map_dfr(names(H3K27ac_clusters), function(cl) {
+  col <- H3K27ac_clusters[[cl]]
+  Sets_H3K27ac %>%
+    filter(cluster == cl) %>%
+    # group_by(group) %>% 
+    slice_max(order_by = .data[[col]], n = 100)
+}) %>%
+  ungroup()
 
-H3K27ac_toptable_list %>% 
-  group_by(group) %>% 
-  slice_min(.,order_by=adj.P.Val,n = 100) %>% 
-  ungroup() %>% 
-  distinct(genes)
+## now plot
 
+Sets_H3K27ac_top %>% 
+  mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R")),
+         cluster=factor(cluster, levels=c("Set1","Set2","Set3"))) %>% 
+  ggplot(., aes(x= group,y = logFC, group = interaction(cluster, genes), color=cluster))+
+  geom_point()+
+  geom_line(aes(alpha = 0.8))+
+  theme_bw()+
+  facet_wrap(~cluster)+
+  ggtitle("LFC across time for H3K27ac top 100 by Set")+
+  theme(axis.text.x = element_text(angle=90) )
 
-### Emma's way
-
-Sets_H3K27ac %>% 
-  dplyr::filter(cluster != "not_assigned") %>%
-  group_by(group, genes) %>% 
-  summarise("min.adj.P"= min(adj.P.Val), .groups="drop", cluster=unique(cluster)) %>% 
-  arrange(cluster, min.adj.P) %>%
-  group_by(cluster) %>%
-  slice_head(n = 100) %>% 
-  distinct (genes)
-  
-
+# saveRDS(Sets_H3K27ac_top,"data/motif_lists/H3K27ac_toplistbymotif.RDS")
 ```
 
 
@@ -515,7 +589,7 @@ H3K27me3_filt_lcpm %>%
 ```
 ```{r H3K27me3 genomic regions}
 
-all_H3K27me3_regions_gr <- all_H3K27ac_regions %>% 
+all_H3K27me3_regions_gr <- all_H3K27me3_regions %>% 
     tidyr::separate(., col = "Peakid", into=c("seqnames","range"), sep = ":", remove=FALSE) %>%
   tidyr::separate(., col = "range", into=c("start","end"), sep = "-") %>%
   GRanges()
@@ -537,7 +611,7 @@ H3K27me3_list <- list("Set_1"=H3K27me3_set1_gr,"Set_2"=H3K27me3_set2_gr,"all_H3K
 
 
 # peakAnnoList_H3K27me3 <- lapply(H3K27me3_list, annotatePeak, tssRegion =c(-2000,2000), TxDb=txdb)
-
+# 
 # saveRDS(peakAnnoList_H3K27me3, "data/motif_lists/H3K27me3_annotated_peaks.RDS")
 peakAnnoList_H3K27me3 <- readRDS("data/motif_lists/H3K27me3_annotated_peaks.RDS")
 
@@ -652,12 +726,61 @@ H3K27me3_toptable_list %>%
   pivot_longer(cols=!group, values_to = "median_LFC", names_to = "set") %>% 
   ggplot(., aes(x=group, y=median_LFC, group=set, color=set))+
   geom_point()+
-  geom_line(aes(alpha = 0.3))+
+  geom_line(aes(alpha = 0.8))+
   theme_bw()+
   ggtitle("LFC across time for H3K27me3 sets")
 
 
 ```
+
+##### Top 100
+
+This is the calculation of Top 100 in each category, then united
+```{r H3K27me3 top100}
+cormotif_initial_H3K27me3 <- readRDS("data/Cormotif_data/Cormotif_initial_H3K27me3.RDS")
+row.names(cormotif_initial_H3K27me3$bestmotif$clustlike) <- row.names(H3K27me3_filt_lcpm)
+H3K27me3_clustlike <- cormotif_initial_H3K27me3$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  rownames_to_column("Peakid")
+
+H3K27me3_clusters <- list(
+  Set1="V1",
+  Set2="V2")
+
+
+Sets_H3K27me3 <- H3K27me3_toptable_list %>% 
+  mutate(cluster=case_when(genes %in% H3K27me3_set1$. ~ "Set1",
+                           genes %in% H3K27me3_set2$. ~ "Set2",
+                           TRUE ~ "not_assigned")) %>% 
+  left_join(., H3K27me3_clustlike,by=c("genes"="Peakid")) %>% 
+  dplyr::filter(cluster!="not_assigned")
+
+###This code uses the H3K27me3_clusters list and filters through Sets_H3K27me3 data frame by selecting
+Sets_H3K27me3_top <- map_dfr(names(H3K27me3_clusters), function(cl) {
+  col <- H3K27me3_clusters[[cl]]
+  Sets_H3K27me3 %>%
+    filter(cluster == cl) %>%
+    # group_by(group) %>% 
+    slice_max(order_by = .data[[col]], n = 100)
+}) %>%
+  ungroup()
+
+## now plot
+
+Sets_H3K27me3_top %>% 
+  mutate(group=factor(group, levels = c("H3K27me3_24T","H3K27me3_24R","H3K27me3_144R")),
+         cluster=factor(cluster, levels=c("Set1","Set2"))) %>% 
+  ggplot(., aes(x= group,y = logFC, group = interaction(cluster, genes), color=cluster))+
+  geom_point()+
+  geom_line(aes(alpha = 0.8))+
+  theme_bw()+
+  facet_wrap(~cluster)+
+  ggtitle("LFC across time for H3K27me3 top 100 by Set")+
+  theme(axis.text.x = element_text(angle=90) )
+
+# saveRDS(Sets_H3K27me3_top,"data/motif_lists/H3K27me3_toplistbymotif.RDS")
+```
+
 
 
 
@@ -866,11 +989,60 @@ H3K36me3_toptable_list %>%
   pivot_longer(cols=!group, values_to = "median_LFC", names_to = "set") %>% 
   ggplot(., aes(x=group, y=median_LFC, group=set, color=set))+
   geom_point()+
-  geom_line(aes(alpha = 0.3))+
+  geom_line(aes(alpha = 0.8))+
   theme_bw()+
   ggtitle("LFC across time for H3K36me3 sets")
 
 ```
+##### Top 100
+
+This is the calculation of Top 100 in each category, then united
+```{r H3K36me3 top100}
+cormotif_initial_H3K36me3 <- readRDS("data/Cormotif_data/Cormotif_initial_H3K36me3.RDS")
+row.names(cormotif_initial_H3K36me3$bestmotif$clustlike) <- row.names(H3K36me3_filt_lcpm)
+H3K36me3_clustlike <- cormotif_initial_H3K36me3$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  rownames_to_column("Peakid")
+
+H3K36me3_clusters <- list(
+  Set1="V1",
+  Set2="V2")
+
+
+Sets_H3K36me3 <- H3K36me3_toptable_list %>% 
+  mutate(cluster=case_when(genes %in% H3K36me3_set1$. ~ "Set1",
+                           genes %in% H3K36me3_set2$. ~ "Set2",
+                           TRUE ~ "not_assigned")) %>% 
+  left_join(., H3K36me3_clustlike,by=c("genes"="Peakid")) %>% 
+  dplyr::filter(cluster!="not_assigned")
+
+###This code uses the H3K36me3_clusters list and filters through Sets_H3K36me3 data frame by selecting
+Sets_H3K36me3_top <- map_dfr(names(H3K36me3_clusters), function(cl) {
+  col <- H3K36me3_clusters[[cl]]
+  Sets_H3K36me3 %>%
+    filter(cluster == cl) %>%
+    # group_by(group) %>% 
+    slice_max(order_by = .data[[col]], n = 100)
+}) %>%
+  ungroup()
+
+## now plot
+
+Sets_H3K36me3_top %>% 
+  mutate(group=factor(group, levels = c("H3K36me3_24T","H3K36me3_24R","H3K36me3_144R")),
+         cluster=factor(cluster, levels=c("Set1","Set2"))) %>% 
+  ggplot(., aes(x= group,y = logFC, group = interaction(cluster, genes), color=cluster))+
+  geom_point()+
+  geom_line(aes(alpha = 0.8))+
+  theme_bw()+
+  facet_wrap(~cluster)+
+  ggtitle("LFC across time for H3K36me3 top 100 by Set")+
+  theme(axis.text.x = element_text(angle=90) )
+
+# saveRDS(Sets_H3K36me3_top,"data/motif_lists/H3K36me3_toplistbymotif.RDS")
+```
+
+
 
 
 
@@ -1176,11 +1348,62 @@ H3K9me3_toptable_list %>%
   pivot_longer(cols=!group, values_to = "median_LFC", names_to = "set") %>% 
   ggplot(., aes(x=group, y=median_LFC, group=set, color=set))+
   geom_point()+
-  geom_line(aes(alpha = 0.3))+
+  geom_line(aes(alpha = 0.8))+
   theme_bw()+
   ggtitle("LFC across time for H3K9me3 sets")
 
 
 
 ```
+
+##### Top 100
+
+This is the calculation of Top 100 in each category, then united
+```{r H3K9me3 top100}
+cormotif_initial_H3K9me3 <- readRDS("data/Cormotif_data/Cormotif_initial_H3K9me3.RDS")
+row.names(cormotif_initial_H3K9me3$bestmotif$clustlike) <- row.names(H3K9me3_filt_lcpm)
+H3K9me3_clustlike <- cormotif_initial_H3K9me3$bestmotif$clustlike %>% 
+  as.data.frame() %>% 
+  rownames_to_column("Peakid")
+
+H3K9me3_clusters <- list(
+  Set1="V1",
+  Set2="V2",
+  Set3="V3")
+
+
+Sets_H3K9me3 <- H3K9me3_toptable_list %>% 
+  mutate(cluster=case_when(genes %in% H3K9me3_set1$. ~ "Set1",
+                           genes %in% H3K9me3_set2$. ~ "Set2",
+                           genes %in% H3K9me3_set3$. ~ "Set3",
+                           TRUE ~ "not_assigned")) %>% 
+  left_join(., H3K9me3_clustlike,by=c("genes"="Peakid")) %>% 
+  dplyr::filter(cluster!="not_assigned")
+
+###This code uses the H3K9me3_clusters list and filters through Sets_H3K9me3 data frame by selecting
+Sets_H3K9me3_top <- map_dfr(names(H3K9me3_clusters), function(cl) {
+  col <- H3K9me3_clusters[[cl]]
+  Sets_H3K9me3 %>%
+    filter(cluster == cl) %>%
+    # group_by(group) %>% 
+    slice_max(order_by = .data[[col]], n = 100)
+}) %>%
+  ungroup()
+
+## now plot
+
+Sets_H3K9me3_top %>% 
+  mutate(group=factor(group, levels = c("H3K9me3_24T","H3K9me3_24R","H3K9me3_144R")),
+         cluster=factor(cluster, levels=c("Set1","Set2","Set3"))) %>% 
+  ggplot(., aes(x= group,y = logFC, group = interaction(cluster, genes), color=cluster))+
+  geom_point()+
+  geom_line(aes(alpha = 0.8))+
+  theme_bw()+
+  facet_wrap(~cluster)+
+  ggtitle("LFC across time for H3K9me3 top 100 by Set")+
+  theme(axis.text.x = element_text(angle=90) )
+
+# saveRDS(Sets_H3K9me3_top,"data/motif_lists/H3K9me3_toplistbymotif.RDS")
+```
+
 
