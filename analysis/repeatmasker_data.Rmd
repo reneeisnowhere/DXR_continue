@@ -1114,7 +1114,12 @@ H3K27ac_results_1bp <- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3("H3K27ac_results_1bp"), 
-datatable(H3K27ac_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K27ac_results_1bp,options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))
 
 
@@ -1143,7 +1148,13 @@ H3K27ac_results_50per <- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3("H3K27ac_results 50% overlap"),
-datatable(H3K27ac_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K27ac_results_50per,
+          options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))
 
 
@@ -1177,7 +1188,12 @@ H3K27me3_results_1bp <- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3("H3K27me3_results_1bp"), 
-datatable(H3K27me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K27me3_results_1bp,options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))
 
 
@@ -1206,7 +1222,12 @@ H3K27me3_results_50per <- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3("H3K27me3_results 50% overlap"),
-datatable(H3K27me3_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K27me3_results_50per,options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))
 
 
@@ -1238,7 +1259,12 @@ H3K36me3_results_1bp <- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3("H3K36me3_results_1bp"), 
-datatable(H3K36me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K36me3_results_1bp,options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))
 
 
@@ -1267,7 +1293,12 @@ H3K36me3_results_50per <- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3("H3K36me3_results 50% overlap"),
-datatable(H3K36me3_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K36me3_results_50per,options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))
 
 
@@ -1299,7 +1330,12 @@ H3K9me3_results_1bp <- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3("H3K9me3_results_1bp"), 
-datatable(H3K9me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K9me3_results_1bp,options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))
 
 
@@ -1328,7 +1364,12 @@ H3K9me3_results_50per <- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3("H3K9me3_results 50% overlap"),
-datatable(H3K9me3_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K9me3_results_50per,options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))
 
 
