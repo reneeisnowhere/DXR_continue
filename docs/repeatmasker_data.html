@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree48f3b757ee62d87e546d2f5327dfe176a0a192fetargetblank48f3b75a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree6e58d856c9ac88fe83316c1c107feea670fd360ftargetblank6e58d85a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/48f3b757ee62d87e546d2f5327dfe176a0a192fe" target="_blank">48f3b75</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/6e58d856c9ac88fe83316c1c107feea670fd360f" target="_blank">6e58d85</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree48f3b757ee62d87e546d2f5327dfe176a0a192fetargetblank48f3b75a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree6e58d856c9ac88fe83316c1c107feea670fd360ftargetblank6e58d85a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/48f3b757ee62d87e546d2f5327dfe176a0a192fe" target="_blank">48f3b75</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/6e58d856c9ac88fe83316c1c107feea670fd360f" target="_blank">6e58d85</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -629,6 +629,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6e58d856c9ac88fe83316c1c107feea670fd360f/analysis/repeatmasker_data.Rmd" target="_blank">6e58d85</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+<td>
+first setup
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/967b7a862b9e72106941f5f978cc7e1722faaeef/docs/repeatmasker_data.html" target="_blank">967b7a8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1994,11 +2028,16 @@ H3K27ac_results_1bp &lt;- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3(&quot;H3K27ac_results_1bp&quot;), 
-datatable(H3K27ac_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K27ac_results_1bp,options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))</code></pre>
 <h3>H3K27ac_results_1bp</h3>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-c7fc7fd0704f0fe11c1f" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[1.259368850772524,1.50602557720872,0.9343402356670563,1.093924871752749,1.2053052899433,1.192583844384101,1.163842923172437,1.144868975402332,1.42972211973557,1.450311012201304,0.6328026297326891,2.191186181829242],[1.088290344152379,1.401227261368075,0.8391107805830744,1.040515615687436,1.07848131595696,1.132547357453693,1.015068898994149,1.074387170836914,1.253526254115946,1.364817931794001,0.07613847632219906,1.474579717683874],[1.462857271196355,1.620136387331754,1.040334535506866,1.150199128292199,1.34614120998107,1.255663442775145,1.330829289813344,1.219260890322723,1.626916549812552,1.540610066311737,2.314157885543509,3.161179314255219],[0.001542825486745813,2.306182256468386e-31,0.2131900825174579,0.0004093799980208346,0.0008996282437924752,2.266020368876619e-11,0.02737254993631404,3.034826659742476e-05,1.198905496825998e-07,7.024151397539197e-32,0.7751346675645006,9.514713485445925e-05]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[1.259368850772524,1.50602557720872,0.9343402356670563,1.093924871752749,1.2053052899433,1.192583844384101,1.163842923172437,1.144868975402332,1.42972211973557,1.450311012201304,0.6328026297326891,2.191186181829242],[1.088290344152379,1.401227261368075,0.8391107805830744,1.040515615687436,1.07848131595696,1.132547357453693,1.015068898994149,1.074387170836914,1.253526254115946,1.364817931794001,0.07613847632219906,1.474579717683874],[1.462857271196355,1.620136387331754,1.040334535506866,1.150199128292199,1.34614120998107,1.255663442775145,1.330829289813344,1.219260890322723,1.626916549812552,1.540610066311737,2.314157885543509,3.161179314255219],[0.001542825486745813,2.306182256468386e-31,0.2131900825174579,0.0004093799980208346,0.0008996282437924752,2.266020368876619e-11,0.02737254993631404,3.034826659742476e-05,1.198905496825998e-07,7.024151397539197e-32,0.7751346675645006,9.514713485445925e-05]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K27ac_counts_long %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2011,6 +2050,43 @@ datatable(H3K27ac_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
     strip.text = element_text(face = &quot;bold&quot;)
   )</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-df-1">
+Past versions of "H3K27ac df-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27ac-df-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/967b7a862b9e72106941f5f978cc7e1722faaeef/docs/figure/repeatmasker_data.Rmd/H3K27ac df-1.png" target="_blank">967b7a8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="results-for-50-te-overlap-h3k27ac" class="section level5">
 <h5>results for 50% TE overlap H3K27ac</h5>
@@ -2023,11 +2099,17 @@ H3K27ac_results_50per &lt;- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3(&quot;H3K27ac_results 50% overlap&quot;),
-datatable(H3K27ac_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K27ac_results_50per,
+          options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))</code></pre>
 <h3>H3K27ac_results 50% overlap</h3>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-1aee943cb026952af47d" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[1.216159913613956,1.4616037954072,0.9179620567692816,1.136091037438066,1.189738487458323,1.201659051856082,1.185737845333323,1.151405144157643,1.485833272387262,1.560063400774838,0.5516438648245761,1.385803963240848],[1.071660972676197,1.37393514488447,0.8232518978341578,1.080715463323694,1.059030555714539,1.1387117224498,1.025624979046734,1.076161749241332,1.292962490875653,1.463949727802741,0.01386395849034669,0.6993636155397289],[1.383182534453614,1.555575278933516,1.023183917132444,1.194296398578512,1.334996176519529,1.267902491181639,1.366314712882599,1.231148932876282,1.702489410019992,1.661631263403108,3.127645882425833,2.497765289170275],[0.002040443600663668,1.21859829364046e-35,0.121017792644741,4.990927978918603e-07,0.003146383123698687,2.526017670845213e-11,0.02032248178340357,4.434572306760904e-05,3.490245374067844e-08,1.218119070554094e-40,1,0.2944199283243765]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[1.216159913613956,1.4616037954072,0.9179620567692816,1.136091037438066,1.189738487458323,1.201659051856082,1.185737845333323,1.151405144157643,1.485833272387262,1.560063400774838,0.5516438648245761,1.385803963240848],[1.071660972676197,1.37393514488447,0.8232518978341578,1.080715463323694,1.059030555714539,1.1387117224498,1.025624979046734,1.076161749241332,1.292962490875653,1.463949727802741,0.01386395849034669,0.6993636155397289],[1.383182534453614,1.555575278933516,1.023183917132444,1.194296398578512,1.334996176519529,1.267902491181639,1.366314712882599,1.231148932876282,1.702489410019992,1.661631263403108,3.127645882425833,2.497765289170275],[0.002040443600663668,1.21859829364046e-35,0.121017792644741,4.990927978918603e-07,0.003146383123698687,2.526017670845213e-11,0.02032248178340357,4.434572306760904e-05,3.490245374067844e-08,1.218119070554094e-40,1,0.2944199283243765]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K27ac_counts_long_50per %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2040,6 +2122,43 @@ datatable(H3K27ac_results_50per,options = list(pageLength = 20, autoWidth = TRUE
     strip.text = element_text(face = &quot;bold&quot;)
   )</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27ac%2050%20per%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-50-per-df-1">
+Past versions of "H3K27ac 50 per df-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27ac-50-per-df-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/967b7a862b9e72106941f5f978cc7e1722faaeef/docs/figure/repeatmasker_data.Rmd/H3K27ac 50 per df-1.png" target="_blank">967b7a8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="h3k27me3-proportions" class="section level3">
@@ -2054,11 +2173,16 @@ datatable(H3K27ac_results_50per,options = list(pageLength = 20, autoWidth = TRUE
 
 htmltools::tagList(
   htmltools::h3(&quot;H3K27me3_results_1bp&quot;), 
-datatable(H3K27me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K27me3_results_1bp,options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))</code></pre>
 <h3>H3K27me3_results_1bp</h3>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-15ac70e14e0faa7e6fac" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[0.5825859884833549,0.4095066984912001,0.3586899262807814,0.682052989857455,0.5293595230045218,0],[0.4425056042162213,0.2925533690297492,0.2429360791474219,0.4313624007585997,0.3546769328018679,0],[0.7716596751100738,0.5637712759524685,0.5157444772114571,1.035472354047545,0.767745360922313,23.49376917081121],[0.0001195863100841053,2.594044326307263e-09,5.566952949078571e-10,0.08034858366408916,0.0003765798800056719,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[0.5825859884833549,0.4095066984912001,0.3586899262807814,0.682052989857455,0.5293595230045218,0],[0.4425056042162213,0.2925533690297492,0.2429360791474219,0.4313624007585997,0.3546769328018679,0],[0.7716596751100738,0.5637712759524685,0.5157444772114571,1.035472354047545,0.767745360922313,23.49376917081121],[0.0001195863100841053,2.594044326307263e-09,5.566952949078571e-10,0.08034858366408916,0.0003765798800056719,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K27me3_counts_long %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2071,6 +2195,43 @@ datatable(H3K27me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE)
     strip.text = element_text(face = &quot;bold&quot;)
   )</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-df-1">
+Past versions of "H3K27me3 df-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27me3-df-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/967b7a862b9e72106941f5f978cc7e1722faaeef/docs/figure/repeatmasker_data.Rmd/H3K27me3 df-1.png" target="_blank">967b7a8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="results-for-50-te-overlap-h3k27me3" class="section level5">
 <h5>results for 50% TE overlap H3K27me3</h5>
@@ -2083,11 +2244,16 @@ H3K27me3_results_50per &lt;- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3(&quot;H3K27me3_results 50% overlap&quot;),
-datatable(H3K27me3_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K27me3_results_50per,options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))</code></pre>
 <h3>H3K27me3_results 50% overlap</h3>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-686cfa6b0ab6d13cf646" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-686cfa6b0ab6d13cf646">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[0.5856423699165734,0.393790395002386,0.3558495466062519,0.4965361958642435,0.4079034738368281,0],[0.4495835697990661,0.2693506757287685,0.2251113447325891,0.2731666467530557,0.2441894726734719,0],[0.7633475450154932,0.561725115322933,0.5401979810220469,0.8373084729874126,0.6460068347653763,35.58366474010647],[5.245506718695196e-05,1.511553470723401e-08,3.994406686829016e-08,0.006453712377742507,2.288239077057743e-05,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-686cfa6b0ab6d13cf646">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[0.5856423699165734,0.393790395002386,0.3558495466062519,0.4965361958642435,0.4079034738368281,0],[0.4495835697990661,0.2693506757287685,0.2251113447325891,0.2731666467530557,0.2441894726734719,0],[0.7633475450154932,0.561725115322933,0.5401979810220469,0.8373084729874126,0.6460068347653763,35.58366474010647],[5.245506718695196e-05,1.511553470723401e-08,3.994406686829016e-08,0.006453712377742507,2.288239077057743e-05,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K27me3_counts_long_50per %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2100,6 +2266,43 @@ datatable(H3K27me3_results_50per,options = list(pageLength = 20, autoWidth = TRU
     strip.text = element_text(face = &quot;bold&quot;)
   )</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27me3%2050%20per%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-50-per-df-1">
+Past versions of "H3K27me3 50 per df-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27me3-50-per-df-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/967b7a862b9e72106941f5f978cc7e1722faaeef/docs/figure/repeatmasker_data.Rmd/H3K27me3 50 per df-1.png" target="_blank">967b7a8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="h3k36me3-proportions" class="section level3">
@@ -2114,11 +2317,16 @@ datatable(H3K27me3_results_50per,options = list(pageLength = 20, autoWidth = TRU
 
 htmltools::tagList(
   htmltools::h3(&quot;H3K36me3_results_1bp&quot;), 
-datatable(H3K36me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K36me3_results_1bp,options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))</code></pre>
 <h3>H3K36me3_results_1bp</h3>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-76504a9d21e95bf556c2" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-76504a9d21e95bf556c2">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[1.411670634394453,1.343976233339281,1.347151413698301,1.698753475441349,1.372407495222607,3.10432862217496],[1.252470163008516,1.214578305042041,1.201348690512265,1.4661218622603,1.188224570289349,1.677248994924033],[1.594060695454736,1.487139903999599,1.508448036129486,1.960966975861284,1.579543158173228,5.289116375482961],[5.733337306033086e-09,7.903524882564161e-09,3.539088643977063e-07,8.098051531410306e-12,1.847156395814735e-05,0.0003032659348144326]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-76504a9d21e95bf556c2">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[1.411670634394453,1.343976233339281,1.347151413698301,1.698753475441349,1.372407495222607,3.10432862217496],[1.252470163008516,1.214578305042041,1.201348690512265,1.4661218622603,1.188224570289349,1.677248994924033],[1.594060695454736,1.487139903999599,1.508448036129486,1.960966975861284,1.579543158173228,5.289116375482961],[5.733337306033086e-09,7.903524882564161e-09,3.539088643977063e-07,8.098051531410306e-12,1.847156395814735e-05,0.0003032659348144326]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K36me3_counts_long %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2131,6 +2339,43 @@ datatable(H3K36me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE)
     strip.text = element_text(face = &quot;bold&quot;)
   )</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-df-1">
+Past versions of "H3K36me3 df-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-df-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/967b7a862b9e72106941f5f978cc7e1722faaeef/docs/figure/repeatmasker_data.Rmd/H3K36me3 df-1.png" target="_blank">967b7a8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="results-for-50-te-overlap-h3k36me3" class="section level5">
 <h5>results for 50% TE overlap H3K36me3</h5>
@@ -2143,11 +2388,16 @@ H3K36me3_results_50per &lt;- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3(&quot;H3K36me3_results 50% overlap&quot;),
-datatable(H3K36me3_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K36me3_results_50per,options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))</code></pre>
 <h3>H3K36me3_results 50% overlap</h3>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-72118e3de6abfa29a40d" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-72118e3de6abfa29a40d">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[1.717956110006,1.484879699023157,1.734404134677184,1.91101104124862,1.886877418785619,3.007454390809326],[1.541078701985056,1.340389002300764,1.534313128210478,1.626853349190564,1.610770130500736,0.9603118599529303],[1.917285399038383,1.644236388842978,1.956749353792982,2.233916575812101,2.200268472508792,7.200767300802062],[5.51112869101785e-24,2.974055647924138e-14,1.099513196346922e-17,3.913449827097718e-14,4.806275091921247e-14,0.02899296588542844]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-72118e3de6abfa29a40d">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[1.717956110006,1.484879699023157,1.734404134677184,1.91101104124862,1.886877418785619,3.007454390809326],[1.541078701985056,1.340389002300764,1.534313128210478,1.626853349190564,1.610770130500736,0.9603118599529303],[1.917285399038383,1.644236388842978,1.956749353792982,2.233916575812101,2.200268472508792,7.200767300802062],[5.51112869101785e-24,2.974055647924138e-14,1.099513196346922e-17,3.913449827097718e-14,4.806275091921247e-14,0.02899296588542844]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K36me3_counts_long_50per %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2160,6 +2410,43 @@ datatable(H3K36me3_results_50per,options = list(pageLength = 20, autoWidth = TRU
     strip.text = element_text(face = &quot;bold&quot;)
   )</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%2050%20per%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-50-per-df-1">
+Past versions of "H3K36me3 50 per df-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-50-per-df-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/967b7a862b9e72106941f5f978cc7e1722faaeef/docs/figure/repeatmasker_data.Rmd/H3K36me3 50 per df-1.png" target="_blank">967b7a8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="h3k9me3-proportions" class="section level3">
@@ -2174,11 +2461,16 @@ datatable(H3K36me3_results_50per,options = list(pageLength = 20, autoWidth = TRU
 
 htmltools::tagList(
   htmltools::h3(&quot;H3K9me3_results_1bp&quot;), 
-datatable(H3K9me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K9me3_results_1bp,options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))</code></pre>
 <h3>H3K9me3_results_1bp</h3>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-0a58fb401ace3924c9b1" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-0a58fb401ace3924c9b1">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[0.3096610672384844,0.4395366087839432,0.7161438111274293,0.9417527868192503,0.3153820571502002,0.4589173312709165,0.5956472408661692,0.6264916059145618,0.1271797301389415,0.1627350074882929,0.223825775205762,0],[0.2893754536798872,0.386794523869431,0.6516123173183945,0.7996693125712947,0.2825712365004743,0.3826041226773913,0.4982649882883287,0.4464205511841541,0.109759580044387,0.126207325699428,0.0724925752934981,0],[0.331381429440707,0.4996958465317939,0.7858530224292968,1.104668316172285,0.3512629404912564,0.5472999069919321,0.7070981558342178,0.8569732051822975,0.1466866573558857,0.2070659576968038,0.524178896319089,0.5844529974120374],[3.797822105164549e-248,1.996233558866485e-35,2.749722068883757e-13,0.4754742113152802,2.101854226424334e-130,3.198349161849768e-21,2.006816442276066e-10,0.0022257200161758,9.881312916824931e-324,2.6228163228874e-81,3.044973610725754e-05,0.003801175823158375]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-0a58fb401ace3924c9b1">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[0.3096610672384844,0.4395366087839432,0.7161438111274293,0.9417527868192503,0.3153820571502002,0.4589173312709165,0.5956472408661692,0.6264916059145618,0.1271797301389415,0.1627350074882929,0.223825775205762,0],[0.2893754536798872,0.386794523869431,0.6516123173183945,0.7996693125712947,0.2825712365004743,0.3826041226773913,0.4982649882883287,0.4464205511841541,0.109759580044387,0.126207325699428,0.0724925752934981,0],[0.331381429440707,0.4996958465317939,0.7858530224292968,1.104668316172285,0.3512629404912564,0.5472999069919321,0.7070981558342178,0.8569732051822975,0.1466866573558857,0.2070659576968038,0.524178896319089,0.5844529974120374],[3.797822105164549e-248,1.996233558866485e-35,2.749722068883757e-13,0.4754742113152802,2.101854226424334e-130,3.198349161849768e-21,2.006816442276066e-10,0.0022257200161758,9.881312916824931e-324,2.6228163228874e-81,3.044973610725754e-05,0.003801175823158375]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K9me3_counts_long %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2191,6 +2483,43 @@ datatable(H3K9me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
     strip.text = element_text(face = &quot;bold&quot;)
   )</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-df-1">
+Past versions of "H3K9me3 df-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-df-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/967b7a862b9e72106941f5f978cc7e1722faaeef/docs/figure/repeatmasker_data.Rmd/H3K9me3 df-1.png" target="_blank">967b7a8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="results-for-50-te-overlap-h3k9me3" class="section level5">
 <h5>results for 50% TE overlap H3K9me3</h5>
@@ -2203,11 +2532,16 @@ H3K9me3_results_50per &lt;- map_dfr(TE_types, function(te){
 
 htmltools::tagList(
   htmltools::h3(&quot;H3K9me3_results 50% overlap&quot;),
-datatable(H3K9me3_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+datatable(H3K9me3_results_50per,options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
   rownames = FALSE))</code></pre>
 <h3>H3K9me3_results 50% overlap</h3>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-2ecdfcc414070ada7f31" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-2ecdfcc414070ada7f31">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[0.5802242795301654,0.9537716050752808,0.6345273641455764,0.901863886185822,0.5954349908853007,1.088041068341802,0.5399581440202916,0.6637077191081634,0.1307088451626111,0.2300721869690266,0,0],[0.5403109948840259,0.839589378936289,0.5658992190015623,0.7457241539270615,0.5213331368363794,0.8928638619729873,0.4252643617454441,0.4347951652806848,0.1071631912713697,0.1714877128191239,0,0],[0.6228612469315955,1.083195891387989,0.7096512877568221,1.083691584028658,0.6775961075714843,1.31625181819435,0.6766573287978714,0.9725601544773813,0.157975926740048,0.3029130559361377,0.6153094277849813,2.176799089286043],[5.255491616757113e-54,0.4629610711605696,2.830059189104029e-17,0.2813925122880246,3.228616528117679e-17,0.3696706836853472,5.126094161557239e-09,0.03501757778615852,3.312491755415245e-192,5.115850405574176e-39,0.005445463984559912,0.4237916596172365]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-2ecdfcc414070ada7f31">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[0.5802242795301654,0.9537716050752808,0.6345273641455764,0.901863886185822,0.5954349908853007,1.088041068341802,0.5399581440202916,0.6637077191081634,0.1307088451626111,0.2300721869690266,0,0],[0.5403109948840259,0.839589378936289,0.5658992190015623,0.7457241539270615,0.5213331368363794,0.8928638619729873,0.4252643617454441,0.4347951652806848,0.1071631912713697,0.1714877128191239,0,0],[0.6228612469315955,1.083195891387989,0.7096512877568221,1.083691584028658,0.6775961075714843,1.31625181819435,0.6766573287978714,0.9725601544773813,0.157975926740048,0.3029130559361377,0.6153094277849813,2.176799089286043],[5.255491616757113e-54,0.4629610711605696,2.830059189104029e-17,0.2813925122880246,3.228616528117679e-17,0.3696706836853472,5.126094161557239e-09,0.03501757778615852,3.312491755415245e-192,5.115850405574176e-39,0.005445463984559912,0.4237916596172365]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K9me3_counts_long_50per %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2220,6 +2554,43 @@ datatable(H3K9me3_results_50per,options = list(pageLength = 20, autoWidth = TRUE
     strip.text = element_text(face = &quot;bold&quot;)
   )</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K9me3%2050%20per%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-50-per-df-1">
+Past versions of "H3K9me3 50 per df-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-50-per-df-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/967b7a862b9e72106941f5f978cc7e1722faaeef/docs/figure/repeatmasker_data.Rmd/H3K9me3 50 per df-1.png" target="_blank">967b7a8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
