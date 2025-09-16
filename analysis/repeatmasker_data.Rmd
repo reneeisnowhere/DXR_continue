@@ -1,0 +1,811 @@
+---
+title: "repeatmasker_data"
+author: "Renee Matthews"
+date: "2025-09-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+libraries
+```{r library}
+library(tidyverse)
+library(DT)
+library(genomation)
+library(GenomicRanges)
+library(BiocParallel)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(ChIPseeker)
+library(plyranges)
+```
+
+
+
+
+Loading data files
+
+```{r repeatmasker loading}
+
+repeatmasker <- read_delim("data/Other_paper_data/repeatmasker_20250911.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+```
+
+```{r loading motif data}
+peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+peakAnnoList_H3K27me3 <- readRDS("data/motif_lists/H3K27me3_annotated_peaks.RDS")
+peakAnnoList_H3K36me3 <- readRDS("data/motif_lists/H3K36me3_annotated_peaks.RDS")
+peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
+```
+
+```{r making granges dfs}
+
+
+rmskr_std_gr <- repeatmasker %>% 
+   makeGRangesFromDataFrame(., seqnames="genoName", keep.extra.columns=TRUE,
+                                      start.field="genoStart",
+                                      end.field="genoEnd",
+                                      starts.in.df.are.0based=TRUE) %>% 
+  keepStandardChromosomes(., pruning.mode = "coarse")
+
+##checking chromosomes
+seqlevels(rmskr_std_gr)
+
+###making granges lists out of motifs
+
+H3K27ac_sets_gr <- lapply(peakAnnoList_H3K27ac, function(df) {
+  as_granges(df)
+})
+
+H3K27me3_sets_gr <- lapply(peakAnnoList_H3K27me3, function(df) {
+  as_granges(df)
+})
+
+H3K36me3_sets_gr <- lapply(peakAnnoList_H3K36me3, function(df) {
+  as_granges(df)
+})
+
+H3K9me3_sets_gr <- lapply(peakAnnoList_H3K9me3, function(df) {
+  as_granges(df)
+})
+  
+```
+
+### H3K27ac and TEs
+```{r H3K27ac set1}
+
+### this is now taking the overlaps and widths of the TE and roi, then calculating percentage overlaps for each (pct_te_overlap and pct_roi_overlap)
+H3K27ac_ols <- lapply(H3K27ac_sets_gr, function(df) {
+    overlaps <- join_overlap_inner(df, rmskr_std_gr)
+   # overlap base pairs
+  overlaps$overlap_bp <- width(pintersect(overlaps))
+
+  # ROI lengths
+  overlaps$roi_len <- width(df)[match(overlaps$Peakid, df$Peakid)]
+  overlaps$pct_roi_overlap <- (overlaps$overlap_bp / overlaps$roi_len) * 100
+
+  # Repeat (TE) lengths
+  overlaps$te_len <- width(rmskr_std_gr)[match(overlaps$genoName, rmskr_std_gr$genoName)]
+  overlaps$pct_te_overlap <- (overlaps$overlap_bp / overlaps$te_len) * 100
+
+  as.data.frame(overlaps)
+})
+
+
+H3K27ac_ols$Set_1 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K27ac_ols$Set_1 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+
+```
+
+```{r H3K27ac set2}
+
+
+H3K27ac_ols$Set_2 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K27ac_ols$Set_2 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+
+```
+
+```{r H3K27ac set3}
+
+H3K27ac_ols$Set_3 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K27ac_ols$Set_3 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+
+```
+#### All regions profile  
+
+```{r H3K27ac all regions profile}
+H3K27ac_ols$all_H3K27ac %>% 
+   as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K27ac_ols$all_H3K27ac %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+length(H3K27ac_sets_gr$all_H3K27ac)
+```
+ 
+
+### H3K27me3 and TEs
+```{r H3K27me3 set1}
+H3K27me3_ols <- lapply(H3K27me3_sets_gr, function(df) {
+  join_overlap_inner(df, rmskr_std_gr)
+})
+
+H3K27me3_ols$Set_1 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K27me3_ols$Set_1 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+
+```
+
+```{r H3K27me3 set2}
+
+
+H3K27me3_ols$Set_2 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K27me3_ols$Set_2 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+
+```
+#### All regions profile  
+
+```{r H3K27me3 all regions profile}
+H3K27me3_ols$all_H3K27me3 %>% 
+   as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K27me3_ols$all_H3K27me3 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+length(H3K27me3_sets_gr$all_H3K27me3)
+```
+ 
+
+### H3K36me3 and TEs
+```{r H3K36me3 set1}
+H3K36me3_ols <- lapply(H3K36me3_sets_gr, function(df) {
+  join_overlap_inner(df, rmskr_std_gr)
+})
+
+H3K36me3_ols$Set_1 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K36me3_ols$Set_1 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+
+```
+
+```{r H3K36me3 set2}
+
+
+H3K36me3_ols$Set_2 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K36me3_ols$Set_2 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+
+```
+#### All regions profile  
+
+```{r H3K36me3 all regions profile}
+H3K36me3_ols$all_H3K36me3 %>% 
+   as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K36me3_ols$all_H3K36me3 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+length(H3K36me3_sets_gr$all_H3K36me3)
+```
+ 
+### H3K9me3 and TEs
+```{r H3K9me3 set1}
+H3K9me3_ols <- lapply(H3K9me3_sets_gr, function(df) {
+  join_overlap_inner(df, rmskr_std_gr)
+})
+
+H3K9me3_ols$Set_1 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K9me3_ols$Set_1 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+
+```
+
+```{r H3K9me3 set2}
+
+
+H3K9me3_ols$Set_2 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K9me3_ols$Set_2 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+
+```
+
+```{r H3K9me3 set3}
+
+H3K9me3_ols$Set_3 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() #%>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K9me3_ols$Set_3 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+
+```
+
+#### All regions profile  
+
+```{r H3K9me3 all regions profile}
+H3K9me3_ols$all_H3K9me3 %>% 
+   as.data.frame() %>% 
+  group_by(Peakid,repClass) %>% 
+  summarise() %>% 
+  group_by(Peakid) %>% tally %>% 
+  group_by(n) %>% tally
+
+H3K9me3_ols$all_H3K9me3 %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=";"))
+length(H3K9me3_sets_gr$all_H3K9me3)
+```
+
+
+### Counting TE types:
+
+Below I am setting up the data frames, first I take all regions and annotate with the overlapping dataframe.  Then I make new columns, TE_status, SINE_status, LINE_status, LTR_status, DNA_status, SVA_status.  These columns mark Peakids if they have this attribute.  Last, I am annotating a cluster column to add which set the Peakid exists in by histone. (field will be Set1, Set2, Set3, no_cluster)
+```{r histone types}
+
+All_H3K27ac <- H3K27ac_sets_gr$all_H3K27ac %>% as.data.frame()
+All_H3K27me3 <- H3K27me3_sets_gr$all_H3K27me3 %>% as.data.frame()
+All_H3K36me3 <- H3K36me3_sets_gr$all_H3K36me3 %>% as.data.frame()
+All_H3K9me3 <- H3K9me3_sets_gr$all_H3K9me3 %>% as.data.frame()
+
+
+H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+H3K27me3_lookup <- imap_dfr(peakAnnoList_H3K27me3[1:2], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+H3K36me3_lookup <- imap_dfr(peakAnnoList_H3K36me3[1:2], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+H3K9me3_lookup <- imap_dfr(peakAnnoList_H3K9me3[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+  
+annotated_H3K27ac <- All_H3K27ac %>% 
+  left_join(., (H3K27ac_ols$all_H3K27ac %>% 
+                  as.data.frame() %>% 
+                  group_by(Peakid) %>% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass), collapse=";"),
+                            repFamily=paste0(unique(repFamily),collapse=";"),
+                            repName=paste0(unique(repName),collapse=";"))))%>%
+              mutate(TE_status = if_else(is.na(repClass),   "not_TE","TE")) %>%
+              mutate(SINE_status = case_when(is.na(repClass)~ "not_SINE",
+                                             str_detect(repClass, "SINE") ~ "SINE",
+                                             TRUE ~"not_SINE")) %>% 
+              mutate(LINE_status = case_when(is.na(repClass)~ "not_LINE",
+                                             str_detect(repClass, "LINE") ~ "LINE",
+                                             TRUE ~"not_LINE")) %>%
+              mutate(LTR_status = case_when(is.na(repClass)~ "not_LTR",
+                                            str_detect(repClass, "LTR") ~ "LTR",
+                                            TRUE ~"not_LTR")) %>%
+               mutate(DNA_status = case_when(is.na(repClass)~ "not_DNA",
+                                 str_detect(repClass, "DNA") ~ "DNA",
+                                 TRUE ~"not_DNA")) %>% 
+          mutate(SVA_status = case_when(is.na(repClass)~ "not_SVA",
+                                        str_detect(repClass, "Retroposon") ~ "SVA",
+                                        TRUE ~"not_SVA")) %>% 
+  left_join(H3K27ac_lookup, by = "Peakid") %>%
+  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster))
+
+
+annotated_H3K27me3 <- All_H3K27me3 %>% 
+  left_join(., (H3K27me3_ols$all_H3K27me3 %>% 
+                  as.data.frame() %>% 
+                  group_by(Peakid) %>% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass), collapse=";"),
+                            repFamily=paste0(unique(repFamily),collapse=";"),
+                            repName=paste0(unique(repName),collapse=";"))))%>%
+              mutate(TE_status = if_else(is.na(repClass),   "not_TE","TE")) %>%
+              mutate(SINE_status = case_when(is.na(repClass)~ "not_SINE",
+                                             str_detect(repClass, "SINE") ~ "SINE",
+                                             TRUE ~"not_SINE")) %>% 
+              mutate(LINE_status = case_when(is.na(repClass)~ "not_LINE",
+                                             str_detect(repClass, "LINE") ~ "LINE",
+                                             TRUE ~"not_LINE")) %>%
+              mutate(LTR_status = case_when(is.na(repClass)~ "not_LTR",
+                                            str_detect(repClass, "LTR") ~ "LTR",
+                                            TRUE ~"not_LTR")) %>%
+               mutate(DNA_status = case_when(is.na(repClass)~ "not_DNA",
+                                 str_detect(repClass, "DNA") ~ "DNA",
+                                 TRUE ~"not_DNA")) %>% 
+          mutate(SVA_status = case_when(is.na(repClass)~ "not_SVA",
+                                        str_detect(repClass, "Retroposon") ~ "SVA",
+                                        TRUE ~"not_SVA")) %>% 
+  left_join(H3K27me3_lookup, by = "Peakid") %>%
+  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster))
+
+
+annotated_H3K36me3 <- All_H3K36me3 %>% 
+  left_join(., (H3K36me3_ols$all_H3K36me3 %>% 
+                  as.data.frame() %>% 
+                  group_by(Peakid) %>% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass), collapse=";"),
+                            repFamily=paste0(unique(repFamily),collapse=";"),
+                            repName=paste0(unique(repName),collapse=";"))))%>%
+              mutate(TE_status = if_else(is.na(repClass),   "not_TE","TE")) %>%
+              mutate(SINE_status = case_when(is.na(repClass)~ "not_SINE",
+                                             str_detect(repClass, "SINE") ~ "SINE",
+                                             TRUE ~"not_SINE")) %>% 
+              mutate(LINE_status = case_when(is.na(repClass)~ "not_LINE",
+                                             str_detect(repClass, "LINE") ~ "LINE",
+                                             TRUE ~"not_LINE")) %>%
+              mutate(LTR_status = case_when(is.na(repClass)~ "not_LTR",
+                                            str_detect(repClass, "LTR") ~ "LTR",
+                                            TRUE ~"not_LTR")) %>%
+               mutate(DNA_status = case_when(is.na(repClass)~ "not_DNA",
+                                 str_detect(repClass, "DNA") ~ "DNA",
+                                 TRUE ~"not_DNA")) %>% 
+          mutate(SVA_status = case_when(is.na(repClass)~ "not_SVA",
+                                        str_detect(repClass, "Retroposon") ~ "SVA",
+                                        TRUE ~"not_SVA")) %>% 
+  left_join(H3K36me3_lookup, by = "Peakid") %>%
+  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster))
+
+
+annotated_H3K9me3 <- All_H3K9me3 %>% 
+  left_join(., (H3K9me3_ols$all_H3K9me3 %>% 
+                  as.data.frame() %>% 
+                  group_by(Peakid) %>% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass), collapse=";"),
+                            repFamily=paste0(unique(repFamily),collapse=";"),
+                            repName=paste0(unique(repName),collapse=";"))))%>%
+              mutate(TE_status = if_else(is.na(repClass),   "not_TE","TE")) %>%
+              mutate(SINE_status = case_when(is.na(repClass)~ "not_SINE",
+                                             str_detect(repClass, "SINE") ~ "SINE",
+                                             TRUE ~"not_SINE")) %>% 
+              mutate(LINE_status = case_when(is.na(repClass)~ "not_LINE",
+                                             str_detect(repClass, "LINE") ~ "LINE",
+                                             TRUE ~"not_LINE")) %>%
+              mutate(LTR_status = case_when(is.na(repClass)~ "not_LTR",
+                                            str_detect(repClass, "LTR") ~ "LTR",
+                                            TRUE ~"not_LTR")) %>%
+               mutate(DNA_status = case_when(is.na(repClass)~ "not_DNA",
+                                 str_detect(repClass, "DNA") ~ "DNA",
+                                 TRUE ~"not_DNA")) %>% 
+          mutate(SVA_status = case_when(is.na(repClass)~ "not_SVA",
+                                        str_detect(repClass, "Retroposon") ~ "SVA",
+                                        TRUE ~"not_SVA")) %>% 
+  left_join(H3K9me3_lookup, by = "Peakid") %>%
+  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster))
+           
+```
+
+```{r counting annotations}
+
+te_cols <- c("TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status")
+H3K27ac_counts <- map(te_cols, ~ {
+  annotated_H3K27ac %>%
+    group_by(cluster, !!sym(.x)) %>%  # dynamically use column
+    tally() %>%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %>% set_names(te_cols)
+
+
+H3K27ac_counts_long <- map2_dfr(
+  H3K27ac_counts,      # the named list of wide tables
+  names(H3K27ac_counts), # names of TE columns
+  ~ .x %>%
+    pivot_longer(
+      cols = -cluster,       # everything except 'cluster'
+      names_to = "status",   # new column for TE status (e.g., TE / not_TE)
+      values_to = "count"
+    ) %>%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+H3K27ac_counts_long <- H3K27ac_counts_long %>% 
+group_by(TE_type) %>%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %>%
+  ungroup()
+
+
+H3K27me3_counts <-  map(te_cols, ~ {
+  annotated_H3K27me3 %>%
+    group_by(cluster, !!sym(.x)) %>%  # dynamically use column
+    tally() %>%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %>% set_names(te_cols)
+
+H3K27me3_counts_long <- map2_dfr(
+  H3K27me3_counts,      # the named list of wide tables
+  names(H3K27me3_counts), # names of TE columns
+  ~ .x %>%
+    pivot_longer(
+      cols = -cluster,       # everything except 'cluster'
+      names_to = "status",   # new column for TE status (e.g., TE / not_TE)
+      values_to = "count"
+    ) %>%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+
+
+H3K36me3_counts <-  map(te_cols, ~ {
+  annotated_H3K36me3 %>%
+    group_by(cluster, !!sym(.x)) %>%  # dynamically use column
+    tally() %>%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %>% set_names(te_cols)
+
+
+H3K36me3_counts_long <- map2_dfr(
+  H3K36me3_counts,      # the named list of wide tables
+  names(H3K36me3_counts), # names of TE columns
+  ~ .x %>%
+    pivot_longer(
+      cols = -cluster,       # everything except 'cluster'
+      names_to = "status",   # new column for TE status (e.g., TE / not_TE)
+      values_to = "count"
+    ) %>%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+
+
+
+H3K9me3_counts <- map(te_cols, ~ {
+  annotated_H3K9me3 %>%
+    group_by(cluster, !!sym(.x)) %>%  # dynamically use column
+    tally() %>%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %>% set_names(te_cols)
+
+H3K9me3_counts_long <- map2_dfr(
+  H3K9me3_counts,      # the named list of wide tables
+  names(H3K9me3_counts), # names of TE columns
+  ~ .x %>%
+    pivot_longer(
+      cols = -cluster,       # everything except 'cluster'
+      names_to = "status",   # new column for TE status (e.g., TE / not_TE)
+      values_to = "count"
+    ) %>%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+
+H3K9me3_counts_long <- H3K9me3_counts_long %>% 
+group_by(TE_type) %>%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %>%
+  ungroup()
+```
+ 
+ 
+ making the function
+```{r Fisher test comparisons function}
+
+# function to test enrichment for one TE type, one cluster pair
+test_pair_TE <- function(df_long, te_name, cluster1, cluster2) {
+  
+  # filter for TE type
+  sub_df <- df_long %>% filter(TE_type == te_name)
+  
+  # get counts for cluster1 and cluster2
+  c1 <- sub_df %>% dplyr::filter(cluster == cluster1)
+  c2 <- sub_df %>% dplyr::filter(cluster == cluster2)
+  
+  # 2x2 table: rows = clusters, cols = TE / not_TE
+  mat <- matrix(
+    c(c2$count, sum(c2$count) - c2$count,
+      c1$count, sum(c1$count) - c1$count),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      cluster = c(cluster2, cluster1),
+      category = c("TE", "not_TE")
+    )
+  )
+  
+  ft <- fisher.test(mat)
+  
+  tibble(
+    TE_type     = te_name,
+    comparison  = paste(cluster2, "vs", cluster1),
+    odds_ratio  = ft$estimate,
+    lower_CI    = ft$conf.int[1],
+    upper_CI    = ft$conf.int[2],
+    p_value     = ft$p.value
+  )
+}
+
+
+# Generic pairwise Fisher test
+test_pair_TE_generic <- function(df_long, te_name, cluster1, cluster2) {
+  
+  sub_df <- df_long %>% filter(TE_type == te_name)
+  
+  # assume "status" column has TE vs not_TE automatically
+  statuses <- unique(sub_df$status)
+  
+  if(length(statuses) != 2) {
+    # ensure we have exactly two categories, fill missing with 0
+    sub_df <- sub_df %>%
+      complete(cluster, status, fill = list(count = 0))
+    statuses <- unique(sub_df$status)
+  }
+  
+  # extract counts for cluster1
+  c1_counts <- sub_df %>%
+    filter(cluster == cluster1) %>%
+    arrange(match(status, statuses)) %>%   # ensure same order
+    pull(count)
+  
+  # extract counts for cluster2
+  c2_counts <- sub_df %>%
+    filter(cluster == cluster2) %>%
+    arrange(match(status, statuses)) %>%
+    pull(count)
+  
+  # build 2x2 matrix
+  mat <- matrix(
+    c(c2_counts, c1_counts),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      cluster = c(cluster2, cluster1),
+      category = statuses
+    )
+  )
+  
+  ft <- fisher.test(mat)
+  
+  tibble(
+    TE_type     = te_name,
+    comparison  = paste(cluster2, "vs", cluster1),
+    odds_ratio  = ft$estimate,
+    lower_CI    = ft$conf.int[1],
+    upper_CI    = ft$conf.int[2],
+    p_value     = ft$p.value
+  )
+}
+```
+
+applying to dataframes
+
+
+```{r}
+TE_types <- te_cols
+
+cluster_pairs_3 <- list(
+  c("Set_2","Set_1"),
+  c("Set_3","Set_1")
+  # add more pairs if needed or
+)
+cluster_pairs_2 <- list(
+  c("Set_2","Set_1"))
+
+
+H3K27ac_results <- map_dfr(TE_types, function(te){
+  map_dfr(cluster_pairs_3, function(pair){
+    test_pair_TE_generic(H3K27ac_counts_long, te, cluster1 = pair[2], cluster2 = pair[1])
+  })
+})
+
+H3K27ac_results
+###
+
+```
+
+```{r}
+# test results
+H3K27ac_counts_long %>% 
+  dplyr::filter(TE_type=="LINE_status") %>% 
+  dplyr::filter(cluster == "Set_1"| cluster == "Set_2") %>% 
+  pivot_wider(id_cols = cluster, names_from = status, values_from = count) %>% 
+  column_to_rownames("cluster") %>% 
+  as.matrix() %>% 
+  fisher.test()
+
+H3K27ac_counts_long %>% 
+  dplyr::filter(cluster != "not_assigned") %>% 
+  ggplot(aes(x=cluster, y=count, fill=status)) +
+  geom_bar(stat="identity", position = "fill") +
+  facet_wrap(~TE_type, scales="free_y")
+  
+
+```
+
+```{r}
+H3K27ac_counts_long %>% 
+  dplyr::filter(cluster != "not_assigned") %>%
+  # create a clean TE_type by removing "not_" and "_status"
+  mutate(
+    TE_type_clean = str_remove(TE_type, "_status"),          # remove "_status"
+    TE_type_clean = str_remove(TE_type_clean, "^not_"),      # remove leading "not_"
+    status = ifelse(str_starts(status, "not_"), "not_TE", "TE") # unify status for plotting
+  ) %>%
+  ggplot(aes(x = cluster, y = count, fill = status)) +
+  geom_bar(stat = "identity", position = "fill") +
+  facet_wrap(~TE_type_clean, scales = "free_y") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x = "Cluster",
+    y = "Proportion",
+    fill = "TE Status",
+    title = "Proportion of TE types across clusters"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+```
+```{r}
+H3K27ac_counts_long_clean <- H3K27ac_counts_long %>%
+  filter(cluster != "not_assigned") %>%
+  # unify TE_type and remove "not_" and "_status"
+  mutate(
+    TE_type_clean = str_remove(TE_type, "_status"),        # remove "_status"
+    TE_type_clean = str_remove(TE_type_clean, "^not_"),   # remove leading "not_"
+    status_clean = ifelse(str_starts(status, "not_"), "not_TE", "TE"),  # unify status
+    # ensure TE comes first in factor
+    status_clean = factor(status_clean, levels = c("TE", "not_TE")),
+    # optional: order TE_type facets
+    TE_type_clean = factor(TE_type_clean, levels = c("TE","LINE","SINE","DNA","LTR","SVA"))
+  ) %>%
+  # ensure every cluster × TE_type × status combination exists
+  complete(cluster, TE_type_clean, status_clean, fill = list(count = 0))
+
+# 2️⃣ Plot proportions
+ggplot(H3K27ac_counts_long_clean, aes(x = cluster, y = count, fill = status_clean)) +
+  geom_bar(stat = "identity", position = "fill") +
+  facet_wrap(~TE_type_clean, scales = "free_y") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x = "Cluster",
+    y = "Proportion",
+    fill = "TE Status",
+    title = "Proportion of TE types across clusters"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+```
+
