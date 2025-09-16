@@ -1,0 +1,2514 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Renee Matthews" />
+
+<meta name="date" content="2025-09-11" />
+
+<title>repeatmasker_data</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DXR_project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/reneeisnowhere/DXR_continue">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">repeatmasker_data</h1>
+<h4 class="author">Renee Matthews</h4>
+<h4 class="date">2025-09-11</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-09-16
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>DXR_continue/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250701code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250701)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250701code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250701)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree48f3b757ee62d87e546d2f5327dfe176a0a192fetargetblank48f3b75a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/48f3b757ee62d87e546d2f5327dfe176a0a192fe" target="_blank">48f3b75</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree48f3b757ee62d87e546d2f5327dfe176a0a192fetargetblank48f3b75a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/48f3b757ee62d87e546d2f5327dfe176a0a192fe" target="_blank">48f3b75</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/Cormotif_data/
+    Ignored:    data/DER_data/
+    Ignored:    data/Other_paper_data/
+    Ignored:    data/TE_annotation/
+    Ignored:    data/alignment_summary.txt
+    Ignored:    data/all_peak_final_dataframe.txt
+    Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/motif_lists/
+    Ignored:    data/number_frag_peaks_summary.txt
+
+Untracked files:
+    Untracked:  analysis/maps_and_plots.Rmd
+    Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/making_analysis_file_summary.R
+
+Unstaged changes:
+    Modified:   analysis/Motif_cluster_analysis.Rmd
+    Modified:   analysis/Outlier_removal.Rmd
+    Modified:   analysis/index.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/repeatmasker_data.Rmd</code>) and
+HTML (<code>docs/repeatmasker_data.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/48f3b757ee62d87e546d2f5327dfe176a0a192fe/analysis/repeatmasker_data.Rmd" target="_blank">48f3b75</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+<td>
+first setup
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/06d2af1abea9033b93eb8dc1d16685c34a9f97c6/analysis/repeatmasker_data.Rmd" target="_blank">06d2af1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-16
+</td>
+<td>
+wflow_git_commit("analysis/repeatmasker_data.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 400px;
+}
+</style>
+<p>libraries</p>
+<pre class="r"><code>library(tidyverse)
+library(DT)
+library(genomation)
+library(GenomicRanges)
+library(BiocParallel)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(ChIPseeker)
+library(plyranges)</code></pre>
+<p>Loading data files</p>
+<pre class="r"><code>repeatmasker &lt;- read_delim(&quot;data/Other_paper_data/repeatmasker_20250911.txt&quot;, 
+    delim = &quot;\t&quot;, escape_double = FALSE, 
+    trim_ws = TRUE)</code></pre>
+<pre class="r"><code>peakAnnoList_H3K27ac &lt;- readRDS(&quot;data/motif_lists/H3K27ac_annotated_peaks.RDS&quot;)
+peakAnnoList_H3K27me3 &lt;- readRDS(&quot;data/motif_lists/H3K27me3_annotated_peaks.RDS&quot;)
+peakAnnoList_H3K36me3 &lt;- readRDS(&quot;data/motif_lists/H3K36me3_annotated_peaks.RDS&quot;)
+peakAnnoList_H3K9me3 &lt;- readRDS(&quot;data/motif_lists/H3K9me3_annotated_peaks.RDS&quot;)</code></pre>
+<pre class="r"><code>rmskr_std_gr &lt;- repeatmasker %&gt;% 
+   makeGRangesFromDataFrame(., seqnames=&quot;genoName&quot;, keep.extra.columns=TRUE,
+                                      start.field=&quot;genoStart&quot;,
+                                      end.field=&quot;genoEnd&quot;,
+                                      starts.in.df.are.0based=TRUE) %&gt;% 
+  keepStandardChromosomes(., pruning.mode = &quot;coarse&quot;)
+
+##checking chromosomes
+seqlevels(rmskr_std_gr)</code></pre>
+<pre><code> [1] &quot;chr1&quot;  &quot;chr2&quot;  &quot;chr3&quot;  &quot;chr4&quot;  &quot;chr5&quot;  &quot;chr6&quot;  &quot;chr7&quot;  &quot;chr8&quot;  &quot;chr9&quot; 
+[10] &quot;chr10&quot; &quot;chr11&quot; &quot;chr12&quot; &quot;chr13&quot; &quot;chr14&quot; &quot;chr15&quot; &quot;chr16&quot; &quot;chr17&quot; &quot;chr18&quot;
+[19] &quot;chr19&quot; &quot;chr20&quot; &quot;chr21&quot; &quot;chr22&quot; &quot;chrX&quot;  &quot;chrY&quot;  &quot;chrM&quot; </code></pre>
+<pre class="r"><code>###making granges lists out of motifs
+
+H3K27ac_sets_gr &lt;- lapply(peakAnnoList_H3K27ac, function(df) {
+  as_granges(df)
+})
+
+H3K27me3_sets_gr &lt;- lapply(peakAnnoList_H3K27me3, function(df) {
+  as_granges(df)
+})
+
+H3K36me3_sets_gr &lt;- lapply(peakAnnoList_H3K36me3, function(df) {
+  as_granges(df)
+})
+
+H3K9me3_sets_gr &lt;- lapply(peakAnnoList_H3K9me3, function(df) {
+  as_granges(df)
+})</code></pre>
+<div id="h3k27ac-and-tes" class="section level3">
+<h3>H3K27ac and TEs</h3>
+<pre class="r"><code>## this is now taking the overlaps and widths of the TE and roi, then calculating percentage overlaps for each (pct_te_overlap and pct_roi_overlap)
+# H3K27ac_ols &lt;- lapply(H3K27ac_sets_gr, function(df) {
+#     overlaps &lt;- join_overlap_inner(df, rmskr_std_gr)
+#    # overlap base pairs
+#   })
+H3K27ac_ols &lt;- lapply(H3K27ac_sets_gr, function(df) {
+  
+   # 1️⃣ find overlaps
+  hits &lt;- findOverlaps(df, rmskr_std_gr)
+  
+  # 2️⃣ intersect the overlapping ranges
+  overlaps_gr &lt;- pintersect(df[queryHits(hits)], rmskr_std_gr[subjectHits(hits)])
+  
+  # 3️⃣ convert to data frame
+  overlaps_df &lt;- as.data.frame(overlaps_gr)
+  
+  # 4️⃣ add overlap length
+  overlaps_df$overlap_bp &lt;- width(overlaps_gr)
+  
+  # 5️⃣ ROI lengths &amp; % coverage
+  roi_widths &lt;- width(df)
+  names(roi_widths) &lt;- df$Peakid
+  overlaps_df$roi_len &lt;- roi_widths[as.character(overlaps_df$Peakid)]
+  overlaps_df$pct_roi_overlap &lt;- (overlaps_df$overlap_bp / overlaps_df$roi_len) * 100
+  
+  # 6️⃣ TE lengths &amp; % coverage
+  te_widths &lt;- width(rmskr_std_gr)
+  overlaps_df$te_len &lt;- te_widths[subjectHits(hits)]
+  overlaps_df$pct_te_overlap &lt;- (overlaps_df$overlap_bp / overlaps_df$te_len) * 100
+  
+  # 7️⃣ Add TE metadata from rmsk GRanges
+  overlaps_df$repName   &lt;- rmskr_std_gr$repName[subjectHits(hits)]
+  overlaps_df$repClass  &lt;- rmskr_std_gr$repClass[subjectHits(hits)]
+  overlaps_df$repFamily &lt;- rmskr_std_gr$repFamily[subjectHits(hits)]
+  overlaps_df$milliDiv &lt;- rmskr_std_gr$milliDiv[subjectHits(hits)]
+  overlaps_df$milliDel &lt;- rmskr_std_gr$milliDel[subjectHits(hits)]
+  overlaps_df$milliIns &lt;- rmskr_std_gr$milliIns[subjectHits(hits)]
+  
+  overlaps_df
+})
+
+
+H3K27ac_ols$Set_1 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 8 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1 40854
+2     2 30144
+3     3 12604
+4     4  4120
+5     5  1127
+6     6   171
+7     7     5
+8     8     1</code></pre>
+<pre class="r"><code>H3K27ac_ols$Set_1 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 89,026 × 2
+   Peakid                    repClass                       
+   &lt;chr&gt;                     &lt;chr&gt;                          
+ 1 chr10:100005111-100005718 LINE;SINE                      
+ 2 chr10:100006009-100007728 SINE;LINE                      
+ 3 chr10:100008216-100011014 SINE;Simple_repeat;Unknown;LINE
+ 4 chr10:100043350-100044800 SINE;DNA;Low_complexity        
+ 5 chr10:100046129-100046853 LTR;SINE                       
+ 6 chr10:100184879-100187424 DNA                            
+ 7 chr10:100199091-100199540 SINE                           
+ 8 chr10:10020802-10021452   SINE;LTR                       
+ 9 chr10:100208189-100209822 SINE;LTR                       
+10 chr10:100226355-100227311 LINE                           
+# ℹ 89,016 more rows</code></pre>
+<pre class="r"><code>H3K27ac_ols$Set_2 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 6 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1   513
+2     2   411
+3     3   195
+4     4    38
+5     5     8
+6     6     1</code></pre>
+<pre class="r"><code>H3K27ac_ols$Set_2 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 1,166 × 2
+   Peakid                    repClass                   
+   &lt;chr&gt;                     &lt;chr&gt;                      
+ 1 chr10:103196972-103198089 LINE;SINE;Low_complexity   
+ 2 chr10:103898324-103899678 LINE;SINE                  
+ 3 chr10:104775314-104776084 SINE;LINE                  
+ 4 chr10:105604321-105604967 SINE;LINE;LTR;Simple_repeat
+ 5 chr10:11058814-11060583   SINE;DNA                   
+ 6 chr10:110845092-110847119 SINE;LINE;Simple_repeat    
+ 7 chr10:110865305-110866546 SINE                       
+ 8 chr10:110946871-110947695 LINE                       
+ 9 chr10:113326142-113327412 SINE                       
+10 chr10:113524679-113525161 SINE                       
+# ℹ 1,156 more rows</code></pre>
+<pre class="r"><code>H3K27ac_ols$Set_3 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 6 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1  2303
+2     2  2054
+3     3   974
+4     4   317
+5     5    67
+6     6     9</code></pre>
+<pre class="r"><code>H3K27ac_ols$Set_3 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 5,724 × 2
+   Peakid                    repClass                    
+   &lt;chr&gt;                     &lt;chr&gt;                       
+ 1 chr10:100738942-100739973 Simple_repeat               
+ 2 chr10:100790295-100791877 Low_complexity;Simple_repeat
+ 3 chr10:101132954-101134846 Simple_repeat               
+ 4 chr10:101157763-101159378 RC;LTR                      
+ 5 chr10:101227112-101229171 Low_complexity;Simple_repeat
+ 6 chr10:101230211-101230842 Simple_repeat               
+ 7 chr10:101557797-101558624 SINE                        
+ 8 chr10:101995380-101996279 LINE                        
+ 9 chr10:102143712-102144701 LINE                        
+10 chr10:102158807-102161487 SINE;Simple_repeat;LTR      
+# ℹ 5,714 more rows</code></pre>
+<div id="all-regions-profile" class="section level4">
+<h4>All regions profile</h4>
+<pre class="r"><code>H3K27ac_ols$all_H3K27ac %&gt;% 
+   as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 8 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1 55458
+2     2 41836
+3     3 17564
+4     4  5519
+5     5  1416
+6     6   203
+7     7     7
+8     8     1</code></pre>
+<pre class="r"><code>H3K27ac_ols$all_H3K27ac %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 122,004 × 2
+   Peakid                    repClass                       
+   &lt;chr&gt;                     &lt;chr&gt;                          
+ 1 chr10:100005111-100005718 LINE;SINE                      
+ 2 chr10:100006009-100007728 SINE;LINE                      
+ 3 chr10:100008216-100011014 SINE;Simple_repeat;Unknown;LINE
+ 4 chr10:100043350-100044800 SINE;DNA;Low_complexity        
+ 5 chr10:100046129-100046853 LTR;SINE                       
+ 6 chr10:100179689-100180264 SINE                           
+ 7 chr10:100184879-100187424 DNA                            
+ 8 chr10:100199091-100199540 SINE                           
+ 9 chr10:10020802-10021452   SINE;LTR                       
+10 chr10:100208189-100209822 SINE;LTR                       
+# ℹ 121,994 more rows</code></pre>
+<pre class="r"><code>length(H3K27ac_sets_gr$all_H3K27ac)</code></pre>
+<pre><code>[1] 150071</code></pre>
+</div>
+</div>
+<div id="h3k27me3-and-tes" class="section level3">
+<h3>H3K27me3 and TEs</h3>
+<pre class="r"><code>H3K27me3_ols &lt;- lapply(H3K27me3_sets_gr, function(df) {
+   # 1️⃣ find overlaps
+  hits &lt;- findOverlaps(df, rmskr_std_gr)
+  
+  # 2️⃣ intersect the overlapping ranges
+  overlaps_gr &lt;- pintersect(df[queryHits(hits)], rmskr_std_gr[subjectHits(hits)])
+  
+  # 3️⃣ convert to data frame
+  overlaps_df &lt;- as.data.frame(overlaps_gr)
+  
+  # 4️⃣ add overlap length
+  overlaps_df$overlap_bp &lt;- width(overlaps_gr)
+  
+  # 5️⃣ ROI lengths &amp; % coverage
+  roi_widths &lt;- width(df)
+  names(roi_widths) &lt;- df$Peakid
+  overlaps_df$roi_len &lt;- roi_widths[as.character(overlaps_df$Peakid)]
+  overlaps_df$pct_roi_overlap &lt;- (overlaps_df$overlap_bp / overlaps_df$roi_len) * 100
+  
+  # 6️⃣ TE lengths &amp; % coverage
+  te_widths &lt;- width(rmskr_std_gr)
+  overlaps_df$te_len &lt;- te_widths[subjectHits(hits)]
+  overlaps_df$pct_te_overlap &lt;- (overlaps_df$overlap_bp / overlaps_df$te_len) * 100
+  
+  # 7️⃣ Add TE metadata from rmsk GRanges
+  overlaps_df$repName   &lt;- rmskr_std_gr$repName[subjectHits(hits)]
+  overlaps_df$repClass  &lt;- rmskr_std_gr$repClass[subjectHits(hits)]
+  overlaps_df$repFamily &lt;- rmskr_std_gr$repFamily[subjectHits(hits)]
+  overlaps_df$milliDiv &lt;- rmskr_std_gr$milliDiv[subjectHits(hits)]
+  overlaps_df$milliDel &lt;- rmskr_std_gr$milliDel[subjectHits(hits)]
+  overlaps_df$milliIns &lt;- rmskr_std_gr$milliIns[subjectHits(hits)]
+  
+  overlaps_df
+})
+
+
+H3K27me3_ols$Set_1 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 8 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1 59299
+2     2 34090
+3     3 12830
+4     4  5071
+5     5  1774
+6     6   379
+7     7    35
+8     8     1</code></pre>
+<pre class="r"><code>H3K27me3_ols$Set_1 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 113,479 × 2
+   Peakid                    repClass                    
+   &lt;chr&gt;                     &lt;chr&gt;                       
+ 1 chr10:100046102-100046460 LTR;SINE                    
+ 2 chr10:100054231-100054520 SINE                        
+ 3 chr10:100078858-100079126 LINE                        
+ 4 chr10:100084784-100089581 SINE;LINE;LTR;Low_complexity
+ 5 chr10:100113114-100113630 SINE                        
+ 6 chr10:100113867-100114131 SINE                        
+ 7 chr10:100114436-100115458 LINE                        
+ 8 chr10:100127919-100128315 LTR;LINE                    
+ 9 chr10:100129022-100129787 LINE;SINE                   
+10 chr10:100229003-100229494 Simple_repeat               
+# ℹ 113,469 more rows</code></pre>
+<pre class="r"><code>H3K27me3_ols$Set_2 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 3 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1   104
+2     2    41
+3     3     8</code></pre>
+<pre class="r"><code>H3K27me3_ols$Set_2 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 153 × 2
+   Peakid                    repClass               
+   &lt;chr&gt;                     &lt;chr&gt;                  
+ 1 chr10:104424708-104425325 LINE;SINE              
+ 2 chr10:113524664-113525075 SINE                   
+ 3 chr10:129076374-129076858 Simple_repeat          
+ 4 chr10:130134682-130135251 LINE                   
+ 5 chr10:132175296-132177004 LINE;Simple_repeat;tRNA
+ 6 chr10:133324189-133324746 Simple_repeat          
+ 7 chr10:1398800-1399241     LINE                   
+ 8 chr10:27256098-27256641   SINE;LTR               
+ 9 chr10:29968825-29969238   Simple_repeat          
+10 chr10:30348778-30349159   Simple_repeat          
+# ℹ 143 more rows</code></pre>
+<div id="all-regions-profile-1" class="section level4">
+<h4>All regions profile</h4>
+<pre class="r"><code>H3K27me3_ols$all_H3K27me3 %&gt;% 
+   as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 8 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1 59987
+2     2 34344
+3     3 12893
+4     4  5078
+5     5  1775
+6     6   379
+7     7    35
+8     8     1</code></pre>
+<pre class="r"><code>H3K27me3_ols$all_H3K27me3 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 114,492 × 2
+   Peakid                    repClass                    
+   &lt;chr&gt;                     &lt;chr&gt;                       
+ 1 chr10:100046102-100046460 LTR;SINE                    
+ 2 chr10:100054231-100054520 SINE                        
+ 3 chr10:100078858-100079126 LINE                        
+ 4 chr10:100084784-100089581 SINE;LINE;LTR;Low_complexity
+ 5 chr10:100113114-100113630 SINE                        
+ 6 chr10:100113867-100114131 SINE                        
+ 7 chr10:100114436-100115458 LINE                        
+ 8 chr10:100127919-100128315 LTR;LINE                    
+ 9 chr10:100129022-100129787 LINE;SINE                   
+10 chr10:100229003-100229494 Simple_repeat               
+# ℹ 114,482 more rows</code></pre>
+<pre class="r"><code>length(H3K27me3_sets_gr$all_H3K27me3)</code></pre>
+<pre><code>[1] 150464</code></pre>
+</div>
+</div>
+<div id="h3k36me3-and-tes" class="section level3">
+<h3>H3K36me3 and TEs</h3>
+<pre class="r"><code>H3K36me3_ols &lt;- lapply(H3K36me3_sets_gr, function(df) {
+  # 1️⃣ find overlaps
+  hits &lt;- findOverlaps(df, rmskr_std_gr)
+  
+  # 2️⃣ intersect the overlapping ranges
+  overlaps_gr &lt;- pintersect(df[queryHits(hits)], rmskr_std_gr[subjectHits(hits)])
+  
+  # 3️⃣ convert to data frame
+  overlaps_df &lt;- as.data.frame(overlaps_gr)
+  
+  # 4️⃣ add overlap length
+  overlaps_df$overlap_bp &lt;- width(overlaps_gr)
+  
+  # 5️⃣ ROI lengths &amp; % coverage
+  roi_widths &lt;- width(df)
+  names(roi_widths) &lt;- df$Peakid
+  overlaps_df$roi_len &lt;- roi_widths[as.character(overlaps_df$Peakid)]
+  overlaps_df$pct_roi_overlap &lt;- (overlaps_df$overlap_bp / overlaps_df$roi_len) * 100
+  
+  # 6️⃣ TE lengths &amp; % coverage
+  te_widths &lt;- width(rmskr_std_gr)
+  overlaps_df$te_len &lt;- te_widths[subjectHits(hits)]
+  overlaps_df$pct_te_overlap &lt;- (overlaps_df$overlap_bp / overlaps_df$te_len) * 100
+  
+  # 7️⃣ Add TE metadata from rmsk GRanges
+  overlaps_df$repName   &lt;- rmskr_std_gr$repName[subjectHits(hits)]
+  overlaps_df$repClass  &lt;- rmskr_std_gr$repClass[subjectHits(hits)]
+  overlaps_df$repFamily &lt;- rmskr_std_gr$repFamily[subjectHits(hits)]
+  overlaps_df$milliDiv &lt;- rmskr_std_gr$milliDiv[subjectHits(hits)]
+  overlaps_df$milliDel &lt;- rmskr_std_gr$milliDel[subjectHits(hits)]
+  overlaps_df$milliIns &lt;- rmskr_std_gr$milliIns[subjectHits(hits)]
+  
+  overlaps_df
+})
+
+H3K36me3_ols$Set_1 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 7 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1 61918
+2     2 24560
+3     3  5127
+4     4  1062
+5     5   192
+6     6    22
+7     7     1</code></pre>
+<pre class="r"><code>H3K36me3_ols$Set_1 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 92,882 × 2
+   Peakid                    repClass          
+   &lt;chr&gt;                     &lt;chr&gt;             
+ 1 chr10:100009339-100010339 SINE;Simple_repeat
+ 2 chr10:100139015-100139306 LINE              
+ 3 chr10:100147443-100147738 LINE              
+ 4 chr10:100196474-100197370 SINE;DNA;LINE     
+ 5 chr10:100198988-100199626 SINE              
+ 6 chr10:100201468-100201937 DNA;SINE          
+ 7 chr10:100202789-100203153 SINE;LINE         
+ 8 chr10:100203832-100204198 LTR               
+ 9 chr10:100208051-100208777 SINE;LTR          
+10 chr10:100214861-100215206 LINE;SINE         
+# ℹ 92,872 more rows</code></pre>
+<pre class="r"><code>H3K36me3_ols$Set_2 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 6 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1   628
+2     2   359
+3     3   148
+4     4    43
+5     5    18
+6     6     5</code></pre>
+<pre class="r"><code>H3K36me3_ols$Set_2 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 1,201 × 2
+   Peakid                    repClass               
+   &lt;chr&gt;                     &lt;chr&gt;                  
+ 1 chr10:110729433-110730934 LINE;SINE;Simple_repeat
+ 2 chr10:110803615-110804488 SINE;LTR               
+ 3 chr10:114151594-114151957 DNA                    
+ 4 chr10:117139090-117139567 Simple_repeat          
+ 5 chr10:117221071-117221394 DNA                    
+ 6 chr10:118698372-118698876 SINE;LTR               
+ 7 chr10:122207358-122208228 DNA                    
+ 8 chr10:123157127-123157564 LINE                   
+ 9 chr10:124613974-124614749 SINE                   
+10 chr10:124670751-124671297 LINE;LTR               
+# ℹ 1,191 more rows</code></pre>
+<div id="all-regions-profile-2" class="section level4">
+<h4>All regions profile</h4>
+<pre class="r"><code>H3K36me3_ols$all_H3K36me3 %&gt;% 
+   as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 7 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1 86790
+2     2 34976
+3     3  7463
+4     4  1502
+5     5   284
+6     6    39
+7     7     3</code></pre>
+<pre class="r"><code>H3K36me3_ols$all_H3K36me3 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 131,057 × 2
+   Peakid                    repClass          
+   &lt;chr&gt;                     &lt;chr&gt;             
+ 1 chr10:100009339-100010339 SINE;Simple_repeat
+ 2 chr10:100139015-100139306 LINE              
+ 3 chr10:100147443-100147738 LINE              
+ 4 chr10:100153009-100153887 SINE;LINE         
+ 5 chr10:100173135-100173409 DNA               
+ 6 chr10:100186943-100187317 DNA               
+ 7 chr10:100196474-100197370 SINE;DNA;LINE     
+ 8 chr10:100198988-100199626 SINE              
+ 9 chr10:100201468-100201937 DNA;SINE          
+10 chr10:100202789-100203153 SINE;LINE         
+# ℹ 131,047 more rows</code></pre>
+<pre class="r"><code>length(H3K36me3_sets_gr$all_H3K36me3)</code></pre>
+<pre><code>[1] 186724</code></pre>
+</div>
+</div>
+<div id="h3k9me3-and-tes" class="section level3">
+<h3>H3K9me3 and TEs</h3>
+<pre class="r"><code>H3K9me3_ols &lt;- lapply(H3K9me3_sets_gr, function(df) {
+  # 1️⃣ find overlaps
+  hits &lt;- findOverlaps(df, rmskr_std_gr)
+  
+  # 2️⃣ intersect the overlapping ranges
+  overlaps_gr &lt;- pintersect(df[queryHits(hits)], rmskr_std_gr[subjectHits(hits)])
+  
+  # 3️⃣ convert to data frame
+  overlaps_df &lt;- as.data.frame(overlaps_gr)
+  
+  # 4️⃣ add overlap length
+  overlaps_df$overlap_bp &lt;- width(overlaps_gr)
+  
+  # 5️⃣ ROI lengths &amp; % coverage
+  roi_widths &lt;- width(df)
+  names(roi_widths) &lt;- df$Peakid
+  overlaps_df$roi_len &lt;- roi_widths[as.character(overlaps_df$Peakid)]
+  overlaps_df$pct_roi_overlap &lt;- (overlaps_df$overlap_bp / overlaps_df$roi_len) * 100
+  
+  # 6️⃣ TE lengths &amp; % coverage
+  te_widths &lt;- width(rmskr_std_gr)
+  overlaps_df$te_len &lt;- te_widths[subjectHits(hits)]
+  overlaps_df$pct_te_overlap &lt;- (overlaps_df$overlap_bp / overlaps_df$te_len) * 100
+  
+  # 7️⃣ Add TE metadata from rmsk GRanges
+  overlaps_df$repName   &lt;- rmskr_std_gr$repName[subjectHits(hits)]
+  overlaps_df$repClass  &lt;- rmskr_std_gr$repClass[subjectHits(hits)]
+  overlaps_df$repFamily &lt;- rmskr_std_gr$repFamily[subjectHits(hits)]
+  overlaps_df$milliDiv &lt;- rmskr_std_gr$milliDiv[subjectHits(hits)]
+  overlaps_df$milliDel &lt;- rmskr_std_gr$milliDel[subjectHits(hits)]
+  overlaps_df$milliIns &lt;- rmskr_std_gr$milliIns[subjectHits(hits)]
+  
+  overlaps_df
+})
+
+H3K9me3_ols$Set_1 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 6 × 2
+      n     nn
+  &lt;int&gt;  &lt;int&gt;
+1     1 107939
+2     2  32414
+3     3   4976
+4     4    574
+5     5     69
+6     6      2</code></pre>
+<pre class="r"><code>H3K9me3_ols$Set_1 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 145,974 × 2
+   Peakid                    repClass              
+   &lt;chr&gt;                     &lt;chr&gt;                 
+ 1 chr10:100009524-100010017 Simple_repeat         
+ 2 chr10:100025478-100025829 LTR                   
+ 3 chr10:100027743-100029126 LTR;SINE              
+ 4 chr10:100046119-100046433 LTR;SINE              
+ 5 chr10:100086477-100087363 LINE;LTR;SINE         
+ 6 chr10:100095279-100095524 LINE                  
+ 7 chr10:100097281-100098436 SINE;LTR              
+ 8 chr10:100133860-100134292 LINE;Simple_repeat;LTR
+ 9 chr10:10020906-10021393   SINE;LTR              
+10 chr10:100229039-100229275 Simple_repeat         
+# ℹ 145,964 more rows</code></pre>
+<pre class="r"><code>H3K9me3_ols$Set_2 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 4 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1  1362
+2     2   266
+3     3    26
+4     4     2</code></pre>
+<pre class="r"><code>H3K9me3_ols$Set_2 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 1,656 × 2
+   Peakid                    repClass      
+   &lt;chr&gt;                     &lt;chr&gt;         
+ 1 chr10:101006128-101006429 SINE          
+ 2 chr10:101777876-101778344 LINE          
+ 3 chr10:101951337-101951612 SINE          
+ 4 chr10:102418095-102418389 Simple_repeat 
+ 5 chr10:104329400-104329651 LINE          
+ 6 chr10:1101897-1102240     LINE          
+ 7 chr10:110227445-110227710 Low_complexity
+ 8 chr10:114786610-114786850 Retroposon    
+ 9 chr10:117531528-117532237 SINE          
+10 chr10:11893983-11894609   SINE          
+# ℹ 1,646 more rows</code></pre>
+<pre class="r"><code>H3K9me3_ols$Set_3 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 5 × 2
+      n    nn
+  &lt;int&gt; &lt;int&gt;
+1     1   405
+2     2   119
+3     3    26
+4     4     4
+5     5     1</code></pre>
+<pre class="r"><code>H3K9me3_ols$Set_3 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 555 × 2
+   Peakid                    repClass          
+   &lt;chr&gt;                     &lt;chr&gt;             
+ 1 chr10:114252483-114252701 SINE              
+ 2 chr10:115903919-115904555 LTR               
+ 3 chr10:124611053-124611641 SINE              
+ 4 chr10:1298991-1300057     SINE;LTR          
+ 5 chr10:1300214-1301077     LINE;SINE         
+ 6 chr10:132172535-132172962 LINE;Simple_repeat
+ 7 chr10:132279104-132279514 SINE              
+ 8 chr10:132363329-132364326 Simple_repeat     
+ 9 chr10:132757314-132757720 DNA               
+10 chr10:24446759-24447078   SINE              
+# ℹ 545 more rows</code></pre>
+<div id="all-regions-profile-3" class="section level4">
+<h4>All regions profile</h4>
+<pre class="r"><code>H3K9me3_ols$all_H3K9me3 %&gt;% 
+   as.data.frame() %&gt;% 
+  group_by(Peakid,repClass) %&gt;% 
+  summarise() %&gt;% 
+  group_by(Peakid) %&gt;% tally %&gt;% 
+  group_by(n) %&gt;% tally</code></pre>
+<pre><code># A tibble: 6 × 2
+      n     nn
+  &lt;int&gt;  &lt;int&gt;
+1     1 117258
+2     2  34507
+3     3   5210
+4     4    591
+5     5     70
+6     6      2</code></pre>
+<pre class="r"><code>H3K9me3_ols$all_H3K9me3 %&gt;% 
+  as.data.frame() %&gt;% 
+  group_by(Peakid) %&gt;%
+  summarize(., 
+            repClass=paste0(unique(repClass), collapse=&quot;;&quot;))</code></pre>
+<pre><code># A tibble: 157,638 × 2
+   Peakid                    repClass              
+   &lt;chr&gt;                     &lt;chr&gt;                 
+ 1 chr10:100006461-100006612 SINE;LINE             
+ 2 chr10:100009524-100010017 Simple_repeat         
+ 3 chr10:100025478-100025829 LTR                   
+ 4 chr10:100027743-100029126 LTR;SINE              
+ 5 chr10:100046119-100046433 LTR;SINE              
+ 6 chr10:100086477-100087363 LINE;LTR;SINE         
+ 7 chr10:100095279-100095524 LINE                  
+ 8 chr10:100097281-100098436 SINE;LTR              
+ 9 chr10:100133860-100134292 LINE;Simple_repeat;LTR
+10 chr10:10020906-10021393   SINE;LTR              
+# ℹ 157,628 more rows</code></pre>
+<pre class="r"><code>length(H3K9me3_sets_gr$all_H3K9me3)</code></pre>
+<pre><code>[1] 218647</code></pre>
+</div>
+</div>
+<div id="counting-te-types" class="section level3">
+<h3>Counting TE types:</h3>
+<p>Below I am setting up the data frames, first I take all regions and
+annotate with the overlapping dataframe. Then I make new columns,
+TE_status, SINE_status, LINE_status, LTR_status, DNA_status, SVA_status.
+These columns mark Peakids if they have this attribute. Last, I am
+annotating a cluster column to add which set the Peakid exists in by
+histone. (field will be Set1, Set2, Set3, no_cluster)</p>
+<pre class="r"><code>All_H3K27ac &lt;- H3K27ac_sets_gr$all_H3K27ac %&gt;% as.data.frame()
+All_H3K27me3 &lt;- H3K27me3_sets_gr$all_H3K27me3 %&gt;% as.data.frame()
+All_H3K36me3 &lt;- H3K36me3_sets_gr$all_H3K36me3 %&gt;% as.data.frame()
+All_H3K9me3 &lt;- H3K9me3_sets_gr$all_H3K9me3 %&gt;% as.data.frame()
+
+
+H3K27ac_lookup &lt;- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+H3K27me3_lookup &lt;- imap_dfr(peakAnnoList_H3K27me3[1:2], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+H3K36me3_lookup &lt;- imap_dfr(peakAnnoList_H3K36me3[1:2], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+H3K9me3_lookup &lt;- imap_dfr(peakAnnoList_H3K9me3[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+  
+annotated_H3K27ac &lt;- All_H3K27ac %&gt;% 
+  left_join(., (H3K27ac_ols$all_H3K27ac %&gt;% 
+                  as.data.frame() %&gt;% 
+                  group_by(Peakid) %&gt;% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass), collapse=&quot;;&quot;),
+                            repFamily=paste0(unique(repFamily),collapse=&quot;;&quot;),
+                            repName=paste0(unique(repName),collapse=&quot;;&quot;))))%&gt;%
+              mutate(TE_status = if_else(is.na(repClass),   &quot;wnot_TE&quot;,&quot;TE&quot;)) %&gt;%
+              mutate(SINE_status = case_when(is.na(repClass)~ &quot;wnot_SINE&quot;,
+                                             str_detect(repClass, &quot;SINE&quot;) ~ &quot;SINE&quot;,
+                                             TRUE ~&quot;wnot_SINE&quot;)) %&gt;% 
+              mutate(LINE_status = case_when(is.na(repClass)~ &quot;wnot_LINE&quot;,
+                                             str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                             TRUE ~&quot;wnot_LINE&quot;)) %&gt;%
+              mutate(LTR_status = case_when(is.na(repClass)~ &quot;wnot_LTR&quot;,
+                                            str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                            TRUE ~&quot;wnot_LTR&quot;)) %&gt;%
+               mutate(DNA_status = case_when(is.na(repClass)~ &quot;wnot_DNA&quot;,
+                                 str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                 TRUE ~&quot;wnot_DNA&quot;)) %&gt;% 
+          mutate(SVA_status = case_when(is.na(repClass)~ &quot;wnot_SVA&quot;,
+                                        str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                        TRUE ~&quot;wnot_SVA&quot;)) %&gt;% 
+  left_join(H3K27ac_lookup, by = &quot;Peakid&quot;) %&gt;%
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster))
+
+
+annotated_H3K27me3 &lt;- All_H3K27me3 %&gt;% 
+  left_join(., (H3K27me3_ols$all_H3K27me3 %&gt;% 
+                  as.data.frame() %&gt;% 
+                  group_by(Peakid) %&gt;% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass), collapse=&quot;;&quot;),
+                            repFamily=paste0(unique(repFamily),collapse=&quot;;&quot;),
+                            repName=paste0(unique(repName),collapse=&quot;;&quot;))))%&gt;%
+              mutate(TE_status = if_else(is.na(repClass),   &quot;wnot_TE&quot;,&quot;TE&quot;)) %&gt;%
+              mutate(SINE_status = case_when(is.na(repClass)~ &quot;wnot_SINE&quot;,
+                                             str_detect(repClass, &quot;SINE&quot;) ~ &quot;SINE&quot;,
+                                             TRUE ~&quot;wnot_SINE&quot;)) %&gt;% 
+              mutate(LINE_status = case_when(is.na(repClass)~ &quot;wnot_LINE&quot;,
+                                             str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                             TRUE ~&quot;wnot_LINE&quot;)) %&gt;%
+              mutate(LTR_status = case_when(is.na(repClass)~ &quot;wnot_LTR&quot;,
+                                            str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                            TRUE ~&quot;wnot_LTR&quot;)) %&gt;%
+               mutate(DNA_status = case_when(is.na(repClass)~ &quot;wnot_DNA&quot;,
+                                 str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                 TRUE ~&quot;wnot_DNA&quot;)) %&gt;% 
+          mutate(SVA_status = case_when(is.na(repClass)~ &quot;wnot_SVA&quot;,
+                                        str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                        TRUE ~&quot;wnot_SVA&quot;)) %&gt;% 
+  left_join(H3K27me3_lookup, by = &quot;Peakid&quot;) %&gt;%
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster))
+
+
+annotated_H3K36me3 &lt;- All_H3K36me3 %&gt;% 
+  left_join(., (H3K36me3_ols$all_H3K36me3 %&gt;% 
+                  as.data.frame() %&gt;% 
+                  group_by(Peakid) %&gt;% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass), collapse=&quot;;&quot;),
+                            repFamily=paste0(unique(repFamily),collapse=&quot;;&quot;),
+                            repName=paste0(unique(repName),collapse=&quot;;&quot;))))%&gt;%
+              mutate(TE_status = if_else(is.na(repClass),   &quot;wnot_TE&quot;,&quot;TE&quot;)) %&gt;%
+              mutate(SINE_status = case_when(is.na(repClass)~ &quot;wnot_SINE&quot;,
+                                             str_detect(repClass, &quot;SINE&quot;) ~ &quot;SINE&quot;,
+                                             TRUE ~&quot;wnot_SINE&quot;)) %&gt;% 
+              mutate(LINE_status = case_when(is.na(repClass)~ &quot;wnot_LINE&quot;,
+                                             str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                             TRUE ~&quot;wnot_LINE&quot;)) %&gt;%
+              mutate(LTR_status = case_when(is.na(repClass)~ &quot;wnot_LTR&quot;,
+                                            str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                            TRUE ~&quot;wnot_LTR&quot;)) %&gt;%
+               mutate(DNA_status = case_when(is.na(repClass)~ &quot;wnot_DNA&quot;,
+                                 str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                 TRUE ~&quot;wnot_DNA&quot;)) %&gt;% 
+          mutate(SVA_status = case_when(is.na(repClass)~ &quot;wnot_SVA&quot;,
+                                        str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                        TRUE ~&quot;wnot_SVA&quot;)) %&gt;% 
+  left_join(H3K36me3_lookup, by = &quot;Peakid&quot;) %&gt;%
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster))
+
+
+annotated_H3K9me3 &lt;- All_H3K9me3 %&gt;% 
+  left_join(., (H3K9me3_ols$all_H3K9me3 %&gt;% 
+                  as.data.frame() %&gt;% 
+                  group_by(Peakid) %&gt;% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass), collapse=&quot;;&quot;),
+                            repFamily=paste0(unique(repFamily),collapse=&quot;;&quot;),
+                            repName=paste0(unique(repName),collapse=&quot;;&quot;))))%&gt;%
+              mutate(TE_status = if_else(is.na(repClass),   &quot;wnot_TE&quot;,&quot;TE&quot;)) %&gt;%
+              mutate(SINE_status = case_when(is.na(repClass)~ &quot;wnot_SINE&quot;,
+                                             str_detect(repClass, &quot;SINE&quot;) ~ &quot;SINE&quot;,
+                                             TRUE ~&quot;wnot_SINE&quot;)) %&gt;% 
+              mutate(LINE_status = case_when(is.na(repClass)~ &quot;wnot_LINE&quot;,
+                                             str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                             TRUE ~&quot;wnot_LINE&quot;)) %&gt;%
+              mutate(LTR_status = case_when(is.na(repClass)~ &quot;wnot_LTR&quot;,
+                                            str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                            TRUE ~&quot;wnot_LTR&quot;)) %&gt;%
+               mutate(DNA_status = case_when(is.na(repClass)~ &quot;wnot_DNA&quot;,
+                                 str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                 TRUE ~&quot;wnot_DNA&quot;)) %&gt;% 
+          mutate(SVA_status = case_when(is.na(repClass)~ &quot;wnot_SVA&quot;,
+                                        str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                        TRUE ~&quot;wnot_SVA&quot;)) %&gt;% 
+  left_join(H3K9me3_lookup, by = &quot;Peakid&quot;) %&gt;%
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster))
+
+# annotated_tables &lt;- list(&quot;annotated_H3K27ac&quot;=annotated_H3K27ac,
+#                          &quot;annotated_H3K27me3&quot;=annotated_H3K27me3,
+#                          &quot;annotated_H3K36me3&quot;=annotated_H3K36me3,
+#                          &quot;annotated_H3K9me3&quot;=annotated_H3K9me3)
+# 
+# saveRDS(annotated_tables,&quot;data/TE_annotation/annotated_tables_1bp_ol.RDS&quot;)</code></pre>
+<p>50% counting histones</p>
+<pre class="r"><code>annotated_H3K27ac_50_per &lt;- All_H3K27ac %&gt;%
+  left_join(., (H3K27ac_ols$all_H3K27ac %&gt;% 
+                  as.data.frame() %&gt;%
+                  dplyr::filter(pct_te_overlap&gt;50) %&gt;% 
+                  group_by(Peakid) %&gt;% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass[pct_te_overlap&gt;50]), collapse=&quot;;&quot;),
+                            repFamily=paste0(unique(repFamily[pct_te_overlap&gt;50]),collapse=&quot;;&quot;),
+                            repName=paste0(unique(repName[pct_te_overlap&gt;50]),collapse=&quot;;&quot;))))%&gt;%
+              mutate(TE_status = if_else(is.na(repClass),   &quot;wnot_TE&quot;,&quot;TE&quot;)) %&gt;%
+              mutate(SINE_status = case_when(is.na(repClass)~ &quot;wnot_SINE&quot;,
+                                             str_detect(repClass, &quot;SINE&quot;) ~ &quot;SINE&quot;,
+                                             TRUE ~&quot;wnot_SINE&quot;)) %&gt;% 
+              mutate(LINE_status = case_when(is.na(repClass)~ &quot;wnot_LINE&quot;,
+                                             str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                             TRUE ~&quot;wnot_LINE&quot;)) %&gt;%
+              mutate(LTR_status = case_when(is.na(repClass)~ &quot;wnot_LTR&quot;,
+                                            str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                            TRUE ~&quot;wnot_LTR&quot;)) %&gt;%
+               mutate(DNA_status = case_when(is.na(repClass)~ &quot;wnot_DNA&quot;,
+                                 str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                 TRUE ~&quot;wnot_DNA&quot;)) %&gt;% 
+          mutate(SVA_status = case_when(is.na(repClass)~ &quot;wnot_SVA&quot;,
+                                        str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                        TRUE ~&quot;wnot_SVA&quot;)) %&gt;% 
+  left_join(H3K27ac_lookup, by = &quot;Peakid&quot;) %&gt;%
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster))
+
+
+annotated_H3K27me3_50_per &lt;- All_H3K27me3 %&gt;% 
+  left_join(., (H3K27me3_ols$all_H3K27me3 %&gt;% 
+                  as.data.frame() %&gt;%
+                  dplyr::filter(pct_te_overlap&gt;50) %&gt;% 
+                  group_by(Peakid) %&gt;% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass[pct_te_overlap&gt;50]), collapse=&quot;;&quot;),
+                            repFamily=paste0(unique(repFamily[pct_te_overlap&gt;50]),collapse=&quot;;&quot;),
+                            repName=paste0(unique(repName[pct_te_overlap&gt;50]),collapse=&quot;;&quot;))))%&gt;%
+              mutate(TE_status = if_else(is.na(repClass),   &quot;wnot_TE&quot;,&quot;TE&quot;)) %&gt;%
+              mutate(SINE_status = case_when(is.na(repClass)~ &quot;wnot_SINE&quot;,
+                                             str_detect(repClass, &quot;SINE&quot;) ~ &quot;SINE&quot;,
+                                             TRUE ~&quot;wnot_SINE&quot;)) %&gt;% 
+              mutate(LINE_status = case_when(is.na(repClass)~ &quot;wnot_LINE&quot;,
+                                             str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                             TRUE ~&quot;wnot_LINE&quot;)) %&gt;%
+              mutate(LTR_status = case_when(is.na(repClass)~ &quot;wnot_LTR&quot;,
+                                            str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                            TRUE ~&quot;wnot_LTR&quot;)) %&gt;%
+               mutate(DNA_status = case_when(is.na(repClass)~ &quot;wnot_DNA&quot;,
+                                 str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                 TRUE ~&quot;wnot_DNA&quot;)) %&gt;% 
+          mutate(SVA_status = case_when(is.na(repClass)~ &quot;wnot_SVA&quot;,
+                                        str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                        TRUE ~&quot;wnot_SVA&quot;)) %&gt;% 
+  left_join(H3K27me3_lookup, by = &quot;Peakid&quot;) %&gt;%
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster))
+
+
+annotated_H3K36me3_50_per &lt;- All_H3K36me3 %&gt;% 
+  left_join(., (H3K36me3_ols$all_H3K36me3 %&gt;% 
+                  as.data.frame() %&gt;% 
+                  dplyr::filter(pct_te_overlap&gt;50) %&gt;% 
+                  group_by(Peakid) %&gt;% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass[pct_te_overlap&gt;50]), collapse=&quot;;&quot;),
+                            repFamily=paste0(unique(repFamily[pct_te_overlap&gt;50]),collapse=&quot;;&quot;),
+                            repName=paste0(unique(repName[pct_te_overlap&gt;50]),collapse=&quot;;&quot;))))%&gt;%
+              mutate(TE_status = if_else(is.na(repClass),   &quot;wnot_TE&quot;,&quot;TE&quot;)) %&gt;%
+              mutate(SINE_status = case_when(is.na(repClass)~ &quot;wnot_SINE&quot;,
+                                             str_detect(repClass, &quot;SINE&quot;) ~ &quot;SINE&quot;,
+                                             TRUE ~&quot;wnot_SINE&quot;)) %&gt;% 
+              mutate(LINE_status = case_when(is.na(repClass)~ &quot;wnot_LINE&quot;,
+                                             str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                             TRUE ~&quot;wnot_LINE&quot;)) %&gt;%
+              mutate(LTR_status = case_when(is.na(repClass)~ &quot;wnot_LTR&quot;,
+                                            str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                            TRUE ~&quot;wnot_LTR&quot;)) %&gt;%
+               mutate(DNA_status = case_when(is.na(repClass)~ &quot;wnot_DNA&quot;,
+                                 str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                 TRUE ~&quot;wnot_DNA&quot;)) %&gt;% 
+          mutate(SVA_status = case_when(is.na(repClass)~ &quot;wnot_SVA&quot;,
+                                        str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                        TRUE ~&quot;wnot_SVA&quot;)) %&gt;% 
+  left_join(H3K36me3_lookup, by = &quot;Peakid&quot;) %&gt;%
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster))
+
+
+annotated_H3K9me3_50_per &lt;- All_H3K9me3 %&gt;% 
+  left_join(., (H3K9me3_ols$all_H3K9me3 %&gt;% 
+                  as.data.frame() %&gt;% 
+                  dplyr::filter(pct_te_overlap&gt;50) %&gt;% 
+                  group_by(Peakid) %&gt;% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass[pct_te_overlap&gt;50]), collapse=&quot;;&quot;),
+                            repFamily=paste0(unique(repFamily[pct_te_overlap&gt;50]),collapse=&quot;;&quot;),
+                            repName=paste0(unique(repName[pct_te_overlap&gt;50]),collapse=&quot;;&quot;))))%&gt;%
+              mutate(TE_status = if_else(is.na(repClass),   &quot;wnot_TE&quot;,&quot;TE&quot;)) %&gt;%
+              mutate(SINE_status = case_when(is.na(repClass)~ &quot;wnot_SINE&quot;,
+                                             str_detect(repClass, &quot;SINE&quot;) ~ &quot;SINE&quot;,
+                                             TRUE ~&quot;wnot_SINE&quot;)) %&gt;% 
+              mutate(LINE_status = case_when(is.na(repClass)~ &quot;wnot_LINE&quot;,
+                                             str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                             TRUE ~&quot;wnot_LINE&quot;)) %&gt;%
+              mutate(LTR_status = case_when(is.na(repClass)~ &quot;wnot_LTR&quot;,
+                                            str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                            TRUE ~&quot;wnot_LTR&quot;)) %&gt;%
+               mutate(DNA_status = case_when(is.na(repClass)~ &quot;wnot_DNA&quot;,
+                                 str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                 TRUE ~&quot;wnot_DNA&quot;)) %&gt;% 
+          mutate(SVA_status = case_when(is.na(repClass)~ &quot;wnot_SVA&quot;,
+                                        str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                        TRUE ~&quot;wnot_SVA&quot;)) %&gt;% 
+  left_join(H3K9me3_lookup, by = &quot;Peakid&quot;) %&gt;%
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster))
+
+
+# annotated_tables_50_per &lt;- list(&quot;annotated_H3K27ac_50_per&quot;=annotated_H3K27ac_50_per,
+#                          &quot;annotated_H3K27me3_50_per&quot;=annotated_H3K27me3_50_per,
+#                          &quot;annotated_H3K36me3_50_per&quot;=annotated_H3K36me3_50_per,
+#                          &quot;annotated_H3K9me3_50_per&quot;=annotated_H3K9me3_50_per)
+# 
+# saveRDS(annotated_tables_50_per,&quot;data/TE_annotation/annotated_tables_50per_ol.RDS&quot;)</code></pre>
+<pre class="r"><code>te_cols &lt;- c(&quot;TE_status&quot;,&quot;SINE_status&quot;,&quot;LINE_status&quot;,&quot;DNA_status&quot;,&quot;LTR_status&quot;,&quot;SVA_status&quot;)
+H3K27ac_counts &lt;- map(te_cols, ~ {
+  annotated_H3K27ac %&gt;%
+    group_by(cluster, !!sym(.x)) %&gt;%  # dynamically use column
+    tally() %&gt;%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %&gt;% set_names(te_cols)
+
+
+H3K27ac_counts_long &lt;- map2_dfr(
+  H3K27ac_counts,      # the named list of wide tables
+  names(H3K27ac_counts), # names of TE columns
+  ~ .x %&gt;%
+    pivot_longer(
+      cols = -cluster,       # everything except &#39;cluster&#39;
+      names_to = &quot;status&quot;,   # new column for TE status (e.g., TE / wnot_TE)
+      values_to = &quot;count&quot;
+    ) %&gt;%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+H3K27ac_counts_long &lt;- H3K27ac_counts_long %&gt;% 
+group_by(TE_type) %&gt;%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %&gt;%
+  ungroup()
+
+
+H3K27me3_counts &lt;-  map(te_cols, ~ {
+  annotated_H3K27me3 %&gt;%
+    group_by(cluster, !!sym(.x)) %&gt;%  # dynamically use column
+    tally() %&gt;%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %&gt;% set_names(te_cols)
+
+H3K27me3_counts_long &lt;- map2_dfr(
+  H3K27me3_counts,      # the named list of wide tables
+  names(H3K27me3_counts), # names of TE columns
+  ~ .x %&gt;%
+    pivot_longer(
+      cols = -cluster,       # everything except &#39;cluster&#39;
+      names_to = &quot;status&quot;,   # new column for TE status (e.g., TE / not_TE)
+      values_to = &quot;count&quot;
+    ) %&gt;%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+
+H3K27me3_counts_long &lt;- H3K27me3_counts_long %&gt;%
+group_by(TE_type) %&gt;%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %&gt;%
+  ungroup()
+
+H3K36me3_counts &lt;-  map(te_cols, ~ {
+  annotated_H3K36me3 %&gt;%
+    group_by(cluster, !!sym(.x)) %&gt;%  # dynamically use column
+    tally() %&gt;%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %&gt;% set_names(te_cols)
+
+
+H3K36me3_counts_long &lt;- map2_dfr(
+  H3K36me3_counts,      # the named list of wide tables
+  names(H3K36me3_counts), # names of TE columns
+  ~ .x %&gt;%
+    pivot_longer(
+      cols = -cluster,       # everything except &#39;cluster&#39;
+      names_to = &quot;status&quot;,   # new column for TE status (e.g., TE / not_TE)
+      values_to = &quot;count&quot;
+    ) %&gt;%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+
+H3K36me3_counts_long &lt;- H3K36me3_counts_long %&gt;% 
+group_by(TE_type) %&gt;%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %&gt;%
+  ungroup()
+
+H3K9me3_counts &lt;- map(te_cols, ~ {
+  annotated_H3K9me3 %&gt;%
+    group_by(cluster, !!sym(.x)) %&gt;%  # dynamically use column
+    tally() %&gt;%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %&gt;% set_names(te_cols)
+
+H3K9me3_counts_long &lt;- map2_dfr(
+  H3K9me3_counts,      # the named list of wide tables
+  names(H3K9me3_counts), # names of TE columns
+  ~ .x %&gt;%
+    pivot_longer(
+      cols = -cluster,       # everything except &#39;cluster&#39;
+      names_to = &quot;status&quot;,   # new column for TE status (e.g., TE / wnot_TE)
+      values_to = &quot;count&quot;
+    ) %&gt;%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+
+H3K9me3_counts_long &lt;- H3K9me3_counts_long %&gt;% 
+group_by(TE_type) %&gt;%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %&gt;%
+  ungroup()</code></pre>
+<pre class="r"><code>te_cols &lt;- c(&quot;TE_status&quot;,&quot;SINE_status&quot;,&quot;LINE_status&quot;,&quot;DNA_status&quot;,&quot;LTR_status&quot;,&quot;SVA_status&quot;)
+H3K27ac_counts_50per &lt;- map(te_cols, ~ {
+  annotated_H3K27ac_50_per %&gt;%
+    group_by(cluster, !!sym(.x)) %&gt;%  # dynamically use column
+    tally() %&gt;%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %&gt;% set_names(te_cols)
+
+
+H3K27ac_counts_long_50per &lt;- map2_dfr(
+  H3K27ac_counts_50per,      # the named list of wide tables
+  names(H3K27ac_counts_50per), # names of TE columns
+  ~ .x %&gt;%
+    pivot_longer(
+      cols = -cluster,       # everything except &#39;cluster&#39;
+      names_to = &quot;status&quot;,   # new column for TE status (e.g., TE / wnot_TE)
+      values_to = &quot;count&quot;
+    ) %&gt;%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+H3K27ac_counts_long_50per &lt;- H3K27ac_counts_long_50per %&gt;% 
+group_by(TE_type) %&gt;%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %&gt;%
+  ungroup()
+
+
+H3K27me3_counts_50per &lt;-  map(te_cols, ~ {
+  annotated_H3K27me3_50_per %&gt;%
+    group_by(cluster, !!sym(.x)) %&gt;%  # dynamically use column
+    tally() %&gt;%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %&gt;% set_names(te_cols)
+
+H3K27me3_counts_long_50per &lt;- map2_dfr(
+  H3K27me3_counts_50per,      # the named list of wide tables
+  names(H3K27me3_counts_50per), # names of TE columns
+  ~ .x %&gt;%
+    pivot_longer(
+      cols = -cluster,       # everything except &#39;cluster&#39;
+      names_to = &quot;status&quot;,   # new column for TE status (e.g., TE / not_TE)
+      values_to = &quot;count&quot;
+    ) %&gt;%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+
+H3K27me3_counts_long_50per &lt;- H3K27me3_counts_long_50per %&gt;% 
+group_by(TE_type) %&gt;%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %&gt;%
+  ungroup()
+
+H3K36me3_counts_50per &lt;-  map(te_cols, ~ {
+  annotated_H3K36me3_50_per %&gt;%
+    group_by(cluster, !!sym(.x)) %&gt;%  # dynamically use column
+    tally() %&gt;%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %&gt;% set_names(te_cols)
+
+
+H3K36me3_counts_long_50per &lt;- map2_dfr(
+  H3K36me3_counts_50per,      # the named list of wide tables
+  names(H3K36me3_counts_50per), # names of TE columns
+  ~ .x %&gt;%
+    pivot_longer(
+      cols = -cluster,       # everything except &#39;cluster&#39;
+      names_to = &quot;status&quot;,   # new column for TE status (e.g., TE / not_TE)
+      values_to = &quot;count&quot;
+    ) %&gt;%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+
+H3K36me3_counts_long_50per &lt;- H3K36me3_counts_long_50per %&gt;% 
+group_by(TE_type) %&gt;%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %&gt;%
+  ungroup()
+
+H3K9me3_counts_50per &lt;- map(te_cols, ~ {
+  annotated_H3K9me3_50_per %&gt;%
+    group_by(cluster, !!sym(.x)) %&gt;%  # dynamically use column
+    tally() %&gt;%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %&gt;% set_names(te_cols)
+
+H3K9me3_counts_long_50per &lt;- map2_dfr(
+  H3K9me3_counts_50per,      # the named list of wide tables
+  names(H3K9me3_counts_50per), # names of TE columns
+  ~ .x %&gt;%
+    pivot_longer(
+      cols = -cluster,       # everything except &#39;cluster&#39;
+      names_to = &quot;status&quot;,   # new column for TE status (e.g., TE / wnot_TE)
+      values_to = &quot;count&quot;
+    ) %&gt;%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+
+H3K9me3_counts_long_50per &lt;- H3K9me3_counts_long_50per %&gt;% 
+group_by(TE_type) %&gt;%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %&gt;%
+  ungroup()</code></pre>
+<p>making the function</p>
+<pre class="r"><code># # function to test enrichment for one TE type, one cluster pair
+# test_pair_TE &lt;- function(df_long, te_name, cluster1, cluster2) {
+#   
+#   # filter for TE type
+#   sub_df &lt;- df_long %&gt;% filter(TE_type == te_name)
+#   
+#   # get counts for cluster1 and cluster2
+#   c1 &lt;- sub_df %&gt;% dplyr::filter(cluster == cluster1)
+#   c2 &lt;- sub_df %&gt;% dplyr::filter(cluster == cluster2)
+#   
+#   # 2x2 table: rows = clusters, cols = TE / wnot_TE
+#   mat &lt;- matrix(
+#     c(c2$count, sum(c2$count) - c2$count,
+#       c1$count, sum(c1$count) - c1$count),
+#     nrow = 2,
+#     byrow = TRUE,
+#     dimnames = list(
+#       cluster = c(cluster2, cluster1),
+#       category = c(&quot;TE&quot;, &quot;wnot_TE&quot;)
+#     )
+#   )
+#   
+#   ft &lt;- fisher.test(mat)
+#   
+#   tibble(
+#     TE_type     = te_name,
+#     comparison  = paste(cluster2, &quot;vs&quot;, cluster1),
+#     odds_ratio  = ft$estimate,
+#     lower_CI    = ft$conf.int[1],
+#     upper_CI    = ft$conf.int[2],
+#     p_value     = ft$p.value
+#   )
+# }
+
+
+# Generic pairwise Fisher test
+test_pair_TE_generic &lt;- function(df_long, te_name, cluster1, cluster2) {
+  
+  sub_df &lt;- df_long %&gt;% filter(TE_type == te_name)
+  
+  # assume &quot;status&quot; column has TE vs wnot_TE automatically
+  statuses &lt;- unique(sub_df$status)
+  
+  if(length(statuses) != 2) {
+    # ensure we have exactly two categories, fill missing with 0
+    sub_df &lt;- sub_df %&gt;%
+      complete(cluster, status, fill = list(count = 0))
+    statuses &lt;- unique(sub_df$status)
+  }
+  
+  # extract counts for cluster1
+  c1_counts &lt;- sub_df %&gt;%
+    filter(cluster == cluster1) %&gt;%
+    arrange(match(status, statuses)) %&gt;%   # ensure same order
+    pull(count)
+  
+  # extract counts for cluster2
+  c2_counts &lt;- sub_df %&gt;%
+    filter(cluster == cluster2) %&gt;%
+    arrange(match(status, statuses)) %&gt;%
+    pull(count)
+  
+  # build 2x2 matrix
+  mat &lt;- matrix(
+    c(c2_counts, c1_counts),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      cluster = c(cluster2, cluster1),
+      category = statuses
+    )
+  )
+  
+  ft &lt;- tryCatch(
+    fisher.test(mat, workspace = 2e8),
+    error = function(e) fisher.test(mat, simulate.p.value = TRUE, B = 1e5)
+  )
+  
+  tibble(
+    TE_type     = te_name,
+    comparison  = paste(cluster2, &quot;vs&quot;, cluster1),
+    odds_ratio  = ft$estimate,
+    lower_CI    = ft$conf.int[1],
+    upper_CI    = ft$conf.int[2],
+    p_value     = ft$p.value
+  )
+}</code></pre>
+<p>applying to dataframes</p>
+</div>
+<div id="h3k27ac-proportions" class="section level3">
+<h3>H3K27ac proportions</h3>
+<div id="results-for-1bp-overlap-h3k27ac" class="section level5">
+<h5>results for 1bp overlap H3K27ac</h5>
+<pre class="r"><code>TE_types &lt;- te_cols
+
+cluster_pairs_3 &lt;- list(
+  c(&quot;Set_2&quot;,&quot;Set_1&quot;),
+  c(&quot;Set_3&quot;,&quot;Set_1&quot;)
+  # add more pairs if needed or
+)
+cluster_pairs_2 &lt;- list(
+  c(&quot;Set_2&quot;,&quot;Set_1&quot;))
+
+
+H3K27ac_results_1bp &lt;- map_dfr(TE_types, function(te){
+  map_dfr(cluster_pairs_3, function(pair){
+    test_pair_TE_generic(H3K27ac_counts_long, te, cluster1 = pair[2], cluster2 = pair[1])
+  })
+})
+
+htmltools::tagList(
+  htmltools::h3(&quot;H3K27ac_results_1bp&quot;), 
+datatable(H3K27ac_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+  rownames = FALSE))</code></pre>
+<h3>H3K27ac_results_1bp</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-c7fc7fd0704f0fe11c1f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[1.259368850772524,1.50602557720872,0.9343402356670563,1.093924871752749,1.2053052899433,1.192583844384101,1.163842923172437,1.144868975402332,1.42972211973557,1.450311012201304,0.6328026297326891,2.191186181829242],[1.088290344152379,1.401227261368075,0.8391107805830744,1.040515615687436,1.07848131595696,1.132547357453693,1.015068898994149,1.074387170836914,1.253526254115946,1.364817931794001,0.07613847632219906,1.474579717683874],[1.462857271196355,1.620136387331754,1.040334535506866,1.150199128292199,1.34614120998107,1.255663442775145,1.330829289813344,1.219260890322723,1.626916549812552,1.540610066311737,2.314157885543509,3.161179314255219],[0.001542825486745813,2.306182256468386e-31,0.2131900825174579,0.0004093799980208346,0.0008996282437924752,2.266020368876619e-11,0.02737254993631404,3.034826659742476e-05,1.198905496825998e-07,7.024151397539197e-32,0.7751346675645006,9.514713485445925e-05]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>H3K27ac_counts_long %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=cluster, y=count, fill=status)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  facet_wrap(~TE_type, scales=&quot;free_y&quot;)+
+  ggtitle(&quot;H3K27ac 1 bp overlap enrichment&quot;)+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="results-for-50-te-overlap-h3k27ac" class="section level5">
+<h5>results for 50% TE overlap H3K27ac</h5>
+<pre class="r"><code>###
+H3K27ac_results_50per &lt;- map_dfr(TE_types, function(te){
+  map_dfr(cluster_pairs_3, function(pair){
+    test_pair_TE_generic(H3K27ac_counts_long_50per, te, cluster1 = pair[2], cluster2 = pair[1])
+  })
+})
+
+htmltools::tagList(
+  htmltools::h3(&quot;H3K27ac_results 50% overlap&quot;),
+datatable(H3K27ac_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+  rownames = FALSE))</code></pre>
+<h3>H3K27ac_results 50% overlap</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1aee943cb026952af47d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[1.216159913613956,1.4616037954072,0.9179620567692816,1.136091037438066,1.189738487458323,1.201659051856082,1.185737845333323,1.151405144157643,1.485833272387262,1.560063400774838,0.5516438648245761,1.385803963240848],[1.071660972676197,1.37393514488447,0.8232518978341578,1.080715463323694,1.059030555714539,1.1387117224498,1.025624979046734,1.076161749241332,1.292962490875653,1.463949727802741,0.01386395849034669,0.6993636155397289],[1.383182534453614,1.555575278933516,1.023183917132444,1.194296398578512,1.334996176519529,1.267902491181639,1.366314712882599,1.231148932876282,1.702489410019992,1.661631263403108,3.127645882425833,2.497765289170275],[0.002040443600663668,1.21859829364046e-35,0.121017792644741,4.990927978918603e-07,0.003146383123698687,2.526017670845213e-11,0.02032248178340357,4.434572306760904e-05,3.490245374067844e-08,1.218119070554094e-40,1,0.2944199283243765]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>H3K27ac_counts_long_50per %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=cluster, y=count, fill=status)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  facet_wrap(~TE_type, scales=&quot;free_y&quot;)+
+  ggtitle(&quot;H3K27ac 50% TE overlap enrichment&quot;)+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%2050%20per%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="h3k27me3-proportions" class="section level3">
+<h3>H3K27me3 proportions</h3>
+<div id="results-for-1bp-overlap-h3k27me3" class="section level5">
+<h5>results for 1bp overlap H3K27me3</h5>
+<pre class="r"><code>H3K27me3_results_1bp &lt;- map_dfr(TE_types, function(te){
+  map_dfr(cluster_pairs_2, function(pair){
+    test_pair_TE_generic(H3K27me3_counts_long, te, cluster1 = pair[2], cluster2 = pair[1])
+  })
+})
+
+htmltools::tagList(
+  htmltools::h3(&quot;H3K27me3_results_1bp&quot;), 
+datatable(H3K27me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+  rownames = FALSE))</code></pre>
+<h3>H3K27me3_results_1bp</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-15ac70e14e0faa7e6fac" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[0.5825859884833549,0.4095066984912001,0.3586899262807814,0.682052989857455,0.5293595230045218,0],[0.4425056042162213,0.2925533690297492,0.2429360791474219,0.4313624007585997,0.3546769328018679,0],[0.7716596751100738,0.5637712759524685,0.5157444772114571,1.035472354047545,0.767745360922313,23.49376917081121],[0.0001195863100841053,2.594044326307263e-09,5.566952949078571e-10,0.08034858366408916,0.0003765798800056719,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>H3K27me3_counts_long %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=cluster, y=count, fill=status)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  facet_wrap(~TE_type, scales=&quot;free_y&quot;)+
+  ggtitle(&quot;H3K27me3 1 bp overlap enrichment&quot;)+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="results-for-50-te-overlap-h3k27me3" class="section level5">
+<h5>results for 50% TE overlap H3K27me3</h5>
+<pre class="r"><code>###
+H3K27me3_results_50per &lt;- map_dfr(TE_types, function(te){
+  map_dfr(cluster_pairs_2, function(pair){
+    test_pair_TE_generic(H3K27me3_counts_long_50per, te, cluster1 = pair[2], cluster2 = pair[1])
+  })
+})
+
+htmltools::tagList(
+  htmltools::h3(&quot;H3K27me3_results 50% overlap&quot;),
+datatable(H3K27me3_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+  rownames = FALSE))</code></pre>
+<h3>H3K27me3_results 50% overlap</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-686cfa6b0ab6d13cf646" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-686cfa6b0ab6d13cf646">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[0.5856423699165734,0.393790395002386,0.3558495466062519,0.4965361958642435,0.4079034738368281,0],[0.4495835697990661,0.2693506757287685,0.2251113447325891,0.2731666467530557,0.2441894726734719,0],[0.7633475450154932,0.561725115322933,0.5401979810220469,0.8373084729874126,0.6460068347653763,35.58366474010647],[5.245506718695196e-05,1.511553470723401e-08,3.994406686829016e-08,0.006453712377742507,2.288239077057743e-05,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>H3K27me3_counts_long_50per %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=cluster, y=count, fill=status)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  facet_wrap(~TE_type, scales=&quot;free_y&quot;)+
+  ggtitle(&quot;H3K27me3 50% TE overlap enrichment&quot;)+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%2050%20per%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="h3k36me3-proportions" class="section level3">
+<h3>H3K36me3 proportions</h3>
+<div id="results-for-1bp-overlap-h3k36me3" class="section level5">
+<h5>results for 1bp overlap H3K36me3</h5>
+<pre class="r"><code>H3K36me3_results_1bp &lt;- map_dfr(TE_types, function(te){
+  map_dfr(cluster_pairs_2, function(pair){
+    test_pair_TE_generic(H3K36me3_counts_long, te, cluster1 = pair[2], cluster2 = pair[1])
+  })
+})
+
+htmltools::tagList(
+  htmltools::h3(&quot;H3K36me3_results_1bp&quot;), 
+datatable(H3K36me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+  rownames = FALSE))</code></pre>
+<h3>H3K36me3_results_1bp</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-76504a9d21e95bf556c2" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-76504a9d21e95bf556c2">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[1.411670634394453,1.343976233339281,1.347151413698301,1.698753475441349,1.372407495222607,3.10432862217496],[1.252470163008516,1.214578305042041,1.201348690512265,1.4661218622603,1.188224570289349,1.677248994924033],[1.594060695454736,1.487139903999599,1.508448036129486,1.960966975861284,1.579543158173228,5.289116375482961],[5.733337306033086e-09,7.903524882564161e-09,3.539088643977063e-07,8.098051531410306e-12,1.847156395814735e-05,0.0003032659348144326]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>H3K36me3_counts_long %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=cluster, y=count, fill=status)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  facet_wrap(~TE_type, scales=&quot;free_y&quot;)+
+  ggtitle(&quot;H3K36me3 1 bp overlap enrichment&quot;)+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="results-for-50-te-overlap-h3k36me3" class="section level5">
+<h5>results for 50% TE overlap H3K36me3</h5>
+<pre class="r"><code>###
+H3K36me3_results_50per &lt;- map_dfr(TE_types, function(te){
+  map_dfr(cluster_pairs_2, function(pair){
+    test_pair_TE_generic(H3K36me3_counts_long_50per, te, cluster1 = pair[2], cluster2 = pair[1])
+  })
+})
+
+htmltools::tagList(
+  htmltools::h3(&quot;H3K36me3_results 50% overlap&quot;),
+datatable(H3K36me3_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+  rownames = FALSE))</code></pre>
+<h3>H3K36me3_results 50% overlap</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-72118e3de6abfa29a40d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-72118e3de6abfa29a40d">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[1.717956110006,1.484879699023157,1.734404134677184,1.91101104124862,1.886877418785619,3.007454390809326],[1.541078701985056,1.340389002300764,1.534313128210478,1.626853349190564,1.610770130500736,0.9603118599529303],[1.917285399038383,1.644236388842978,1.956749353792982,2.233916575812101,2.200268472508792,7.200767300802062],[5.51112869101785e-24,2.974055647924138e-14,1.099513196346922e-17,3.913449827097718e-14,4.806275091921247e-14,0.02899296588542844]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>H3K36me3_counts_long_50per %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=cluster, y=count, fill=status)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  facet_wrap(~TE_type, scales=&quot;free_y&quot;)+
+  ggtitle(&quot;H3K36me3 50% TE overlap enrichment&quot;)+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%2050%20per%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="h3k9me3-proportions" class="section level3">
+<h3>H3K9me3 proportions</h3>
+<div id="results-for-1bp-overlap-h3k9me3" class="section level5">
+<h5>results for 1bp overlap H3K9me3</h5>
+<pre class="r"><code>H3K9me3_results_1bp &lt;- map_dfr(TE_types, function(te){
+  map_dfr(cluster_pairs_3, function(pair){
+    test_pair_TE_generic(H3K9me3_counts_long, te, cluster1 = pair[2], cluster2 = pair[1])
+  })
+})
+
+htmltools::tagList(
+  htmltools::h3(&quot;H3K9me3_results_1bp&quot;), 
+datatable(H3K9me3_results_1bp,options = list(pageLength = 20, autoWidth = TRUE),
+  rownames = FALSE))</code></pre>
+<h3>H3K9me3_results_1bp</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0a58fb401ace3924c9b1" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0a58fb401ace3924c9b1">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[0.3096610672384844,0.4395366087839432,0.7161438111274293,0.9417527868192503,0.3153820571502002,0.4589173312709165,0.5956472408661692,0.6264916059145618,0.1271797301389415,0.1627350074882929,0.223825775205762,0],[0.2893754536798872,0.386794523869431,0.6516123173183945,0.7996693125712947,0.2825712365004743,0.3826041226773913,0.4982649882883287,0.4464205511841541,0.109759580044387,0.126207325699428,0.0724925752934981,0],[0.331381429440707,0.4996958465317939,0.7858530224292968,1.104668316172285,0.3512629404912564,0.5472999069919321,0.7070981558342178,0.8569732051822975,0.1466866573558857,0.2070659576968038,0.524178896319089,0.5844529974120374],[3.797822105164549e-248,1.996233558866485e-35,2.749722068883757e-13,0.4754742113152802,2.101854226424334e-130,3.198349161849768e-21,2.006816442276066e-10,0.0022257200161758,9.881312916824931e-324,2.6228163228874e-81,3.044973610725754e-05,0.003801175823158375]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>H3K9me3_counts_long %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=cluster, y=count, fill=status)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  facet_wrap(~TE_type, scales=&quot;free_y&quot;)+
+  ggtitle(&quot;H3K9me3 1 bp overlap enrichment&quot;)+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="results-for-50-te-overlap-h3k9me3" class="section level5">
+<h5>results for 50% TE overlap H3K9me3</h5>
+<pre class="r"><code>###
+H3K9me3_results_50per &lt;- map_dfr(TE_types, function(te){
+  map_dfr(cluster_pairs_3, function(pair){
+    test_pair_TE_generic(H3K9me3_counts_long_50per, te, cluster1 = pair[2], cluster2 = pair[1])
+  })
+})
+
+htmltools::tagList(
+  htmltools::h3(&quot;H3K9me3_results 50% overlap&quot;),
+datatable(H3K9me3_results_50per,options = list(pageLength = 20, autoWidth = TRUE),
+  rownames = FALSE))</code></pre>
+<h3>H3K9me3_results 50% overlap</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-2ecdfcc414070ada7f31" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-2ecdfcc414070ada7f31">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[0.5802242795301654,0.9537716050752808,0.6345273641455764,0.901863886185822,0.5954349908853007,1.088041068341802,0.5399581440202916,0.6637077191081634,0.1307088451626111,0.2300721869690266,0,0],[0.5403109948840259,0.839589378936289,0.5658992190015623,0.7457241539270615,0.5213331368363794,0.8928638619729873,0.4252643617454441,0.4347951652806848,0.1071631912713697,0.1714877128191239,0,0],[0.6228612469315955,1.083195891387989,0.7096512877568221,1.083691584028658,0.6775961075714843,1.31625181819435,0.6766573287978714,0.9725601544773813,0.157975926740048,0.3029130559361377,0.6153094277849813,2.176799089286043],[5.255491616757113e-54,0.4629610711605696,2.830059189104029e-17,0.2813925122880246,3.228616528117679e-17,0.3696706836853472,5.126094161557239e-09,0.03501757778615852,3.312491755415245e-192,5.115850405574176e-39,0.005445463984559912,0.4237916596172365]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>H3K9me3_counts_long_50per %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=cluster, y=count, fill=status)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  facet_wrap(~TE_type, scales=&quot;free_y&quot;)+
+  ggtitle(&quot;H3K27ac 50% TE overlap enrichment&quot;)+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%2050%20per%20df-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26100)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] stats4    grid      stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] plyranges_1.26.0                        
+ [2] ChIPseeker_1.42.1                       
+ [3] TxDb.Hsapiens.UCSC.hg38.knownGene_3.20.0
+ [4] GenomicFeatures_1.58.0                  
+ [5] AnnotationDbi_1.68.0                    
+ [6] Biobase_2.66.0                          
+ [7] BiocParallel_1.40.2                     
+ [8] GenomicRanges_1.58.0                    
+ [9] GenomeInfoDb_1.42.3                     
+[10] IRanges_2.40.1                          
+[11] S4Vectors_0.44.0                        
+[12] BiocGenerics_0.52.0                     
+[13] genomation_1.38.0                       
+[14] DT_0.33                                 
+[15] lubridate_1.9.4                         
+[16] forcats_1.0.0                           
+[17] stringr_1.5.1                           
+[18] dplyr_1.1.4                             
+[19] purrr_1.1.0                             
+[20] readr_2.1.5                             
+[21] tidyr_1.3.1                             
+[22] tibble_3.3.0                            
+[23] ggplot2_3.5.2                           
+[24] tidyverse_2.0.0                         
+[25] workflowr_1.7.1                         
+
+loaded via a namespace (and not attached):
+  [1] RColorBrewer_1.1-3                     
+  [2] rstudioapi_0.17.1                      
+  [3] jsonlite_2.0.0                         
+  [4] magrittr_2.0.3                         
+  [5] ggtangle_0.0.7                         
+  [6] farver_2.1.2                           
+  [7] rmarkdown_2.29                         
+  [8] fs_1.6.6                               
+  [9] BiocIO_1.16.0                          
+ [10] zlibbioc_1.52.0                        
+ [11] vctrs_0.6.5                            
+ [12] memoise_2.0.1                          
+ [13] Rsamtools_2.22.0                       
+ [14] RCurl_1.98-1.17                        
+ [15] ggtree_3.14.0                          
+ [16] htmltools_0.5.8.1                      
+ [17] S4Arrays_1.6.0                         
+ [18] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+ [19] plotrix_3.8-4                          
+ [20] curl_7.0.0                             
+ [21] SparseArray_1.6.2                      
+ [22] gridGraphics_0.5-1                     
+ [23] sass_0.4.10                            
+ [24] KernSmooth_2.23-26                     
+ [25] bslib_0.9.0                            
+ [26] htmlwidgets_1.6.4                      
+ [27] plyr_1.8.9                             
+ [28] impute_1.80.0                          
+ [29] cachem_1.1.0                           
+ [30] GenomicAlignments_1.42.0               
+ [31] igraph_2.1.4                           
+ [32] whisker_0.4.1                          
+ [33] lifecycle_1.0.4                        
+ [34] pkgconfig_2.0.3                        
+ [35] Matrix_1.7-3                           
+ [36] R6_2.6.1                               
+ [37] fastmap_1.2.0                          
+ [38] GenomeInfoDbData_1.2.13                
+ [39] MatrixGenerics_1.18.1                  
+ [40] digest_0.6.37                          
+ [41] aplot_0.2.8                            
+ [42] enrichplot_1.26.6                      
+ [43] colorspace_2.1-1                       
+ [44] patchwork_1.3.2                        
+ [45] ps_1.9.1                               
+ [46] rprojroot_2.1.1                        
+ [47] crosstalk_1.2.2                        
+ [48] RSQLite_2.4.3                          
+ [49] labeling_0.4.3                         
+ [50] timechange_0.3.0                       
+ [51] httr_1.4.7                             
+ [52] abind_1.4-8                            
+ [53] compiler_4.4.2                         
+ [54] bit64_4.6.0-1                          
+ [55] withr_3.0.2                            
+ [56] DBI_1.2.3                              
+ [57] gplots_3.2.0                           
+ [58] R.utils_2.13.0                         
+ [59] rappdirs_0.3.3                         
+ [60] DelayedArray_0.32.0                    
+ [61] rjson_0.2.23                           
+ [62] caTools_1.18.3                         
+ [63] gtools_3.9.5                           
+ [64] tools_4.4.2                            
+ [65] ape_5.8-1                              
+ [66] httpuv_1.6.16                          
+ [67] R.oo_1.27.1                            
+ [68] glue_1.8.0                             
+ [69] restfulr_0.0.16                        
+ [70] callr_3.7.6                            
+ [71] nlme_3.1-168                           
+ [72] GOSemSim_2.32.0                        
+ [73] promises_1.3.3                         
+ [74] getPass_0.2-4                          
+ [75] gridBase_0.4-7                         
+ [76] reshape2_1.4.4                         
+ [77] fgsea_1.32.4                           
+ [78] generics_0.1.4                         
+ [79] gtable_0.3.6                           
+ [80] BSgenome_1.74.0                        
+ [81] tzdb_0.5.0                             
+ [82] R.methodsS3_1.8.2                      
+ [83] seqPattern_1.38.0                      
+ [84] data.table_1.17.8                      
+ [85] hms_1.1.3                              
+ [86] utf8_1.2.6                             
+ [87] XVector_0.46.0                         
+ [88] ggrepel_0.9.6                          
+ [89] pillar_1.11.0                          
+ [90] vroom_1.6.5                            
+ [91] yulab.utils_0.2.1                      
+ [92] later_1.4.2                            
+ [93] splines_4.4.2                          
+ [94] treeio_1.30.0                          
+ [95] lattice_0.22-7                         
+ [96] rtracklayer_1.66.0                     
+ [97] bit_4.6.0                              
+ [98] tidyselect_1.2.1                       
+ [99] GO.db_3.20.0                           
+[100] Biostrings_2.74.1                      
+[101] knitr_1.50                             
+[102] git2r_0.36.2                           
+[103] SummarizedExperiment_1.36.0            
+[104] xfun_0.52                              
+[105] matrixStats_1.5.0                      
+[106] stringi_1.8.7                          
+[107] UCSC.utils_1.2.0                       
+[108] lazyeval_0.2.2                         
+[109] ggfun_0.2.0                            
+[110] yaml_2.3.10                            
+[111] boot_1.3-32                            
+[112] evaluate_1.0.5                         
+[113] codetools_0.2-20                       
+[114] qvalue_2.38.0                          
+[115] ggplotify_0.1.2                        
+[116] cli_3.6.5                              
+[117] processx_3.8.6                         
+[118] jquerylib_0.1.4                        
+[119] dichromat_2.0-0.1                      
+[120] Rcpp_1.1.0                             
+[121] png_0.1-8                              
+[122] XML_3.99-0.18                          
+[123] parallel_4.4.2                         
+[124] blob_1.2.4                             
+[125] DOSE_4.0.1                             
+[126] bitops_1.0-9                           
+[127] tidytree_0.4.6                         
+[128] scales_1.4.0                           
+[129] crayon_1.5.3                           
+[130] rlang_1.1.6                            
+[131] fastmatch_1.1-6                        
+[132] cowplot_1.2.0                          
+[133] KEGGREST_1.46.0                        </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
