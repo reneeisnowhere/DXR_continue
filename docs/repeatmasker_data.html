@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree6b65c264f4553ba15d1d66589af6fd53db85fe6dtargetblank6b65c26a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec5fd708c0deed8978d51559932fb147b504108cftargetblankc5fd708a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/6b65c264f4553ba15d1d66589af6fd53db85fe6d" target="_blank">6b65c26</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c5fd708c0deed8978d51559932fb147b504108cf" target="_blank">c5fd708</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree6b65c264f4553ba15d1d66589af6fd53db85fe6dtargetblank6b65c26a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec5fd708c0deed8978d51559932fb147b504108cftargetblankc5fd708a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/6b65c264f4553ba15d1d66589af6fd53db85fe6d" target="_blank">6b65c26</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c5fd708c0deed8978d51559932fb147b504108cf" target="_blank">c5fd708</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -565,6 +565,7 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
     Ignored:    data/Other_paper_data/
@@ -628,6 +629,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/c5fd708c0deed8978d51559932fb147b504108cf/analysis/repeatmasker_data.Rmd" target="_blank">c5fd708</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+<td>
+wflow_publish("analysis/repeatmasker_data.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/cf939c48165508fac6af4a127ae2735b8242e86c/docs/repeatmasker_data.html" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1460,7 +1495,7 @@ annotate with the overlapping dataframe. Then I make new columns,
 TE_status, SINE_status, LINE_status, LTR_status, DNA_status, SVA_status.
 These columns mark Peakids if they have this attribute. Last, I am
 annotating a cluster column to add which set the Peakid exists in by
-histone. (field will be Set1, Set2, Set3, no_cluster)</p>
+histone. (field will be Set1, Set2, Set3, not_assigned)</p>
 <pre class="r"><code>All_H3K27ac &lt;- H3K27ac_sets_gr$all_H3K27ac %&gt;% as.data.frame()
 All_H3K27me3 &lt;- H3K27me3_sets_gr$all_H3K27me3 %&gt;% as.data.frame()
 All_H3K36me3 &lt;- H3K36me3_sets_gr$all_H3K36me3 %&gt;% as.data.frame()
@@ -1597,6 +1632,22 @@ annotated_H3K9me3 &lt;- All_H3K9me3 %&gt;%
 #                          &quot;annotated_H3K9me3&quot;=annotated_H3K9me3)
 # 
 # saveRDS(annotated_tables,&quot;data/TE_annotation/annotated_tables_1bp_ol.RDS&quot;)</code></pre>
+</div>
+<div id="counts-of-regions-in-each-set" class="section level2">
+<h2>Counts of regions in each set</h2>
+<pre class="r"><code>H3K27ac_data &lt;- data.frame(&quot;total&quot;=length(All_H3K27ac$Peakid),&quot;Set1&quot;=length(H3K27ac_lookup$cluster[H3K27ac_lookup$cluster==&quot;Set_1&quot;]),&quot;Set2&quot;=length(H3K27ac_lookup$cluster[H3K27ac_lookup$cluster==&quot;Set_2&quot;]),&quot;Set3&quot;=length(H3K27ac_lookup$cluster[H3K27ac_lookup$cluster==&quot;Set_3&quot;]))
+
+H3K9me3_data &lt;- data.frame(&quot;total&quot;=length(All_H3K9me3$Peakid),&quot;Set1&quot;=length(H3K9me3_lookup$cluster[H3K9me3_lookup$cluster==&quot;Set_1&quot;]),&quot;Set2&quot;=length(H3K9me3_lookup$cluster[H3K9me3_lookup$cluster==&quot;Set_2&quot;]),&quot;Set3&quot;=length(H3K9me3_lookup$cluster[H3K9me3_lookup$cluster==&quot;Set_3&quot;]))
+
+H3K27me3_data &lt;- data.frame(&quot;total&quot;=length(All_H3K27me3$Peakid),&quot;Set1&quot;=length(H3K27me3_lookup$cluster[H3K27me3_lookup$cluster==&quot;Set_1&quot;]),&quot;Set2&quot;=length(H3K27me3_lookup$cluster[H3K27me3_lookup$cluster==&quot;Set_2&quot;]),&quot;Set3&quot;=length(H3K27me3_lookup$cluster[H3K27me3_lookup$cluster==&quot;Set_3&quot;]))
+
+H3K36me3_data &lt;- data.frame(&quot;total&quot;=length(All_H3K36me3$Peakid),&quot;Set1&quot;=length(H3K36me3_lookup$cluster[H3K36me3_lookup$cluster==&quot;Set_1&quot;]),&quot;Set2&quot;=length(H3K36me3_lookup$cluster[H3K36me3_lookup$cluster==&quot;Set_2&quot;]),&quot;Set3&quot;=length(H3K36me3_lookup$cluster[H3K36me3_lookup$cluster==&quot;Set_3&quot;]))
+
+Region_dataframe &lt;- bind_rows(list(H3K27ac=H3K27ac_data, H3K27me3=H3K27me3_data, H3K36me3=H3K36me3_data, H3K9me3=H3K9me3_data), .id=&quot;histone&quot;)
+
+datatable(Region_dataframe)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-c7fc7fd0704f0fe11c1f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4"],["H3K27ac","H3K27me3","H3K36me3","H3K9me3"],[150071,150464,186724,218647],[110084,148911,131856,196147],[1385,235,1558,3494],[6623,0,0,989]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>histone<\/th>\n      <th>total<\/th>\n      <th>Set1<\/th>\n      <th>Set2<\/th>\n      <th>Set3<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"histone","targets":1},{"name":"total","targets":2},{"name":"Set1","targets":3},{"name":"Set2","targets":4},{"name":"Set3","targets":5}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p>50% counting histones</p>
 <pre class="r"><code>annotated_H3K27ac_50_per &lt;- All_H3K27ac %&gt;%
   left_join(., (H3K27ac_ols$all_H3K27ac %&gt;% 
@@ -2037,7 +2088,6 @@ test_pair_TE_generic &lt;- function(df_long, te_name, cluster1, cluster2) {
   )
 }</code></pre>
 <p>applying to dataframes</p>
-</div>
 <div id="h3k27ac-proportions" class="section level3">
 <h3>H3K27ac proportions</h3>
 <div id="results-for-1bp-overlap-h3k27ac" class="section level5">
@@ -2060,7 +2110,7 @@ H3K27ac_results_1bp &lt;- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3(&quot;H3K27ac_results_1bp&quot;), 
+  htmltools::h3(&quot;H3K27ac odds ratio 1bp&quot;), 
 datatable(H3K27ac_results_1bp,options = list(
     scrollY = &quot;600px&quot;,
     scrollCollapse = TRUE,
@@ -2068,9 +2118,9 @@ datatable(H3K27ac_results_1bp,options = list(
     autoWidth = TRUE
   ),
   rownames = FALSE))</code></pre>
-<h3>H3K27ac_results_1bp</h3>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-c7fc7fd0704f0fe11c1f" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[1.259368850772524,1.50602557720872,0.9343402356670563,1.093924871752749,1.2053052899433,1.192583844384101,1.163842923172437,1.144868975402332,1.42972211973557,1.450311012201304,0.6328026297326891,2.191186181829242],[1.088290344152379,1.401227261368075,0.8391107805830744,1.040515615687436,1.07848131595696,1.132547357453693,1.015068898994149,1.074387170836914,1.253526254115946,1.364817931794001,0.07613847632219906,1.474579717683874],[1.462857271196355,1.620136387331754,1.040334535506866,1.150199128292199,1.34614120998107,1.255663442775145,1.330829289813344,1.219260890322723,1.626916549812552,1.540610066311737,2.314157885543509,3.161179314255219],[0.001542825486745813,2.306182256468386e-31,0.2131900825174579,0.0004093799980208346,0.0008996282437924752,2.266020368876619e-11,0.02737254993631404,3.034826659742476e-05,1.198905496825998e-07,7.024151397539197e-32,0.7751346675645006,9.514713485445925e-05]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<h3>H3K27ac odds ratio 1bp</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1aee943cb026952af47d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[1.259368850772524,1.50602557720872,0.9343402356670563,1.093924871752749,1.2053052899433,1.192583844384101,1.163842923172437,1.144868975402332,1.42972211973557,1.450311012201304,0.6328026297326891,2.191186181829242],[1.088290344152379,1.401227261368075,0.8391107805830744,1.040515615687436,1.07848131595696,1.132547357453693,1.015068898994149,1.074387170836914,1.253526254115946,1.364817931794001,0.07613847632219906,1.474579717683874],[1.462857271196355,1.620136387331754,1.040334535506866,1.150199128292199,1.34614120998107,1.255663442775145,1.330829289813344,1.219260890322723,1.626916549812552,1.540610066311737,2.314157885543509,3.161179314255219],[0.001542825486745813,2.306182256468386e-31,0.2131900825174579,0.0004093799980208346,0.0008996282437924752,2.266020368876619e-11,0.02737254993631404,3.034826659742476e-05,1.198905496825998e-07,7.024151397539197e-32,0.7751346675645006,9.514713485445925e-05]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K27ac_counts_long %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2131,7 +2181,7 @@ H3K27ac_results_50per &lt;- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3(&quot;H3K27ac_results 50% overlap&quot;),
+  htmltools::h3(&quot;H3K27ac odds ratio &gt;50% overlap results&quot;),
 datatable(H3K27ac_results_50per,
           options = list(
     scrollY = &quot;600px&quot;,
@@ -2140,9 +2190,9 @@ datatable(H3K27ac_results_50per,
     autoWidth = TRUE
   ),
   rownames = FALSE))</code></pre>
-<h3>H3K27ac_results 50% overlap</h3>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-1aee943cb026952af47d" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[1.216159913613956,1.4616037954072,0.9179620567692816,1.136091037438066,1.189738487458323,1.201659051856082,1.185737845333323,1.151405144157643,1.485833272387262,1.560063400774838,0.5516438648245761,1.385803963240848],[1.071660972676197,1.37393514488447,0.8232518978341578,1.080715463323694,1.059030555714539,1.1387117224498,1.025624979046734,1.076161749241332,1.292962490875653,1.463949727802741,0.01386395849034669,0.6993636155397289],[1.383182534453614,1.555575278933516,1.023183917132444,1.194296398578512,1.334996176519529,1.267902491181639,1.366314712882599,1.231148932876282,1.702489410019992,1.661631263403108,3.127645882425833,2.497765289170275],[0.002040443600663668,1.21859829364046e-35,0.121017792644741,4.990927978918603e-07,0.003146383123698687,2.526017670845213e-11,0.02032248178340357,4.434572306760904e-05,3.490245374067844e-08,1.218119070554094e-40,1,0.2944199283243765]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<h3>H3K27ac odds ratio &gt;50% overlap results</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-15ac70e14e0faa7e6fac" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[1.216159913613956,1.4616037954072,0.9179620567692816,1.136091037438066,1.189738487458323,1.201659051856082,1.185737845333323,1.151405144157643,1.485833272387262,1.560063400774838,0.5516438648245761,1.385803963240848],[1.071660972676197,1.37393514488447,0.8232518978341578,1.080715463323694,1.059030555714539,1.1387117224498,1.025624979046734,1.076161749241332,1.292962490875653,1.463949727802741,0.01386395849034669,0.6993636155397289],[1.383182534453614,1.555575278933516,1.023183917132444,1.194296398578512,1.334996176519529,1.267902491181639,1.366314712882599,1.231148932876282,1.702489410019992,1.661631263403108,3.127645882425833,2.497765289170275],[0.002040443600663668,1.21859829364046e-35,0.121017792644741,4.990927978918603e-07,0.003146383123698687,2.526017670845213e-11,0.02032248178340357,4.434572306760904e-05,3.490245374067844e-08,1.218119070554094e-40,1,0.2944199283243765]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K27ac_counts_long_50per %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2205,7 +2255,7 @@ reneeisnowhere
 })
 
 htmltools::tagList(
-  htmltools::h3(&quot;H3K27me3_results_1bp&quot;), 
+  htmltools::h3(&quot;H3K27me3 odds ratio 1bp&quot;), 
 datatable(H3K27me3_results_1bp,options = list(
     scrollY = &quot;600px&quot;,
     scrollCollapse = TRUE,
@@ -2213,9 +2263,9 @@ datatable(H3K27me3_results_1bp,options = list(
     autoWidth = TRUE
   ),
   rownames = FALSE))</code></pre>
-<h3>H3K27me3_results_1bp</h3>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-15ac70e14e0faa7e6fac" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[0.5825859884833549,0.4095066984912001,0.3586899262807814,0.682052989857455,0.5293595230045218,0],[0.4425056042162213,0.2925533690297492,0.2429360791474219,0.4313624007585997,0.3546769328018679,0],[0.7716596751100738,0.5637712759524685,0.5157444772114571,1.035472354047545,0.767745360922313,23.49376917081121],[0.0001195863100841053,2.594044326307263e-09,5.566952949078571e-10,0.08034858366408916,0.0003765798800056719,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<h3>H3K27me3 odds ratio 1bp</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-686cfa6b0ab6d13cf646" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-686cfa6b0ab6d13cf646">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[0.5825859884833549,0.4095066984912001,0.3586899262807814,0.682052989857455,0.5293595230045218,0],[0.4425056042162213,0.2925533690297492,0.2429360791474219,0.4313624007585997,0.3546769328018679,0],[0.7716596751100738,0.5637712759524685,0.5157444772114571,1.035472354047545,0.767745360922313,23.49376917081121],[0.0001195863100841053,2.594044326307263e-09,5.566952949078571e-10,0.08034858366408916,0.0003765798800056719,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K27me3_counts_long %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2276,7 +2326,7 @@ H3K27me3_results_50per &lt;- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3(&quot;H3K27me3_results 50% overlap&quot;),
+  htmltools::h3(&quot;H3K27me3 odds ratio &gt;50% overlap results&quot;),
 datatable(H3K27me3_results_50per,options = list(
     scrollY = &quot;600px&quot;,
     scrollCollapse = TRUE,
@@ -2284,9 +2334,9 @@ datatable(H3K27me3_results_50per,options = list(
     autoWidth = TRUE
   ),
   rownames = FALSE))</code></pre>
-<h3>H3K27me3_results 50% overlap</h3>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-686cfa6b0ab6d13cf646" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-686cfa6b0ab6d13cf646">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[0.5856423699165734,0.393790395002386,0.3558495466062519,0.4965361958642435,0.4079034738368281,0],[0.4495835697990661,0.2693506757287685,0.2251113447325891,0.2731666467530557,0.2441894726734719,0],[0.7633475450154932,0.561725115322933,0.5401979810220469,0.8373084729874126,0.6460068347653763,35.58366474010647],[5.245506718695196e-05,1.511553470723401e-08,3.994406686829016e-08,0.006453712377742507,2.288239077057743e-05,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<h3>H3K27me3 odds ratio &gt;50% overlap results</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-76504a9d21e95bf556c2" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-76504a9d21e95bf556c2">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[0.5856423699165734,0.393790395002386,0.3558495466062519,0.4965361958642435,0.4079034738368281,0],[0.4495835697990661,0.2693506757287685,0.2251113447325891,0.2731666467530557,0.2441894726734719,0],[0.7633475450154932,0.561725115322933,0.5401979810220469,0.8373084729874126,0.6460068347653763,35.58366474010647],[5.245506718695196e-05,1.511553470723401e-08,3.994406686829016e-08,0.006453712377742507,2.288239077057743e-05,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K27me3_counts_long_50per %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2349,7 +2399,7 @@ reneeisnowhere
 })
 
 htmltools::tagList(
-  htmltools::h3(&quot;H3K36me3_results_1bp&quot;), 
+  htmltools::h3(&quot;H3K36me3 odds ratio 1bp result&quot;), 
 datatable(H3K36me3_results_1bp,options = list(
     scrollY = &quot;600px&quot;,
     scrollCollapse = TRUE,
@@ -2357,9 +2407,9 @@ datatable(H3K36me3_results_1bp,options = list(
     autoWidth = TRUE
   ),
   rownames = FALSE))</code></pre>
-<h3>H3K36me3_results_1bp</h3>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-76504a9d21e95bf556c2" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-76504a9d21e95bf556c2">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[1.411670634394453,1.343976233339281,1.347151413698301,1.698753475441349,1.372407495222607,3.10432862217496],[1.252470163008516,1.214578305042041,1.201348690512265,1.4661218622603,1.188224570289349,1.677248994924033],[1.594060695454736,1.487139903999599,1.508448036129486,1.960966975861284,1.579543158173228,5.289116375482961],[5.733337306033086e-09,7.903524882564161e-09,3.539088643977063e-07,8.098051531410306e-12,1.847156395814735e-05,0.0003032659348144326]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<h3>H3K36me3 odds ratio 1bp result</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-72118e3de6abfa29a40d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-72118e3de6abfa29a40d">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[1.411670634394453,1.343976233339281,1.347151413698301,1.698753475441349,1.372407495222607,3.10432862217496],[1.252470163008516,1.214578305042041,1.201348690512265,1.4661218622603,1.188224570289349,1.677248994924033],[1.594060695454736,1.487139903999599,1.508448036129486,1.960966975861284,1.579543158173228,5.289116375482961],[5.733337306033086e-09,7.903524882564161e-09,3.539088643977063e-07,8.098051531410306e-12,1.847156395814735e-05,0.0003032659348144326]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K36me3_counts_long %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2420,7 +2470,7 @@ H3K36me3_results_50per &lt;- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3(&quot;H3K36me3_results 50% overlap&quot;),
+  htmltools::h3(&quot;H3K36me3 odds ratio &gt;50% overlap results&quot;),
 datatable(H3K36me3_results_50per,options = list(
     scrollY = &quot;600px&quot;,
     scrollCollapse = TRUE,
@@ -2428,9 +2478,9 @@ datatable(H3K36me3_results_50per,options = list(
     autoWidth = TRUE
   ),
   rownames = FALSE))</code></pre>
-<h3>H3K36me3_results 50% overlap</h3>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-72118e3de6abfa29a40d" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-72118e3de6abfa29a40d">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[1.717956110006,1.484879699023157,1.734404134677184,1.91101104124862,1.886877418785619,3.007454390809326],[1.541078701985056,1.340389002300764,1.534313128210478,1.626853349190564,1.610770130500736,0.9603118599529303],[1.917285399038383,1.644236388842978,1.956749353792982,2.233916575812101,2.200268472508792,7.200767300802062],[5.51112869101785e-24,2.974055647924138e-14,1.099513196346922e-17,3.913449827097718e-14,4.806275091921247e-14,0.02899296588542844]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<h3>H3K36me3 odds ratio &gt;50% overlap results</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0a58fb401ace3924c9b1" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0a58fb401ace3924c9b1">{"x":{"filter":"none","vertical":false,"data":[["TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],[1.717956110006,1.484879699023157,1.734404134677184,1.91101104124862,1.886877418785619,3.007454390809326],[1.541078701985056,1.340389002300764,1.534313128210478,1.626853349190564,1.610770130500736,0.9603118599529303],[1.917285399038383,1.644236388842978,1.956749353792982,2.233916575812101,2.200268472508792,7.200767300802062],[5.51112869101785e-24,2.974055647924138e-14,1.099513196346922e-17,3.913449827097718e-14,4.806275091921247e-14,0.02899296588542844]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K36me3_counts_long_50per %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2493,7 +2543,7 @@ reneeisnowhere
 })
 
 htmltools::tagList(
-  htmltools::h3(&quot;H3K9me3_results_1bp&quot;), 
+  htmltools::h3(&quot;H3K9me3 odds ratio 1bp result&quot;), 
 datatable(H3K9me3_results_1bp,options = list(
     scrollY = &quot;600px&quot;,
     scrollCollapse = TRUE,
@@ -2501,9 +2551,9 @@ datatable(H3K9me3_results_1bp,options = list(
     autoWidth = TRUE
   ),
   rownames = FALSE))</code></pre>
-<h3>H3K9me3_results_1bp</h3>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-0a58fb401ace3924c9b1" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-0a58fb401ace3924c9b1">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[0.3096610672384844,0.4395366087839432,0.7161438111274293,0.9417527868192503,0.3153820571502002,0.4589173312709165,0.5956472408661692,0.6264916059145618,0.1271797301389415,0.1627350074882929,0.223825775205762,0],[0.2893754536798872,0.386794523869431,0.6516123173183945,0.7996693125712947,0.2825712365004743,0.3826041226773913,0.4982649882883287,0.4464205511841541,0.109759580044387,0.126207325699428,0.0724925752934981,0],[0.331381429440707,0.4996958465317939,0.7858530224292968,1.104668316172285,0.3512629404912564,0.5472999069919321,0.7070981558342178,0.8569732051822975,0.1466866573558857,0.2070659576968038,0.524178896319089,0.5844529974120374],[3.797822105164549e-248,1.996233558866485e-35,2.749722068883757e-13,0.4754742113152802,2.101854226424334e-130,3.198349161849768e-21,2.006816442276066e-10,0.0022257200161758,9.881312916824931e-324,2.6228163228874e-81,3.044973610725754e-05,0.003801175823158375]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<h3>H3K9me3 odds ratio 1bp result</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-2ecdfcc414070ada7f31" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-2ecdfcc414070ada7f31">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[0.3096610672384844,0.4395366087839432,0.7161438111274293,0.9417527868192503,0.3153820571502002,0.4589173312709165,0.5956472408661692,0.6264916059145618,0.1271797301389415,0.1627350074882929,0.223825775205762,0],[0.2893754536798872,0.386794523869431,0.6516123173183945,0.7996693125712947,0.2825712365004743,0.3826041226773913,0.4982649882883287,0.4464205511841541,0.109759580044387,0.126207325699428,0.0724925752934981,0],[0.331381429440707,0.4996958465317939,0.7858530224292968,1.104668316172285,0.3512629404912564,0.5472999069919321,0.7070981558342178,0.8569732051822975,0.1466866573558857,0.2070659576968038,0.524178896319089,0.5844529974120374],[3.797822105164549e-248,1.996233558866485e-35,2.749722068883757e-13,0.4754742113152802,2.101854226424334e-130,3.198349161849768e-21,2.006816442276066e-10,0.0022257200161758,9.881312916824931e-324,2.6228163228874e-81,3.044973610725754e-05,0.003801175823158375]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K9me3_counts_long %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2564,7 +2614,7 @@ H3K9me3_results_50per &lt;- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3(&quot;H3K9me3_results 50% overlap&quot;),
+  htmltools::h3(&quot;H3K9me3 odds ratio &gt;50% overlap results&quot;),
 datatable(H3K9me3_results_50per,options = list(
     scrollY = &quot;600px&quot;,
     scrollCollapse = TRUE,
@@ -2572,9 +2622,9 @@ datatable(H3K9me3_results_50per,options = list(
     autoWidth = TRUE
   ),
   rownames = FALSE))</code></pre>
-<h3>H3K9me3_results 50% overlap</h3>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-2ecdfcc414070ada7f31" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-2ecdfcc414070ada7f31">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[0.5802242795301654,0.9537716050752808,0.6345273641455764,0.901863886185822,0.5954349908853007,1.088041068341802,0.5399581440202916,0.6637077191081634,0.1307088451626111,0.2300721869690266,0,0],[0.5403109948840259,0.839589378936289,0.5658992190015623,0.7457241539270615,0.5213331368363794,0.8928638619729873,0.4252643617454441,0.4347951652806848,0.1071631912713697,0.1714877128191239,0,0],[0.6228612469315955,1.083195891387989,0.7096512877568221,1.083691584028658,0.6775961075714843,1.31625181819435,0.6766573287978714,0.9725601544773813,0.157975926740048,0.3029130559361377,0.6153094277849813,2.176799089286043],[5.255491616757113e-54,0.4629610711605696,2.830059189104029e-17,0.2813925122880246,3.228616528117679e-17,0.3696706836853472,5.126094161557239e-09,0.03501757778615852,3.312491755415245e-192,5.115850405574176e-39,0.005445463984559912,0.4237916596172365]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<h3>H3K9me3 odds ratio &gt;50% overlap results</h3>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-6a36fbbf64cb69d3550f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-6a36fbbf64cb69d3550f">{"x":{"filter":"none","vertical":false,"data":[["TE_status","TE_status","SINE_status","SINE_status","LINE_status","LINE_status","DNA_status","DNA_status","LTR_status","LTR_status","SVA_status","SVA_status"],["Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1"],[0.5802242795301654,0.9537716050752808,0.6345273641455764,0.901863886185822,0.5954349908853007,1.088041068341802,0.5399581440202916,0.6637077191081634,0.1307088451626111,0.2300721869690266,0,0],[0.5403109948840259,0.839589378936289,0.5658992190015623,0.7457241539270615,0.5213331368363794,0.8928638619729873,0.4252643617454441,0.4347951652806848,0.1071631912713697,0.1714877128191239,0,0],[0.6228612469315955,1.083195891387989,0.7096512877568221,1.083691584028658,0.6775961075714843,1.31625181819435,0.6766573287978714,0.9725601544773813,0.157975926740048,0.3029130559361377,0.6153094277849813,2.176799089286043],[5.255491616757113e-54,0.4629610711605696,2.830059189104029e-17,0.2813925122880246,3.228616528117679e-17,0.3696706836853472,5.126094161557239e-09,0.03501757778615852,3.312491755415245e-192,5.115850405574176e-39,0.005445463984559912,0.4237916596172365]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"odds_ratio","targets":2},{"name":"lower_CI","targets":3},{"name":"upper_CI","targets":4},{"name":"p_value","targets":5}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>H3K9me3_counts_long_50per %&gt;% 
   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
   ggplot(aes(x=cluster, y=count, fill=status)) +
@@ -2611,6 +2661,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K9me3 50 per df-1.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/967b7a862b9e72106941f5f978cc7e1722faaeef/docs/figure/repeatmasker_data.Rmd/H3K9me3 50 per df-1.png" target="_blank">967b7a8</a>
 </td>
 <td>
@@ -2628,24 +2689,26 @@ reneeisnowhere
 </div>
 <div id="h3k27ac-divergence-from-consensus" class="section level3">
 <h3>H3K27ac divergence from consensus</h3>
-<pre class="r"><code>  H3K27ac_ols$all_H3K27ac %&gt;% 
-    left_join(., H3K27ac_lookup) %&gt;% 
-     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
-                                  is.na(repClass)~&quot;not_TE&quot;,
-                                  TRUE~&quot;Other&quot;)) %&gt;% 
-    mutate(per_div=milliDiv/10) %&gt;% 
-  ggplot(aes(x=per_div))+
-  geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
-  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
-    theme_classic()</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>  H3K27ac_ols$all_H3K27ac %&gt;% 
+<pre class="r"><code>  # H3K27ac_ols$all_H3K27ac %&gt;% 
+  #   left_join(., H3K27ac_lookup) %&gt;% 
+  #    mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
+  #   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  #   mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+  #                                 repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+  #                                 repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+  #                                 repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+  #                                 repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+  #                                 is.na(repClass)~&quot;not_TE&quot;,
+  #                                 TRUE~&quot;Other&quot;)) %&gt;% 
+  #   mutate(per_div=milliDiv/10) %&gt;% 
+  # ggplot(aes(x=per_div))+
+  # geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
+  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+  #   theme_classic()
+  # 
+  # 
+  
+  H3K27ac_ols$all_H3K27ac %&gt;% 
   as.data.frame() %&gt;% 
     left_join(., H3K27ac_lookup) %&gt;% 
      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;%
@@ -2664,7 +2727,44 @@ reneeisnowhere
   # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K27ac 1bp&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20divergence-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-divergence-1">
+Past versions of "H3K27ac divergence-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27ac-divergence-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27ac divergence-1.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>  H3K27ac_ols$all_H3K27ac %&gt;% 
   as.data.frame() %&gt;% 
     dplyr::filter(pct_te_overlap&gt; 50) %&gt;% 
@@ -2693,7 +2793,44 @@ stat_compare_means(
     theme_classic()+
     # facet_wrap(~ special_type, scales = &quot;free_y&quot;) +
     ggtitle(&quot;Divergence from overlapping TE H3K27ac 50% overlap&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20divergence-3.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20divergence-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-divergence-2">
+Past versions of "H3K27ac divergence-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27ac-divergence-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27ac divergence-2.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>### try to calculate wilcox.test
   comparisons &lt;- list(
   c(&quot;Set_1&quot;, &quot;Set_2&quot;),
@@ -2766,28 +2903,44 @@ stat_compare_means(
       )
     })
   }, .keep = TRUE) %&gt;%
-  bind_rows()</code></pre>
+  bind_rows()
+
+  
+  datatable( H3K27ac_wilcox_results,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on percent divergence overlapped TEs by 1bp H3K27ac&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-59f945287a722aca07c9" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-59f945287a722aca07c9">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on percent divergence overlapped TEs by 1bp H3K27ac<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12"],["DNA","DNA","LINE","LINE","LTR","LTR","Other","Other","SINE","SINE","SVA","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3"],[0.6682826386239741,0.002317565615911382,0.2657738513651476,0.06826899595334389,0.001476810801873097,0.03839511673147914,0.08875390275143169,0.7478375901760829,5.474376253282655e-06,9.5232026136723e-09,0.5160657847199601,0.1785995822198687],[4408972,20097568.5,20338133,106508359,4959184,27409909,8818342.5,67263231,60446227.5,391367467,323.5,4813.5],[22.9,22.9,28.2,28.2,21.6,21.6,14.4,14.4,16.9,16.9,15.6,15.6],[22.7,23.4,28.3,28,23,22.1,13.3,14,18.6,17.9,6.15,8.199999999999999]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code> datatable( H3K27ac_wilcox_results_per50,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on percent divergence of &gt;50% overlapped TEs H3K27ac&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-61b62b3a4a0c109cae6b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-61b62b3a4a0c109cae6b">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on percent divergence of &gt;50% overlapped TEs H3K27ac<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12"],["DNA","DNA","LINE","LINE","LTR","LTR","Other","Other","SINE","SINE","SVA","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3"],[0.7834944099177193,0.007207815027841231,0.04497696772810113,0.4527383623334849,0.005307584972947478,0.4180936155106342,0.03617617622669778,0.4676146104310985,5.169036686386557e-08,3.038125981110594e-06,0.2050976121104623,0.6385739969602099],[3175146,14336546,12648657,68808800.5,3284514,19127620.5,8122457,61917422,37722669,269798682.5,129,961],[23.1,23.1,28.5,28.5,22.1,22.1,14.2,14.2,18.2,18.2,24.75,24.75],[23.1,23.7,29,28.3,23.6,22.3,13,13.8,22.35,19.5,5.4,23.75]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="h3k27me3-divergence-from-consensus" class="section level3">
 <h3>H3K27me3 divergence from consensus</h3>
-<pre class="r"><code>  H3K27me3_ols$all_H3K27me3 %&gt;% 
-    left_join(., H3K27me3_lookup) %&gt;% 
-     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;%
-    dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
-                                  is.na(repClass)~&quot;not_TE&quot;,
-                                  TRUE~&quot;Other&quot;)) %&gt;% 
-    mutate(per_div=milliDiv/10) %&gt;% 
-  ggplot(aes(x=per_div))+
-  geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
-  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
-    theme_classic()</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>  H3K27me3_ols$all_H3K27me3 %&gt;% 
+<pre class="r"><code>  # H3K27me3_ols$all_H3K27me3 %&gt;% 
+  #   left_join(., H3K27me3_lookup) %&gt;% 
+  #    mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;%
+  #   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  #   mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+  #                                 repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+  #                                 repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+  #                                 repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+  #                                 repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+  #                                 is.na(repClass)~&quot;not_TE&quot;,
+  #                                 TRUE~&quot;Other&quot;)) %&gt;% 
+  #   mutate(per_div=milliDiv/10) %&gt;% 
+  # ggplot(aes(x=per_div))+
+  # geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
+  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+  #   theme_classic()
+  
+  
+  
+  H3K27me3_ols$all_H3K27me3 %&gt;% 
   as.data.frame() %&gt;% 
     left_join(., H3K27me3_lookup) %&gt;% 
      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
@@ -2806,7 +2959,44 @@ stat_compare_means(
   # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K27me3 1bp&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20divergence-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-divergence-1">
+Past versions of "H3K27me3 divergence-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27me3-divergence-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27me3 divergence-1.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>  H3K27me3_ols$all_H3K27me3 %&gt;% 
   as.data.frame() %&gt;% 
     dplyr::filter(pct_te_overlap&gt; 50) %&gt;% 
@@ -2827,8 +3017,81 @@ stat_compare_means(
   # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K27me3 50% overlap&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20divergence-3.png" width="768" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>   H3K27me3_wilcox_results_per50 &lt;- H3K27me3_ols$all_H3K27me3 %&gt;%
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20divergence-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-divergence-2">
+Past versions of "H3K27me3 divergence-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27me3-divergence-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27me3 divergence-2.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>   H3K27me3_wilcox_results &lt;- H3K27me3_ols$all_H3K27me3 %&gt;%
+    as.data.frame() %&gt;%
+     left_join(., H3K27me3_lookup) %&gt;% 
+     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;%
+    dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+    mutate(special_type=case_when(str_detect(repClass,&quot;SINE&quot;)~&quot;SINE&quot;,
+                                  str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                  str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                  str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                  str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                  is.na(repClass)~&quot;not_TE&quot;,
+                                  TRUE~&quot;Other&quot;)) %&gt;% 
+  dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
+    mutate(per_div=milliDiv/10) %&gt;% 
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;)) %&gt;%
+  group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) &lt; 2) return(NULL)
+      test &lt;- wilcox.test(per_div ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = &quot;_vs_&quot;),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$per_div[dat$cluster == &quot;Set_1&quot;]),
+        median_other = median(dat$per_div[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+   
+   
+ H3K27me3_wilcox_results_per50 &lt;- H3K27me3_ols$all_H3K27me3 %&gt;%
     as.data.frame() %&gt;%
     dplyr::filter(pct_te_overlap&gt; 50) %&gt;%
     left_join(., H3K27me3_lookup) %&gt;% 
@@ -2862,28 +3125,45 @@ stat_compare_means(
       )
     })
   }, .keep = TRUE) %&gt;%
-  bind_rows()</code></pre>
+  bind_rows()
+
+
+   datatable( H3K27me3_wilcox_results,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on percent divergence overlapped TEs by 1bp H3K27me3&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-6070145be13bd7fc381b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-6070145be13bd7fc381b">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on percent divergence overlapped TEs by 1bp H3K27me3<\/caption>","data":[["1","2","3","4","5"],["DNA","LINE","LTR","Other","SINE"],["Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2"],[5.937780512063441e-05,0.6302751627542773,0.02133950281115518,0.0002633179251176678,0.06316908028535094],[559667.5,1559268.5,1167873.5,1641027.5,2603572.5],[23.9,28.7,23.5,14.8,23.8],[18.2,30.2,20.3,18.3,26.6]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code> datatable( H3K27me3_wilcox_results_per50,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on percent divergence of &gt;50% overlapped TEs H3K27me3&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1efaf03d69b4f9357274" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1efaf03d69b4f9357274">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on percent divergence of &gt;50% overlapped TEs H3K27me3<\/caption>","data":[["1","2","3","4","5"],["DNA","LINE","LTR","Other","SINE"],["Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2"],[0.0007003863200315922,0.8820070052464043,0.03395117645068084,0.001473823718797982,0.01142276635676885],[262984.5,833646,588029.5,1275507,1474057],[24.1,29.1,24.1,14.5,24.8],[18.2,30.35,21.45,17.6,27.6]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="h3k36me3-divergence-from-consensus" class="section level3">
 <h3>H3K36me3 divergence from consensus</h3>
-<pre class="r"><code>  H3K36me3_ols$all_H3K36me3 %&gt;% 
-    left_join(., H3K36me3_lookup) %&gt;% 
-     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
-                                  is.na(repClass)~&quot;not_TE&quot;,
-                                  TRUE~&quot;Other&quot;)) %&gt;% 
-    mutate(per_div=milliDiv/10) %&gt;% 
-  ggplot(aes(x=per_div))+
-  geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
-  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
-    theme_classic()</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>  H3K36me3_ols$all_H3K36me3 %&gt;% 
+<pre class="r"><code># 
+#   H3K36me3_ols$all_H3K36me3 %&gt;% 
+#     left_join(., H3K36me3_lookup) %&gt;% 
+#      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
+#     dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+#     mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+#                                   repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+#                                   repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+#                                   repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+#                                   repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+#                                   is.na(repClass)~&quot;not_TE&quot;,
+#                                   TRUE~&quot;Other&quot;)) %&gt;% 
+#     mutate(per_div=milliDiv/10) %&gt;% 
+#   ggplot(aes(x=per_div))+
+#   geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
+#   facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+#     theme_classic()
+#   
+  
+  
+  H3K36me3_ols$all_H3K36me3 %&gt;% 
   as.data.frame() %&gt;% 
     left_join(., H3K36me3_lookup) %&gt;% 
      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
@@ -2902,7 +3182,102 @@ stat_compare_means(
   # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K36me3 1bp&quot;)</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-divergence-1">
+Past versions of "H3K36me3 divergence-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-divergence-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-1.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>  H3K36me3_ols$all_H3K36me3 %&gt;% 
+  as.data.frame() %&gt;% 
+    dplyr::filter(pct_te_overlap&gt; 50) %&gt;% 
+    left_join(., H3K36me3_lookup) %&gt;% 
+     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
+      dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+    mutate(special_type=case_when(str_detect(repClass,&quot;SINE&quot;)~&quot;SINE&quot;,
+                                  str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                  str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                  str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                  str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                  is.na(repClass)~&quot;not_TE&quot;,
+                                  TRUE~&quot;Other&quot;)) %&gt;% 
+  dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
+    mutate(per_div=milliDiv/10) %&gt;% 
+  ggplot(aes(y=per_div,x=special_type))+
+  geom_boxplot(aes(fill=cluster) ) +
+  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+    theme_classic()+
+    ggtitle(&quot;Divergence from overlapping TE H3K36me3 50% overlap&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20divergence-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-divergence-2">
+Past versions of "H3K36me3 divergence-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-divergence-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-2.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>  H3K36me3_ols$all_H3K36me3 %&gt;% 
   as.data.frame() %&gt;% 
     dplyr::filter(pct_te_overlap&gt; 50) %&gt;% 
@@ -2924,12 +3299,48 @@ stat_compare_means(
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K36me3 50% overlap&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20divergence-3.png" width="768" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>  H3K36me3_ols$all_H3K36me3 %&gt;% 
-  as.data.frame() %&gt;% 
-    dplyr::filter(pct_te_overlap&gt; 50) %&gt;% 
-    left_join(., H3K36me3_lookup) %&gt;% 
-     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-      dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-divergence-3">
+Past versions of "H3K36me3 divergence-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-divergence-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-3.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>   H3K36me3_wilcox_results &lt;- H3K36me3_ols$all_H3K36me3 %&gt;%
+    as.data.frame() %&gt;%
+     left_join(., H3K36me3_lookup) %&gt;% 
+     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;%
+    dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
     mutate(special_type=case_when(str_detect(repClass,&quot;SINE&quot;)~&quot;SINE&quot;,
                                   str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
                                   str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
@@ -2939,13 +3350,29 @@ stat_compare_means(
                                   TRUE~&quot;Other&quot;)) %&gt;% 
   dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
     mutate(per_div=milliDiv/10) %&gt;% 
-  ggplot(aes(y=per_div,x=special_type))+
-  geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
-    theme_classic()+
-    ggtitle(&quot;Divergence from overlapping TE H3K36me3 50% overlap&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20divergence-4.png" width="768" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>   H3K36me3_wilcox_results_per50 &lt;- H3K36me3_ols$all_H3K36me3 %&gt;%
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;)) %&gt;%
+  group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) &lt; 2) return(NULL)
+      test &lt;- wilcox.test(per_div ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = &quot;_vs_&quot;),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$per_div[dat$cluster == &quot;Set_1&quot;]),
+        median_other = median(dat$per_div[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+   
+   
+   H3K36me3_wilcox_results_per50 &lt;- H3K36me3_ols$all_H3K36me3 %&gt;%
     as.data.frame() %&gt;%
     dplyr::filter(pct_te_overlap&gt; 50) %&gt;%
     left_join(., H3K36me3_lookup) %&gt;% 
@@ -2979,27 +3406,44 @@ stat_compare_means(
       )
     })
   }, .keep = TRUE) %&gt;%
-  bind_rows()</code></pre>
+  bind_rows()
+  
+   
+  datatable( H3K36me3_wilcox_results,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on percent divergence overlapped TEs by 1bp H3K36me3&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-923ba81c09d2249bad91" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-923ba81c09d2249bad91">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on percent divergence overlapped TEs by 1bp H3K36me3<\/caption>","data":[["1","2","3","4","5","6"],["DNA","LINE","LTR","Other","SINE","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2"],[0.1493605775119074,0.3257518663506326,0.8554674868051357,0.04793917080659893,0.0007760057283983613,0.3807197366049015],[1976358.5,11005300,2971310.5,9133747.5,69123807,3146.5],[22.5,27.8,21.1,15.8,14.7,6.7],[23.1,27.9,20.8,14.6,15.7,6.15]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code> datatable( H3K36me3_wilcox_results_per50,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on percent divergence of &gt;50% overlapped TEs H3K36me3&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-74c8d959834d33b40f6d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-74c8d959834d33b40f6d">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on percent divergence of &gt;50% overlapped TEs H3K36me3<\/caption>","data":[["1","2","3","4","5","6"],["DNA","LINE","LTR","Other","SINE","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2"],[0.1453897620301624,0.8313084157531097,0.10238091622695,0.08791137547218876,0.01089307426435494,0.8985974331954876],[1180326.5,5893734.5,1454948.5,7768111.5,47934395.5,385.5],[22.9,28.4,22.4,15.4,15.1,15.1],[23.5,28.6,21.1,14.6,16,19.4]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="h3k9me3-divergence-from-consensus" class="section level3">
 <h3>H3K9me3 divergence from consensus</h3>
-<pre class="r"><code>  H3K9me3_ols$all_H3K9me3 %&gt;% 
-    left_join(., H3K9me3_lookup) %&gt;% 
-     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
-                                  is.na(repClass)~&quot;not_TE&quot;,
-                                  TRUE~&quot;Other&quot;)) %&gt;% 
-    mutate(per_div=milliDiv/10) %&gt;% 
-  ggplot(aes(x=per_div))+
-  geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
-  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
-    theme_classic()</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>  H3K9me3_ols$all_H3K9me3 %&gt;% 
+<pre class="r"><code># 
+#   H3K9me3_ols$all_H3K9me3 %&gt;% 
+#     left_join(., H3K9me3_lookup) %&gt;% 
+#      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
+#     mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+#                                   repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+#                                   repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+#                                   repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+#                                   repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+#                                   is.na(repClass)~&quot;not_TE&quot;,
+#                                   TRUE~&quot;Other&quot;)) %&gt;% 
+#     mutate(per_div=milliDiv/10) %&gt;% 
+#   ggplot(aes(x=per_div))+
+#   geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
+#   facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+#     theme_classic()
+  
+  
+  
+  H3K9me3_ols$all_H3K9me3 %&gt;% 
   as.data.frame() %&gt;% 
     left_join(., H3K9me3_lookup) %&gt;% 
      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;%
@@ -3018,7 +3462,44 @@ stat_compare_means(
   # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K9me3 1bp&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20divergence-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-divergence-1">
+Past versions of "H3K9me3 divergence-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-divergence-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K9me3 divergence-1.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>  H3K9me3_ols$all_H3K9me3 %&gt;% 
   as.data.frame() %&gt;% 
     dplyr::filter(pct_te_overlap&gt; 50) %&gt;% 
@@ -3039,7 +3520,44 @@ stat_compare_means(
   # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K9me3 50% overlap&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20divergence-3.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20divergence-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-divergence-2">
+Past versions of "H3K9me3 divergence-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-divergence-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K9me3 divergence-2.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>  H3K9me3_wilcox_results &lt;- H3K9me3_ols$all_H3K9me3 %&gt;%
     as.data.frame() %&gt;%
     left_join(., H3K9me3_lookup) %&gt;% 
@@ -3054,7 +3572,7 @@ stat_compare_means(
                                   TRUE~&quot;Other&quot;)) %&gt;% 
   dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
     mutate(per_div=milliDiv/10) %&gt;% 
-  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;)) %&gt;%
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;)) %&gt;%
   group_by(special_type) %&gt;%
   group_map(~ {
     stype &lt;- unique(.x$special_type)  # capture the TE type
@@ -3090,7 +3608,7 @@ stat_compare_means(
                                   TRUE~&quot;Other&quot;)) %&gt;% 
   dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
     mutate(per_div=milliDiv/10) %&gt;% 
-  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;)) %&gt;%
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;,&quot;Set_3&quot;)) %&gt;%
   group_by(special_type) %&gt;%
   group_map(~ {
     stype &lt;- unique(.x$special_type)  # capture the TE type
@@ -3109,7 +3627,21 @@ stat_compare_means(
       )
     })
   }, .keep = TRUE) %&gt;%
-  bind_rows()</code></pre>
+  bind_rows()
+
+ 
+  datatable( H3K9me3_wilcox_results,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on percent divergence overlapped TEs by 1bp H3K9me3&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0e1ae7aa595f5c78e2bc" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0e1ae7aa595f5c78e2bc">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on percent divergence overlapped TEs by 1bp H3K9me3<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11"],["DNA","DNA","LINE","LINE","LTR","LTR","Other","Other","SINE","SINE","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2"],[0.02657854888613792,0.01537749266268556,2.07662218031915e-36,9.411489171374501e-16,6.475267398848579e-11,6.244733213967529e-10,1.01271274502717e-12,0.006445609405036935,1.134462390966947e-19,6.926419951795427e-08,0.5530522932119104],[902085,245326,8571655.5,3575402,7183862,1965219.5,7973849,3548944.5,11364182.5,4281700,2748.5],[21.7,21.7,23.3,23.3,18.1,18.1,16.4,16.4,16.7,16.7,5.9],[23,24.8,29,28,22.35,23.8,18.9,17.8,24.5,25,7.1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code> datatable( H3K9me3_wilcox_results_per50,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on percent divergence of &gt;50% overlapped TEs H3K9me3&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-53c16ca945d37b8c59c2" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-53c16ca945d37b8c59c2">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on percent divergence of &gt;50% overlapped TEs H3K9me3<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10"],["DNA","DNA","LINE","LINE","LTR","LTR","Other","Other","SINE","SINE"],["Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3"],[0.425070619640443,0.1021035284805394,1.319505286516755e-08,0.002980770194075009,8.751047781346263e-07,2.867345150302298e-05,1.883612382672454e-09,0.01100979677281944,7.180003105430572e-31,1.28813959276287e-13],[326474,104229.5,2786413,1484819.5,2301550,930681.5,5225109.5,2416354,4137499.5,1755894],[22.6,22.6,27.6,27.6,19.6,19.6,15.8,15.8,17.2,17.2],[22.9,25,29.6,28.6,23.15,23.8,18,17.05,26.1,26.95]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="h3k27ac-lengths-of-te-tss-distance" class="section level3">
 <h3>H3K27ac lengths of TE, TSS distance</h3>
@@ -3141,6 +3673,43 @@ H3K27ac_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Overlapping minimum TE length per class in H3K27ac&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20and%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-length-and-distance-1">
+Past versions of "H3K27ac length and distance-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27ac-length-and-distance-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27ac length and distance-1.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K27ac_sets_gr$all_H3K27ac %&gt;% 
   as.data.frame() %&gt;% 
    left_join(., H3K27ac_lookup) %&gt;% 
@@ -3150,6 +3719,43 @@ H3K27ac_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Region of interest length in H3K27ac&quot;) </code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20and%20distance-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-length-and-distance-2">
+Past versions of "H3K27ac length and distance-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27ac-length-and-distance-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27ac length and distance-2.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K27ac_repclass_sum %&gt;% 
   ggplot(aes(x=cluster,y=width))+
   geom_boxplot() +
@@ -3157,6 +3763,43 @@ H3K27ac_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Minimum overlapping TE &amp; ROI width length per class in H3K27ac&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20and%20distance-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-length-and-distance-3">
+Past versions of "H3K27ac length and distance-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27ac-length-and-distance-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27ac length and distance-3.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K27ac_repclass_sum %&gt;% 
   ggplot(aes(x=special_type,y=min_dist_TSS))+
   geom_boxplot() +
@@ -3165,6 +3808,59 @@ H3K27ac_repclass_sum %&gt;%
     ggtitle(&quot;Distance to TSS per class in H3K27ac of overlapping ROIs&quot;)+
   coord_cartesian(ylim=c(-35000,35000))</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20and%20distance-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-length-and-distance-4">
+Past versions of "H3K27ac length and distance-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27ac-length-and-distance-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27ac length and distance-4.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>H3K27ac_ols$all_H3K27ac %&gt;%
+   left_join(., H3K27ac_lookup) %&gt;% 
+     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
+    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+                                  is.na(repClass)~&quot;not_TE&quot;,
+                                  TRUE~&quot;Other&quot;))%&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle(&quot;Percent of TE overlapped in H3K27ac data&quot;) </code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20and%20distance-5.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="h3k27me3-lengths-of-te-tss-distance" class="section level3">
 <h3>H3K27me3 lengths of TE, TSS distance</h3>
@@ -3196,6 +3892,43 @@ H3K27me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Overlapping minimum TE length per class in H3K27me3&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20and%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-length-and-distance-1">
+Past versions of "H3K27me3 length and distance-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27me3-length-and-distance-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27me3 length and distance-1.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K27me3_sets_gr$all_H3K27me3 %&gt;% 
   as.data.frame() %&gt;% 
    left_join(., H3K27me3_lookup) %&gt;% 
@@ -3205,6 +3938,43 @@ H3K27me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Region of interest length in H3K27me3&quot;) </code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20and%20distance-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-length-and-distance-2">
+Past versions of "H3K27me3 length and distance-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27me3-length-and-distance-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27me3 length and distance-2.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K27me3_repclass_sum %&gt;% 
   ggplot(aes(x=special_type,y=width))+
   geom_boxplot() +
@@ -3212,6 +3982,43 @@ H3K27me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Minimum overlapping TE &amp; ROI width length per class in H3K27me3&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20and%20distance-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-length-and-distance-3">
+Past versions of "H3K27me3 length and distance-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27me3-length-and-distance-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27me3 length and distance-3.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K27me3_repclass_sum %&gt;% 
   ggplot(aes(x=special_type,y=min_dist_TSS))+
   geom_boxplot() +
@@ -3219,339 +4026,59 @@ H3K27me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Distance to TSS per class in H3K27me3 of overlapping ROIs&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20and%20distance-4.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># H3K27me3_sets_gr$all_H3K27me3 %&gt;% 
-#   as.data.frame() %&gt;% 
-#   dplyr::filter(width&gt;60000)
-# 
-H3K27me3_ols$all_H3K27me3 %&gt;%
-   as.data.frame() %&gt;%
-  # mutate(medi=median(roi_len))
-  dplyr::filter(roi_len&gt;60000)</code></pre>
-<pre><code>   seqnames    start      end width strand                  Peakid
-1     chr17 48584907 48584961    55      + chr17:48584861-48649905
-2     chr17 48586185 48586249    65      + chr17:48584861-48649905
-3     chr17 48586438 48586471    34      + chr17:48584861-48649905
-4     chr17 48587783 48587832    50      + chr17:48584861-48649905
-5     chr17 48590814 48590833    20      + chr17:48584861-48649905
-6     chr17 48591679 48591702    24      + chr17:48584861-48649905
-7     chr17 48591989 48592024    36      + chr17:48584861-48649905
-8     chr17 48593811 48593839    29      + chr17:48584861-48649905
-9     chr17 48595767 48595804    38      + chr17:48584861-48649905
-10    chr17 48595805 48595831    27      + chr17:48584861-48649905
-11    chr17 48600992 48601039    48      + chr17:48584861-48649905
-12    chr17 48602377 48602409    33      + chr17:48584861-48649905
-13    chr17 48603475 48603517    43      + chr17:48584861-48649905
-14    chr17 48604820 48604896    77      + chr17:48584861-48649905
-15    chr17 48605180 48605207    28      + chr17:48584861-48649905
-16    chr17 48606351 48606392    42      + chr17:48584861-48649905
-17    chr17 48606816 48606859    44      + chr17:48584861-48649905
-18    chr17 48607704 48607742    39      + chr17:48584861-48649905
-19    chr17 48607793 48607859    67      + chr17:48584861-48649905
-20    chr17 48608141 48608452   312      + chr17:48584861-48649905
-21    chr17 48611613 48611651    39      + chr17:48584861-48649905
-22    chr17 48611652 48611670    19      + chr17:48584861-48649905
-23    chr17 48612063 48612097    35      + chr17:48584861-48649905
-24    chr17 48612615 48612756   142      + chr17:48584861-48649905
-25    chr17 48613536 48613561    26      + chr17:48584861-48649905
-26    chr17 48614113 48614148    36      + chr17:48584861-48649905
-27    chr17 48614720 48614740    21      + chr17:48584861-48649905
-28    chr17 48614758 48614797    40      + chr17:48584861-48649905
-29    chr17 48614849 48614884    36      + chr17:48584861-48649905
-30    chr17 48614991 48615014    24      + chr17:48584861-48649905
-31    chr17 48615214 48615385   172      + chr17:48584861-48649905
-32    chr17 48616131 48616167    37      + chr17:48584861-48649905
-33    chr17 48617534 48617551    18      + chr17:48584861-48649905
-34    chr17 48618425 48618448    24      + chr17:48584861-48649905
-35    chr17 48619224 48619270    47      + chr17:48584861-48649905
-36    chr17 48625316 48625427   112      + chr17:48584861-48649905
-37    chr17 48625916 48625976    61      + chr17:48584861-48649905
-38    chr17 48626377 48626411    35      + chr17:48584861-48649905
-39    chr17 48626805 48626842    38      + chr17:48584861-48649905
-40    chr17 48627335 48627366    32      + chr17:48584861-48649905
-41    chr17 48627793 48627835    43      + chr17:48584861-48649905
-42    chr17 48633058 48633110    53      + chr17:48584861-48649905
-43    chr17 48633497 48633575    79      + chr17:48584861-48649905
-44    chr17 48634188 48634487   300      - chr17:48584861-48649905
-45    chr17 48634496 48634548    53      + chr17:48584861-48649905
-46    chr17 48635094 48635148    55      + chr17:48584861-48649905
-47    chr17 48635771 48635920   150      - chr17:48584861-48649905
-48    chr17 48636528 48636553    26      + chr17:48584861-48649905
-49    chr17 48636898 48637099   202      - chr17:48584861-48649905
-50    chr17 48638058 48638085    28      + chr17:48584861-48649905
-51    chr17 48638401 48638418    18      + chr17:48584861-48649905
-52    chr17 48638418 48638446    29      + chr17:48584861-48649905
-53    chr17 48638466 48638613   148      + chr17:48584861-48649905
-54    chr17 48639192 48639269    78      - chr17:48584861-48649905
-55    chr17 48640842 48640983   142      + chr17:48584861-48649905
-56    chr17 48641720 48641756    37      + chr17:48584861-48649905
-57    chr17 48647022 48647169   148      + chr17:48584861-48649905
-58    chr17 48647332 48647388    57      + chr17:48584861-48649905
-59    chr17 48647999 48648087    89      + chr17:48584861-48649905
-60    chr17 48648093 48648256   164      - chr17:48584861-48649905
-61    chr17 48648287 48648578   292      - chr17:48584861-48649905
-62    chr17 48648759 48649063   305      - chr17:48584861-48649905
-63    chr17 48649065 48649207   143      - chr17:48584861-48649905
-64    chr17 48649242 48649905   664      - chr17:48584861-48649905
-         annotation geneChr geneStart  geneEnd geneLength geneStrand    geneId
-1  Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-2  Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-3  Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-4  Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-5  Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-6  Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-7  Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-8  Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-9  Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-10 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-11 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-12 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-13 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-14 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-15 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-16 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-17 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-18 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-19 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-20 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-21 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-22 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-23 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-24 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-25 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-26 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-27 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-28 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-29 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-30 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-31 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-32 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-33 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-34 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-35 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-36 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-37 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-38 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-39 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-40 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-41 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-42 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-43 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-44 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-45 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-46 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-47 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-48 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-49 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-50 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-51 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-52 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-53 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-54 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-55 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-56 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-57 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-58 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-59 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-60 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-61 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-62 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-63 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-64 Promoter (&lt;=1kb)      17  48628675 48634932       6258          1 100874351
-        transcriptId distanceToTSS  hit overlap_bp roi_len pct_roi_overlap
-1  ENST00000480386.1             0 TRUE         55   65045      0.08455685
-2  ENST00000480386.1             0 TRUE         65   65045      0.09993082
-3  ENST00000480386.1             0 TRUE         34   65045      0.05227150
-4  ENST00000480386.1             0 TRUE         50   65045      0.07686986
-5  ENST00000480386.1             0 TRUE         20   65045      0.03074794
-6  ENST00000480386.1             0 TRUE         24   65045      0.03689753
-7  ENST00000480386.1             0 TRUE         36   65045      0.05534630
-8  ENST00000480386.1             0 TRUE         29   65045      0.04458452
-9  ENST00000480386.1             0 TRUE         38   65045      0.05842109
-10 ENST00000480386.1             0 TRUE         27   65045      0.04150972
-11 ENST00000480386.1             0 TRUE         48   65045      0.07379506
-12 ENST00000480386.1             0 TRUE         33   65045      0.05073411
-13 ENST00000480386.1             0 TRUE         43   65045      0.06610808
-14 ENST00000480386.1             0 TRUE         77   65045      0.11837958
-15 ENST00000480386.1             0 TRUE         28   65045      0.04304712
-16 ENST00000480386.1             0 TRUE         42   65045      0.06457068
-17 ENST00000480386.1             0 TRUE         44   65045      0.06764548
-18 ENST00000480386.1             0 TRUE         39   65045      0.05995849
-19 ENST00000480386.1             0 TRUE         67   65045      0.10300561
-20 ENST00000480386.1             0 TRUE        312   65045      0.47966792
-21 ENST00000480386.1             0 TRUE         39   65045      0.05995849
-22 ENST00000480386.1             0 TRUE         19   65045      0.02921055
-23 ENST00000480386.1             0 TRUE         35   65045      0.05380890
-24 ENST00000480386.1             0 TRUE        142   65045      0.21831040
-25 ENST00000480386.1             0 TRUE         26   65045      0.03997233
-26 ENST00000480386.1             0 TRUE         36   65045      0.05534630
-27 ENST00000480386.1             0 TRUE         21   65045      0.03228534
-28 ENST00000480386.1             0 TRUE         40   65045      0.06149589
-29 ENST00000480386.1             0 TRUE         36   65045      0.05534630
-30 ENST00000480386.1             0 TRUE         24   65045      0.03689753
-31 ENST00000480386.1             0 TRUE        172   65045      0.26443232
-32 ENST00000480386.1             0 TRUE         37   65045      0.05688370
-33 ENST00000480386.1             0 TRUE         18   65045      0.02767315
-34 ENST00000480386.1             0 TRUE         24   65045      0.03689753
-35 ENST00000480386.1             0 TRUE         47   65045      0.07225767
-36 ENST00000480386.1             0 TRUE        112   65045      0.17218848
-37 ENST00000480386.1             0 TRUE         61   65045      0.09378123
-38 ENST00000480386.1             0 TRUE         35   65045      0.05380890
-39 ENST00000480386.1             0 TRUE         38   65045      0.05842109
-40 ENST00000480386.1             0 TRUE         32   65045      0.04919671
-41 ENST00000480386.1             0 TRUE         43   65045      0.06610808
-42 ENST00000480386.1             0 TRUE         53   65045      0.08148205
-43 ENST00000480386.1             0 TRUE         79   65045      0.12145438
-44 ENST00000480386.1             0 TRUE        300   65045      0.46121916
-45 ENST00000480386.1             0 TRUE         53   65045      0.08148205
-46 ENST00000480386.1             0 TRUE         55   65045      0.08455685
-47 ENST00000480386.1             0 TRUE        150   65045      0.23060958
-48 ENST00000480386.1             0 TRUE         26   65045      0.03997233
-49 ENST00000480386.1             0 TRUE        202   65045      0.31055423
-50 ENST00000480386.1             0 TRUE         28   65045      0.04304712
-51 ENST00000480386.1             0 TRUE         18   65045      0.02767315
-52 ENST00000480386.1             0 TRUE         29   65045      0.04458452
-53 ENST00000480386.1             0 TRUE        148   65045      0.22753478
-54 ENST00000480386.1             0 TRUE         78   65045      0.11991698
-55 ENST00000480386.1             0 TRUE        142   65045      0.21831040
-56 ENST00000480386.1             0 TRUE         37   65045      0.05688370
-57 ENST00000480386.1             0 TRUE        148   65045      0.22753478
-58 ENST00000480386.1             0 TRUE         57   65045      0.08763164
-59 ENST00000480386.1             0 TRUE         89   65045      0.13682835
-60 ENST00000480386.1             0 TRUE        164   65045      0.25213314
-61 ENST00000480386.1             0 TRUE        292   65045      0.44891998
-62 ENST00000480386.1             0 TRUE        305   65045      0.46890614
-63 ENST00000480386.1             0 TRUE        143   65045      0.21984780
-64 ENST00000480386.1             0 TRUE        664   65045      1.02083173
-   te_len pct_te_overlap      repName       repClass      repFamily milliDiv
-1      55      100.00000         (C)n  Simple_repeat  Simple_repeat      209
-2      65      100.00000      GA-rich Low_complexity Low_complexity      299
-3      34      100.00000       (GGC)n  Simple_repeat  Simple_repeat      241
-4      50      100.00000     (AAACA)n  Simple_repeat  Simple_repeat       92
-5      20      100.00000         (T)n  Simple_repeat  Simple_repeat        0
-6      24      100.00000       (GGA)n  Simple_repeat  Simple_repeat        0
-7      36      100.00000       (AAT)n  Simple_repeat  Simple_repeat      128
-8      29      100.00000       G-rich Low_complexity Low_complexity      196
-9      38      100.00000       (TTA)n  Simple_repeat  Simple_repeat      153
-10     27      100.00000       (ATC)n  Simple_repeat  Simple_repeat        0
-11     48      100.00000        (GT)n  Simple_repeat  Simple_repeat        0
-12     33      100.00000    (GGTGGG)n  Simple_repeat  Simple_repeat       63
-13     43      100.00000     (TTTTC)n  Simple_repeat  Simple_repeat      133
-14     77      100.00000        (TC)n  Simple_repeat  Simple_repeat      181
-15     28      100.00000       (TCT)n  Simple_repeat  Simple_repeat       83
-16     42      100.00000       A-rich Low_complexity Low_complexity      221
-17     44      100.00000        (TG)n  Simple_repeat  Simple_repeat      271
-18     39      100.00000         (T)n  Simple_repeat  Simple_repeat      112
-19     67      100.00000    (CTCTCC)n  Simple_repeat  Simple_repeat      262
-20    312      100.00000       AluYm1           SINE            Alu       48
-21     39      100.00000         (A)n  Simple_repeat  Simple_repeat      148
-22     19      100.00000       A-rich Low_complexity Low_complexity      142
-23     35      100.00000     (GCCTG)n  Simple_repeat  Simple_repeat      161
-24    142      100.00000      GA-rich Low_complexity Low_complexity      237
-25     26      100.00000     (GAGGG)n  Simple_repeat  Simple_repeat       81
-26     36      100.00000   (AAGAAAG)n  Simple_repeat  Simple_repeat       89
-27     21      100.00000       (GGC)n  Simple_repeat  Simple_repeat       49
-28     40      100.00000       G-rich Low_complexity Low_complexity      174
-29     36      100.00000       A-rich Low_complexity Low_complexity      173
-30     24      100.00000         (C)n  Simple_repeat  Simple_repeat      137
-31    172      100.00000      GA-rich Low_complexity Low_complexity      291
-32     37      100.00000     (CCCTG)n  Simple_repeat  Simple_repeat      117
-33     18      100.00000         (A)n  Simple_repeat  Simple_repeat        0
-34     24      100.00000       (ATT)n  Simple_repeat  Simple_repeat      139
-35     47      100.00000        (GT)n  Simple_repeat  Simple_repeat        0
-36    112      100.00000   (CCGGCCC)n  Simple_repeat  Simple_repeat      209
-37     61      100.00000    (CGCCGG)n  Simple_repeat  Simple_repeat      246
-38     35      100.00000         (C)n  Simple_repeat  Simple_repeat      196
-39     38      100.00000       G-rich Low_complexity Low_complexity      154
-40     32      100.00000       G-rich Low_complexity Low_complexity      216
-41     43      100.00000    (TCCTGC)n  Simple_repeat  Simple_repeat       90
-42     53      100.00000      GA-rich Low_complexity Low_complexity      253
-43     79      100.00000       (GGC)n  Simple_repeat  Simple_repeat      305
-44    300      100.00000       AluSx3           SINE            Alu       60
-45     53      100.00000     (TTTTC)n  Simple_repeat  Simple_repeat      146
-46     55      100.00000    (GCTCAG)n  Simple_repeat  Simple_repeat      235
-47    150      100.00000    Charlie4z            DNA    hAT-Charlie      324
-48     26      100.00000         (T)n  Simple_repeat  Simple_repeat        0
-49    202      100.00000         MIRc           SINE            MIR      316
-50     28      100.00000        (TG)n  Simple_repeat  Simple_repeat      159
-51     18      100.00000        (TC)n  Simple_repeat  Simple_repeat        0
-52     29      100.00000        (CA)n  Simple_repeat  Simple_repeat       74
-53    148      100.00000         MIRb           SINE            MIR      299
-54     78      100.00000          L2a           LINE             L2      187
-55    142      100.00000    Charlie4z            DNA    hAT-Charlie      202
-56     37      100.00000 (CAGGGGCGG)n  Simple_repeat  Simple_repeat       28
-57    148      100.00000        (GA)n  Simple_repeat  Simple_repeat       81
-58     57      100.00000       G-rich Low_complexity Low_complexity      283
-59     89      100.00000     MIR1_Amn           SINE            MIR      247
-60    164      100.00000         L1M5           LINE             L1      181
-61    292      100.00000        AluSx           SINE            Alu      123
-62    305      100.00000        AluSp           SINE            Alu       79
-63    143      100.00000        AluSp           SINE            Alu       56
-64    749       88.65154        L1ME3           LINE             L1      236
-   milliDel milliIns
-1         0        0
-2        46        0
-3         0        0
-4         0       40
-5         0        0
-6         0       83
-7         0       28
-8         0        0
-9         0        0
-10        0        0
-11       62        0
-12       30        0
-13       47       22
-14       52       12
-15       36       35
-16       24        0
-17        0        0
-18        0        0
-19       45       14
-20        0        6
-21        0        0
-22       52       33
-23       57        0
-24       42       34
-25        0        0
-26       28        0
-27        0        0
-28       27        0
-29       28       27
-30        0        0
-31       17        0
-32       27        0
-33        0        0
-34        0        0
-35        0        0
-36       11      101
-37       33       32
-38        0        0
-39        0       26
-40        0        0
-41       47       89
-42       38       18
-43        0       51
-44       13        0
-45       38       73
-46       18       54
-47       58       33
-48        0        0
-49       36       59
-50        0        0
-51        0        0
-52        0        0
-53       62       74
-54        0       39
-55       70      162
-56        0        0
-57       20        7
-58       18       17
-59      128        0
-60       70       24
-61        3        0
-62       29        3
-63       14        0
-64       75       42</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-length-and-distance-4">
+Past versions of "H3K27me3 length and distance-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K27me3-length-and-distance-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27me3 length and distance-4.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>H3K27me3_ols$all_H3K27me3 %&gt;%
+   left_join(., H3K27me3_lookup) %&gt;% 
+     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
+    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+                                  is.na(repClass)~&quot;not_TE&quot;,
+                                  TRUE~&quot;Other&quot;))%&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle(&quot;Percent of TE overlapped in H3K27me3 data&quot;) </code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20and%20distance-5.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="h3k36me3-lengths-of-te-tss-distance" class="section level3">
 <h3>H3K36me3 lengths of TE, TSS distance</h3>
@@ -3583,6 +4110,43 @@ H3K36me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Overlapping minimum TE length per class in H3K36me3&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20and%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-length-and-distance-1">
+Past versions of "H3K36me3 length and distance-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-length-and-distance-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K36me3 length and distance-1.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K36me3_sets_gr$all_H3K36me3 %&gt;% 
   as.data.frame() %&gt;% 
    left_join(., H3K36me3_lookup) %&gt;% 
@@ -3592,6 +4156,43 @@ H3K36me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Region of interest length in H3K36me3&quot;) </code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20and%20distance-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-length-and-distance-2">
+Past versions of "H3K36me3 length and distance-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-length-and-distance-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K36me3 length and distance-2.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K36me3_repclass_sum %&gt;% 
   ggplot(aes(x=special_type,y=width))+
   geom_boxplot() +
@@ -3599,6 +4200,43 @@ H3K36me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Minimum overlapping TE &amp; ROI width length per class in H3K36me3&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20and%20distance-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-length-and-distance-3">
+Past versions of "H3K36me3 length and distance-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-length-and-distance-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K36me3 length and distance-3.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K36me3_repclass_sum %&gt;% 
   ggplot(aes(x=special_type,y=min_dist_TSS))+
   geom_boxplot() +
@@ -3606,14 +4244,59 @@ H3K36me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Distance to TSS per class in H3K36me3 of overlapping ROIs&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20and%20distance-4.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># H3K36me3_sets_gr$all_H3K36me3 %&gt;% 
-#   as.data.frame() %&gt;% 
-#   dplyr::filter(width&gt;60000)
-# 
-# H3K36me3_ols$all_H3K36me3 %&gt;% 
-#    as.data.frame() %&gt;% 
-#   mutate(medi=median(roi_len))
-#   dplyr::filter(roi_len&gt;60000)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-length-and-distance-4">
+Past versions of "H3K36me3 length and distance-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K36me3-length-and-distance-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K36me3 length and distance-4.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>H3K36me3_ols$all_H3K36me3 %&gt;%
+   left_join(., H3K36me3_lookup) %&gt;% 
+     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
+    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+                                  is.na(repClass)~&quot;not_TE&quot;,
+                                  TRUE~&quot;Other&quot;))%&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle(&quot;Percent of TE overlapped in H3K36me3 data&quot;) </code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20and%20distance-5.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="h3k9me3-lengths-of-te-tss-distance" class="section level3">
 <h3>H3K9me3 lengths of TE, TSS distance</h3>
@@ -3645,6 +4328,43 @@ H3K9me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Overlapping minimum TE length per class in H3K9me3&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20and%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-length-and-distance-1">
+Past versions of "H3K9me3 length and distance-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-length-and-distance-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K9me3 length and distance-1.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K9me3_sets_gr$all_H3K9me3 %&gt;% 
   as.data.frame() %&gt;% 
    left_join(., H3K9me3_lookup) %&gt;% 
@@ -3654,6 +4374,43 @@ H3K9me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Region of interest length in H3K9me3&quot;) </code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20and%20distance-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-length-and-distance-2">
+Past versions of "H3K9me3 length and distance-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-length-and-distance-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K9me3 length and distance-2.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K9me3_repclass_sum %&gt;% 
   ggplot(aes(x=special_type,y=width))+
   geom_boxplot() +
@@ -3661,6 +4418,43 @@ H3K9me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Minimum overlapping TE &amp; ROI width length per class in H3K9me3&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20and%20distance-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-length-and-distance-3">
+Past versions of "H3K9me3 length and distance-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-length-and-distance-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K9me3 length and distance-3.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K9me3_repclass_sum %&gt;% 
   ggplot(aes(x=special_type,y=min_dist_TSS))+
   geom_boxplot() +
@@ -3668,14 +4462,59 @@ H3K9me3_repclass_sum %&gt;%
   theme_classic()+
     ggtitle(&quot;Distance to TSS per class in H3K9me3 of overlapping ROIs&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20and%20distance-4.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># H3K9me3_sets_gr$all_H3K9me3 %&gt;% 
-#   as.data.frame() %&gt;% 
-#   dplyr::filter(width&gt;60000)
-# 
-# H3K27ac_ols$all_H3K27ac %&gt;% 
-#    as.data.frame() %&gt;% 
-#   mutate(medi=median(roi_len))
-#   dplyr::filter(roi_len&gt;60000)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-length-and-distance-4">
+Past versions of "H3K9me3 length and distance-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-H3K9me3-length-and-distance-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K9me3 length and distance-4.png" target="_blank">cf939c4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>H3K9me3_ols$all_H3K9me3 %&gt;%
+   left_join(., H3K9me3_lookup) %&gt;% 
+     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
+    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+                                  is.na(repClass)~&quot;not_TE&quot;,
+                                  TRUE~&quot;Other&quot;))%&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
+  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle(&quot;Percent of TE overlapped in H3K9me3 data&quot;) </code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20and%20distance-5.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -3875,6 +4714,7 @@ loaded via a namespace (and not attached):
 [137] fastmatch_1.1-6                        
 [138] bit_4.6.0                              
 [139] ape_5.8-1                              </code></pre>
+</div>
 </div>
 </div>
 </div>
