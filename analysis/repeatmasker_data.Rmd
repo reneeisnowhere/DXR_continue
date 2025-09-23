@@ -1422,8 +1422,8 @@ H3K9me3_counts_long_50per %>%
   #                                 repClass=="Retroposon"~"SVA",
   #                                 is.na(repClass)~"not_TE",
   #                                 TRUE~"Other")) %>% 
-  #   mutate(per_div=milliDiv/10) %>% 
-  # ggplot(aes(x=per_div))+
+  #   mutate(ppr_div=milliDiv) %>% 
+  # ggplot(aes(x=ppr_div))+
   # geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
   # facet_wrap(~special_type, scales="free_y") +
   #   theme_classic()
@@ -1443,8 +1443,8 @@ H3K9me3_counts_long_50per %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(y=per_div,x=special_type))+
+    mutate(ppr_div=milliDiv) %>% 
+  ggplot(aes(y=ppr_div,x=special_type))+
   geom_boxplot(aes(fill=cluster) ) +
   # facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
@@ -1465,8 +1465,8 @@ H3K9me3_counts_long_50per %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>%
-    ggplot(aes(y=per_div,x=special_type, fill=cluster))+
+    mutate(ppr_div=milliDiv) %>%
+    ggplot(aes(y=ppr_div,x=special_type, fill=cluster))+
   # geom_boxplot(aes(fill=cluster) ) +
     geom_boxplot()+
 stat_compare_means(
@@ -1501,21 +1501,21 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
+    mutate(ppr_div=milliDiv) %>% 
   filter(cluster %in% c("Set_1", "Set_2", "Set_3")) %>%
   group_by(special_type) %>%
   group_map(~ {
     stype <- unique(.x$special_type)  # capture the TE type
     map_dfr(comparisons, function(comp) {
       dat <- .x %>% filter(cluster %in% comp)
-      test <- wilcox.test(per_div ~ cluster, data = dat)
+      test <- wilcox.test(ppr_div ~ cluster, data = dat)
       tibble(
         special_type = stype,
         comparison = paste(comp, collapse = "_vs_"),
         p.value = test$p.value,
         W = test$statistic,
-        median_Set1 = median(dat$per_div[dat$cluster == "Set_1"]),
-        median_other = median(dat$per_div[dat$cluster == comp[2]])
+        median_Set1 = median(dat$ppr_div[dat$cluster == "Set_1"]),
+        median_other = median(dat$ppr_div[dat$cluster == comp[2]])
       )
     })
   }, .keep = TRUE) %>%
@@ -1535,21 +1535,21 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
+    mutate(ppr_div=milliDiv) %>% 
   filter(cluster %in% c("Set_1", "Set_2", "Set_3")) %>%
   group_by(special_type) %>%
   group_map(~ {
     stype <- unique(.x$special_type)  # capture the TE type
     map_dfr(comparisons, function(comp) {
       dat <- .x %>% filter(cluster %in% comp)
-      test <- wilcox.test(per_div ~ cluster, data = dat)
+      test <- wilcox.test(ppr_div ~ cluster, data = dat)
       tibble(
         special_type = stype,
         comparison = paste(comp, collapse = "_vs_"),
         p.value = test$p.value,
         W = test$statistic,
-        median_Set1 = median(dat$per_div[dat$cluster == "Set_1"]),
-        median_other = median(dat$per_div[dat$cluster == comp[2]])
+        median_Set1 = median(dat$ppr_div[dat$cluster == "Set_1"]),
+        median_other = median(dat$ppr_div[dat$cluster == comp[2]])
       )
     })
   }, .keep = TRUE) %>%
@@ -1582,8 +1582,8 @@ stat_compare_means(
   #                                 repClass=="Retroposon"~"SVA",
   #                                 is.na(repClass)~"not_TE",
   #                                 TRUE~"Other")) %>% 
-  #   mutate(per_div=milliDiv/10) %>% 
-  # ggplot(aes(x=per_div))+
+  #   mutate(ppr_div=milliDiv) %>% 
+  # ggplot(aes(x=ppr_div))+
   # geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
   # facet_wrap(~special_type, scales="free_y") +
   #   theme_classic()
@@ -1603,8 +1603,8 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(y=per_div,x=special_type))+
+    mutate(ppr_div=milliDiv) %>% 
+  ggplot(aes(y=ppr_div,x=special_type))+
   geom_boxplot(aes(fill=cluster) ) +
   # facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
@@ -1625,8 +1625,8 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(y=per_div,x=special_type))+
+    mutate(ppr_div=milliDiv) %>% 
+  ggplot(aes(y=ppr_div,x=special_type))+
   geom_boxplot(aes(fill=cluster) ) +
   # facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
@@ -1645,7 +1645,7 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
+    mutate(ppr_div=milliDiv) %>% 
   filter(cluster %in% c("Set_1", "Set_2")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1654,14 +1654,14 @@ stat_compare_means(
       dat <- .x %>% filter(cluster %in% comp)
        # Skip if both clusters are not present
       if(length(unique(dat$cluster)) < 2) return(NULL)
-      test <- wilcox.test(per_div ~ cluster, data = dat)
+      test <- wilcox.test(ppr_div ~ cluster, data = dat)
       tibble(
         special_type = stype,
         comparison = paste(comp, collapse = "_vs_"),
         p.value = test$p.value,
         W = test$statistic,
-        median_Set1 = median(dat$per_div[dat$cluster == "Set_1"]),
-        median_other = median(dat$per_div[dat$cluster == comp[2]])
+        median_Set1 = median(dat$ppr_div[dat$cluster == "Set_1"]),
+        median_other = median(dat$ppr_div[dat$cluster == comp[2]])
       )
     })
   }, .keep = TRUE) %>%
@@ -1682,7 +1682,7 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
+    mutate(ppr_div=milliDiv) %>% 
   filter(cluster %in% c("Set_1", "Set_2")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1691,14 +1691,14 @@ stat_compare_means(
       dat <- .x %>% filter(cluster %in% comp)
        # Skip if both clusters are not present
       if(length(unique(dat$cluster)) < 2) return(NULL)
-      test <- wilcox.test(per_div ~ cluster, data = dat)
+      test <- wilcox.test(ppr_div ~ cluster, data = dat)
       tibble(
         special_type = stype,
         comparison = paste(comp, collapse = "_vs_"),
         p.value = test$p.value,
         W = test$statistic,
-        median_Set1 = median(dat$per_div[dat$cluster == "Set_1"]),
-        median_other = median(dat$per_div[dat$cluster == comp[2]])
+        median_Set1 = median(dat$ppr_div[dat$cluster == "Set_1"]),
+        median_other = median(dat$ppr_div[dat$cluster == comp[2]])
       )
     })
   }, .keep = TRUE) %>%
@@ -1734,8 +1734,8 @@ stat_compare_means(
 #                                   repClass=="Retroposon"~"SVA",
 #                                   is.na(repClass)~"not_TE",
 #                                   TRUE~"Other")) %>% 
-#     mutate(per_div=milliDiv/10) %>% 
-#   ggplot(aes(x=per_div))+
+#     mutate(ppr_div=milliDiv) %>% 
+#   ggplot(aes(x=ppr_div))+
 #   geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
 #   facet_wrap(~special_type, scales="free_y") +
 #     theme_classic()
@@ -1755,8 +1755,8 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(y=per_div,x=special_type))+
+    mutate(ppr_div=milliDiv) %>% 
+  ggplot(aes(y=ppr_div,x=special_type))+
   geom_boxplot(aes(fill=cluster) ) +
   # facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
@@ -1777,8 +1777,8 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(y=per_div,x=special_type))+
+    mutate(ppr_div=milliDiv) %>% 
+  ggplot(aes(y=ppr_div,x=special_type))+
   geom_boxplot(aes(fill=cluster) ) +
   # facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
@@ -1799,8 +1799,8 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(y=per_div,x=special_type))+
+    mutate(ppr_div=milliDiv) %>% 
+  ggplot(aes(y=ppr_div,x=special_type))+
   geom_boxplot(aes(fill=cluster) ) +
   # facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
@@ -1819,7 +1819,7 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
+    mutate(ppr_div=milliDiv) %>% 
   filter(cluster %in% c("Set_1", "Set_2")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1828,14 +1828,14 @@ stat_compare_means(
       dat <- .x %>% filter(cluster %in% comp)
        # Skip if both clusters are not present
       if(length(unique(dat$cluster)) < 2) return(NULL)
-      test <- wilcox.test(per_div ~ cluster, data = dat)
+      test <- wilcox.test(ppr_div ~ cluster, data = dat)
       tibble(
         special_type = stype,
         comparison = paste(comp, collapse = "_vs_"),
         p.value = test$p.value,
         W = test$statistic,
-        median_Set1 = median(dat$per_div[dat$cluster == "Set_1"]),
-        median_other = median(dat$per_div[dat$cluster == comp[2]])
+        median_Set1 = median(dat$ppr_div[dat$cluster == "Set_1"]),
+        median_other = median(dat$ppr_div[dat$cluster == comp[2]])
       )
     })
   }, .keep = TRUE) %>%
@@ -1856,7 +1856,7 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
+    mutate(ppr_div=milliDiv) %>% 
   filter(cluster %in% c("Set_1", "Set_2")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1865,14 +1865,14 @@ stat_compare_means(
       dat <- .x %>% filter(cluster %in% comp)
        # Skip if both clusters are not present
       if(length(unique(dat$cluster)) < 2) return(NULL)
-      test <- wilcox.test(per_div ~ cluster, data = dat)
+      test <- wilcox.test(ppr_div ~ cluster, data = dat)
       tibble(
         special_type = stype,
         comparison = paste(comp, collapse = "_vs_"),
         p.value = test$p.value,
         W = test$statistic,
-        median_Set1 = median(dat$per_div[dat$cluster == "Set_1"]),
-        median_other = median(dat$per_div[dat$cluster == comp[2]])
+        median_Set1 = median(dat$ppr_div[dat$cluster == "Set_1"]),
+        median_other = median(dat$ppr_div[dat$cluster == comp[2]])
       )
     })
   }, .keep = TRUE) %>%
@@ -1907,8 +1907,8 @@ stat_compare_means(
 #                                   repClass=="Retroposon"~"SVA",
 #                                   is.na(repClass)~"not_TE",
 #                                   TRUE~"Other")) %>% 
-#     mutate(per_div=milliDiv/10) %>% 
-#   ggplot(aes(x=per_div))+
+#     mutate(ppr_div=milliDiv) %>% 
+#   ggplot(aes(x=ppr_div))+
 #   geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
 #   facet_wrap(~special_type, scales="free_y") +
 #     theme_classic()
@@ -1928,8 +1928,8 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(y=per_div,x=special_type))+
+    mutate(ppr_div=milliDiv) %>% 
+  ggplot(aes(y=ppr_div,x=special_type))+
   geom_boxplot(aes(fill=cluster) ) +
   # facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
@@ -1950,8 +1950,8 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(y=per_div,x=special_type))+
+    mutate(ppr_div=milliDiv) %>% 
+  ggplot(aes(y=ppr_div,x=special_type))+
   geom_boxplot(aes(fill=cluster) ) +
   # facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
@@ -1971,7 +1971,7 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
+    mutate(ppr_div=milliDiv) %>% 
   filter(cluster %in% c("Set_1", "Set_2", "Set_3")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1980,14 +1980,14 @@ stat_compare_means(
       dat <- .x %>% filter(cluster %in% comp)
        # Skip if both clusters are not present
       if(length(unique(dat$cluster)) < 2) return(NULL)
-      test <- wilcox.test(per_div ~ cluster, data = dat)
+      test <- wilcox.test(ppr_div ~ cluster, data = dat)
       tibble(
         special_type = stype,
         comparison = paste(comp, collapse = "_vs_"),
         p.value = test$p.value,
         W = test$statistic,
-        median_Set1 = median(dat$per_div[dat$cluster == "Set_1"]),
-        median_other = median(dat$per_div[dat$cluster == comp[2]])
+        median_Set1 = median(dat$ppr_div[dat$cluster == "Set_1"]),
+        median_other = median(dat$ppr_div[dat$cluster == comp[2]])
       )
     })
   }, .keep = TRUE) %>%
@@ -2007,7 +2007,7 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(per_div=milliDiv/10) %>% 
+    mutate(ppr_div=milliDiv) %>% 
   filter(cluster %in% c("Set_1", "Set_2","Set_3")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -2016,14 +2016,14 @@ stat_compare_means(
       dat <- .x %>% filter(cluster %in% comp)
        # Skip if both clusters are not present
       if(length(unique(dat$cluster)) < 2) return(NULL)
-      test <- wilcox.test(per_div ~ cluster, data = dat)
+      test <- wilcox.test(ppr_div ~ cluster, data = dat)
       tibble(
         special_type = stype,
         comparison = paste(comp, collapse = "_vs_"),
         p.value = test$p.value,
         W = test$statistic,
-        median_Set1 = median(dat$per_div[dat$cluster == "Set_1"]),
-        median_other = median(dat$per_div[dat$cluster == comp[2]])
+        median_Set1 = median(dat$ppr_div[dat$cluster == "Set_1"]),
+        median_other = median(dat$ppr_div[dat$cluster == comp[2]])
       )
     })
   }, .keep = TRUE) %>%
