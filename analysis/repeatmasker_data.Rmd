@@ -489,7 +489,7 @@ length(H3K9me3_sets_gr$all_H3K9me3)
 
 ### Counting TE types:
 
-Below I am setting up the data frames, first I take all regions and annotate with the overlapping dataframe.  Then I make new columns, TE_status, SINE_status, LINE_status, LTR_status, DNA_status, SVA_status.  These columns mark Peakids if they have this attribute.  Last, I am annotating a cluster column to add which set the Peakid exists in by histone. (field will be Set1, Set2, Set3, no_cluster)
+Below I am setting up the data frames, first I take all regions and annotate with the overlapping dataframe.  Then I make new columns, TE_status, SINE_status, LINE_status, LTR_status, DNA_status, SVA_status.  These columns mark Peakids if they have this attribute.  Last, I am annotating a cluster column to add which set the Peakid exists in by histone. (field will be Set1, Set2, Set3, not_assigned)
 ```{r histone types 1 bp}
 
 All_H3K27ac <- H3K27ac_sets_gr$all_H3K27ac %>% as.data.frame()
@@ -628,8 +628,25 @@ annotated_H3K9me3 <- All_H3K9me3 %>%
 #                          "annotated_H3K9me3"=annotated_H3K9me3)
 # 
 # saveRDS(annotated_tables,"data/TE_annotation/annotated_tables_1bp_ol.RDS")
-           
+``` 
+
+
+## Counts of regions in each set
+```{r}
+H3K27ac_data <- data.frame("total"=length(All_H3K27ac$Peakid),"Set1"=length(H3K27ac_lookup$cluster[H3K27ac_lookup$cluster=="Set_1"]),"Set2"=length(H3K27ac_lookup$cluster[H3K27ac_lookup$cluster=="Set_2"]),"Set3"=length(H3K27ac_lookup$cluster[H3K27ac_lookup$cluster=="Set_3"]))
+
+H3K9me3_data <- data.frame("total"=length(All_H3K9me3$Peakid),"Set1"=length(H3K9me3_lookup$cluster[H3K9me3_lookup$cluster=="Set_1"]),"Set2"=length(H3K9me3_lookup$cluster[H3K9me3_lookup$cluster=="Set_2"]),"Set3"=length(H3K9me3_lookup$cluster[H3K9me3_lookup$cluster=="Set_3"]))
+
+H3K27me3_data <- data.frame("total"=length(All_H3K27me3$Peakid),"Set1"=length(H3K27me3_lookup$cluster[H3K27me3_lookup$cluster=="Set_1"]),"Set2"=length(H3K27me3_lookup$cluster[H3K27me3_lookup$cluster=="Set_2"]),"Set3"=length(H3K27me3_lookup$cluster[H3K27me3_lookup$cluster=="Set_3"]))
+
+H3K36me3_data <- data.frame("total"=length(All_H3K36me3$Peakid),"Set1"=length(H3K36me3_lookup$cluster[H3K36me3_lookup$cluster=="Set_1"]),"Set2"=length(H3K36me3_lookup$cluster[H3K36me3_lookup$cluster=="Set_2"]),"Set3"=length(H3K36me3_lookup$cluster[H3K36me3_lookup$cluster=="Set_3"]))
+
+Region_dataframe <- bind_rows(list(H3K27ac=H3K27ac_data, H3K27me3=H3K27me3_data, H3K36me3=H3K36me3_data, H3K9me3=H3K9me3_data), .id="histone")
+
+datatable(Region_dataframe)
 ```
+           
+
 
 50% counting histones
 ```{r histone types 50per}
@@ -1115,7 +1132,7 @@ H3K27ac_results_1bp <- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3("H3K27ac_results_1bp"), 
+  htmltools::h3("H3K27ac odds ratio 1bp"), 
 datatable(H3K27ac_results_1bp,options = list(
     scrollY = "600px",
     scrollCollapse = TRUE,
@@ -1149,7 +1166,7 @@ H3K27ac_results_50per <- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3("H3K27ac_results 50% overlap"),
+  htmltools::h3("H3K27ac odds ratio >50% overlap results"),
 datatable(H3K27ac_results_50per,
           options = list(
     scrollY = "600px",
@@ -1189,7 +1206,7 @@ H3K27me3_results_1bp <- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3("H3K27me3_results_1bp"), 
+  htmltools::h3("H3K27me3 odds ratio 1bp"), 
 datatable(H3K27me3_results_1bp,options = list(
     scrollY = "600px",
     scrollCollapse = TRUE,
@@ -1223,7 +1240,7 @@ H3K27me3_results_50per <- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3("H3K27me3_results 50% overlap"),
+  htmltools::h3("H3K27me3 odds ratio >50% overlap results"),
 datatable(H3K27me3_results_50per,options = list(
     scrollY = "600px",
     scrollCollapse = TRUE,
@@ -1260,7 +1277,7 @@ H3K36me3_results_1bp <- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3("H3K36me3_results_1bp"), 
+  htmltools::h3("H3K36me3 odds ratio 1bp result"), 
 datatable(H3K36me3_results_1bp,options = list(
     scrollY = "600px",
     scrollCollapse = TRUE,
@@ -1294,7 +1311,7 @@ H3K36me3_results_50per <- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3("H3K36me3_results 50% overlap"),
+  htmltools::h3("H3K36me3 odds ratio >50% overlap results"),
 datatable(H3K36me3_results_50per,options = list(
     scrollY = "600px",
     scrollCollapse = TRUE,
@@ -1331,7 +1348,7 @@ H3K9me3_results_1bp <- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3("H3K9me3_results_1bp"), 
+  htmltools::h3("H3K9me3 odds ratio 1bp result"), 
 datatable(H3K9me3_results_1bp,options = list(
     scrollY = "600px",
     scrollCollapse = TRUE,
@@ -1365,7 +1382,7 @@ H3K9me3_results_50per <- map_dfr(TE_types, function(te){
 })
 
 htmltools::tagList(
-  htmltools::h3("H3K9me3_results 50% overlap"),
+  htmltools::h3("H3K9me3 odds ratio >50% overlap results"),
 datatable(H3K9me3_results_50per,options = list(
     scrollY = "600px",
     scrollCollapse = TRUE,
@@ -1394,24 +1411,24 @@ H3K9me3_counts_long_50per %>%
 ```{r H3K27ac divergence, fig.width=8}
 
 
-  H3K27ac_ols$all_H3K27ac %>% 
-    left_join(., H3K27ac_lookup) %>% 
-     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    dplyr::filter(cluster != "not_assigned") %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
-                                  is.na(repClass)~"not_TE",
-                                  TRUE~"Other")) %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(x=per_div))+
-  geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
-  facet_wrap(~special_type, scales="free_y") +
-    theme_classic()
-  
-  
+  # H3K27ac_ols$all_H3K27ac %>% 
+  #   left_join(., H3K27ac_lookup) %>% 
+  #    mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
+  #   dplyr::filter(cluster != "not_assigned") %>% 
+  #   mutate(special_type=case_when(repClass=="SINE"~"SINE",
+  #                                 repClass=="LINE"~"LINE",
+  #                                 repClass=="LTR"~"LTR",
+  #                                 repClass=="DNA"~"DNA",
+  #                                 repClass=="Retroposon"~"SVA",
+  #                                 is.na(repClass)~"not_TE",
+  #                                 TRUE~"Other")) %>% 
+  #   mutate(per_div=milliDiv/10) %>% 
+  # ggplot(aes(x=per_div))+
+  # geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
+  # facet_wrap(~special_type, scales="free_y") +
+  #   theme_classic()
+  # 
+  # 
   
   H3K27ac_ols$all_H3K27ac %>% 
   as.data.frame() %>% 
@@ -1538,30 +1555,38 @@ stat_compare_means(
   }, .keep = TRUE) %>%
   bind_rows()
 
+  
+  datatable( H3K27ac_wilcox_results,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on percent divergence overlapped TEs by 1bp H3K27ac"
+))
 
-    
+ datatable( H3K27ac_wilcox_results_per50,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on percent divergence of >50% overlapped TEs H3K27ac"
+))
 ```
 
 ### H3K27me3 divergence from consensus
 ```{r H3K27me3 divergence, fig.width=8}
 
 
-  H3K27me3_ols$all_H3K27me3 %>% 
-    left_join(., H3K27me3_lookup) %>% 
-     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>%
-    dplyr::filter(cluster != "not_assigned") %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
-                                  is.na(repClass)~"not_TE",
-                                  TRUE~"Other")) %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(x=per_div))+
-  geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
-  facet_wrap(~special_type, scales="free_y") +
-    theme_classic()
+  # H3K27me3_ols$all_H3K27me3 %>% 
+  #   left_join(., H3K27me3_lookup) %>% 
+  #    mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>%
+  #   dplyr::filter(cluster != "not_assigned") %>% 
+  #   mutate(special_type=case_when(repClass=="SINE"~"SINE",
+  #                                 repClass=="LINE"~"LINE",
+  #                                 repClass=="LTR"~"LTR",
+  #                                 repClass=="DNA"~"DNA",
+  #                                 repClass=="Retroposon"~"SVA",
+  #                                 is.na(repClass)~"not_TE",
+  #                                 TRUE~"Other")) %>% 
+  #   mutate(per_div=milliDiv/10) %>% 
+  # ggplot(aes(x=per_div))+
+  # geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
+  # facet_wrap(~special_type, scales="free_y") +
+  #   theme_classic()
   
   
   
@@ -1607,7 +1632,43 @@ stat_compare_means(
     theme_classic()+
     ggtitle("Divergence from overlapping TE H3K27me3 50% overlap")
   
-   H3K27me3_wilcox_results_per50 <- H3K27me3_ols$all_H3K27me3 %>%
+   H3K27me3_wilcox_results <- H3K27me3_ols$all_H3K27me3 %>%
+    as.data.frame() %>%
+     left_join(., H3K27me3_lookup) %>% 
+     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>%
+    dplyr::filter(cluster != "not_assigned") %>% 
+    mutate(special_type=case_when(str_detect(repClass,"SINE")~"SINE",
+                                  str_detect(repClass, "LINE") ~ "LINE",
+                                  str_detect(repClass, "LTR") ~ "LTR",
+                                  str_detect(repClass, "DNA") ~ "DNA",
+                                  str_detect(repClass, "Retroposon") ~ "SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other")) %>% 
+  dplyr::filter(special_type != "not_TE") %>% 
+    mutate(per_div=milliDiv/10) %>% 
+  filter(cluster %in% c("Set_1", "Set_2")) %>%
+  group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) < 2) return(NULL)
+      test <- wilcox.test(per_div ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = "_vs_"),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$per_div[dat$cluster == "Set_1"]),
+        median_other = median(dat$per_div[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
+   
+   
+ H3K27me3_wilcox_results_per50 <- H3K27me3_ols$all_H3K27me3 %>%
     as.data.frame() %>%
     dplyr::filter(pct_te_overlap> 50) %>%
     left_join(., H3K27me3_lookup) %>% 
@@ -1644,7 +1705,15 @@ stat_compare_means(
   bind_rows()
 
 
-  
+   datatable( H3K27me3_wilcox_results,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on percent divergence overlapped TEs by 1bp H3K27me3"
+))
+
+ datatable( H3K27me3_wilcox_results_per50,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on percent divergence of >50% overlapped TEs H3K27me3"
+))
   
     
 ```
@@ -1653,24 +1722,24 @@ stat_compare_means(
 ### H3K36me3 divergence from  consensus
 ```{r H3K36me3 divergence, fig.width=8}
 
-
-  H3K36me3_ols$all_H3K36me3 %>% 
-    left_join(., H3K36me3_lookup) %>% 
-     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    dplyr::filter(cluster != "not_assigned") %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
-                                  is.na(repClass)~"not_TE",
-                                  TRUE~"Other")) %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(x=per_div))+
-  geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
-  facet_wrap(~special_type, scales="free_y") +
-    theme_classic()
-  
+# 
+#   H3K36me3_ols$all_H3K36me3 %>% 
+#     left_join(., H3K36me3_lookup) %>% 
+#      mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
+#     dplyr::filter(cluster != "not_assigned") %>% 
+#     mutate(special_type=case_when(repClass=="SINE"~"SINE",
+#                                   repClass=="LINE"~"LINE",
+#                                   repClass=="LTR"~"LTR",
+#                                   repClass=="DNA"~"DNA",
+#                                   repClass=="Retroposon"~"SVA",
+#                                   is.na(repClass)~"not_TE",
+#                                   TRUE~"Other")) %>% 
+#     mutate(per_div=milliDiv/10) %>% 
+#   ggplot(aes(x=per_div))+
+#   geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
+#   facet_wrap(~special_type, scales="free_y") +
+#     theme_classic()
+#   
   
   
   H3K36me3_ols$all_H3K36me3 %>% 
@@ -1737,6 +1806,42 @@ stat_compare_means(
     theme_classic()+
     ggtitle("Divergence from overlapping TE H3K36me3 50% overlap")
   
+   H3K36me3_wilcox_results <- H3K36me3_ols$all_H3K36me3 %>%
+    as.data.frame() %>%
+     left_join(., H3K36me3_lookup) %>% 
+     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>%
+    dplyr::filter(cluster != "not_assigned") %>% 
+    mutate(special_type=case_when(str_detect(repClass,"SINE")~"SINE",
+                                  str_detect(repClass, "LINE") ~ "LINE",
+                                  str_detect(repClass, "LTR") ~ "LTR",
+                                  str_detect(repClass, "DNA") ~ "DNA",
+                                  str_detect(repClass, "Retroposon") ~ "SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other")) %>% 
+  dplyr::filter(special_type != "not_TE") %>% 
+    mutate(per_div=milliDiv/10) %>% 
+  filter(cluster %in% c("Set_1", "Set_2")) %>%
+  group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) < 2) return(NULL)
+      test <- wilcox.test(per_div ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = "_vs_"),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$per_div[dat$cluster == "Set_1"]),
+        median_other = median(dat$per_div[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
+   
+   
    H3K36me3_wilcox_results_per50 <- H3K36me3_ols$all_H3K36me3 %>%
     as.data.frame() %>%
     dplyr::filter(pct_te_overlap> 50) %>%
@@ -1773,7 +1878,16 @@ stat_compare_means(
   }, .keep = TRUE) %>%
   bind_rows()
   
-  
+   
+  datatable( H3K36me3_wilcox_results,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on percent divergence overlapped TEs by 1bp H3K36me3"
+))
+
+ datatable( H3K36me3_wilcox_results_per50,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on percent divergence of >50% overlapped TEs H3K36me3"
+))
   
     
 ```
@@ -1782,22 +1896,22 @@ stat_compare_means(
 ### H3K9me3 divergence from  consensus
 ```{r H3K9me3 divergence, fig.width=8}
 
-
-  H3K9me3_ols$all_H3K9me3 %>% 
-    left_join(., H3K9me3_lookup) %>% 
-     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
-                                  is.na(repClass)~"not_TE",
-                                  TRUE~"Other")) %>% 
-    mutate(per_div=milliDiv/10) %>% 
-  ggplot(aes(x=per_div))+
-  geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
-  facet_wrap(~special_type, scales="free_y") +
-    theme_classic()
+# 
+#   H3K9me3_ols$all_H3K9me3 %>% 
+#     left_join(., H3K9me3_lookup) %>% 
+#      mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
+#     mutate(special_type=case_when(repClass=="SINE"~"SINE",
+#                                   repClass=="LINE"~"LINE",
+#                                   repClass=="LTR"~"LTR",
+#                                   repClass=="DNA"~"DNA",
+#                                   repClass=="Retroposon"~"SVA",
+#                                   is.na(repClass)~"not_TE",
+#                                   TRUE~"Other")) %>% 
+#     mutate(per_div=milliDiv/10) %>% 
+#   ggplot(aes(x=per_div))+
+#   geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
+#   facet_wrap(~special_type, scales="free_y") +
+#     theme_classic()
   
   
   
@@ -1858,7 +1972,7 @@ stat_compare_means(
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
     mutate(per_div=milliDiv/10) %>% 
-  filter(cluster %in% c("Set_1", "Set_2")) %>%
+  filter(cluster %in% c("Set_1", "Set_2", "Set_3")) %>%
   group_by(special_type) %>%
   group_map(~ {
     stype <- unique(.x$special_type)  # capture the TE type
@@ -1894,7 +2008,7 @@ stat_compare_means(
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
     mutate(per_div=milliDiv/10) %>% 
-  filter(cluster %in% c("Set_1", "Set_2")) %>%
+  filter(cluster %in% c("Set_1", "Set_2","Set_3")) %>%
   group_by(special_type) %>%
   group_map(~ {
     stype <- unique(.x$special_type)  # capture the TE type
@@ -1915,7 +2029,16 @@ stat_compare_means(
   }, .keep = TRUE) %>%
   bind_rows()
 
+ 
+  datatable( H3K9me3_wilcox_results,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on percent divergence overlapped TEs by 1bp H3K9me3"
+))
 
+ datatable( H3K9me3_wilcox_results_per50,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on percent divergence of >50% overlapped TEs H3K9me3"
+))
     
 ```
 
@@ -1979,6 +2102,22 @@ H3K27ac_repclass_sum %>%
     ggtitle("Distance to TSS per class in H3K27ac of overlapping ROIs")+
   coord_cartesian(ylim=c(-35000,35000))
 
+
+H3K27ac_ols$all_H3K27ac %>%
+   left_join(., H3K27ac_lookup) %>% 
+     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
+    mutate(special_type=case_when(repClass=="SINE"~"SINE",
+                                  repClass=="LINE"~"LINE",
+                                  repClass=="LTR"~"LTR",
+                                  repClass=="DNA"~"DNA",
+                                  repClass=="Retroposon"~"SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other"))%>% 
+  dplyr::filter(cluster != "not_assigned") %>% 
+  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle("Percent of TE overlapped in H3K27ac data") 
 
 
 
@@ -2046,15 +2185,21 @@ H3K27me3_repclass_sum %>%
     ggtitle("Distance to TSS per class in H3K27me3 of overlapping ROIs")
 
 
-# H3K27me3_sets_gr$all_H3K27me3 %>% 
-#   as.data.frame() %>% 
-#   dplyr::filter(width>60000)
-# 
 H3K27me3_ols$all_H3K27me3 %>%
-   as.data.frame() %>%
-  # mutate(medi=median(roi_len))
-  dplyr::filter(roi_len>60000)
-
+   left_join(., H3K27me3_lookup) %>% 
+     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
+    mutate(special_type=case_when(repClass=="SINE"~"SINE",
+                                  repClass=="LINE"~"LINE",
+                                  repClass=="LTR"~"LTR",
+                                  repClass=="DNA"~"DNA",
+                                  repClass=="Retroposon"~"SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other"))%>% 
+  dplyr::filter(cluster != "not_assigned") %>% 
+  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle("Percent of TE overlapped in H3K27me3 data") 
 
 
 ```
@@ -2119,17 +2264,21 @@ H3K36me3_repclass_sum %>%
     ggtitle("Distance to TSS per class in H3K36me3 of overlapping ROIs")
 
 
-# H3K36me3_sets_gr$all_H3K36me3 %>% 
-#   as.data.frame() %>% 
-#   dplyr::filter(width>60000)
-# 
-# H3K36me3_ols$all_H3K36me3 %>% 
-#    as.data.frame() %>% 
-#   mutate(medi=median(roi_len))
-#   dplyr::filter(roi_len>60000)
-
-
-
+H3K36me3_ols$all_H3K36me3 %>%
+   left_join(., H3K36me3_lookup) %>% 
+     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
+    mutate(special_type=case_when(repClass=="SINE"~"SINE",
+                                  repClass=="LINE"~"LINE",
+                                  repClass=="LTR"~"LTR",
+                                  repClass=="DNA"~"DNA",
+                                  repClass=="Retroposon"~"SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other"))%>% 
+  dplyr::filter(cluster != "not_assigned") %>% 
+  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle("Percent of TE overlapped in H3K36me3 data") 
 ```
 
 
@@ -2191,15 +2340,25 @@ H3K9me3_repclass_sum %>%
   theme_classic()+
     ggtitle("Distance to TSS per class in H3K9me3 of overlapping ROIs")
 
-# H3K9me3_sets_gr$all_H3K9me3 %>% 
-#   as.data.frame() %>% 
-#   dplyr::filter(width>60000)
-# 
-# H3K27ac_ols$all_H3K27ac %>% 
-#    as.data.frame() %>% 
-#   mutate(medi=median(roi_len))
-#   dplyr::filter(roi_len>60000)
-
+H3K9me3_ols$all_H3K9me3 %>%
+   left_join(., H3K9me3_lookup) %>% 
+     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
+    mutate(special_type=case_when(repClass=="SINE"~"SINE",
+                                  repClass=="LINE"~"LINE",
+                                  repClass=="LTR"~"LTR",
+                                  repClass=="DNA"~"DNA",
+                                  repClass=="Retroposon"~"SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other"))%>% 
+  dplyr::filter(cluster != "not_assigned") %>% 
+  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle("Percent of TE overlapped in H3K9me3 data") 
 
 
 ```
+
+
+
+
