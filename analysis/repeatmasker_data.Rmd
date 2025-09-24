@@ -2046,74 +2046,88 @@ stat_compare_means(
 ### H3K27ac lengths of TE, TSS distance
 
 
-```{r, H3K27ac length and distance}
-
-
-H3K27ac_repclass_sum <- H3K27ac_ols$all_H3K27ac %>%
+```{r, H3K27ac length of overlaps}
+ungroup_H3K27ac_repclass <- H3K27ac_ols$all_H3K27ac %>%
    left_join(., H3K27ac_lookup) %>% 
      mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
+    mutate(special_type=case_when(str_detect("SINE", repClass)~"SINE",
+                                  str_detect("LINE", repClass)~"LINE",
+                                  str_detect("LTR", repClass)~"LTR",
+                                  str_detect("DNA", repClass)~"DNA",
+                                  str_detect("Retroposon", repClass)~"SVA",
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other"))%>% 
-  dplyr::filter(cluster != "not_assigned") %>% 
-  group_by(Peakid, special_type) %>% 
-  summarize(width= min(width),
-            min_te_len=min(te_len),
-            min_roi_len=min(roi_len),
-            min_overlap=min(overlap_bp),
-            min_dist_TSS=min(distanceToTSS),
-            max_dist_TSS=max(distanceToTSS),
-            cluster=paste0(unique(cluster), collapse = ":")) 
-  
+  dplyr::filter(cluster != "not_assigned") 
 
-H3K27ac_repclass_sum %>% 
-  ggplot(aes(x=special_type,y=min_te_len))+
+# H3K27ac_repclass_sum <- ungroup_H3K27ac_repclass %>% 
+#   group_by(Peakid, special_type) %>% 
+#   summarize(width= min(width),
+#             min_te_len=min(te_len),
+#             min_roi_len=min(roi_len),
+#             min_overlap=min(overlap_bp),
+#             min_dist_TSS=min(distanceToTSS),
+#             max_dist_TSS=max(distanceToTSS),
+#             cluster=paste0(unique(cluster), collapse = ":")) 
+#   
+
+# H3K27ac_repclass_sum %>% 
+#   ggplot(aes(x=special_type,y=min_te_len))+
+#   geom_boxplot() +
+#   facet_wrap(~cluster)+
+#   theme_classic()+
+#     ggtitle("Overlapping TE minimum length per class in H3K27ac")+
+#    coord_cartesian(ylim=c(0,2500))
+
+ungroup_H3K27ac_repclass %>% 
+  ggplot(aes(x=special_type,y=te_len))+
   geom_boxplot() +
   facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle("Overlapping minimum TE length per class in H3K27ac")
+    ggtitle("All overlapping TE lengths in H3K27ac")+
+   coord_cartesian(ylim=c(0,2500))
+```
 
-H3K27ac_sets_gr$all_H3K27ac %>% 
+
+```{r, H3K27ac length and distance}
+
+All_H3K27ac_ROI_df <- H3K27ac_sets_gr$all_H3K27ac %>% 
   as.data.frame() %>% 
    left_join(., H3K27ac_lookup) %>% 
-  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
+  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) 
+
+
+All_H3K27ac_ROI_df %>% 
+  mutate(cluster="all_regions") %>% 
+  rbind(.,All_H3K27ac_ROI_df) %>% 
+  # dplyr::filter(cluster != "not_assigned") %>% 
   ggplot(aes(x=cluster, y=width))+
   geom_boxplot()+
   theme_classic()+
-    ggtitle("Region of interest length in H3K27ac") 
+    ggtitle(" All assigned ROI lengths in H3K27ac") +
+  coord_cartesian(ylim=c(0,3000))
 
 
-H3K27ac_repclass_sum %>% 
-  ggplot(aes(x=cluster,y=width))+
-  geom_boxplot() +
-  facet_wrap(~special_type)+
-  theme_classic()+
-    ggtitle("Minimum overlapping TE & ROI width length per class in H3K27ac")
-
-H3K27ac_repclass_sum %>% 
-  ggplot(aes(x=special_type,y=min_dist_TSS))+
+ungroup_H3K27ac_repclass %>% 
+  ggplot(aes(x=special_type,y=width))+
   geom_boxplot() +
   facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle("Distance to TSS per class in H3K27ac of overlapping ROIs")+
+    ggtitle("Width of TE_ROI overlaps in H3K27ac")+
+  coord_cartesian(ylim=c(0,2000))
+
+ungroup_H3K27ac_repclass %>% 
+   group_by(Peakid, special_type) %>% 
+  summarize(distanceToTSS=min(distanceToTSS),
+            cluster=paste0(unique(cluster),collapse = ",")) %>% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
+  geom_boxplot() +
+  facet_wrap(~special_type)+
+  theme_classic()+
+    ggtitle("Distance to TSS by class in H3K27ac of overlapping ROIs")+
   coord_cartesian(ylim=c(-35000,35000))
 
 
-H3K27ac_ols$all_H3K27ac %>%
-   left_join(., H3K27ac_lookup) %>% 
-     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
-                                  is.na(repClass)~"not_TE",
-                                  TRUE~"Other"))%>% 
-  dplyr::filter(cluster != "not_assigned") %>% 
+ungroup_H3K27ac_repclass %>% 
   ggplot(aes(x=special_type,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
   theme_classic()+
@@ -2129,232 +2143,353 @@ H3K27ac_ols$all_H3K27ac %>%
 ### H3K27me3 lengths of TE, TSS distance
 
 
-```{r, H3K27me3 length and distance}
 
-
-H3K27me3_repclass_sum <- H3K27me3_ols$all_H3K27me3 %>%
+```{r, H3K27me3 length of overlaps}
+ungroup_H3K27me3_repclass <- H3K27me3_ols$all_H3K27me3 %>%
    left_join(., H3K27me3_lookup) %>% 
      mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
+   mutate(special_type=case_when(str_detect("SINE", repClass)~"SINE",
+                                  str_detect("LINE", repClass)~"LINE",
+                                  str_detect("LTR", repClass)~"LTR",
+                                  str_detect("DNA", repClass)~"DNA",
+                                  str_detect("Retroposon", repClass)~"SVA",
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other"))%>% 
-  dplyr::filter(cluster != "not_assigned") %>% 
-  group_by(Peakid, special_type) %>% 
-  summarize(width= min(width),
-            min_te_len=min(te_len),
-            min_roi_len=min(roi_len),
-            min_overlap=min(overlap_bp),
-            min_dist_TSS=min(distanceToTSS),
-            max_dist_TSS=max(distanceToTSS),
-            cluster=paste0(unique(cluster), collapse = ":")) 
-  
+  dplyr::filter(cluster != "not_assigned") 
 
-H3K27me3_repclass_sum %>% 
-  ggplot(aes(x=special_type,y=min_te_len))+
+# H3K27me3_repclass_sum <- ungroup_H3K27me3_repclass %>% 
+#   group_by(Peakid, special_type) %>% 
+#   summarize(width= min(width),
+#             min_te_len=min(te_len),
+#             min_roi_len=min(roi_len),
+#             min_overlap=min(overlap_bp),
+#             min_dist_TSS=min(distanceToTSS),
+#             max_dist_TSS=max(distanceToTSS),
+#             cluster=paste0(unique(cluster), collapse = ":")) 
+#   
+
+# H3K27me3_repclass_sum %>% 
+#   ggplot(aes(x=special_type,y=min_te_len))+
+#   geom_boxplot() +
+#   facet_wrap(~cluster)+
+#   theme_classic()+
+#     ggtitle("Overlapping TE minimum length per class in H3K27me3")+
+#    coord_cartesian(ylim=c(0,2500))
+
+ungroup_H3K27me3_repclass %>% 
+  ggplot(aes(x=special_type,y=te_len))+
   geom_boxplot() +
   facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle("Overlapping minimum TE length per class in H3K27me3")
+    ggtitle("All overlapping TE lengths in H3K27me3")+
+   coord_cartesian(ylim=c(0,2500))
+```
 
-H3K27me3_sets_gr$all_H3K27me3 %>% 
+
+```{r, H3K27me3 length and distance}
+
+All_H3K27me3_ROI_df <- H3K27me3_sets_gr$all_H3K27me3 %>% 
   as.data.frame() %>% 
    left_join(., H3K27me3_lookup) %>% 
-  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
+  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) 
+
+
+All_H3K27me3_ROI_df %>% 
+  mutate(cluster="all_regions") %>% 
+  rbind(.,All_H3K27me3_ROI_df) %>% 
+  # dplyr::filter(cluster != "not_assigned") %>% 
   ggplot(aes(x=cluster, y=width))+
   geom_boxplot()+
   theme_classic()+
-    ggtitle("Region of interest length in H3K27me3") 
+    ggtitle(" All assigned ROI lengths in H3K27me3") +
+  coord_cartesian(ylim=c(0,3000))
 
 
-H3K27me3_repclass_sum %>% 
+ungroup_H3K27me3_repclass %>% 
   ggplot(aes(x=special_type,y=width))+
   geom_boxplot() +
   facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle("Minimum overlapping TE & ROI width length per class in H3K27me3")
+    ggtitle("Width of TE_ROI overlaps in H3K27me3")+
+  coord_cartesian(ylim=c(0,2000))
 
-H3K27me3_repclass_sum %>% 
-  ggplot(aes(x=special_type,y=min_dist_TSS))+
+ungroup_H3K27me3_repclass %>% 
+   group_by(Peakid, special_type) %>% 
+  summarize(distanceToTSS=min(distanceToTSS),
+            cluster=paste0(unique(cluster),collapse = ",")) %>% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
   geom_boxplot() +
-  facet_wrap(~cluster)+
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle("Distance to TSS per class in H3K27me3 of overlapping ROIs")
+    ggtitle("Distance to TSS by class in H3K27me3 of overlapping ROIs")+
+  coord_cartesian(ylim=c(-35000,35000))
 
-
-H3K27me3_ols$all_H3K27me3 %>%
-   left_join(., H3K27me3_lookup) %>% 
-     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
-                                  is.na(repClass)~"not_TE",
-                                  TRUE~"Other"))%>% 
-  dplyr::filter(cluster != "not_assigned") %>% 
+ungroup_H3K27me3_repclass %>% 
   ggplot(aes(x=special_type,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
   theme_classic()+
     ggtitle("Percent of TE overlapped in H3K27me3 data") 
 
 
+ungroup_H3K27me3_repclass %>% 
+  dplyr::filter(special_type=="Other") %>% 
+  ggplot(aes(repFamily, y = pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle("Percent of TE (just the Others) overlapped in H3K27me3 data") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1) )
+
+
+
+
+
 ```
+
 
 
 ### H3K36me3 lengths of TE, TSS distance
 
 
-```{r, H3K36me3 length and distance}
 
-
-H3K36me3_repclass_sum <- H3K36me3_ols$all_H3K36me3 %>%
+```{r, H3K36me3 length of overlaps}
+ungroup_H3K36me3_repclass <- H3K36me3_ols$all_H3K36me3 %>%
    left_join(., H3K36me3_lookup) %>% 
      mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
+    mutate(special_type=case_when(str_detect("SINE", repClass)~"SINE",
+                                  str_detect("LINE", repClass)~"LINE",
+                                  str_detect("LTR", repClass)~"LTR",
+                                  str_detect("DNA", repClass)~"DNA",
+                                  str_detect("Retroposon", repClass)~"SVA",
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other"))%>% 
-  dplyr::filter(cluster != "not_assigned") %>% 
-  group_by(Peakid, special_type) %>% 
-  summarize(width= min(width),
-            min_te_len=min(te_len),
-            min_roi_len=min(roi_len),
-            min_overlap=min(overlap_bp),
-            min_dist_TSS=min(distanceToTSS),
-            max_dist_TSS=max(distanceToTSS),
-            cluster=paste0(unique(cluster), collapse = ":")) 
-  
+  dplyr::filter(cluster != "not_assigned") 
 
-H3K36me3_repclass_sum %>% 
-  ggplot(aes(x=special_type,y=min_te_len))+
+# H3K36me3_repclass_sum <- ungroup_H3K36me3_repclass %>% 
+#   group_by(Peakid, special_type) %>% 
+#   summarize(width= min(width),
+#             min_te_len=min(te_len),
+#             min_roi_len=min(roi_len),
+#             min_overlap=min(overlap_bp),
+#             min_dist_TSS=min(distanceToTSS),
+#             max_dist_TSS=max(distanceToTSS),
+#             cluster=paste0(unique(cluster), collapse = ":")) 
+#   
+
+# H3K36me3_repclass_sum %>% 
+#   ggplot(aes(x=special_type,y=min_te_len))+
+#   geom_boxplot() +
+#   facet_wrap(~cluster)+
+#   theme_classic()+
+#     ggtitle("Overlapping TE minimum length per class in H3K36me3")+
+#    coord_cartesian(ylim=c(0,2500))
+
+ungroup_H3K36me3_repclass %>% 
+  ggplot(aes(x=special_type,y=te_len))+
   geom_boxplot() +
   facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle("Overlapping minimum TE length per class in H3K36me3")
+    ggtitle("All overlapping TE lengths in H3K36me3")+
+   coord_cartesian(ylim=c(0,2500))
+```
 
-H3K36me3_sets_gr$all_H3K36me3 %>% 
+
+```{r, H3K36me3 length and distance}
+
+All_H3K36me3_ROI_df <- H3K36me3_sets_gr$all_H3K36me3 %>% 
   as.data.frame() %>% 
    left_join(., H3K36me3_lookup) %>% 
-  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
+  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) 
+
+
+All_H3K36me3_ROI_df %>% 
+  mutate(cluster="all_regions") %>% 
+  rbind(.,All_H3K36me3_ROI_df) %>% 
+  # dplyr::filter(cluster != "not_assigned") %>% 
   ggplot(aes(x=cluster, y=width))+
   geom_boxplot()+
   theme_classic()+
-    ggtitle("Region of interest length in H3K36me3") 
+    ggtitle(" All assigned ROI lengths in H3K36me3") +
+  coord_cartesian(ylim=c(0,3000))
 
 
-H3K36me3_repclass_sum %>% 
+ungroup_H3K36me3_repclass %>% 
   ggplot(aes(x=special_type,y=width))+
   geom_boxplot() +
   facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle("Minimum overlapping TE & ROI width length per class in H3K36me3")
+    ggtitle("Width of TE_ROI overlaps in H3K36me3")+
+  coord_cartesian(ylim=c(0,2000))
 
-H3K36me3_repclass_sum %>% 
-  ggplot(aes(x=special_type,y=min_dist_TSS))+
+ungroup_H3K36me3_repclass %>% 
+   group_by(Peakid, special_type) %>% 
+  summarize(distanceToTSS=min(distanceToTSS),
+            cluster=paste0(unique(cluster),collapse = ",")) %>% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
   geom_boxplot() +
-  facet_wrap(~cluster)+
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle("Distance to TSS per class in H3K36me3 of overlapping ROIs")
+    ggtitle("Distance to TSS by class in H3K36me3 of overlapping ROIs")+
+  coord_cartesian(ylim=c(-25000,25000))
 
 
-H3K36me3_ols$all_H3K36me3 %>%
-   left_join(., H3K36me3_lookup) %>% 
-     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
-                                  is.na(repClass)~"not_TE",
-                                  TRUE~"Other"))%>% 
-  dplyr::filter(cluster != "not_assigned") %>% 
+ungroup_H3K36me3_repclass %>% 
   ggplot(aes(x=special_type,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
   theme_classic()+
     ggtitle("Percent of TE overlapped in H3K36me3 data") 
+
+
+
+ungroup_H3K36me3_repclass %>% 
+  dplyr::filter(special_type=="Other") %>% 
+  ggplot(aes(repFamily, y = pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle("Percent of TE (just the Others) overlapped in H3K36me3 data") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1) )
+
+
+
+
 ```
+
 
 
 ### H3K9me3 lengths of TE, TSS distance
 
 
-```{r, H3K9me3 length and distance}
 
-
-H3K9me3_repclass_sum <- H3K9me3_ols$all_H3K9me3 %>%
+```{r, H3K9me3 length of overlaps}
+ungroup_H3K9me3_repclass <- H3K9me3_ols$all_H3K9me3 %>%
    left_join(., H3K9me3_lookup) %>% 
      mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
+    mutate(special_type=case_when(str_detect("SINE", repClass)~"SINE",
+                                  str_detect("LINE", repClass)~"LINE",
+                                  str_detect("LTR", repClass)~"LTR",
+                                  str_detect("DNA", repClass)~"DNA",
+                                  str_detect("Retroposon", repClass)~"SVA",
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other"))%>% 
-  dplyr::filter(cluster != "not_assigned") %>% 
-  group_by(Peakid, special_type) %>% 
-  summarize(width= min(width),
-            min_te_len=min(te_len),
-            min_roi_len=min(roi_len),
-            min_overlap=min(overlap_bp),
-            min_dist_TSS=min(distanceToTSS),
-            max_dist_TSS=max(distanceToTSS),
-            cluster=paste0(unique(cluster), collapse = ":")) 
-  
+  dplyr::filter(cluster != "not_assigned") 
 
-H3K9me3_repclass_sum %>% 
-  ggplot(aes(x=special_type,y=min_te_len))+
+# H3K9me3_repclass_sum <- ungroup_H3K9me3_repclass %>% 
+#   group_by(Peakid, special_type) %>% 
+#   summarize(width= min(width),
+#             min_te_len=min(te_len),
+#             min_roi_len=min(roi_len),
+#             min_overlap=min(overlap_bp),
+#             min_dist_TSS=min(distanceToTSS),
+#             max_dist_TSS=max(distanceToTSS),
+#             cluster=paste0(unique(cluster), collapse = ":")) 
+#   
+
+# H3K9me3_repclass_sum %>% 
+#   ggplot(aes(x=special_type,y=min_te_len))+
+#   geom_boxplot() +
+#   facet_wrap(~cluster)+
+#   theme_classic()+
+#     ggtitle("Overlapping TE minimum length per class in H3K9me3")+
+#    coord_cartesian(ylim=c(0,2500))
+
+ungroup_H3K9me3_repclass %>% 
+  ggplot(aes(x=special_type,y=te_len))+
   geom_boxplot() +
   facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle("Overlapping minimum TE length per class in H3K9me3")
+    ggtitle("All overlapping TE lengths in H3K9me3")+
+   coord_cartesian(ylim=c(0,2500))
+```
 
-H3K9me3_sets_gr$all_H3K9me3 %>% 
+
+```{r, H3K9me3 length and distance}
+
+All_H3K9me3_ROI_df <- H3K9me3_sets_gr$all_H3K9me3 %>% 
   as.data.frame() %>% 
    left_join(., H3K9me3_lookup) %>% 
-  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-  ggplot(aes(x=cluster, y=width))+
-  geom_boxplot()+
+  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) 
+
+
+# All_H3K9me3_ROI_df %>% 
+#   mutate(cluster="all_regions") %>% 
+#   rbind(.,All_H3K9me3_ROI_df) %>% 
+#   dplyr::filter(cluster != "not_assigned") %>%
+#   ggplot(aes(x=cluster, y=width))+
+#   geom_boxplot()+
+#   geom_signif(comparisons = list(c("Set_1","Set_2"),
+#                                   c("Set_1","Set_3"),
+#                                   c("all_regions","Set_1")),
+#               map_signif_level = FALSE,
+#               test = "wilcox.test",
+#               y_position = c(100,300,500))+# note values are scaled internally by geomsignif
+#               # step_increase = 0.1)+
+#   theme_classic()+
+#     ggtitle(" All assigned ROI lengths in H3K9me3")+
+#   coord_cartesian(ylim=c(0,4000))
+
+ungroup_H3K9me3_repclass %>% 
+   group_by(Peakid, special_type) %>% 
+  summarize(distanceToTSS=min(distanceToTSS),
+            cluster=paste0(unique(cluster),collapse = ",")) %>% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
+  geom_boxplot() +
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle("Region of interest length in H3K9me3") 
+    ggtitle("Distance to TSS by class in H3K9me3 of overlapping ROIs")+
+  coord_cartesian(ylim=c(-35000,35000))
 
 
-H3K9me3_repclass_sum %>% 
+ungroup_H3K9me3_repclass %>% 
   ggplot(aes(x=special_type,y=width))+
   geom_boxplot() +
   facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle("Minimum overlapping TE & ROI width length per class in H3K9me3")
+    ggtitle("Width of TE_ROI overlaps in H3K9me3")+
+  coord_cartesian(ylim=c(0,2000))
 
-H3K9me3_repclass_sum %>% 
-  ggplot(aes(x=special_type,y=min_dist_TSS))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
+ungroup_H3K9me3_repclass %>% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
+  geom_boxplot(aes(fill=cluster)) +
+  geom_signif(comparisons = list(c("Set_1","Set_2"),
+                                  c("Set_1","Set_3")),
+                                  
+              map_signif_level = FALSE,
+              test = "wilcox.test",
+              y_position = c(10,50,100))+# note values are scaled internally by geomsignif
+              # step_increase = 0.1)+
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle("Distance to TSS per class in H3K9me3 of overlapping ROIs")
+    ggtitle("Distance to TSS by class in H3K9me3 of overlapping ROIs")+
+  coord_cartesian(ylim=c(-45000,45000))
 
-H3K9me3_ols$all_H3K9me3 %>%
-   left_join(., H3K9me3_lookup) %>% 
-     mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-    mutate(special_type=case_when(repClass=="SINE"~"SINE",
-                                  repClass=="LINE"~"LINE",
-                                  repClass=="LTR"~"LTR",
-                                  repClass=="DNA"~"DNA",
-                                  repClass=="Retroposon"~"SVA",
-                                  is.na(repClass)~"not_TE",
-                                  TRUE~"Other"))%>% 
-  dplyr::filter(cluster != "not_assigned") %>% 
+ungroup_H3K9me3_repclass %>% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
+  geom_boxplot(aes(fill=cluster)) +
+  geom_signif(comparisons = list(c("Set_1","Set_2"),
+                                  c("Set_1","Set_3")),
+                                  
+              map_signif_level = FALSE,
+              test = "wilcox.test",
+              # y_position = c(10,50,100))+# note values are scaled internally by geomsignif
+              step_increase = 0.1)+
+  facet_wrap(~special_type)+
+  theme_classic()+
+    ggtitle("Distance to TSS by class in H3K9me3 of overlapping ROIs")
+
+
+ungroup_H3K9me3_repclass %>% 
   ggplot(aes(x=special_type,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
   theme_classic()+
     ggtitle("Percent of TE overlapped in H3K9me3 data") 
+
+
+ungroup_H3K9me3_repclass %>% 
+  dplyr::filter(special_type=="Other") %>% 
+  ggplot(aes(repFamily, y = pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle("Percent of TE (just the Others) overlapped in H3K9me3 data") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1) )
 
 
 ```
