@@ -399,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-09-23
+<strong>Last updated:</strong> 2025-10-03
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree260709500b21fc7e847451763cb3d8a1f5189f0dtargetblank2607095a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreed48317ba9583de704f36116c187dd4e71807f4f2targetblankd48317ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/260709500b21fc7e847451763cb3d8a1f5189f0d" target="_blank">2607095</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/d48317ba9583de704f36116c187dd4e71807f4f2" target="_blank">d48317b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree260709500b21fc7e847451763cb3d8a1f5189f0dtargetblank2607095a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreed48317ba9583de704f36116c187dd4e71807f4f2targetblankd48317ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/260709500b21fc7e847451763cb3d8a1f5189f0d" target="_blank">2607095</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/d48317ba9583de704f36116c187dd4e71807f4f2" target="_blank">d48317b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -580,10 +580,12 @@ Untracked files:
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
+    Untracked:  analysis/summit_files_processing.Rmd
     Untracked:  code/making_analysis_file_summary.R
 
 Unstaged changes:
     Modified:   analysis/Outlier_removal.Rmd
+    Modified:   analysis/final_analysis.Rmd
 
 </code></pre>
 <p>
@@ -628,6 +630,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d48317ba9583de704f36116c187dd4e71807f4f2/analysis/repeatmasker_data.Rmd" target="_blank">d48317b</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-03
+</td>
+<td>
+adding in repeatmasker
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/9d77dac062ad2966538e6a1ffb103a83b5d25df0/analysis/repeatmasker_data.Rmd" target="_blank">9d77dac</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-24
+</td>
+<td>
+end of day
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/1b0e00188ddc28c7d109e241339bfefa44249b2a/docs/repeatmasker_data.html" target="_blank">1b0e001</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -903,7 +956,7 @@ H3K27ac_ols &lt;- lapply(H3K27ac_sets_gr, function(df) {
   
   overlaps_df
 })
-
+rmskr_nonoverlapping_H3K27ac_gr &lt;- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K27ac_sets_gr[[4]]) == 0]
 
 H3K27ac_ols$Set_1 %&gt;% 
   as.data.frame() %&gt;% 
@@ -1088,6 +1141,7 @@ H3K27ac_ols$Set_1 %&gt;%
   overlaps_df
 })
 
+rmskr_nonoverlapping_H3K27me3_gr &lt;- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K27me3_sets_gr[[3]]) == 0]
 
 H3K27me3_ols$Set_1 %&gt;% 
   as.data.frame() %&gt;% 
@@ -1235,6 +1289,9 @@ H3K27me3_ols$Set_1 %&gt;%
   overlaps_df
 })
 
+rmskr_nonoverlapping_H3K36me3_gr &lt;- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K36me3_sets_gr[[3]]) == 0]
+
+
 H3K36me3_ols$Set_1 %&gt;% 
   as.data.frame() %&gt;% 
   group_by(Peakid,repClass) %&gt;% 
@@ -1381,6 +1438,9 @@ H3K36me3_ols$Set_1 %&gt;%
   
   overlaps_df
 })
+
+rmskr_nonoverlapping_H3K9me3_gr &lt;- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K9me3_sets_gr[[4]]) == 0]
+
 
 H3K9me3_ols$Set_1 %&gt;% 
   as.data.frame() %&gt;% 
@@ -2720,28 +2780,73 @@ reneeisnowhere
 </div>
 </div>
 </div>
+<div id="creating-non-overlapping-te-data-sets-to-be-used-later"
+class="section level3">
+<h3>Creating non-overlapping TE data sets to be used later</h3>
+<pre class="r"><code>rmskr_nonoverlapping_H3K27ac_gr$te_len &lt;- width(rmskr_nonoverlapping_H3K27ac_gr)
+ 
+non_ol_H3K27ac_df &lt;- rmskr_nonoverlapping_H3K27ac_gr %&gt;% 
+  as.data.frame() %&gt;% 
+  mutate(cluster=&quot;non_overlapping&quot;, Peakid=&quot;non_overlapping&quot;, pct_te_overlap=0) %&gt;% 
+  mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+                                  is.na(repClass)~&quot;not_TE&quot;,
+                                  TRUE~&quot;Other&quot;)) %&gt;%
+    mutate(ppr_div=milliDiv) %&gt;% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+# dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)</code></pre>
+<pre class="r"><code>rmskr_nonoverlapping_H3K27me3_gr$te_len &lt;- width(rmskr_nonoverlapping_H3K27me3_gr)
+ 
+non_ol_H3K27me3_df &lt;- rmskr_nonoverlapping_H3K27me3_gr %&gt;% 
+  as.data.frame() %&gt;% 
+  mutate(cluster=&quot;non_overlapping&quot;, Peakid=&quot;non_overlapping&quot;, pct_te_overlap=0) %&gt;% 
+  mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+                                  is.na(repClass)~&quot;not_TE&quot;,
+                                  TRUE~&quot;Other&quot;)) %&gt;%
+    mutate(ppr_div=milliDiv) %&gt;% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+# dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)</code></pre>
+<pre class="r"><code>rmskr_nonoverlapping_H3K36me3_gr$te_len &lt;- width(rmskr_nonoverlapping_H3K36me3_gr)
+ 
+non_ol_H3K36me3_df &lt;- rmskr_nonoverlapping_H3K36me3_gr %&gt;% 
+  as.data.frame() %&gt;% 
+  mutate(cluster=&quot;non_overlapping&quot;, Peakid=&quot;non_overlapping&quot;, pct_te_overlap=0) %&gt;% 
+  mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+                                  is.na(repClass)~&quot;not_TE&quot;,
+                                  TRUE~&quot;Other&quot;)) %&gt;%
+    mutate(ppr_div=milliDiv) %&gt;% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+# dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)</code></pre>
+<pre class="r"><code>rmskr_nonoverlapping_H3K9me3_gr$te_len &lt;- width(rmskr_nonoverlapping_H3K9me3_gr)
+ 
+non_ol_H3K9me3_df &lt;- rmskr_nonoverlapping_H3K9me3_gr %&gt;% 
+  as.data.frame() %&gt;% 
+  mutate(cluster=&quot;non_overlapping&quot;, Peakid=&quot;non_overlapping&quot;, pct_te_overlap=0) %&gt;% 
+  mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
+                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
+                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
+                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
+                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+                                  is.na(repClass)~&quot;not_TE&quot;,
+                                  TRUE~&quot;Other&quot;)) %&gt;%
+    mutate(ppr_div=milliDiv) %&gt;% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+# dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)</code></pre>
+</div>
 <div id="h3k27ac-divergence-from-consensus" class="section level3">
 <h3>H3K27ac divergence from consensus</h3>
-<pre class="r"><code>  # H3K27ac_ols$all_H3K27ac %&gt;% 
-  #   left_join(., H3K27ac_lookup) %&gt;% 
-  #    mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-  #   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-  #   mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-  #                                 repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-  #                                 repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-  #                                 repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-  #                                 repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
-  #                                 is.na(repClass)~&quot;not_TE&quot;,
-  #                                 TRUE~&quot;Other&quot;)) %&gt;% 
-  #   mutate(ppr_div=milliDiv) %&gt;% 
-  # ggplot(aes(x=ppr_div))+
-  # geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
-  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
-  #   theme_classic()
-  # 
-  # 
-  
-  H3K27ac_ols$all_H3K27ac %&gt;% 
+<pre class="r"><code>  H3K27ac_ols$all_H3K27ac %&gt;% 
   as.data.frame() %&gt;% 
     left_join(., H3K27ac_lookup) %&gt;% 
      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;%
@@ -2753,11 +2858,13 @@ reneeisnowhere
                                   str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
                                   is.na(repClass)~&quot;not_TE&quot;,
                                   TRUE~&quot;Other&quot;)) %&gt;% 
-  dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
-    mutate(ppr_div=milliDiv) %&gt;% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+  dplyr::filter(special_type != &quot;not_TE&quot;)%&gt;% 
+    mutate(ppr_div=milliDiv) %&gt;%
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %&gt;% 
+  bind_rows(non_ol_H3K27ac_df) %&gt;% 
+  ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K27ac 1bp&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
@@ -2783,6 +2890,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1b0e00188ddc28c7d109e241339bfefa44249b2a/docs/figure/repeatmasker_data.Rmd/H3K27ac divergence-1.png" target="_blank">1b0e001</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K27ac divergence-1.png" target="_blank">abd595b</a>
@@ -2824,16 +2942,16 @@ reneeisnowhere
                                   TRUE~&quot;Other&quot;)) %&gt;% 
   dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
     mutate(ppr_div=milliDiv) %&gt;%
-    ggplot(aes(y=ppr_div,x=special_type, fill=cluster))+
-  # geom_boxplot(aes(fill=cluster) ) +
-    geom_boxplot()+
-stat_compare_means(
-    aes(group = cluster),               # tell ggpubr we want to compare clusters
-    method = &quot;wilcox.test&quot;,             # same test as before
-    comparisons = list(c(&quot;Set1&quot;, &quot;Set2&quot;), c(&quot;Set1&quot;, &quot;Set3&quot;)),
-    label = &quot;p.signif&quot;,                 # show stars instead of p-values
-    hide.ns = TRUE                      # hide non-significant comparisons
-  ) +
+     ggplot(aes(y=ppr_div,x=cluster))+
+  geom_boxplot(aes(fill=cluster) ) +
+  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+# stat_compare_means(
+#     aes(group = cluster),               # tell ggpubr we want to compare clusters
+#     method = &quot;wilcox.test&quot;,             # same test as before
+#     comparisons = list(c(&quot;Set1&quot;, &quot;Set2&quot;), c(&quot;Set1&quot;, &quot;Set3&quot;)),
+#     label = &quot;p.signif&quot;,                 # show stars instead of p-values
+#     hide.ns = TRUE                      # hide non-significant comparisons
+#   ) +
     theme_classic()+
     # facet_wrap(~ special_type, scales = &quot;free_y&quot;) +
     ggtitle(&quot;Divergence from overlapping TE H3K27ac 50% overlap&quot;)</code></pre>
@@ -2860,6 +2978,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1b0e00188ddc28c7d109e241339bfefa44249b2a/docs/figure/repeatmasker_data.Rmd/H3K27ac divergence-2.png" target="_blank">1b0e001</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K27ac divergence-2.png" target="_blank">abd595b</a>
@@ -2891,6 +3020,8 @@ reneeisnowhere
   c(&quot;Set_1&quot;, &quot;Set_2&quot;),
   c(&quot;Set_1&quot;, &quot;Set_3&quot;)
 )
+  comparisons_2 &lt;- list(
+  c(&quot;Set_1&quot;,&quot;Set_2&quot;))
 
   # 
   H3K27ac_wilcox_results &lt;- H3K27ac_ols$all_H3K27ac %&gt;%
@@ -3009,9 +3140,11 @@ reneeisnowhere
                                   TRUE~&quot;Other&quot;)) %&gt;% 
   dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
     mutate(ppr_div=milliDiv) %&gt;% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %&gt;% 
+  bind_rows(non_ol_H3K27me3_df) %&gt;% 
+  ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K27me3 1bp&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
@@ -3037,6 +3170,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1b0e00188ddc28c7d109e241339bfefa44249b2a/docs/figure/repeatmasker_data.Rmd/H3K27me3 divergence-1.png" target="_blank">1b0e001</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K27me3 divergence-1.png" target="_blank">abd595b</a>
@@ -3078,9 +3222,9 @@ reneeisnowhere
                                   TRUE~&quot;Other&quot;)) %&gt;% 
   dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
     mutate(ppr_div=milliDiv) %&gt;% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+      ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K27me3 50% overlap&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20divergence-2.png" width="768" style="display: block; margin: auto;" /></p>
@@ -3106,6 +3250,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1b0e00188ddc28c7d109e241339bfefa44249b2a/docs/figure/repeatmasker_data.Rmd/H3K27me3 divergence-2.png" target="_blank">1b0e001</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K27me3 divergence-2.png" target="_blank">abd595b</a>
@@ -3150,7 +3305,7 @@ reneeisnowhere
   group_by(special_type) %&gt;%
   group_map(~ {
     stype &lt;- unique(.x$special_type)  # capture the TE type
-    map_dfr(comparisons, function(comp) {
+    map_dfr(comparisons_2, function(comp) {
       dat &lt;- .x %&gt;% filter(cluster %in% comp)
        # Skip if both clusters are not present
       if(length(unique(dat$cluster)) &lt; 2) return(NULL)
@@ -3253,10 +3408,12 @@ reneeisnowhere
                                   is.na(repClass)~&quot;not_TE&quot;,
                                   TRUE~&quot;Other&quot;)) %&gt;% 
   dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
-    mutate(ppr_div=milliDiv) %&gt;% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+    mutate(ppr_div=milliDiv) %&gt;%
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %&gt;% 
+  bind_rows(non_ol_H3K36me3_df) %&gt;% 
+ ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K36me3 1bp&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
@@ -3282,6 +3439,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1b0e00188ddc28c7d109e241339bfefa44249b2a/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-1.png" target="_blank">1b0e001</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-1.png" target="_blank">abd595b</a>
@@ -3323,10 +3491,9 @@ reneeisnowhere
                                   TRUE~&quot;Other&quot;)) %&gt;% 
   dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
     mutate(ppr_div=milliDiv) %&gt;% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+  ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
-    theme_classic()+
+  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     ggtitle(&quot;Divergence from overlapping TE H3K36me3 50% overlap&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20divergence-2.png" width="768" style="display: block; margin: auto;" /></p>
 <p>
@@ -3351,6 +3518,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1b0e00188ddc28c7d109e241339bfefa44249b2a/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-2.png" target="_blank">1b0e001</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-2.png" target="_blank">abd595b</a>
@@ -3422,6 +3600,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1b0e00188ddc28c7d109e241339bfefa44249b2a/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-3.png" target="_blank">1b0e001</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-3.png" target="_blank">cf939c4</a>
 </td>
 <td>
@@ -3453,7 +3642,7 @@ reneeisnowhere
   group_by(special_type) %&gt;%
   group_map(~ {
     stype &lt;- unique(.x$special_type)  # capture the TE type
-    map_dfr(comparisons, function(comp) {
+    map_dfr(comparisons_2, function(comp) {
       dat &lt;- .x %&gt;% filter(cluster %in% comp)
        # Skip if both clusters are not present
       if(length(unique(dat$cluster)) &lt; 2) return(NULL)
@@ -3556,9 +3745,11 @@ reneeisnowhere
                                   TRUE~&quot;Other&quot;)) %&gt;% 
   dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
     mutate(ppr_div=milliDiv) %&gt;% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %&gt;% 
+  bind_rows(non_ol_H3K27ac_df) %&gt;% 
+   ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K9me3 1bp&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20divergence-1.png" width="768" style="display: block; margin: auto;" /></p>
@@ -3584,6 +3775,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1b0e00188ddc28c7d109e241339bfefa44249b2a/docs/figure/repeatmasker_data.Rmd/H3K9me3 divergence-1.png" target="_blank">1b0e001</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K9me3 divergence-1.png" target="_blank">abd595b</a>
@@ -3625,9 +3827,9 @@ reneeisnowhere
                                   TRUE~&quot;Other&quot;)) %&gt;% 
   dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
     mutate(ppr_div=milliDiv) %&gt;% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+   ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales=&quot;free_y&quot;) +
+  facet_wrap(~special_type, scales=&quot;free_y&quot;) +
     theme_classic()+
     ggtitle(&quot;Divergence from overlapping TE H3K9me3 50% overlap&quot;)</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20divergence-2.png" width="768" style="display: block; margin: auto;" /></p>
@@ -3653,6 +3855,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1b0e00188ddc28c7d109e241339bfefa44249b2a/docs/figure/repeatmasker_data.Rmd/H3K9me3 divergence-2.png" target="_blank">1b0e001</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K9me3 divergence-2.png" target="_blank">abd595b</a>
@@ -3766,33 +3979,97 @@ reneeisnowhere
 </div>
 <div id="h3k27ac-lengths-of-te-tss-distance" class="section level3">
 <h3>H3K27ac lengths of TE, TSS distance</h3>
-<pre class="r"><code>H3K27ac_repclass_sum &lt;- H3K27ac_ols$all_H3K27ac %&gt;%
+<div id="te-length" class="section level4">
+<h4>TE length</h4>
+<pre class="r"><code>ungroup_H3K27ac_repclass &lt;- H3K27ac_ols$all_H3K27ac %&gt;%
    left_join(., H3K27ac_lookup) %&gt;% 
      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+    mutate(special_type=case_when(str_detect(&quot;SINE&quot;, repClass)~&quot;SINE&quot;,
+                                  str_detect(&quot;LINE&quot;, repClass)~&quot;LINE&quot;,
+                                  str_detect(&quot;LTR&quot;, repClass)~&quot;LTR&quot;,
+                                  str_detect(&quot;DNA&quot;, repClass)~&quot;DNA&quot;,
+                                  str_detect(&quot;Retroposon&quot;, repClass)~&quot;SVA&quot;,
                                   is.na(repClass)~&quot;not_TE&quot;,
                                   TRUE~&quot;Other&quot;))%&gt;% 
-  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-  group_by(Peakid, special_type) %&gt;% 
-  summarize(width= min(width),
-            min_te_len=min(te_len),
-            min_roi_len=min(roi_len),
-            min_overlap=min(overlap_bp),
-            min_dist_TSS=min(distanceToTSS),
-            max_dist_TSS=max(distanceToTSS),
-            cluster=paste0(unique(cluster), collapse = &quot;:&quot;)) 
-  
+  dplyr::filter(cluster != &quot;not_assigned&quot;) 
 
-H3K27ac_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=min_te_len))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
+# H3K27ac_repclass_sum &lt;- ungroup_H3K27ac_repclass %&gt;% 
+#   group_by(Peakid, special_type) %&gt;% 
+#   summarize(width= min(width),
+#             min_te_len=min(te_len),
+#             min_roi_len=min(roi_len),
+#             min_overlap=min(overlap_bp),
+#             min_dist_TSS=min(distanceToTSS),
+#             max_dist_TSS=max(distanceToTSS),
+#             cluster=paste0(unique(cluster), collapse = &quot;:&quot;)) 
+#   
+
+# H3K27ac_repclass_sum %&gt;% 
+#   ggplot(aes(x=special_type,y=min_te_len))+
+#   geom_boxplot() +
+#   facet_wrap(~cluster)+
+#   theme_classic()+
+#     ggtitle(&quot;Overlapping TE minimum length per class in H3K27ac&quot;)+
+#    coord_cartesian(ylim=c(0,2500))
+
+ungroup_H3K27ac_repclass %&gt;%
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type) %&gt;% 
+  bind_rows(non_ol_H3K27ac_df) %&gt;% 
+  ggplot(aes(x=cluster,y=te_len))+
+  geom_boxplot(aes(fill=cluster)) +
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle(&quot;Overlapping minimum TE length per class in H3K27ac&quot;)</code></pre>
+    ggtitle(&quot;All overlapping TE lengths in H3K27ac&quot;)+
+   coord_cartesian(ylim=c(0,1700))</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20of%20overlaps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>H3K27ac_wilcox_te_len &lt;- ungroup_H3K27ac_repclass %&gt;% 
+    dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
+    filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;)) %&gt;%
+  group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+      test &lt;- wilcox.test(te_len ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = &quot;_vs_&quot;),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$te_len[dat$cluster == &quot;Set_1&quot;]),
+        median_other = median(dat$te_len[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+ datatable( H3K27ac_wilcox_te_len,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on TE length  (&gt;1 bp overlap) H3K27ac&quot;))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-384ed238b75f4a49f1c1" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-384ed238b75f4a49f1c1">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on TE length  (&gt;1 bp overlap) H3K27ac<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12"],["DNA","DNA","LINE","LINE","LTR","LTR","Other","Other","SINE","SINE","SVA","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3"],[0.1765858667871545,0.02318040393824117,0.2864342990606996,0.026650250578324,0.4501774377669931,0.4286786004977415,0.0005240544250826736,0.7941997824793845,0.7555761238550414,0.001974411123986306,0.1859440392739558,0.006886313064937589],[4167639,20334816.5,20358863,102396850,5573960,28459679,9236290.5,66803579.5,65890922.5,416704225.5,116,2990.5],[151,151,175,175,342,342,39,39,214,214,158,158],[152.5,158,182,184,340,339,35,39,209,206,1278,1058]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="peak-length" class="section level4">
+<h4>Peak length</h4>
+<pre class="r"><code>All_H3K27ac_ROI_df &lt;- H3K27ac_sets_gr$all_H3K27ac %&gt;% 
+  as.data.frame() %&gt;% 
+   left_join(., H3K27ac_lookup) %&gt;% 
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) 
+
+
+All_H3K27ac_ROI_df %&gt;% 
+  mutate(cluster=&quot;all_regions&quot;) %&gt;% 
+  rbind(.,All_H3K27ac_ROI_df) %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;%
+  ggplot(aes(x=cluster, y=width))+
+  geom_boxplot()+
+  ggsignif::geom_signif(comparisons=list(c(&quot;all_regions&quot;,&quot;Set_1&quot;),
+                                      c(&quot;all_regions&quot;,&quot;Set_2&quot;),
+                                      c(&quot;all_regions&quot;,&quot;Set_3&quot;)), 
+                        y_position = c(2000, 2400, 2800))+
+  theme_classic()+
+    ggtitle(&quot; All assigned ROI lengths in H3K27ac&quot;) +
+  coord_cartesian(ylim=c(0,8000))</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20and%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-length-and-distance-1">
@@ -3831,14 +4108,13 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>H3K27ac_sets_gr$all_H3K27ac %&gt;% 
-  as.data.frame() %&gt;% 
-   left_join(., H3K27ac_lookup) %&gt;% 
-  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-  ggplot(aes(x=cluster, y=width))+
-  geom_boxplot()+
+<pre class="r"><code>ungroup_H3K27ac_repclass %&gt;% 
+  ggplot(aes(x=cluster,y=width))+
+  geom_boxplot() +
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle(&quot;Region of interest length in H3K27ac&quot;) </code></pre>
+    ggtitle(&quot;Width of TE_ROI overlaps in H3K27ac&quot;)+
+  coord_cartesian(ylim=c(0,1000))</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20and%20distance-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-length-and-distance-2">
@@ -3877,178 +4153,172 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>H3K27ac_repclass_sum %&gt;% 
-  ggplot(aes(x=cluster,y=width))+
+</div>
+<div id="tss-distance" class="section level4">
+<h4>TSS distance</h4>
+<pre class="r"><code>ungroup_H3K27ac_repclass %&gt;% 
+   group_by(Peakid, special_type) %&gt;% 
+  summarize(distanceToTSS=min(distanceToTSS),
+            cluster=paste0(unique(cluster),collapse = &quot;,&quot;)) %&gt;% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
   geom_boxplot() +
   facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle(&quot;Minimum overlapping TE &amp; ROI width length per class in H3K27ac&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20and%20distance-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-length-and-distance-3">
-Past versions of "H3K27ac length and distance-3.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K27ac-length-and-distance-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27ac length and distance-3.png" target="_blank">cf939c4</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>H3K27ac_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=min_dist_TSS))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
-  theme_classic()+
-    ggtitle(&quot;Distance to TSS per class in H3K27ac of overlapping ROIs&quot;)+
+    ggtitle(&quot;Distance to TSS by class in H3K27ac of overlapping ROIs&quot;)+
   coord_cartesian(ylim=c(-35000,35000))</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20and%20distance-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-length-and-distance-4">
-Past versions of "H3K27ac length and distance-4.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K27ac-length-and-distance-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27ac length and distance-4.png" target="_blank">cf939c4</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20tss%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-</div>
-<pre class="r"><code>H3K27ac_ols$all_H3K27ac %&gt;%
-   left_join(., H3K27ac_lookup) %&gt;% 
-     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
-                                  is.na(repClass)~&quot;not_TE&quot;,
-                                  TRUE~&quot;Other&quot;))%&gt;% 
-  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-  ggplot(aes(x=special_type,y=pct_te_overlap))+
+<div id="percent-coverage-of-te" class="section level4">
+<h4>Percent coverage of TE</h4>
+<pre class="r"><code>ungroup_H3K27ac_repclass %&gt;% 
+  ggplot(aes(x=cluster,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle(&quot;Percent of TE overlapped in H3K27ac data&quot;) </code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20length%20and%20distance-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27ac-length-and-distance-5">
-Past versions of "H3K27ac length and distance-5.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K27ac-length-and-distance-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K27ac length and distance-5.png" target="_blank">abd595b</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
-</div>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20a%20differences%20in%20percent%20coverage-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>comparisons &lt;- list(
+  c(&quot;Set_1&quot;, &quot;Set_2&quot;),
+  c(&quot;Set_1&quot;, &quot;Set_3&quot;)
+)
+Per_TE_cov_H3K27ac &lt;- ungroup_H3K27ac_repclass %&gt;% 
+ group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) &lt; 2) return(NULL)
+      test &lt;- wilcox.test(pct_te_overlap ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = &quot;_vs_&quot;),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$pct_te_overlap[dat$cluster == &quot;Set_1&quot;]),
+        median_other = median(dat$pct_te_overlap[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+
+datatable( Per_TE_cov_H3K27ac,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test of Percent of TE coverage; H3K27ac&quot;,
+  
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-a658c899f62d90d86a7a" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-a658c899f62d90d86a7a">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test of Percent of TE coverage; H3K27ac<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12"],["DNA","DNA","LINE","LINE","LTR","LTR","Other","Other","SINE","SINE","SVA","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3"],[0.928080364683436,0.4908145867540749,0.05901041348075611,0.5218714404917886,0.2286256741297012,3.036971840829489e-13,0.00108724706811337,0.01996197435976461,0.001787551445824514,0.0007966494036717741,0.3105192222978422,0.0004791634253773735],[4341124.5,20861540.5,21545300,105210500.5,5292735,25822908,8721290,67726406.5,68537075.5,399610898.5,356,5709.5],[100,100,100,100,100,100,100,100,100,100,83.66559485530547,83.66559485530547],[100,100,100,100,100,100,100,100,100,100,41.64335280669723,22.46963562753037]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="h3k27me3-lengths-of-te-tss-distance" class="section level3">
 <h3>H3K27me3 lengths of TE, TSS distance</h3>
-<pre class="r"><code>H3K27me3_repclass_sum &lt;- H3K27me3_ols$all_H3K27me3 %&gt;%
+<div id="te-length-1" class="section level4">
+<h4>TE length</h4>
+<pre class="r"><code>ungroup_H3K27me3_repclass &lt;- H3K27me3_ols$all_H3K27me3 %&gt;%
    left_join(., H3K27me3_lookup) %&gt;% 
      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+   mutate(special_type=case_when(str_detect(&quot;SINE&quot;, repClass)~&quot;SINE&quot;,
+                                  str_detect(&quot;LINE&quot;, repClass)~&quot;LINE&quot;,
+                                  str_detect(&quot;LTR&quot;, repClass)~&quot;LTR&quot;,
+                                  str_detect(&quot;DNA&quot;, repClass)~&quot;DNA&quot;,
+                                  str_detect(&quot;Retroposon&quot;, repClass)~&quot;SVA&quot;,
                                   is.na(repClass)~&quot;not_TE&quot;,
                                   TRUE~&quot;Other&quot;))%&gt;% 
-  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-  group_by(Peakid, special_type) %&gt;% 
-  summarize(width= min(width),
-            min_te_len=min(te_len),
-            min_roi_len=min(roi_len),
-            min_overlap=min(overlap_bp),
-            min_dist_TSS=min(distanceToTSS),
-            max_dist_TSS=max(distanceToTSS),
-            cluster=paste0(unique(cluster), collapse = &quot;:&quot;)) 
-  
+  dplyr::filter(cluster != &quot;not_assigned&quot;) 
 
-H3K27me3_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=min_te_len))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
+# H3K27me3_repclass_sum &lt;- ungroup_H3K27me3_repclass %&gt;% 
+#   group_by(Peakid, special_type) %&gt;% 
+#   summarize(width= min(width),
+#             min_te_len=min(te_len),
+#             min_roi_len=min(roi_len),
+#             min_overlap=min(overlap_bp),
+#             min_dist_TSS=min(distanceToTSS),
+#             max_dist_TSS=max(distanceToTSS),
+#             cluster=paste0(unique(cluster), collapse = &quot;:&quot;)) 
+#   
+
+# H3K27me3_repclass_sum %&gt;% 
+#   ggplot(aes(x=special_type,y=min_te_len))+
+#   geom_boxplot() +
+#   facet_wrap(~cluster)+
+#   theme_classic()+
+#     ggtitle(&quot;Overlapping TE minimum length per class in H3K27me3&quot;)+
+#    coord_cartesian(ylim=c(0,2500))
+
+ungroup_H3K27me3_repclass %&gt;% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type) %&gt;% 
+  bind_rows(non_ol_H3K27me3_df) %&gt;% 
+  ggplot(aes(x=cluster,y=te_len))+
+  geom_boxplot(aes(fill=cluster)) +
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle(&quot;Overlapping minimum TE length per class in H3K27me3&quot;)</code></pre>
+    ggtitle(&quot;All overlapping TE lengths in H3K27me3&quot;)+
+   coord_cartesian(ylim=c(0,1500))</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20of%20overlaps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>H3K27me3_wilcox_te_len &lt;- ungroup_H3K27me3_repclass %&gt;% 
+    dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
+    filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;)) %&gt;%
+  group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+        
+      # only run test if both groups are present
+      if (length(unique(dat$cluster)) == 2) {
+        test &lt;- wilcox.test(te_len ~ cluster, data = dat)
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = &quot;_vs_&quot;),
+          p.value      = test$p.value,
+          W            = test$statistic,
+          median_Set1  = median(dat$te_len[dat$cluster == &quot;Set_1&quot;]),
+          median_other = median(dat$te_len[dat$cluster == comp[2]])
+        )
+      } else {
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = &quot;_vs_&quot;),
+          p.value      = NA_real_,
+          W            = NA_real_,
+          median_Set1  = median(dat$te_len[dat$cluster == &quot;Set_1&quot;], na.rm = TRUE),
+          median_other = median(dat$te_len[dat$cluster == comp[2]], na.rm = TRUE)
+        )
+      }
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+ datatable(H3K27me3_wilcox_te_len,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on TE length  (&gt;1 bp overlap) H3K27me3&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0cd59e58f32df15654c1" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0cd59e58f32df15654c1">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on TE length  (&gt;1 bp overlap) H3K27me3<\/caption>","data":[["1","2","3","4","5","6"],["DNA","LINE","LTR","Other","SINE","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2"],[0.0001047141160522317,0.3291684100443156,0.2578134969599386,4.329553540888687e-12,0.3481989126322858,null],[220077,1765738,859045,1206692,3246138.5,null],[152,201,341,41,183,117],[312,176,391,78,177,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="peak-length-1" class="section level4">
+<h4>Peak length</h4>
+<pre class="r"><code>All_H3K27me3_ROI_df &lt;- H3K27me3_sets_gr$all_H3K27me3 %&gt;% 
+  as.data.frame() %&gt;% 
+   left_join(., H3K27me3_lookup) %&gt;% 
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) 
+
+
+All_H3K27me3_ROI_df %&gt;% 
+    mutate(cluster=&quot;all_regions&quot;) %&gt;% 
+  rbind(.,All_H3K27me3_ROI_df) %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;%
+  ggplot(aes(x=cluster, y=width))+
+  geom_boxplot()+
+  ggsignif::geom_signif(comparisons=list(c(&quot;all_regions&quot;,&quot;Set_1&quot;),
+                                      c(&quot;all_regions&quot;,&quot;Set_2&quot;)
+                                     ), 
+                        y_position = c(2000, 2400, 2800))+
+  theme_classic()+
+    ggtitle(&quot; All assigned ROI lengths in H3K27me3&quot;) +
+  coord_cartesian(ylim=c(0,6000))</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20and%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-length-and-distance-1">
@@ -4087,14 +4357,13 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>H3K27me3_sets_gr$all_H3K27me3 %&gt;% 
-  as.data.frame() %&gt;% 
-   left_join(., H3K27me3_lookup) %&gt;% 
-  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-  ggplot(aes(x=cluster, y=width))+
-  geom_boxplot()+
+<pre class="r"><code>ungroup_H3K27me3_repclass %&gt;% 
+  ggplot(aes(x=special_type,y=width))+
+  geom_boxplot() +
+  facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle(&quot;Region of interest length in H3K27me3&quot;) </code></pre>
+    ggtitle(&quot;Width of TE_ROI overlaps in H3K27me3&quot;)+
+  coord_cartesian(ylim=c(0,2000))</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20and%20distance-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-length-and-distance-2">
@@ -4133,177 +4402,206 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>H3K27me3_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=width))+
+</div>
+<div id="tss-distance-1" class="section level4">
+<h4>TSS distance</h4>
+<pre class="r"><code>ungroup_H3K27me3_repclass %&gt;% 
+   group_by(Peakid, special_type) %&gt;% 
+  summarize(distanceToTSS=min(distanceToTSS),
+            cluster=paste0(unique(cluster),collapse = &quot;,&quot;)) %&gt;% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
   geom_boxplot() +
-  facet_wrap(~cluster)+
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle(&quot;Minimum overlapping TE &amp; ROI width length per class in H3K27me3&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20and%20distance-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-length-and-distance-3">
-Past versions of "H3K27me3 length and distance-3.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K27me3-length-and-distance-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27me3 length and distance-3.png" target="_blank">cf939c4</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
+    ggtitle(&quot;Distance to TSS by class in H3K27me3 of overlapping ROIs&quot;)+
+  coord_cartesian(ylim=c(-35000,35000))</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20tss%20%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>distanceToTSS_H3K27me3 &lt;- ungroup_H3K27me3_repclass %&gt;% 
+ group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) &lt; 2) return(NULL)
+      test &lt;- wilcox.test(distanceToTSS ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = &quot;_vs_&quot;),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$distanceToTSS[dat$cluster == &quot;Set_1&quot;]),
+        median_other = median(dat$distanceToTSS[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+
+datatable( distanceToTSS_H3K27me3,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test of Distance to TSS; H3K27me3&quot;,
+  
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-cd77cdfeae29653da2e7" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-cd77cdfeae29653da2e7">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test of Distance to TSS; H3K27me3<\/caption>","data":[["1","2","3","4","5"],["DNA","LINE","LTR","Other","SINE"],["Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2"],[0.4185220137437386,0.6062717951447474,0.6897500610866124,0.1052431153504116,0.2600961325507922],[352178,1700456,996863,1912840,2772239],[0,0,0,0,0],[6169,-999,-2094.5,382.5,1282]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
-</div>
-<pre class="r"><code>H3K27me3_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=min_dist_TSS))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
-  theme_classic()+
-    ggtitle(&quot;Distance to TSS per class in H3K27me3 of overlapping ROIs&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20and%20distance-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-length-and-distance-4">
-Past versions of "H3K27me3 length and distance-4.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K27me3-length-and-distance-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K27me3 length and distance-4.png" target="_blank">cf939c4</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>H3K27me3_ols$all_H3K27me3 %&gt;%
-   left_join(., H3K27me3_lookup) %&gt;% 
-     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
-                                  is.na(repClass)~&quot;not_TE&quot;,
-                                  TRUE~&quot;Other&quot;))%&gt;% 
-  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-  ggplot(aes(x=special_type,y=pct_te_overlap))+
+<div id="percent-coverage-of-te-1" class="section level4">
+<h4>Percent coverage of TE</h4>
+<pre class="r"><code>ungroup_H3K27me3_repclass %&gt;% 
+  ggplot(aes(x=cluster,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle(&quot;Percent of TE overlapped in H3K27me3 data&quot;) </code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20length%20and%20distance-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K27me3-length-and-distance-5">
-Past versions of "H3K27me3 length and distance-5.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K27me3-length-and-distance-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K27me3 length and distance-5.png" target="_blank">abd595b</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
-</div>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20differences%20in%20percent%20coverage-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ungroup_H3K27me3_repclass %&gt;% 
+  dplyr::filter(special_type==&quot;Other&quot;) %&gt;% 
+  ggplot(aes(repFamily, y = pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  theme_classic()+
+    ggtitle(&quot;Percent of TE (just the Others) overlapped in H3K27me3 data&quot;) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1) )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20differences%20in%20percent%20coverage-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Per_TE_cov_H3K27me3 &lt;- ungroup_H3K27me3_repclass %&gt;% 
+ group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) &lt; 2) return(NULL)
+      test &lt;- wilcox.test(pct_te_overlap ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = &quot;_vs_&quot;),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$pct_te_overlap[dat$cluster == &quot;Set_1&quot;]),
+        median_other = median(dat$pct_te_overlap[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+
+datatable( Per_TE_cov_H3K27me3,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test of Percent of TE coverage; H3K27me3&quot;,
+  
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-51578eebe9951f7082e8" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-51578eebe9951f7082e8">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test of Percent of TE coverage; H3K27me3<\/caption>","data":[["1","2","3","4","5"],["DNA","LINE","LTR","Other","SINE"],["Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2"],[6.801896883662175e-06,0.02198187937562848,0.0006512911554283696,2.253722768112004e-10,5.871864915604718e-06],[547230,1917595.5,1243257.5,2584163.5,3916119],[100,100,100,100,100],[58.57605177993528,86.94469290399523,70.46459048719953,100,78.088954056696]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="h3k36me3-lengths-of-te-tss-distance" class="section level3">
 <h3>H3K36me3 lengths of TE, TSS distance</h3>
-<pre class="r"><code>H3K36me3_repclass_sum &lt;- H3K36me3_ols$all_H3K36me3 %&gt;%
+<div id="te-length-2" class="section level4">
+<h4>TE length</h4>
+<pre class="r"><code>ungroup_H3K36me3_repclass &lt;- H3K36me3_ols$all_H3K36me3 %&gt;%
    left_join(., H3K36me3_lookup) %&gt;% 
      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+    mutate(special_type=case_when(str_detect(&quot;SINE&quot;, repClass)~&quot;SINE&quot;,
+                                  str_detect(&quot;LINE&quot;, repClass)~&quot;LINE&quot;,
+                                  str_detect(&quot;LTR&quot;, repClass)~&quot;LTR&quot;,
+                                  str_detect(&quot;DNA&quot;, repClass)~&quot;DNA&quot;,
+                                  str_detect(&quot;Retroposon&quot;, repClass)~&quot;SVA&quot;,
                                   is.na(repClass)~&quot;not_TE&quot;,
                                   TRUE~&quot;Other&quot;))%&gt;% 
-  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-  group_by(Peakid, special_type) %&gt;% 
-  summarize(width= min(width),
-            min_te_len=min(te_len),
-            min_roi_len=min(roi_len),
-            min_overlap=min(overlap_bp),
-            min_dist_TSS=min(distanceToTSS),
-            max_dist_TSS=max(distanceToTSS),
-            cluster=paste0(unique(cluster), collapse = &quot;:&quot;)) 
-  
+  dplyr::filter(cluster != &quot;not_assigned&quot;) 
 
-H3K36me3_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=min_te_len))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
+# H3K36me3_repclass_sum &lt;- ungroup_H3K36me3_repclass %&gt;% 
+#   group_by(Peakid, special_type) %&gt;% 
+#   summarize(width= min(width),
+#             min_te_len=min(te_len),
+#             min_roi_len=min(roi_len),
+#             min_overlap=min(overlap_bp),
+#             min_dist_TSS=min(distanceToTSS),
+#             max_dist_TSS=max(distanceToTSS),
+#             cluster=paste0(unique(cluster), collapse = &quot;:&quot;)) 
+#   
+
+# H3K36me3_repclass_sum %&gt;% 
+#   ggplot(aes(x=special_type,y=min_te_len))+
+#   geom_boxplot() +
+#   facet_wrap(~cluster)+
+#   theme_classic()+
+#     ggtitle(&quot;Overlapping TE minimum length per class in H3K36me3&quot;)+
+#    coord_cartesian(ylim=c(0,2500))
+
+ungroup_H3K36me3_repclass %&gt;% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type) %&gt;% 
+  bind_rows(non_ol_H3K36me3_df) %&gt;% 
+  ggplot(aes(x=cluster,y=te_len))+
+  geom_boxplot(aes(fill=cluster)) +
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle(&quot;Overlapping minimum TE length per class in H3K36me3&quot;)</code></pre>
+    ggtitle(&quot;All overlapping TE lengths in H3K36me3&quot;)+
+   coord_cartesian(ylim=c(0,2000))</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20of%20overlaps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>H3K36me3_wilcox_te_len &lt;- ungroup_H3K36me3_repclass %&gt;% 
+    dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
+    filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;)) %&gt;%
+  group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+        
+      # only run test if both groups are present
+      if (length(unique(dat$cluster)) == 2) {
+        test &lt;- wilcox.test(te_len ~ cluster, data = dat)
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = &quot;_vs_&quot;),
+          p.value      = test$p.value,
+          W            = test$statistic,
+          median_Set1  = median(dat$te_len[dat$cluster == &quot;Set_1&quot;]),
+          median_other = median(dat$te_len[dat$cluster == comp[2]])
+        )
+      } else {
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = &quot;_vs_&quot;),
+          p.value      = NA_real_,
+          W            = NA_real_,
+          median_Set1  = median(dat$te_len[dat$cluster == &quot;Set_1&quot;], na.rm = TRUE),
+          median_other = median(dat$te_len[dat$cluster == comp[2]], na.rm = TRUE)
+        )
+      }
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+
+ datatable( H3K36me3_wilcox_te_len,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on TE length  (&gt;1 bp overlap) H3K36me3&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-5a6e40128866ecd7ad8d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-5a6e40128866ecd7ad8d">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on TE length  (&gt;1 bp overlap) H3K36me3<\/caption>","data":[["1","2","3","4","5","6"],["DNA","LINE","LTR","Other","SINE","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2"],[0.818152895401636,0.0006282144118286661,0.008330893009956264,0.3596787910577711,1.298378106590566e-07,0.7727928971080054],[2094357,12161991,3206274,8920963,78159040.5,2639],[154,203,366,41,272,1427],[154,176,349,39,224,1457.5]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="peak-length-2" class="section level4">
+<h4>Peak length</h4>
+<pre class="r"><code>All_H3K36me3_ROI_df &lt;- H3K36me3_sets_gr$all_H3K36me3 %&gt;% 
+  as.data.frame() %&gt;% 
+   left_join(., H3K36me3_lookup) %&gt;% 
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) 
+
+
+All_H3K36me3_ROI_df %&gt;% 
+    mutate(cluster=&quot;all_regions&quot;) %&gt;% 
+  rbind(.,All_H3K36me3_ROI_df) %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;%
+  ggplot(aes(x=cluster, y=width))+
+  geom_boxplot()+
+  ggsignif::geom_signif(comparisons=list(c(&quot;all_regions&quot;,&quot;Set_1&quot;),
+                                      c(&quot;all_regions&quot;,&quot;Set_2&quot;)
+                                     ), 
+                        y_position = c(2000, 2400, 2800))+
+  theme_classic()+
+    ggtitle(&quot; All assigned ROI lengths in H3K36me3&quot;) +
+  coord_cartesian(ylim=c(0,5000))</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20and%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-length-and-distance-1">
@@ -4342,14 +4640,13 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>H3K36me3_sets_gr$all_H3K36me3 %&gt;% 
-  as.data.frame() %&gt;% 
-   left_join(., H3K36me3_lookup) %&gt;% 
-  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-  ggplot(aes(x=cluster, y=width))+
-  geom_boxplot()+
+<pre class="r"><code>ungroup_H3K36me3_repclass %&gt;% 
+  ggplot(aes(x=special_type,y=width))+
+  geom_boxplot() +
+  facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle(&quot;Region of interest length in H3K36me3&quot;) </code></pre>
+    ggtitle(&quot;Width of TE_ROI overlaps in H3K36me3&quot;)+
+  coord_cartesian(ylim=c(0,2000))</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20and%20distance-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-length-and-distance-2">
@@ -4388,177 +4685,207 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>H3K36me3_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=width))+
+</div>
+<div id="tss-distance-2" class="section level4">
+<h4>TSS distance</h4>
+<pre class="r"><code>ungroup_H3K36me3_repclass %&gt;% 
+   group_by(Peakid, special_type) %&gt;% 
+  summarize(distanceToTSS=min(distanceToTSS),
+            cluster=paste0(unique(cluster),collapse = &quot;,&quot;)) %&gt;% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
   geom_boxplot() +
-  facet_wrap(~cluster)+
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle(&quot;Minimum overlapping TE &amp; ROI width length per class in H3K36me3&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20and%20distance-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-length-and-distance-3">
-Past versions of "H3K36me3 length and distance-3.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K36me3-length-and-distance-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K36me3 length and distance-3.png" target="_blank">cf939c4</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
+    ggtitle(&quot;Distance to TSS by class in H3K36me3 of overlapping ROIs&quot;)+
+  coord_cartesian(ylim=c(-35000,35000))</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20TSS%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>distanceToTSS_H3K36me3 &lt;- ungroup_H3K36me3_repclass %&gt;% 
+ group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) &lt; 2) return(NULL)
+      test &lt;- wilcox.test(distanceToTSS ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = &quot;_vs_&quot;),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$distanceToTSS[dat$cluster == &quot;Set_1&quot;]),
+        median_other = median(dat$distanceToTSS[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+
+datatable( distanceToTSS_H3K36me3,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test of Distance to TSS; H3K36me3&quot;,
+  
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-e46bb1f153b59666a9ce" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e46bb1f153b59666a9ce">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test of Distance to TSS; H3K36me3<\/caption>","data":[["1","2","3","4","5","6"],["DNA","LINE","LTR","Other","SINE","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2"],[0.2930330729258132,0.9643744507886188,0.1627789542944161,0.1394400742087605,0.1626142440196828,0.98990077058146],[2152224.5,11251804.5,2821189.5,8456008,74095635,2759],[259,339,792,0,81,544],[0,32,1660,0,0,792.5]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
-</div>
-<pre class="r"><code>H3K36me3_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=min_dist_TSS))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
-  theme_classic()+
-    ggtitle(&quot;Distance to TSS per class in H3K36me3 of overlapping ROIs&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20and%20distance-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-length-and-distance-4">
-Past versions of "H3K36me3 length and distance-4.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K36me3-length-and-distance-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K36me3 length and distance-4.png" target="_blank">cf939c4</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>H3K36me3_ols$all_H3K36me3 %&gt;%
-   left_join(., H3K36me3_lookup) %&gt;% 
-     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
-                                  is.na(repClass)~&quot;not_TE&quot;,
-                                  TRUE~&quot;Other&quot;))%&gt;% 
-  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-  ggplot(aes(x=special_type,y=pct_te_overlap))+
+<div id="percent-coverage-of-te-2" class="section level4">
+<h4>Percent coverage of TE</h4>
+<pre class="r"><code>ungroup_H3K36me3_repclass %&gt;% 
+  ggplot(aes(x=cluster,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle(&quot;Percent of TE overlapped in H3K36me3 data&quot;) </code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20length%20and%20distance-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K36me3-length-and-distance-5">
-Past versions of "H3K36me3 length and distance-5.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K36me3-length-and-distance-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K36me3 length and distance-5.png" target="_blank">abd595b</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
-</div>
+<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20differences%20in%20percent%20coverage-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ungroup_H3K36me3_repclass %&gt;% 
+  dplyr::filter(special_type==&quot;Other&quot;) %&gt;% 
+  ggplot(aes(cluster, y = pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~repFamily, ncol=5)+
+  theme_classic()+
+    ggtitle(&quot;Percent of TE (just the Others) overlapped in H3K36me3 data&quot;) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1) )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20differences%20in%20percent%20coverage-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Per_TE_cov_H3K36me3 &lt;- ungroup_H3K36me3_repclass %&gt;% 
+ group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) &lt; 2) return(NULL)
+      test &lt;- wilcox.test(pct_te_overlap ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = &quot;_vs_&quot;),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$pct_te_overlap[dat$cluster == &quot;Set_1&quot;]),
+        median_other = median(dat$pct_te_overlap[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+
+datatable( Per_TE_cov_H3K36me3,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test of Percent of TE coverage; H3K36me3&quot;,
+  
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-b37d4a80b32fe0044ae1" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-b37d4a80b32fe0044ae1">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test of Percent of TE coverage; H3K36me3<\/caption>","data":[["1","2","3","4","5","6"],["DNA","LINE","LTR","Other","SINE","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2","Set_1_vs_Set_2"],[1.002649611112384e-07,2.74718933498808e-22,2.919258245632575e-21,0.001500978608605628,1.32853805431078e-48,0.7213686081159987],[1734093,8828703,2064255,8353391.5,58180997.5,2920],[100,82.50950570342205,62.67123287671232,100,93.75,35.06417736289382],[100,100,100,100,100,30.83483776972395]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="h3k9me3-lengths-of-te-tss-distance" class="section level3">
 <h3>H3K9me3 lengths of TE, TSS distance</h3>
-<pre class="r"><code>H3K9me3_repclass_sum &lt;- H3K9me3_ols$all_H3K9me3 %&gt;%
+<div id="te-length-3" class="section level4">
+<h4>TE length</h4>
+<pre class="r"><code>ungroup_H3K9me3_repclass &lt;- H3K9me3_ols$all_H3K9me3 %&gt;%
    left_join(., H3K9me3_lookup) %&gt;% 
      mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
+    mutate(special_type=case_when(str_detect(&quot;SINE&quot;, repClass)~&quot;SINE&quot;,
+                                  str_detect(&quot;LINE&quot;, repClass)~&quot;LINE&quot;,
+                                  str_detect(&quot;LTR&quot;, repClass)~&quot;LTR&quot;,
+                                  str_detect(&quot;DNA&quot;, repClass)~&quot;DNA&quot;,
+                                  str_detect(&quot;Retroposon&quot;, repClass)~&quot;SVA&quot;,
                                   is.na(repClass)~&quot;not_TE&quot;,
                                   TRUE~&quot;Other&quot;))%&gt;% 
-  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-  group_by(Peakid, special_type) %&gt;% 
-  summarize(width= min(width),
-            min_te_len=min(te_len),
-            min_roi_len=min(roi_len),
-            min_overlap=min(overlap_bp),
-            min_dist_TSS=min(distanceToTSS),
-            max_dist_TSS=max(distanceToTSS),
-            cluster=paste0(unique(cluster), collapse = &quot;:&quot;)) 
-  
+  dplyr::filter(cluster != &quot;not_assigned&quot;) 
 
-H3K9me3_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=min_te_len))+
+# H3K9me3_repclass_sum &lt;- ungroup_H3K9me3_repclass %&gt;% 
+#   group_by(Peakid, special_type) %&gt;% 
+#   summarize(width= min(width),
+#             min_te_len=min(te_len),
+#             min_roi_len=min(roi_len),
+#             min_overlap=min(overlap_bp),
+#             min_dist_TSS=min(distanceToTSS),
+#             max_dist_TSS=max(distanceToTSS),
+#             cluster=paste0(unique(cluster), collapse = &quot;:&quot;)) 
+#   
+
+# H3K9me3_repclass_sum %&gt;% 
+#   ggplot(aes(x=special_type,y=min_te_len))+
+#   geom_boxplot() +
+#   facet_wrap(~cluster)+
+#   theme_classic()+
+#     ggtitle(&quot;Overlapping TE minimum length per class in H3K9me3&quot;)+
+#    coord_cartesian(ylim=c(0,2500))
+
+ungroup_H3K9me3_repclass %&gt;% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type) %&gt;% 
+  bind_rows(non_ol_H3K9me3_df) %&gt;% 
+  ggplot(aes(x=cluster,y=te_len))+
   geom_boxplot() +
-  facet_wrap(~cluster)+
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle(&quot;Overlapping minimum TE length per class in H3K9me3&quot;)</code></pre>
+    ggtitle(&quot;All overlapping TE lengths in H3K9me3&quot;)+
+   coord_cartesian(ylim=c(0,2000))</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20of%20overlaps-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>H3K9me3_wilcox_te_len &lt;- ungroup_H3K9me3_repclass %&gt;% 
+    dplyr::filter(special_type != &quot;not_TE&quot;) %&gt;% 
+    filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;)) %&gt;%
+  group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+        
+      # only run test if both groups are present
+      if (length(unique(dat$cluster)) == 2) {
+        test &lt;- wilcox.test(te_len ~ cluster, data = dat)
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = &quot;_vs_&quot;),
+          p.value      = test$p.value,
+          W            = test$statistic,
+          median_Set1  = median(dat$te_len[dat$cluster == &quot;Set_1&quot;]),
+          median_other = median(dat$te_len[dat$cluster == comp[2]])
+        )
+      } else {
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = &quot;_vs_&quot;),
+          p.value      = NA_real_,
+          W            = NA_real_,
+          median_Set1  = median(dat$te_len[dat$cluster == &quot;Set_1&quot;], na.rm = TRUE),
+          median_other = median(dat$te_len[dat$cluster == comp[2]], na.rm = TRUE)
+        )
+      }
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+ datatable( H3K9me3_wilcox_te_len,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test on TE length  (&gt;1 bp overlap) H3K9me3&quot;
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-3c95a109374607a53cf7" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-3c95a109374607a53cf7">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test on TE length  (&gt;1 bp overlap) H3K9me3<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12"],["DNA","DNA","LINE","LINE","LTR","LTR","Other","Other","SINE","SINE","SVA","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3"],[0.02196349125482488,0.002925337093920856,3.758779536788327e-51,1.814687673986452e-24,1.75798077004786e-13,1.540136996871429e-10,5.622707408071183e-24,0.9415772827459381,1.575809079655529e-29,6.694406829695479e-09,0.3022547381809634,null],[1123247.5,391717,19070998,8027378.5,12252418.5,4652686,7415770.5,3883419,18263916,6590543.5,2380,null],[184,184,515,515,426,426,45,45,238,238,1506,1506],[152,117,199,179.5,325.5,285,58,44,157,163,1648,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="peak-length-3" class="section level4">
+<h4>Peak length</h4>
+<pre class="r"><code>All_H3K9me3_ROI_df &lt;- H3K9me3_sets_gr$all_H3K9me3 %&gt;% 
+  as.data.frame() %&gt;% 
+   left_join(., H3K9me3_lookup) %&gt;% 
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) 
+
+
+All_H3K9me3_ROI_df %&gt;% 
+  mutate(cluster=&quot;all_regions&quot;) %&gt;% 
+  rbind(.,All_H3K9me3_ROI_df) %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;%
+  ggplot(aes(x=cluster, y=width))+
+  geom_boxplot()+
+  ggsignif::geom_signif(comparisons=list(c(&quot;all_regions&quot;,&quot;Set_1&quot;),
+                                      c(&quot;all_regions&quot;,&quot;Set_2&quot;),
+                                      c(&quot;all_regions&quot;,&quot;Set_3&quot;)), 
+                        y_position = c(2000, 2400, 2800),
+                        tip_length = 0.01)+
+  theme_classic()+
+    ggtitle(&quot; All assigned ROI lengths in H3K9me3&quot;) +
+  coord_cartesian(ylim=c(0,5000))</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20and%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-length-and-distance-1">
@@ -4597,14 +4924,13 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>H3K9me3_sets_gr$all_H3K9me3 %&gt;% 
-  as.data.frame() %&gt;% 
-   left_join(., H3K9me3_lookup) %&gt;% 
-  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-  ggplot(aes(x=cluster, y=width))+
-  geom_boxplot()+
+<pre class="r"><code>ungroup_H3K9me3_repclass %&gt;% 
+  ggplot(aes(x=special_type,y=width))+
+  geom_boxplot() +
+  facet_wrap(~cluster)+
   theme_classic()+
-    ggtitle(&quot;Region of interest length in H3K9me3&quot;) </code></pre>
+    ggtitle(&quot;Width of TE_ROI overlaps in H3K9me3&quot;)+
+  coord_cartesian(ylim=c(0,2000))</code></pre>
 <p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20and%20distance-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-length-and-distance-2">
@@ -4643,147 +4969,115 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>H3K9me3_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=width))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
+</div>
+<div id="tss-distance-3" class="section level4">
+<h4>TSS distance</h4>
+<pre class="r"><code>ungroup_H3K9me3_repclass %&gt;% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
+  geom_boxplot(aes(fill=cluster)) +
+  geom_signif(comparisons = list(c(&quot;Set_1&quot;,&quot;Set_2&quot;),
+                                  c(&quot;Set_1&quot;,&quot;Set_3&quot;)),
+                                  
+              map_signif_level = FALSE,
+              test = &quot;wilcox.test&quot;,
+              y_position = c(10,50,100))+# note values are scaled internally by geomsignif
+              # step_increase = 0.1)+
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle(&quot;Minimum overlapping TE &amp; ROI width length per class in H3K9me3&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20and%20distance-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-length-and-distance-3">
-Past versions of "H3K9me3 length and distance-3.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K9me3-length-and-distance-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K9me3 length and distance-3.png" target="_blank">cf939c4</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>H3K9me3_repclass_sum %&gt;% 
-  ggplot(aes(x=special_type,y=min_dist_TSS))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
+    ggtitle(&quot;Distance to TSS by class in H3K9me3 of overlapping ROIs&quot;)+
+  coord_cartesian(ylim=c(-45000,45000))</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20tss%20distance-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ungroup_H3K9me3_repclass %&gt;% 
+  ggplot(aes(x=cluster,y=distanceToTSS))+
+  geom_boxplot(aes(fill=cluster)) +
+  geom_signif(comparisons = list(c(&quot;Set_1&quot;,&quot;Set_2&quot;),
+                                  c(&quot;Set_1&quot;,&quot;Set_3&quot;)),
+                                  
+              map_signif_level = FALSE,
+              test = &quot;wilcox.test&quot;,
+              # y_position = c(10,50,100))+# note values are scaled internally by geomsignif
+              step_increase = 0.1)+
+  facet_wrap(~special_type)+
   theme_classic()+
-    ggtitle(&quot;Distance to TSS per class in H3K9me3 of overlapping ROIs&quot;)</code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20and%20distance-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-length-and-distance-4">
-Past versions of "H3K9me3 length and distance-4.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K9me3-length-and-distance-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cf939c48165508fac6af4a127ae2735b8242e86c/docs/figure/repeatmasker_data.Rmd/H3K9me3 length and distance-4.png" target="_blank">cf939c4</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
+    ggtitle(&quot;Distance to TSS by class in H3K9me3 of overlapping ROIs&quot;)</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20tss%20distance-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>distanceToTSS_H3K9me3 &lt;- ungroup_H3K9me3_repclass %&gt;% 
+ group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) &lt; 2) return(NULL)
+      test &lt;- wilcox.test(distanceToTSS ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = &quot;_vs_&quot;),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$distanceToTSS[dat$cluster == &quot;Set_1&quot;]),
+        median_other = median(dat$distanceToTSS[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+
+datatable( distanceToTSS_H3K9me3,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test of Distance to TSS; H3K9me3&quot;,
+  
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-11f6875e76cb95e1a41c" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-11f6875e76cb95e1a41c">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test of Distance to TSS; H3K9me3<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11"],["DNA","DNA","LINE","LINE","LTR","LTR","Other","Other","SINE","SINE","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2"],[0.2388182348058166,0.2972910885252136,0.01286932512962489,0.5112827497974627,0.141987980851788,0.1853493568613949,0.4713521453769063,0.4182550384936517,0.2565854210274893,0.2798403836811347,0.7345267248843798],[1068649,339297.5,14302056,5696373.5,10101670.5,3568589,9444108.5,3970697,14824310.5,5617271.5,2962],[1048,1048,2258,2258,1976,1976,0,0,706.5,706.5,-1330],[207,-58,0,91.5,-371,0,0,0,272,95,-365]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
-</div>
-<pre class="r"><code>H3K9me3_ols$all_H3K9me3 %&gt;%
-   left_join(., H3K9me3_lookup) %&gt;% 
-     mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) %&gt;% 
-    mutate(special_type=case_when(repClass==&quot;SINE&quot;~&quot;SINE&quot;,
-                                  repClass==&quot;LINE&quot;~&quot;LINE&quot;,
-                                  repClass==&quot;LTR&quot;~&quot;LTR&quot;,
-                                  repClass==&quot;DNA&quot;~&quot;DNA&quot;,
-                                  repClass==&quot;Retroposon&quot;~&quot;SVA&quot;,
-                                  is.na(repClass)~&quot;not_TE&quot;,
-                                  TRUE~&quot;Other&quot;))%&gt;% 
-  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;% 
-  ggplot(aes(x=special_type,y=pct_te_overlap))+
+<div id="percent-coverage-of-te-3" class="section level4">
+<h4>Percent coverage of TE</h4>
+<pre class="r"><code>ungroup_H3K9me3_repclass %&gt;% 
+  ggplot(aes(x=cluster,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle(&quot;Percent of TE overlapped in H3K9me3 data&quot;) </code></pre>
-<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20length%20and%20distance-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-H3K9me3-length-and-distance-5">
-Past versions of "H3K9me3 length and distance-5.png"
-</button>
-</p>
-<div id="fig-no-spaces-H3K9me3-length-and-distance-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/abd595bdc91e0f0e61bbbe6f0d6f2424eb77fc69/docs/figure/repeatmasker_data.Rmd/H3K9me3 length and distance-5.png" target="_blank">abd595b</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2025-09-23
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20a%20differences%20in%20percent%20coverage-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ungroup_H3K9me3_repclass %&gt;% 
+  dplyr::filter(special_type==&quot;Other&quot;) %&gt;% 
+  ggplot(aes(cluster, y = pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~repFamily, ncol=5)+
+  theme_classic()+
+    ggtitle(&quot;Percent of TE (just the Others) overlapped in H3K9me3 data&quot;) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1) )</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20a%20differences%20in%20percent%20coverage-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Per_TE_cov_H3K9me3 &lt;- ungroup_H3K9me3_repclass %&gt;% 
+ group_by(special_type) %&gt;%
+  group_map(~ {
+    stype &lt;- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat &lt;- .x %&gt;% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) &lt; 2) return(NULL)
+      test &lt;- wilcox.test(pct_te_overlap ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = &quot;_vs_&quot;),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$pct_te_overlap[dat$cluster == &quot;Set_1&quot;]),
+        median_other = median(dat$pct_te_overlap[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %&gt;%
+  bind_rows()
+
+
+datatable( Per_TE_cov_H3K9me3,caption = htmltools::tags$caption(
+  style = &#39;caption-side: top; text-align: center; font-weight: bold;&#39;,
+  &quot;Wilcox test of Percent of TE coverage; H3K9me3&quot;,
+  
+))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-285cf60577bf8f87949c" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-285cf60577bf8f87949c">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: center; font-weight: bold;\">Wilcox test of Percent of TE coverage; H3K9me3<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11"],["DNA","DNA","LINE","LINE","LTR","LTR","Other","Other","SINE","SINE","SVA"],["Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2","Set_1_vs_Set_3","Set_1_vs_Set_2"],[0.0280370778980704,0.1137444768368878,1.121811121334127e-29,1.022602138595954e-26,0.3230014356679528,0.00011290932249884,7.695557911643085e-13,0.08084142940316338,0.001987314910979015,0.001964852315194056,0.0006020141305814322],[1115821,269275.5,9076505.5,2934581,9924497,2466079.5,10378175,3709834.5,15468876.5,4767317.5,6131],[68.76653439153439,68.76653439153439,35.20726859738784,35.20726859738784,58.49056603773585,58.49056603773585,100,100,77.81630053357688,77.81630053357688,31.43631436314363],[55.67010309278351,96.5,71.7741935483871,100,58.11295919588369,96.1038961038961,100,100,70.94594594594594,100,8.600917431192661]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>special_type<\/th>\n      <th>comparison<\/th>\n      <th>p.value<\/th>\n      <th>W<\/th>\n      <th>median_Set1<\/th>\n      <th>median_other<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"special_type","targets":1},{"name":"comparison","targets":2},{"name":"p.value","targets":3},{"name":"W","targets":4},{"name":"median_Set1","targets":5},{"name":"median_other","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -4983,6 +5277,7 @@ loaded via a namespace (and not attached):
 [137] fastmatch_1.1-6                        
 [138] bit_4.6.0                              
 [139] ape_5.8-1                              </code></pre>
+</div>
 </div>
 </div>
 </div>
