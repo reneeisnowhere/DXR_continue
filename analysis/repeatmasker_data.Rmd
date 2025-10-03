@@ -135,7 +135,7 @@ H3K27ac_ols <- lapply(H3K27ac_sets_gr, function(df) {
   
   overlaps_df
 })
-
+rmskr_nonoverlapping_H3K27ac_gr <- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K27ac_sets_gr[[4]]) == 0]
 
 H3K27ac_ols$Set_1 %>% 
   as.data.frame() %>% 
@@ -242,6 +242,7 @@ H3K27me3_ols <- lapply(H3K27me3_sets_gr, function(df) {
   overlaps_df
 })
 
+rmskr_nonoverlapping_H3K27me3_gr <- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K27me3_sets_gr[[3]]) == 0]
 
 H3K27me3_ols$Set_1 %>% 
   as.data.frame() %>% 
@@ -331,6 +332,9 @@ H3K36me3_ols <- lapply(H3K36me3_sets_gr, function(df) {
   overlaps_df
 })
 
+rmskr_nonoverlapping_H3K36me3_gr <- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K36me3_sets_gr[[3]]) == 0]
+
+
 H3K36me3_ols$Set_1 %>% 
   as.data.frame() %>% 
   group_by(Peakid,repClass) %>% 
@@ -417,6 +421,9 @@ H3K9me3_ols <- lapply(H3K9me3_sets_gr, function(df) {
   
   overlaps_df
 })
+
+rmskr_nonoverlapping_H3K9me3_gr <- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K9me3_sets_gr[[4]]) == 0]
+
 
 H3K9me3_ols$Set_1 %>% 
   as.data.frame() %>% 
@@ -1406,30 +1413,89 @@ H3K9me3_counts_long_50per %>%
   
 
 ```
+### Creating non-overlapping TE data sets to be used later
+
+
+```{r H3K27ac non-overlapping TE}
+
+rmskr_nonoverlapping_H3K27ac_gr$te_len <- width(rmskr_nonoverlapping_H3K27ac_gr)
+ 
+non_ol_H3K27ac_df <- rmskr_nonoverlapping_H3K27ac_gr %>% 
+  as.data.frame() %>% 
+  mutate(cluster="non_overlapping", Peakid="non_overlapping", pct_te_overlap=0) %>% 
+  mutate(special_type=case_when(repClass=="SINE"~"SINE",
+                                  repClass=="LINE"~"LINE",
+                                  repClass=="LTR"~"LTR",
+                                  repClass=="DNA"~"DNA",
+                                  repClass=="Retroposon"~"SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other")) %>%
+    mutate(ppr_div=milliDiv) %>% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+# dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+```
+
+```{r H3K27me3 non-overlapping TE}
+
+rmskr_nonoverlapping_H3K27me3_gr$te_len <- width(rmskr_nonoverlapping_H3K27me3_gr)
+ 
+non_ol_H3K27me3_df <- rmskr_nonoverlapping_H3K27me3_gr %>% 
+  as.data.frame() %>% 
+  mutate(cluster="non_overlapping", Peakid="non_overlapping", pct_te_overlap=0) %>% 
+  mutate(special_type=case_when(repClass=="SINE"~"SINE",
+                                  repClass=="LINE"~"LINE",
+                                  repClass=="LTR"~"LTR",
+                                  repClass=="DNA"~"DNA",
+                                  repClass=="Retroposon"~"SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other")) %>%
+    mutate(ppr_div=milliDiv) %>% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+# dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+```
+
+```{r H3K36me3 non-overlapping TE}
+
+rmskr_nonoverlapping_H3K36me3_gr$te_len <- width(rmskr_nonoverlapping_H3K36me3_gr)
+ 
+non_ol_H3K36me3_df <- rmskr_nonoverlapping_H3K36me3_gr %>% 
+  as.data.frame() %>% 
+  mutate(cluster="non_overlapping", Peakid="non_overlapping", pct_te_overlap=0) %>% 
+  mutate(special_type=case_when(repClass=="SINE"~"SINE",
+                                  repClass=="LINE"~"LINE",
+                                  repClass=="LTR"~"LTR",
+                                  repClass=="DNA"~"DNA",
+                                  repClass=="Retroposon"~"SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other")) %>%
+    mutate(ppr_div=milliDiv) %>% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+# dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+```
+
+```{r H3K9me3 non-overlapping TE}
+
+rmskr_nonoverlapping_H3K9me3_gr$te_len <- width(rmskr_nonoverlapping_H3K9me3_gr)
+ 
+non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>% 
+  as.data.frame() %>% 
+  mutate(cluster="non_overlapping", Peakid="non_overlapping", pct_te_overlap=0) %>% 
+  mutate(special_type=case_when(repClass=="SINE"~"SINE",
+                                  repClass=="LINE"~"LINE",
+                                  repClass=="LTR"~"LTR",
+                                  repClass=="DNA"~"DNA",
+                                  repClass=="Retroposon"~"SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other")) %>%
+    mutate(ppr_div=milliDiv) %>% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+# dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+```
+
 
 ### H3K27ac divergence from  consensus
 ```{r H3K27ac divergence, fig.width=8}
 
-
-  # H3K27ac_ols$all_H3K27ac %>% 
-  #   left_join(., H3K27ac_lookup) %>% 
-  #    mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% 
-  #   dplyr::filter(cluster != "not_assigned") %>% 
-  #   mutate(special_type=case_when(repClass=="SINE"~"SINE",
-  #                                 repClass=="LINE"~"LINE",
-  #                                 repClass=="LTR"~"LTR",
-  #                                 repClass=="DNA"~"DNA",
-  #                                 repClass=="Retroposon"~"SVA",
-  #                                 is.na(repClass)~"not_TE",
-  #                                 TRUE~"Other")) %>% 
-  #   mutate(ppr_div=milliDiv) %>% 
-  # ggplot(aes(x=ppr_div))+
-  # geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
-  # facet_wrap(~special_type, scales="free_y") +
-  #   theme_classic()
-  # 
-  # 
-  
   H3K27ac_ols$all_H3K27ac %>% 
   as.data.frame() %>% 
     left_join(., H3K27ac_lookup) %>% 
@@ -1442,11 +1508,13 @@ H3K9me3_counts_long_50per %>%
                                   str_detect(repClass, "Retroposon") ~ "SVA",
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
-  dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+  dplyr::filter(special_type != "not_TE")%>% 
+    mutate(ppr_div=milliDiv) %>%
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %>% 
+  bind_rows(non_ol_H3K27ac_df) %>% 
+  ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales="free_y") +
+  facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
     ggtitle("Divergence from overlapping TE H3K27ac 1bp")
   
@@ -1466,16 +1534,16 @@ H3K9me3_counts_long_50per %>%
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
     mutate(ppr_div=milliDiv) %>%
-    ggplot(aes(y=ppr_div,x=special_type, fill=cluster))+
-  # geom_boxplot(aes(fill=cluster) ) +
-    geom_boxplot()+
-stat_compare_means(
-    aes(group = cluster),               # tell ggpubr we want to compare clusters
-    method = "wilcox.test",             # same test as before
-    comparisons = list(c("Set1", "Set2"), c("Set1", "Set3")),
-    label = "p.signif",                 # show stars instead of p-values
-    hide.ns = TRUE                      # hide non-significant comparisons
-  ) +
+     ggplot(aes(y=ppr_div,x=cluster))+
+  geom_boxplot(aes(fill=cluster) ) +
+  facet_wrap(~special_type, scales="free_y") +
+# stat_compare_means(
+#     aes(group = cluster),               # tell ggpubr we want to compare clusters
+#     method = "wilcox.test",             # same test as before
+#     comparisons = list(c("Set1", "Set2"), c("Set1", "Set3")),
+#     label = "p.signif",                 # show stars instead of p-values
+#     hide.ns = TRUE                      # hide non-significant comparisons
+#   ) +
     theme_classic()+
     # facet_wrap(~ special_type, scales = "free_y") +
     ggtitle("Divergence from overlapping TE H3K27ac 50% overlap")
@@ -1486,6 +1554,8 @@ stat_compare_means(
   c("Set_1", "Set_2"),
   c("Set_1", "Set_3")
 )
+  comparisons_2 <- list(
+  c("Set_1","Set_2"))
 
   # 
   H3K27ac_wilcox_results <- H3K27ac_ols$all_H3K27ac %>%
@@ -1568,6 +1638,7 @@ stat_compare_means(
 ```
 
 ### H3K27me3 divergence from consensus
+
 ```{r H3K27me3 divergence, fig.width=8}
 
 
@@ -1604,9 +1675,11 @@ stat_compare_means(
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
     mutate(ppr_div=milliDiv) %>% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %>% 
+  bind_rows(non_ol_H3K27me3_df) %>% 
+  ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales="free_y") +
+  facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
     ggtitle("Divergence from overlapping TE H3K27me3 1bp")
   
@@ -1626,9 +1699,9 @@ stat_compare_means(
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
     mutate(ppr_div=milliDiv) %>% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+      ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales="free_y") +
+  facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
     ggtitle("Divergence from overlapping TE H3K27me3 50% overlap")
   
@@ -1650,7 +1723,7 @@ stat_compare_means(
   group_by(special_type) %>%
   group_map(~ {
     stype <- unique(.x$special_type)  # capture the TE type
-    map_dfr(comparisons, function(comp) {
+    map_dfr(comparisons_2, function(comp) {
       dat <- .x %>% filter(cluster %in% comp)
        # Skip if both clusters are not present
       if(length(unique(dat$cluster)) < 2) return(NULL)
@@ -1755,10 +1828,12 @@ stat_compare_means(
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+    mutate(ppr_div=milliDiv) %>%
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %>% 
+  bind_rows(non_ol_H3K36me3_df) %>% 
+ ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales="free_y") +
+  facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
     ggtitle("Divergence from overlapping TE H3K36me3 1bp")
   
@@ -1778,10 +1853,9 @@ stat_compare_means(
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
     mutate(ppr_div=milliDiv) %>% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+  ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales="free_y") +
-    theme_classic()+
+  facet_wrap(~special_type, scales="free_y") +
     ggtitle("Divergence from overlapping TE H3K36me3 50% overlap")
   
   
@@ -1824,7 +1898,7 @@ stat_compare_means(
   group_by(special_type) %>%
   group_map(~ {
     stype <- unique(.x$special_type)  # capture the TE type
-    map_dfr(comparisons, function(comp) {
+    map_dfr(comparisons_2, function(comp) {
       dat <- .x %>% filter(cluster %in% comp)
        # Skip if both clusters are not present
       if(length(unique(dat$cluster)) < 2) return(NULL)
@@ -1892,7 +1966,6 @@ stat_compare_means(
     
 ```
 
-
 ### H3K9me3 divergence from  consensus
 ```{r H3K9me3 divergence, fig.width=8}
 
@@ -1929,9 +2002,11 @@ stat_compare_means(
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
     mutate(ppr_div=milliDiv) %>% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %>% 
+  bind_rows(non_ol_H3K27ac_df) %>% 
+   ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales="free_y") +
+  facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
     ggtitle("Divergence from overlapping TE H3K9me3 1bp")
   
@@ -1951,9 +2026,9 @@ stat_compare_means(
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
     mutate(ppr_div=milliDiv) %>% 
-  ggplot(aes(y=ppr_div,x=special_type))+
+   ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
-  # facet_wrap(~special_type, scales="free_y") +
+  facet_wrap(~special_type, scales="free_y") +
     theme_classic()+
     ggtitle("Divergence from overlapping TE H3K9me3 50% overlap")
   
@@ -2045,6 +2120,7 @@ stat_compare_means(
 
 ### H3K27ac lengths of TE, TSS distance
 
+#### TE length  
 
 ```{r, H3K27ac length of overlaps}
 ungroup_H3K27ac_repclass <- H3K27ac_ols$all_H3K27ac %>%
@@ -2078,18 +2154,47 @@ ungroup_H3K27ac_repclass <- H3K27ac_ols$all_H3K27ac %>%
 #     ggtitle("Overlapping TE minimum length per class in H3K27ac")+
 #    coord_cartesian(ylim=c(0,2500))
 
-ungroup_H3K27ac_repclass %>% 
-  ggplot(aes(x=special_type,y=te_len))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
+ungroup_H3K27ac_repclass %>%
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type) %>% 
+  bind_rows(non_ol_H3K27ac_df) %>% 
+  ggplot(aes(x=cluster,y=te_len))+
+  geom_boxplot(aes(fill=cluster)) +
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle("All overlapping TE lengths in H3K27ac")+
-   coord_cartesian(ylim=c(0,2500))
+   coord_cartesian(ylim=c(0,1700))
+
+
+
+H3K27ac_wilcox_te_len <- ungroup_H3K27ac_repclass %>% 
+    dplyr::filter(special_type != "not_TE") %>% 
+    filter(cluster %in% c("Set_1", "Set_2", "Set_3")) %>%
+  group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+      test <- wilcox.test(te_len ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = "_vs_"),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$te_len[dat$cluster == "Set_1"]),
+        median_other = median(dat$te_len[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
+
+ datatable( H3K27ac_wilcox_te_len,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on TE length  (>1 bp overlap) H3K27ac"))
 ```
 
+#### Peak length  
 
 ```{r, H3K27ac length and distance}
-
 All_H3K27ac_ROI_df <- H3K27ac_sets_gr$all_H3K27ac %>% 
   as.data.frame() %>% 
    left_join(., H3K27ac_lookup) %>% 
@@ -2099,22 +2204,30 @@ All_H3K27ac_ROI_df <- H3K27ac_sets_gr$all_H3K27ac %>%
 All_H3K27ac_ROI_df %>% 
   mutate(cluster="all_regions") %>% 
   rbind(.,All_H3K27ac_ROI_df) %>% 
-  # dplyr::filter(cluster != "not_assigned") %>% 
+  dplyr::filter(cluster != "not_assigned") %>%
   ggplot(aes(x=cluster, y=width))+
   geom_boxplot()+
+  ggsignif::geom_signif(comparisons=list(c("all_regions","Set_1"),
+                                      c("all_regions","Set_2"),
+                                      c("all_regions","Set_3")), 
+                        y_position = c(2000, 2400, 2800))+
   theme_classic()+
     ggtitle(" All assigned ROI lengths in H3K27ac") +
-  coord_cartesian(ylim=c(0,3000))
+  coord_cartesian(ylim=c(0,8000))
 
 
 ungroup_H3K27ac_repclass %>% 
-  ggplot(aes(x=special_type,y=width))+
+  ggplot(aes(x=cluster,y=width))+
   geom_boxplot() +
-  facet_wrap(~cluster)+
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle("Width of TE_ROI overlaps in H3K27ac")+
-  coord_cartesian(ylim=c(0,2000))
+  coord_cartesian(ylim=c(0,1000))
+```
 
+#### TSS distance 
+
+```{r, H3K27ac tss distance}
 ungroup_H3K27ac_repclass %>% 
    group_by(Peakid, special_type) %>% 
   summarize(distanceToTSS=min(distanceToTSS),
@@ -2127,9 +2240,17 @@ ungroup_H3K27ac_repclass %>%
   coord_cartesian(ylim=c(-35000,35000))
 
 
+
+```
+
+#### Percent coverage of TE  
+
+```{r H3K27ac a differences in percent coverage}
+ 
 ungroup_H3K27ac_repclass %>% 
-  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  ggplot(aes(x=cluster,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle("Percent of TE overlapped in H3K27ac data") 
 
@@ -2138,11 +2259,44 @@ ungroup_H3K27ac_repclass %>%
 
 
 
+comparisons <- list(
+  c("Set_1", "Set_2"),
+  c("Set_1", "Set_3")
+)
+Per_TE_cov_H3K27ac <- ungroup_H3K27ac_repclass %>% 
+ group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) < 2) return(NULL)
+      test <- wilcox.test(pct_te_overlap ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = "_vs_"),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$pct_te_overlap[dat$cluster == "Set_1"]),
+        median_other = median(dat$pct_te_overlap[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
+
+
+datatable( Per_TE_cov_H3K27ac,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test of Percent of TE coverage; H3K27ac",
+  
+))
+
 ```
+
 
 ### H3K27me3 lengths of TE, TSS distance
 
-
+#### TE length  
 
 ```{r, H3K27me3 length of overlaps}
 ungroup_H3K27me3_repclass <- H3K27me3_ols$all_H3K27me3 %>%
@@ -2177,17 +2331,59 @@ ungroup_H3K27me3_repclass <- H3K27me3_ols$all_H3K27me3 %>%
 #    coord_cartesian(ylim=c(0,2500))
 
 ungroup_H3K27me3_repclass %>% 
-  ggplot(aes(x=special_type,y=te_len))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type) %>% 
+  bind_rows(non_ol_H3K27me3_df) %>% 
+  ggplot(aes(x=cluster,y=te_len))+
+  geom_boxplot(aes(fill=cluster)) +
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle("All overlapping TE lengths in H3K27me3")+
-   coord_cartesian(ylim=c(0,2500))
+   coord_cartesian(ylim=c(0,1500))
+
+
+H3K27me3_wilcox_te_len <- ungroup_H3K27me3_repclass %>% 
+    dplyr::filter(special_type != "not_TE") %>% 
+    filter(cluster %in% c("Set_1", "Set_2")) %>%
+  group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+        
+      # only run test if both groups are present
+      if (length(unique(dat$cluster)) == 2) {
+        test <- wilcox.test(te_len ~ cluster, data = dat)
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = "_vs_"),
+          p.value      = test$p.value,
+          W            = test$statistic,
+          median_Set1  = median(dat$te_len[dat$cluster == "Set_1"]),
+          median_other = median(dat$te_len[dat$cluster == comp[2]])
+        )
+      } else {
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = "_vs_"),
+          p.value      = NA_real_,
+          W            = NA_real_,
+          median_Set1  = median(dat$te_len[dat$cluster == "Set_1"], na.rm = TRUE),
+          median_other = median(dat$te_len[dat$cluster == comp[2]], na.rm = TRUE)
+        )
+      }
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
+
+ datatable(H3K27me3_wilcox_te_len,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on TE length  (>1 bp overlap) H3K27me3"
+))
 ```
 
+#### Peak length  
 
 ```{r, H3K27me3 length and distance}
-
 All_H3K27me3_ROI_df <- H3K27me3_sets_gr$all_H3K27me3 %>% 
   as.data.frame() %>% 
    left_join(., H3K27me3_lookup) %>% 
@@ -2195,14 +2391,18 @@ All_H3K27me3_ROI_df <- H3K27me3_sets_gr$all_H3K27me3 %>%
 
 
 All_H3K27me3_ROI_df %>% 
-  mutate(cluster="all_regions") %>% 
+    mutate(cluster="all_regions") %>% 
   rbind(.,All_H3K27me3_ROI_df) %>% 
-  # dplyr::filter(cluster != "not_assigned") %>% 
+  dplyr::filter(cluster != "not_assigned") %>%
   ggplot(aes(x=cluster, y=width))+
   geom_boxplot()+
+  ggsignif::geom_signif(comparisons=list(c("all_regions","Set_1"),
+                                      c("all_regions","Set_2")
+                                     ), 
+                        y_position = c(2000, 2400, 2800))+
   theme_classic()+
     ggtitle(" All assigned ROI lengths in H3K27me3") +
-  coord_cartesian(ylim=c(0,3000))
+  coord_cartesian(ylim=c(0,6000))
 
 
 ungroup_H3K27me3_repclass %>% 
@@ -2212,7 +2412,11 @@ ungroup_H3K27me3_repclass %>%
   theme_classic()+
     ggtitle("Width of TE_ROI overlaps in H3K27me3")+
   coord_cartesian(ylim=c(0,2000))
+```
 
+#### TSS distance  
+
+```{r, H3K27me3 tss  distance}
 ungroup_H3K27me3_repclass %>% 
    group_by(Peakid, special_type) %>% 
   summarize(distanceToTSS=min(distanceToTSS),
@@ -2224,12 +2428,46 @@ ungroup_H3K27me3_repclass %>%
     ggtitle("Distance to TSS by class in H3K27me3 of overlapping ROIs")+
   coord_cartesian(ylim=c(-35000,35000))
 
+distanceToTSS_H3K27me3 <- ungroup_H3K27me3_repclass %>% 
+ group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) < 2) return(NULL)
+      test <- wilcox.test(distanceToTSS ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = "_vs_"),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$distanceToTSS[dat$cluster == "Set_1"]),
+        median_other = median(dat$distanceToTSS[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
+
+
+datatable( distanceToTSS_H3K27me3,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test of Distance to TSS; H3K27me3",
+  
+))
+
+```
+
+#### Percent coverage of TE  
+
+```{r H3K27me3 differences in percent coverage}
+ 
 ungroup_H3K27me3_repclass %>% 
-  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  ggplot(aes(x=cluster,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle("Percent of TE overlapped in H3K27me3 data") 
-
 
 ungroup_H3K27me3_repclass %>% 
   dplyr::filter(special_type=="Other") %>% 
@@ -2239,17 +2477,39 @@ ungroup_H3K27me3_repclass %>%
     ggtitle("Percent of TE (just the Others) overlapped in H3K27me3 data") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1) )
 
+Per_TE_cov_H3K27me3 <- ungroup_H3K27me3_repclass %>% 
+ group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) < 2) return(NULL)
+      test <- wilcox.test(pct_te_overlap ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = "_vs_"),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$pct_te_overlap[dat$cluster == "Set_1"]),
+        median_other = median(dat$pct_te_overlap[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
 
 
-
-
+datatable( Per_TE_cov_H3K27me3,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test of Percent of TE coverage; H3K27me3",
+  
+))
 ```
-
 
 
 ### H3K36me3 lengths of TE, TSS distance
 
-
+#### TE length
 
 ```{r, H3K36me3 length of overlaps}
 ungroup_H3K36me3_repclass <- H3K36me3_ols$all_H3K36me3 %>%
@@ -2284,17 +2544,61 @@ ungroup_H3K36me3_repclass <- H3K36me3_ols$all_H3K36me3 %>%
 #    coord_cartesian(ylim=c(0,2500))
 
 ungroup_H3K36me3_repclass %>% 
-  ggplot(aes(x=special_type,y=te_len))+
-  geom_boxplot() +
-  facet_wrap(~cluster)+
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type) %>% 
+  bind_rows(non_ol_H3K36me3_df) %>% 
+  ggplot(aes(x=cluster,y=te_len))+
+  geom_boxplot(aes(fill=cluster)) +
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle("All overlapping TE lengths in H3K36me3")+
-   coord_cartesian(ylim=c(0,2500))
+   coord_cartesian(ylim=c(0,2000))
+
+
+
+H3K36me3_wilcox_te_len <- ungroup_H3K36me3_repclass %>% 
+    dplyr::filter(special_type != "not_TE") %>% 
+    filter(cluster %in% c("Set_1", "Set_2", "Set_3")) %>%
+  group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+        
+      # only run test if both groups are present
+      if (length(unique(dat$cluster)) == 2) {
+        test <- wilcox.test(te_len ~ cluster, data = dat)
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = "_vs_"),
+          p.value      = test$p.value,
+          W            = test$statistic,
+          median_Set1  = median(dat$te_len[dat$cluster == "Set_1"]),
+          median_other = median(dat$te_len[dat$cluster == comp[2]])
+        )
+      } else {
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = "_vs_"),
+          p.value      = NA_real_,
+          W            = NA_real_,
+          median_Set1  = median(dat$te_len[dat$cluster == "Set_1"], na.rm = TRUE),
+          median_other = median(dat$te_len[dat$cluster == comp[2]], na.rm = TRUE)
+        )
+      }
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
+
+
+ datatable( H3K36me3_wilcox_te_len,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on TE length  (>1 bp overlap) H3K36me3"
+))
 ```
 
+####  Peak length  
 
 ```{r, H3K36me3 length and distance}
-
 All_H3K36me3_ROI_df <- H3K36me3_sets_gr$all_H3K36me3 %>% 
   as.data.frame() %>% 
    left_join(., H3K36me3_lookup) %>% 
@@ -2302,14 +2606,18 @@ All_H3K36me3_ROI_df <- H3K36me3_sets_gr$all_H3K36me3 %>%
 
 
 All_H3K36me3_ROI_df %>% 
-  mutate(cluster="all_regions") %>% 
+    mutate(cluster="all_regions") %>% 
   rbind(.,All_H3K36me3_ROI_df) %>% 
-  # dplyr::filter(cluster != "not_assigned") %>% 
+  dplyr::filter(cluster != "not_assigned") %>%
   ggplot(aes(x=cluster, y=width))+
   geom_boxplot()+
+  ggsignif::geom_signif(comparisons=list(c("all_regions","Set_1"),
+                                      c("all_regions","Set_2")
+                                     ), 
+                        y_position = c(2000, 2400, 2800))+
   theme_classic()+
     ggtitle(" All assigned ROI lengths in H3K36me3") +
-  coord_cartesian(ylim=c(0,3000))
+  coord_cartesian(ylim=c(0,5000))
 
 
 ungroup_H3K36me3_repclass %>% 
@@ -2319,7 +2627,11 @@ ungroup_H3K36me3_repclass %>%
   theme_classic()+
     ggtitle("Width of TE_ROI overlaps in H3K36me3")+
   coord_cartesian(ylim=c(0,2000))
+```
 
+#### TSS distance  
+
+```{r, H3K36me3 TSS distance}
 ungroup_H3K36me3_repclass %>% 
    group_by(Peakid, special_type) %>% 
   summarize(distanceToTSS=min(distanceToTSS),
@@ -2329,12 +2641,45 @@ ungroup_H3K36me3_repclass %>%
   facet_wrap(~special_type)+
   theme_classic()+
     ggtitle("Distance to TSS by class in H3K36me3 of overlapping ROIs")+
-  coord_cartesian(ylim=c(-25000,25000))
+  coord_cartesian(ylim=c(-35000,35000))
+
+distanceToTSS_H3K36me3 <- ungroup_H3K36me3_repclass %>% 
+ group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) < 2) return(NULL)
+      test <- wilcox.test(distanceToTSS ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = "_vs_"),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$distanceToTSS[dat$cluster == "Set_1"]),
+        median_other = median(dat$distanceToTSS[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
 
 
+datatable( distanceToTSS_H3K36me3,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test of Distance to TSS; H3K36me3",
+  
+))
+```
+
+#### Percent coverage of TE  
+
+```{r H3K36me3 differences in percent coverage}
+ 
 ungroup_H3K36me3_repclass %>% 
-  ggplot(aes(x=special_type,y=pct_te_overlap))+
+  ggplot(aes(x=cluster,y=pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle("Percent of TE overlapped in H3K36me3 data") 
 
@@ -2342,22 +2687,48 @@ ungroup_H3K36me3_repclass %>%
 
 ungroup_H3K36me3_repclass %>% 
   dplyr::filter(special_type=="Other") %>% 
-  ggplot(aes(repFamily, y = pct_te_overlap))+
+  ggplot(aes(cluster, y = pct_te_overlap))+
   geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~repFamily, ncol=5)+
   theme_classic()+
     ggtitle("Percent of TE (just the Others) overlapped in H3K36me3 data") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1) )
 
 
 
+Per_TE_cov_H3K36me3 <- ungroup_H3K36me3_repclass %>% 
+ group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons_2, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) < 2) return(NULL)
+      test <- wilcox.test(pct_te_overlap ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = "_vs_"),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$pct_te_overlap[dat$cluster == "Set_1"]),
+        median_other = median(dat$pct_te_overlap[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
 
+
+datatable( Per_TE_cov_H3K36me3,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test of Percent of TE coverage; H3K36me3",
+  
+))
 ```
-
 
 
 ### H3K9me3 lengths of TE, TSS distance
 
-
+#### TE length  
 
 ```{r, H3K9me3 length of overlaps}
 ungroup_H3K9me3_repclass <- H3K9me3_ols$all_H3K9me3 %>%
@@ -2392,50 +2763,81 @@ ungroup_H3K9me3_repclass <- H3K9me3_ols$all_H3K9me3 %>%
 #    coord_cartesian(ylim=c(0,2500))
 
 ungroup_H3K9me3_repclass %>% 
-  ggplot(aes(x=special_type,y=te_len))+
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type) %>% 
+  bind_rows(non_ol_H3K9me3_df) %>% 
+  ggplot(aes(x=cluster,y=te_len))+
   geom_boxplot() +
-  facet_wrap(~cluster)+
+  facet_wrap(~special_type)+
   theme_classic()+
     ggtitle("All overlapping TE lengths in H3K9me3")+
-   coord_cartesian(ylim=c(0,2500))
+   coord_cartesian(ylim=c(0,2000))
+
+
+
+
+H3K9me3_wilcox_te_len <- ungroup_H3K9me3_repclass %>% 
+    dplyr::filter(special_type != "not_TE") %>% 
+    filter(cluster %in% c("Set_1", "Set_2", "Set_3")) %>%
+  group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+        
+      # only run test if both groups are present
+      if (length(unique(dat$cluster)) == 2) {
+        test <- wilcox.test(te_len ~ cluster, data = dat)
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = "_vs_"),
+          p.value      = test$p.value,
+          W            = test$statistic,
+          median_Set1  = median(dat$te_len[dat$cluster == "Set_1"]),
+          median_other = median(dat$te_len[dat$cluster == comp[2]])
+        )
+      } else {
+        tibble(
+          special_type = stype,
+          comparison   = paste(comp, collapse = "_vs_"),
+          p.value      = NA_real_,
+          W            = NA_real_,
+          median_Set1  = median(dat$te_len[dat$cluster == "Set_1"], na.rm = TRUE),
+          median_other = median(dat$te_len[dat$cluster == comp[2]], na.rm = TRUE)
+        )
+      }
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
+
+ datatable( H3K9me3_wilcox_te_len,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test on TE length  (>1 bp overlap) H3K9me3"
+))
 ```
 
+#### Peak length  
 
 ```{r, H3K9me3 length and distance}
-
 All_H3K9me3_ROI_df <- H3K9me3_sets_gr$all_H3K9me3 %>% 
   as.data.frame() %>% 
    left_join(., H3K9me3_lookup) %>% 
   mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) 
 
 
-# All_H3K9me3_ROI_df %>% 
-#   mutate(cluster="all_regions") %>% 
-#   rbind(.,All_H3K9me3_ROI_df) %>% 
-#   dplyr::filter(cluster != "not_assigned") %>%
-#   ggplot(aes(x=cluster, y=width))+
-#   geom_boxplot()+
-#   geom_signif(comparisons = list(c("Set_1","Set_2"),
-#                                   c("Set_1","Set_3"),
-#                                   c("all_regions","Set_1")),
-#               map_signif_level = FALSE,
-#               test = "wilcox.test",
-#               y_position = c(100,300,500))+# note values are scaled internally by geomsignif
-#               # step_increase = 0.1)+
-#   theme_classic()+
-#     ggtitle(" All assigned ROI lengths in H3K9me3")+
-#   coord_cartesian(ylim=c(0,4000))
-
-ungroup_H3K9me3_repclass %>% 
-   group_by(Peakid, special_type) %>% 
-  summarize(distanceToTSS=min(distanceToTSS),
-            cluster=paste0(unique(cluster),collapse = ",")) %>% 
-  ggplot(aes(x=cluster,y=distanceToTSS))+
-  geom_boxplot() +
-  facet_wrap(~special_type)+
+All_H3K9me3_ROI_df %>% 
+  mutate(cluster="all_regions") %>% 
+  rbind(.,All_H3K9me3_ROI_df) %>% 
+  dplyr::filter(cluster != "not_assigned") %>%
+  ggplot(aes(x=cluster, y=width))+
+  geom_boxplot()+
+  ggsignif::geom_signif(comparisons=list(c("all_regions","Set_1"),
+                                      c("all_regions","Set_2"),
+                                      c("all_regions","Set_3")), 
+                        y_position = c(2000, 2400, 2800),
+                        tip_length = 0.01)+
   theme_classic()+
-    ggtitle("Distance to TSS by class in H3K9me3 of overlapping ROIs")+
-  coord_cartesian(ylim=c(-35000,35000))
+    ggtitle(" All assigned ROI lengths in H3K9me3") +
+  coord_cartesian(ylim=c(0,5000))
 
 
 ungroup_H3K9me3_repclass %>% 
@@ -2445,6 +2847,13 @@ ungroup_H3K9me3_repclass %>%
   theme_classic()+
     ggtitle("Width of TE_ROI overlaps in H3K9me3")+
   coord_cartesian(ylim=c(0,2000))
+
+
+```
+
+#### TSS distance
+
+```{r, H3K9me3 tss distance}
 
 ungroup_H3K9me3_repclass %>% 
   ggplot(aes(x=cluster,y=distanceToTSS))+
@@ -2476,24 +2885,88 @@ ungroup_H3K9me3_repclass %>%
     ggtitle("Distance to TSS by class in H3K9me3 of overlapping ROIs")
 
 
-ungroup_H3K9me3_repclass %>% 
-  ggplot(aes(x=special_type,y=pct_te_overlap))+
-  geom_boxplot(aes(fill=cluster))+
-  theme_classic()+
-    ggtitle("Percent of TE overlapped in H3K9me3 data") 
+distanceToTSS_H3K9me3 <- ungroup_H3K9me3_repclass %>% 
+ group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) < 2) return(NULL)
+      test <- wilcox.test(distanceToTSS ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = "_vs_"),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$distanceToTSS[dat$cluster == "Set_1"]),
+        median_other = median(dat$distanceToTSS[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
 
 
-ungroup_H3K9me3_repclass %>% 
-  dplyr::filter(special_type=="Other") %>% 
-  ggplot(aes(repFamily, y = pct_te_overlap))+
-  geom_boxplot(aes(fill=cluster))+
-  theme_classic()+
-    ggtitle("Percent of TE (just the Others) overlapped in H3K9me3 data") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1) )
-
+datatable( distanceToTSS_H3K9me3,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test of Distance to TSS; H3K9me3",
+  
+))
 
 ```
 
 
 
+#### Percent coverage of TE  
+
+```{r H3K9me3 a differences in percent coverage}
+ 
+ungroup_H3K9me3_repclass %>% 
+  ggplot(aes(x=cluster,y=pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~special_type)+
+  theme_classic()+
+    ggtitle("Percent of TE overlapped in H3K9me3 data") 
+
+
+
+ungroup_H3K9me3_repclass %>% 
+  dplyr::filter(special_type=="Other") %>% 
+  ggplot(aes(cluster, y = pct_te_overlap))+
+  geom_boxplot(aes(fill=cluster))+
+  facet_wrap(~repFamily, ncol=5)+
+  theme_classic()+
+    ggtitle("Percent of TE (just the Others) overlapped in H3K9me3 data") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1) )
+
+
+
+Per_TE_cov_H3K9me3 <- ungroup_H3K9me3_repclass %>% 
+ group_by(special_type) %>%
+  group_map(~ {
+    stype <- unique(.x$special_type)  # capture the TE type
+    map_dfr(comparisons, function(comp) {
+      dat <- .x %>% filter(cluster %in% comp)
+       # Skip if both clusters are not present
+      if(length(unique(dat$cluster)) < 2) return(NULL)
+      test <- wilcox.test(pct_te_overlap ~ cluster, data = dat)
+      tibble(
+        special_type = stype,
+        comparison = paste(comp, collapse = "_vs_"),
+        p.value = test$p.value,
+        W = test$statistic,
+        median_Set1 = median(dat$pct_te_overlap[dat$cluster == "Set_1"]),
+        median_other = median(dat$pct_te_overlap[dat$cluster == comp[2]])
+      )
+    })
+  }, .keep = TRUE) %>%
+  bind_rows()
+
+
+datatable( Per_TE_cov_H3K9me3,caption = htmltools::tags$caption(
+  style = 'caption-side: top; text-align: center; font-weight: bold;',
+  "Wilcox test of Percent of TE coverage; H3K9me3",
+  
+))
+```
 
