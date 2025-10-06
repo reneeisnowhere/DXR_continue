@@ -1430,7 +1430,7 @@ non_ol_H3K27ac_df <- rmskr_nonoverlapping_H3K27ac_gr %>%
                                   repClass=="Retroposon"~"SVA",
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>%
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
 # dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
 ```
@@ -1449,7 +1449,7 @@ non_ol_H3K27me3_df <- rmskr_nonoverlapping_H3K27me3_gr %>%
                                   repClass=="Retroposon"~"SVA",
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>%
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
 # dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
 ```
@@ -1468,7 +1468,7 @@ non_ol_H3K36me3_df <- rmskr_nonoverlapping_H3K36me3_gr %>%
                                   repClass=="Retroposon"~"SVA",
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>%
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
 # dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
 ```
@@ -1487,9 +1487,28 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   repClass=="Retroposon"~"SVA",
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>%
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
 # dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+```
+
+### Creating human genome all TE for comparisons
+```{r}
+
+rmskr_std_gr$te_len <- width(rmskr_std_gr)
+human_te_rmskr <- rmskr_std_gr %>%
+  as.data.frame() %>% 
+  mutate(cluster="All_human_te", Peakid="human_tes", pct_te_overlap=0) %>% 
+  mutate(special_type=case_when(repClass=="SINE"~"SINE",
+                                  repClass=="LINE"~"LINE",
+                                  repClass=="LTR"~"LTR",
+                                  repClass=="DNA"~"DNA",
+                                  repClass=="Retroposon"~"SVA",
+                                  is.na(repClass)~"not_TE",
+                                  TRUE~"Other")) %>%
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
+  dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
+
 ```
 
 
@@ -1509,9 +1528,10 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE")%>% 
-    mutate(ppr_div=milliDiv) %>%
+    mutate(ppr_div=milliDiv/2.2e-9) %>%
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %>% 
-  bind_rows(non_ol_H3K27ac_df) %>% 
+  bind_rows(non_ol_H3K27ac_df) %>%
+  bind_rows(human_te_rmskr ) %>% 
   ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
   facet_wrap(~special_type, scales="free_y") +
@@ -1533,7 +1553,8 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>%
+    bind_rows(human_te_rmskr ) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>%
      ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
   facet_wrap(~special_type, scales="free_y") +
@@ -1571,7 +1592,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   filter(cluster %in% c("Set_1", "Set_2", "Set_3")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1605,7 +1626,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   filter(cluster %in% c("Set_1", "Set_2", "Set_3")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1653,7 +1674,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
   #                                 repClass=="Retroposon"~"SVA",
   #                                 is.na(repClass)~"not_TE",
   #                                 TRUE~"Other")) %>% 
-  #   mutate(ppr_div=milliDiv) %>% 
+  #    mutate(ppr_div=milliDiv/2.2e-9) %>% 
   # ggplot(aes(x=ppr_div))+
   # geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
   # facet_wrap(~special_type, scales="free_y") +
@@ -1674,9 +1695,10 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %>% 
   bind_rows(non_ol_H3K27me3_df) %>% 
+  bind_rows(human_te_rmskr ) %>% 
   ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
   facet_wrap(~special_type, scales="free_y") +
@@ -1698,7 +1720,8 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
+    bind_rows(human_te_rmskr ) %>% 
       ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
   facet_wrap(~special_type, scales="free_y") +
@@ -1718,7 +1741,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   filter(cluster %in% c("Set_1", "Set_2")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1755,7 +1778,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   filter(cluster %in% c("Set_1", "Set_2")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1807,7 +1830,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
 #                                   repClass=="Retroposon"~"SVA",
 #                                   is.na(repClass)~"not_TE",
 #                                   TRUE~"Other")) %>% 
-#     mutate(ppr_div=milliDiv) %>% 
+#      mutate(ppr_div=milliDiv/2.2e-9) %>% 
 #   ggplot(aes(x=ppr_div))+
 #   geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
 #   facet_wrap(~special_type, scales="free_y") +
@@ -1828,9 +1851,10 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>%
+     mutate(ppr_div=milliDiv/2.2e-9) %>%
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %>% 
   bind_rows(non_ol_H3K36me3_df) %>% 
+  bind_rows(human_te_rmskr ) %>% 
  ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
   facet_wrap(~special_type, scales="free_y") +
@@ -1852,7 +1876,8 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
+    bind_rows(human_te_rmskr ) %>% 
   ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
   facet_wrap(~special_type, scales="free_y") +
@@ -1873,7 +1898,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   ggplot(aes(y=ppr_div,x=special_type))+
   geom_boxplot(aes(fill=cluster) ) +
   # facet_wrap(~special_type, scales="free_y") +
@@ -1893,7 +1918,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   filter(cluster %in% c("Set_1", "Set_2")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1930,7 +1955,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   filter(cluster %in% c("Set_1", "Set_2")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -1980,7 +2005,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
 #                                   repClass=="Retroposon"~"SVA",
 #                                   is.na(repClass)~"not_TE",
 #                                   TRUE~"Other")) %>% 
-#     mutate(ppr_div=milliDiv) %>% 
+#      mutate(ppr_div=milliDiv/2.2e-9) %>% 
 #   ggplot(aes(x=ppr_div))+
 #   geom_histogram(aes(fill=cluster, alpha = 0.4) ) +
 #   facet_wrap(~special_type, scales="free_y") +
@@ -2001,9 +2026,10 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div) %>% 
   bind_rows(non_ol_H3K27ac_df) %>% 
+  bind_rows(human_te_rmskr ) %>% 
    ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
   facet_wrap(~special_type, scales="free_y") +
@@ -2025,7 +2051,8 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>%
+    bind_rows(human_te_rmskr ) %>% 
    ggplot(aes(y=ppr_div,x=cluster))+
   geom_boxplot(aes(fill=cluster) ) +
   facet_wrap(~special_type, scales="free_y") +
@@ -2046,7 +2073,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   filter(cluster %in% c("Set_1", "Set_2", "Set_3")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -2082,7 +2109,7 @@ non_ol_H3K9me3_df <- rmskr_nonoverlapping_H3K9me3_gr %>%
                                   is.na(repClass)~"not_TE",
                                   TRUE~"Other")) %>% 
   dplyr::filter(special_type != "not_TE") %>% 
-    mutate(ppr_div=milliDiv) %>% 
+     mutate(ppr_div=milliDiv/2.2e-9) %>% 
   filter(cluster %in% c("Set_1", "Set_2","Set_3")) %>%
   group_by(special_type) %>%
   group_map(~ {
@@ -2156,7 +2183,8 @@ ungroup_H3K27ac_repclass <- H3K27ac_ols$all_H3K27ac %>%
 
 ungroup_H3K27ac_repclass %>%
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type) %>% 
-  bind_rows(non_ol_H3K27ac_df) %>% 
+  bind_rows(non_ol_H3K27ac_df) %>%
+  bind_rows(human_te_rmskr ) %>% 
   ggplot(aes(x=cluster,y=te_len))+
   geom_boxplot(aes(fill=cluster)) +
   facet_wrap(~special_type)+
@@ -2333,6 +2361,7 @@ ungroup_H3K27me3_repclass <- H3K27me3_ols$all_H3K27me3 %>%
 ungroup_H3K27me3_repclass %>% 
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type) %>% 
   bind_rows(non_ol_H3K27me3_df) %>% 
+  bind_rows(human_te_rmskr ) %>% 
   ggplot(aes(x=cluster,y=te_len))+
   geom_boxplot(aes(fill=cluster)) +
   facet_wrap(~special_type)+
