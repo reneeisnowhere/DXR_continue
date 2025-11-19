@@ -1,0 +1,670 @@
+---
+title: "Summit Files"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+
+```{r packages}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+
+```
+
+```{r calling summit files}
+sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
+##Path to histone summit files
+H3K27ac_dir <- "C:/Users/renee/Other_projects_data/DXR_data/final_data/summit_files/H3K27ac" 
+
+##pull all histone files together
+H3K27ac_summit_files <- list.files(
+  path = H3K27ac_dir,
+  pattern = "\\.bed$",
+  recursive = TRUE,
+  full.names = TRUE
+)
+length(H3K27ac_summit_files)
+
+# head(H3K27ac_summit_files)
+```
+First steps:  pulling in the information of Sets and locations
+Pulling in the summit files,
+concatenation of all summits into one large file
+
+```{r pulling in other data}
+peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+H3K27ac_sets_gr <- lapply(peakAnnoList_H3K27ac, function(df) {
+  as_granges(df)
+})
+
+read_summit <- function(file){
+  peaks <- read.table(file,header = FALSE)
+  colnames(peaks) <- c("chr","start","end","name","score")
+  GRanges(
+    seqnames = peaks$chr,
+    ranges = IRanges(start=peaks$start, end = peaks$start),
+    score=peaks$score,
+    file=basename(file),
+    Library_ID = stringr::str_remove(basename(file), "_FINAL_summits\\.bed$")
+  )
+}
+
+all_H3K27ac_summits_list<- lapply(H3K27ac_summit_files, read_summit)
+all_H3K27ac_summits_gr <- do.call(c, all_H3K27ac_summits_list)  # combine into one GRanges object
+H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+```
+
+```{r pick summit per roi}
+pick_best_summit_per_roi <- function(roi_gr, summit_gr, score_col = "signalValue") {
+
+  hits <- findOverlaps(roi_gr, summit_gr)
+
+  df <- data.frame(
+    roi_idx = queryHits(hits),
+    summit_idx = subjectHits(hits),
+    score = mcols(summit_gr)[[score_col]][subjectHits(hits)]
+  )
+
+  # Pick summit with highest score for each ROI
+  best <- df %>%
+    group_by(roi_idx) %>%
+    slice_max(order_by = score, n = 1) %>%
+    ungroup()
+
+  # Build the final GRanges object
+  best_summits <- summit_gr[best$summit_idx]
+  best_summits$ROI_name <- roi_gr$Peakid[best$roi_idx]
+
+  best_summits
+}
+# 
+# best_summits <- pick_best_summit_per_roi(
+#   ROIs, highest_summits_long_gr, score_col = "peakHeight"
+# )
+```
+
+```{r pick summit closest to roi center}
+pick_center_summit <- function(roi_gr, summit_gr) {
+
+  hits <- findOverlaps(roi_gr, summit_gr)
+
+  df <- data.frame(
+    roi_idx = queryHits(hits),
+    summit_idx = subjectHits(hits),
+    dist_to_center = abs(
+      start(summit_gr)[subjectHits(hits)] -
+      round((start(roi_gr)[queryHits(hits)] + end(roi_gr)[queryHits(hits)]) / 2)
+    )
+  )
+
+  best <- df %>%
+    group_by(roi_idx) %>%
+    slice_min(order_by = dist_to_center, n = 1) %>%
+    ungroup()
+
+  best_summits <- summit_gr[best$summit_idx]
+  best_summits$ROI_name <- roi_gr$Peakid[best$roi_idx]
+
+  best_summits
+}
+```
+
+```{r consensus summit}
+pick_consensus_summit <- function(roi_gr, summit_gr, score_col = "score") {
+  
+  # Find which summits overlap each ROI
+  hits <- findOverlaps(roi_gr, summit_gr)
+  
+  df <- data.frame(
+    roi_idx = queryHits(hits),
+    summit_idx = subjectHits(hits),
+    summit_pos = start(summit_gr)[subjectHits(hits)],
+    score = mcols(summit_gr)[[score_col]]
+  )
+  
+  # Count frequency per summit position within each ROI
+  freq_df <- df %>%
+    group_by(roi_idx, summit_pos) %>%
+    summarise(
+      freq = n(),
+      max_score = max(score),
+      .groups = "drop"
+    )
+  
+  # Pick the summit with highest frequency; break ties with max score
+  best <- freq_df %>%
+    group_by(roi_idx) %>%
+    slice_max(order_by = freq, n = 1, with_ties = TRUE) %>%
+    slice_max(order_by = max_score, n = 1) %>%
+    ungroup()
+  
+  # Map back to original GRanges
+  best_idx <- df$summit_idx[match(
+    paste0(best$roi_idx, "_", best$summit_pos),
+    paste0(df$roi_idx, "_", df$summit_pos)
+  )]
+  
+  final_summits <- summit_gr[best_idx]
+  final_summits$ROI_name <- roi_gr$Peakid[best$roi_idx]
+  
+  final_summits
+}
+```
+
+first creating summit clusters that are around 100bps across all summits
+```{r pulling in other data}
+ 
+#  Merge summits within 100 bp clusters but keep metadata
+# ------------------------
+# Reduce with revmap to keep track of original indices
+
+clusters <- GenomicRanges::reduce(all_H3K27ac_summits_gr, min.gapwidth = 100,
+                   ignore.strand = TRUE, with.revmap = TRUE)
+
+# For each cluster, pick the highest-score summit
+scores <- mcols(all_H3K27ac_summits_gr)$score
+
+revmap <- clusters$revmap
+
+# Compute the highest-score index per cluster
+highest_idx <- sapply(revmap, function(idx) idx[which.max(scores[idx])])
+
+# Subset GRanges once
+highest_per_cluster_gr <- all_H3K27ac_summits_gr[highest_idx]
+
+
+# ------------------------
+# 3️⃣ Count merged summits per ROI
+# ------------------------
+ROIs <- H3K27ac_sets_gr$all_H3K27ac  # your ROI GRanges
+
+# Optimized counting
+roi_counts <- countOverlaps(ROIs, highest_per_cluster_gr)
+mcols(ROIs)$merged_summit_count <- roi_counts
+
+# ------------------------
+# 5️⃣ Map ROIs to clusters with sample info
+# ------------------------
+overlaps <- findOverlaps(ROIs, highest_per_cluster_gr)
+
+roi_hits_df <- as.data.frame(overlaps) %>%
+  mutate(
+    Peakid = ROIs$Peakid[queryHits],
+    Library_ID = mcols(highest_per_cluster_gr)$Library_ID[subjectHits],
+    score = mcols(highest_per_cluster_gr)$score[subjectHits],
+    file = mcols(highest_per_cluster_gr)$file[subjectHits]
+  ) %>%
+  left_join(sampleinfo, by = c("Library_ID" = "Library ID"))
+
+## initualize count column on ROI df
+mcols(ROIs)$summit_count <- 0
+
+# Tabulate counts
+counts <- table(queryHits(overlaps))
+mcols(ROIs)$summit_count[as.numeric(names(counts))] <- as.numeric(counts)
+
+# Convert to dataframe for plotting
+roi_counts_df <- as.data.frame(ROIs) %>%
+  select(Peakid, seqnames, start, end, summit_count) %>% 
+  mutate(roi_size=end-start)
+
+# Optional: add Set / cluster info
+roi_counts_df <- roi_counts_df %>%
+  left_join(H3K27ac_lookup, by = "Peakid")
+# ------------------------
+# 6️⃣ Optional: add Set/cluster info per ROI
+# ------------------------
+roi_hits_df <- roi_hits_df %>%
+  left_join(H3K27ac_lookup, by = "Peakid")
+
+# Now roi_hits_df is ready for plotting or analysis:
+# Columns include Peakid, ROI coordinates, Library_ID, score, file, Individual, Treatment, Timepoint, cluster
+
+
+# Optional: add sample info
+roi_hits_df <- as.data.frame(overlaps) %>%
+  mutate(
+    Peakid = ROIs$Peakid[queryHits],
+    Library_ID = mcols(all_H3K27ac_summits_gr)$Library_ID[subjectHits],
+    score = mcols(all_H3K27ac_summits_gr)$score[subjectHits],
+    file = mcols(all_H3K27ac_summits_gr)$file[subjectHits]
+  ) %>%
+  left_join(sampleinfo, by = c("Library_ID" = "Library ID"))
+
+```
+
+Plotting some summits from the first process
+
+```{r get summits function plots}
+ROIs %>% 
+  as.data.frame() %>% 
+  # dplyr::filter(merged_summit_count==1) %>% 
+  left_join(H3K27ac_lookup, by = "Peakid") %>%  # make sure join key matches
+  filter(!is.na(cluster)) %>%
+  ggplot(aes(x = cluster, y = merged_summit_count)) +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.6, size = 2, color = "steelblue") +
+  theme_bw() +
+  xlab("Set") +
+  ylab("Number of merged summits per ROI") +
+  ggtitle("Distribution of merged summit counts by Set")
+
+
+roi_counts_df %>%
+  ggplot(aes(x = summit_count)) +
+  geom_histogram(binwidth = 1, fill="steelblue", color="black") +
+  theme_bw() +
+  xlab("Number of summits per ROI") +
+  ylab("Number of ROIs")
+
+roi_counts_df %>%
+  ggplot(aes(x = summit_count)) +
+  geom_histogram(binwidth = 1, fill="steelblue", color="black") +
+  theme_bw() +
+  xlab("Number of summits per ROI") +
+  ylab("Number of ROIs")+
+  ggtitle("Zoomed in summit per ROI")+
+  coord_cartesian(xlim=c(0,50))
+
+roi_counts_df %>% 
+  # group_by(Peakid) %>% tally #%>% 
+  # left_join(H3K27ac_lookup) %>% 
+  ggplot(aes(x = roi_size, y = summit_count)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    x = "ROI size (bp)",
+    y = "# of summits",
+    title = "Relationship between ROI size and # of Summit clusters"
+  ) +
+  theme_classic()#+
+  # coord_cartesian(xlim=c(-1,400), ylim=c(0,10))
+
+roi_counts_df %>% 
+  # group_by(Peakid) %>% tally #%>% 
+  # left_join(H3K27ac_lookup) %>% 
+  ggplot(aes(x = roi_size, y = summit_count)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    x = "ROI size (bp)",
+    y = "# of summits",
+    title = "Zoomed in Relationship between ROI size and # of Summit clusters"
+  ) +
+  theme_classic()+
+  coord_cartesian(xlim=c(-1,800), ylim=c(0,10))
+
+```
+
+
+```{r, eval=FALSE}
+ROIs_tor <- H3K27ac_sets_gr$all_H3K27ac
+
+hits <- as.data.frame(findOverlaps(ROIs_tor, all_H3K27ac_summits_gr))
+
+df <- hits %>%
+  mutate(
+    Peakid      = ROIs_tor$Peakid[queryHits],
+    summit_start = start(all_H3K27ac_summits_gr)[subjectHits],
+    summit_end   = end(all_H3K27ac_summits_gr)[subjectHits],
+    roi_start    = start(ROIs_tor)[queryHits],
+    roi_end      = end(ROIs_tor)[queryHits],
+    roi_width    = roi_end - roi_start
+  )
+
+df <- df %>%
+  mutate(
+    rel_pos = (summit_start - roi_start) / roi_width
+  )
+```
+
+```{r takes too long,eval=FALSE}
+df <- df %>%
+  left_join(H3K27ac_lookup, by = "Peakid")   # adds cluster column
+
+roi_order <- df %>%
+  count(Peakid, name = "summit_count") %>%
+  arrange(desc(summit_count))
+
+df <- df %>%
+  mutate(roi_factor = factor(Peakid, levels = roi_order$Peakid))
+
+roi_df <- as.data.frame(ROIs_tor) %>%
+  dplyr::select(Peakid, seqnames, start, end, width)
+
+df <- df %>% mutate(
+  rel_centered = rel_pos - 0.5
+)
+
+
+ggplot(df, aes(
+  x = rel_pos,
+  y = roi_factor,
+  color = cluster
+)) +
+  geom_point(alpha = 0.6, size = 1.5) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_x_continuous(
+    name = "Relative summit position (0 = ROI start, 1 = ROI end)",
+    limits = c(0, 1)
+  ) +
+  ylab("ROIs (ordered by number of summits)") +
+  theme_bw() +
+  theme(
+    panel.grid.minor = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+
+
+
+```
+### Merging strategies!
+
+This is now the place I will take my files and now try to apply the same merging strategy as I did the peaks merging strategy.  Step 1: reduce all trt-time summits within 100 bp
+```{r reduction by trt-time}
+
+meta <- as.data.frame(mcols(all_H3K27ac_summits_gr))
+meta2 <- meta %>% 
+  left_join(., sampleinfo, by=c("Library_ID"="Library ID"))
+
+mcols(all_H3K27ac_summits_gr) <- meta2
+
+mcols(all_H3K27ac_summits_gr)$group <- 
+  paste(all_H3K27ac_summits_gr$Treatment,
+        all_H3K27ac_summits_gr$Timepoint,
+        sep = "_")
+
+###now splitting into grouped granges 
+
+gr_by_group <- split(all_H3K27ac_summits_gr,
+                                    all_H3K27ac_summits_gr$group)
+# gr_by_group <- as(gr_by_group, "CompressedGRangesList")
+### now reducing within some width by 100 bp with revmap
+groups <- unique(all_H3K27ac_summits_gr$group)
+
+reduced_groups <- lapply(groups, function(g) {
+  gr_sub <- all_H3K27ac_summits_gr[all_H3K27ac_summits_gr$group == g]
+  GenomicRanges::reduce(gr_sub, min.gapwidth = 100, ignore.strand = TRUE, with.revmap = TRUE)
+})
+
+reduced_groups_200 <- lapply(groups, function(g) {
+  gr_sub <- all_H3K27ac_summits_gr[all_H3K27ac_summits_gr$group == g]
+  GenomicRanges::reduce(gr_sub, min.gapwidth = 200, ignore.strand = TRUE, with.revmap = TRUE)
+})
+
+reduced_groups_300 <- lapply(groups, function(g) {
+  gr_sub <- all_H3K27ac_summits_gr[all_H3K27ac_summits_gr$group == g]
+  GenomicRanges::reduce(gr_sub, min.gapwidth = 300, ignore.strand = TRUE, with.revmap = TRUE)
+})
+
+reduced_groups_400 <- lapply(groups, function(g) {
+  gr_sub <- all_H3K27ac_summits_gr[all_H3K27ac_summits_gr$group == g]
+  GenomicRanges::reduce(gr_sub, min.gapwidth = 400, ignore.strand = TRUE, with.revmap = TRUE)
+})
+
+names(reduced_groups) <- groups
+names(reduced_groups_200) <- groups
+names(reduced_groups_300) <- groups
+names(reduced_groups_400) <- groups
+
+# redux_main_100 <- sum(sapply(reduced_groups, length))
+# redux_main_200 <- sum(sapply(reduced_groups_200, length))
+# redux_main_300 <- sum(sapply(reduced_groups_300, length))
+# redux_main_400 <- sum(sapply(reduced_groups_400, length))
+
+```
+
+```{r highest scoring summit per cluster 100}
+highest_per_group <- vector("list", length(reduced_groups))
+names(highest_per_group) <- groups
+
+for(i in seq_along(reduced_groups)) {
+  gr <- reduced_groups[[i]]
+  
+  # original summits for this group
+  orig <- all_H3K27ac_summits_gr[all_H3K27ac_summits_gr$group == groups[i]]
+  scores <- orig$score
+  
+  # revmap is a CompressedIntegerList
+  revmap <- gr$revmap
+  
+  # unlist all indices once
+  all_idx <- unlist(revmap, use.names = FALSE)
+  
+  # repeat cluster index for each element in revmap
+  cluster_idx <- rep(seq_along(revmap), times = elementNROWS(revmap))
+  
+  # scores for all indices
+  all_scores <- scores[all_idx]
+  
+  # For each cluster, pick the index of the max score
+  max_idx_per_cluster <- tapply(seq_along(all_scores), cluster_idx, function(ii) {
+    ii[which.max(all_scores[ii])]
+  })
+  
+  # Convert back to original indices
+  orig_idx <- all_idx[unlist(max_idx_per_cluster)]
+  
+  # subset original GRanges
+  highest_per_group[[i]] <- orig[orig_idx]
+}
+
+# Recursive function to flatten any nested lists/GRangesList
+flatten_gr <- function(x) {
+  if (inherits(x, "GRanges")) {
+    return(x)
+  } else if (inherits(x, "GRangesList")) {
+    return(unlist(x, use.names = FALSE))
+  } else if (is.list(x)) {
+    # recursively flatten list elements
+    return(do.call(c, lapply(x, flatten_gr)))
+  } else {
+    stop("Unexpected object type")
+  }
+}
+
+# Apply to your list of highest per group
+highest_summits_gr <- flatten_gr(highest_per_group)
+
+
+highest_summits_df <- bind_rows(
+  lapply(names(highest_summits_gr), function(gr_name) {
+    as.data.frame(highest_summits_gr[[gr_name]]) %>%
+      mutate(group = gr_name)
+  })
+)
+highest_summits_long_gr <- highest_summits_df %>% GRanges()
+
+
+```
+
+```{r up to tornado plots?}
+
+# ROIs
+ROIs <- H3K27ac_sets_gr$all_H3K27ac
+
+# Overlaps
+hits_group <- findOverlaps(ROIs, highest_summits_long_gr)
+
+df_group <- data.frame(
+  Peakid    = ROIs$Peakid[queryHits(hits_group)],
+  summit_pos = start(highest_summits_long_gr)[subjectHits(hits_group)],
+  roi_start  = start(ROIs)[queryHits(hits_group)],
+  roi_end    = end(ROIs)[queryHits(hits_group)]
+)
+
+# Relative position within ROI (0=start, 1=end)
+df_group <- df_group %>%
+  mutate(rel_pos = (summit_pos - roi_start) / (roi_end - roi_start))
+
+
+roi_order_group <- df_group %>%
+  count(Peakid, name = "summit_count") %>%
+  arrange(desc(summit_count))
+
+
+df_group <- df_group %>%
+  mutate(roi_factor = factor(Peakid, levels = roi_order_group$Peakid)) %>% 
+  left_join(., H3K27ac_lookup, by = "Peakid") %>% 
+  mutate(roi_center = roi_start + (roi_end - roi_start) / 2  ) %>% 
+  mutate(dist_center = summit_pos - roi_center)
+
+
+# df_group %>% 
+# ggplot(., aes(x = rel_pos, y = roi_factor, color = cluster)) +
+#   geom_point(size = 0.5, alpha = 0.7) +   # each summit
+#   scale_x_continuous(limits = c(0,1)) +
+#   labs(x = "Relative position within ROI", y = "ROIs", color = "Set/Cluster") +
+#   theme_minimal() +
+#   theme(
+#     axis.text.y = element_blank(),   # hide ROI labels if too many
+#     axis.ticks.y = element_blank()
+#   )
+```
+
+```{r rel pos}
+# df_group %>%
+#   dplyr::filter(cluster=="Set_3") %>% 
+# ggplot(., aes(x = rel_pos, y = roi_factor, color = cluster)) +
+#   geom_point(size = 0.5, alpha = 0.7) +   # each summit
+#   scale_x_continuous(limits = c(0,1)) +
+#   labs(x = "Relative position within ROI", y = "ROIs", color = "Set/Cluster") +
+#   theme_minimal() +
+#   theme(
+#     axis.text.y = element_blank(),   # hide ROI labels if too many
+#     axis.ticks.y = element_blank()
+#   )
+```
+
+```{r distance from center plot}
+ggplot(df_group, aes(x = dist_center, y = roi_factor, color=cluster)) +
+  ggrastr::geom_point_rast(size = 0.6, alpha = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed") +  # ROI center
+  labs(
+    x = "Distance from ROI center (bp)",
+    y = "ROI",
+    color = "Group"
+  ) +
+  # theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )+
+  coord_cartesian(xlim=c(-2000,2000))
+```
+#### function get highest scoring summit clustered by group:
+
+```{r}
+#' Get highest summit per reduced cluster per group using plyranges
+#'
+#' @param gr GRanges with metadata columns: group, score
+#' @param min_gap numeric, minimum gap width to merge summits
+#' @param ignore.strand logical, whether to ignore strand when reducing
+#'
+#' @return GRanges of highest scoring summit per reduced cluster per group
+get_highest_summits_with_cluster_id <- function(gr, min_gap = 100, ignore.strand = TRUE) {
+  
+  gr %>%
+    # Reduce summits per group
+    group_by(group) %>%
+    reduce_ranges(min_gap = min_gap, ignore.strand = ignore.strand, with_revmap = TRUE) %>%
+    # Add a cluster_id based on row_number()
+    mutate(cluster_id = paste0(group, "_cluster_", row_number())) %>%
+    # join back original summits
+    join_overlap_inner(gr, suffix = c(".cluster", ".orig")) %>%
+    # slice max per cluster_id
+    group_by(cluster_id) %>%
+    slice_max(score.orig, with_ties = FALSE) %>%
+    ungroup() %>%
+    # select only the original summit coordinates
+    select(seqnames, start = start.orig, end = end.orig, score = score.orig,
+           group, cluster_id)
+}
+```
+
+
+```{r}
+redux_main_100 <- get_highest_summits_plyranges(all_H3K27ac_summits_gr,min_gap = 100)
+redux_main_200 <- get_highest_summits_plyranges(all_H3K27ac_summits_gr,min_gap = 200)
+redux_main_300 <- get_highest_summits_plyranges(all_H3K27ac_summits_gr,min_gap = 300)
+redux_main_400 <- get_highest_summits_plyranges(all_H3K27ac_summits_gr,min_gap = 400)
+
+```
+
+
+#### function reduce_and_pick_highest
+
+```{r}
+
+#### this quickly reduces any granges summit  collection by the gap that is passed in the function. It returns the highest scoring summit from the cluster of summits.
+reduce_and_pick_highest <- function(gr, gap = 100) {
+
+  # Preextract score once
+  sc <- gr$score
+
+  # Fast reduce with revmap
+  red <- GenomicRanges::reduce(
+    gr,
+    min.gapwidth = gap,
+    ignore.strand = TRUE,
+    with.revmap = TRUE
+  )
+
+  # This is vectorized and very fast
+  idx_list <- red$revmap
+
+  # Pick highest-scoring summit within each cluster
+  sel <- IntegerList(
+    lapply(idx_list, function(idx) idx[which.max(sc[idx])])
+  )
+
+  # Convert IntegerList → integer vector
+  best_idx <- unlist(sel, use.names = FALSE)
+
+  # Subset original GRanges
+  gr[best_idx]
+}
+
+```
+
+```{r}
+
+redux_100 <- reduce_and_pick_highest(highest_summits_long_gr, gap = 100)
+redux_200 <- reduce_and_pick_highest(highest_summits_long_gr, gap = 200)
+redux_300 <- reduce_and_pick_highest(highest_summits_long_gr, gap = 300)
+
+redux_100 %>% as.data.frame()
+
+```
+
+```{r}
+pick_best_summit_per_roi(ROIs,redux_100,score_col = "score")
+```
+
