@@ -33,6 +33,7 @@ library(genomation)
 library(readr)
 library(rtracklayer)
 library(stringr)
+library(BiocParallel)
 
 ```
 
@@ -178,17 +179,20 @@ pick_consensus_summit <- function(roi_gr, summit_gr, score_col = "score") {
 }
 ```
 
-first creating summit clusters that are around 100bps across all summits
-```{r pulling in other data}
+### Analysis of all summit files, no grouping  
+
+
+first creating summit clusters that are around 100bps across all summit files
+```{r pulling in other data again}
  
 #  Merge summits within 100 bp clusters but keep metadata
 # ------------------------
-# Reduce with revmap to keep track of original indices
+# 1 Reduce with revmap to keep track of original indices
 
 clusters <- GenomicRanges::reduce(all_H3K27ac_summits_gr, min.gapwidth = 100,
                    ignore.strand = TRUE, with.revmap = TRUE)
 
-# For each cluster, pick the highest-score summit
+# 2 For each cluster, pick the highest-score summit
 scores <- mcols(all_H3K27ac_summits_gr)$score
 
 revmap <- clusters$revmap
@@ -201,7 +205,7 @@ highest_per_cluster_gr <- all_H3K27ac_summits_gr[highest_idx]
 
 
 # ------------------------
-# 3️⃣ Count merged summits per ROI
+# 3 Count merged summits per ROI
 # ------------------------
 ROIs <- H3K27ac_sets_gr$all_H3K27ac  # your ROI GRanges
 
@@ -210,7 +214,7 @@ roi_counts <- countOverlaps(ROIs, highest_per_cluster_gr)
 mcols(ROIs)$merged_summit_count <- roi_counts
 
 # ------------------------
-# 5️⃣ Map ROIs to clusters with sample info
+# 5 Map ROIs to clusters with sample info
 # ------------------------
 overlaps <- findOverlaps(ROIs, highest_per_cluster_gr)
 
@@ -239,7 +243,7 @@ roi_counts_df <- as.data.frame(ROIs) %>%
 roi_counts_df <- roi_counts_df %>%
   left_join(H3K27ac_lookup, by = "Peakid")
 # ------------------------
-# 6️⃣ Optional: add Set/cluster info per ROI
+# 6 Optional: add Set/cluster info per ROI
 # ------------------------
 roi_hits_df <- roi_hits_df %>%
   left_join(H3K27ac_lookup, by = "Peakid")
@@ -323,73 +327,11 @@ roi_counts_df %>%
 ```
 
 
-```{r, eval=FALSE}
-ROIs_tor <- H3K27ac_sets_gr$all_H3K27ac
-
-hits <- as.data.frame(findOverlaps(ROIs_tor, all_H3K27ac_summits_gr))
-
-df <- hits %>%
-  mutate(
-    Peakid      = ROIs_tor$Peakid[queryHits],
-    summit_start = start(all_H3K27ac_summits_gr)[subjectHits],
-    summit_end   = end(all_H3K27ac_summits_gr)[subjectHits],
-    roi_start    = start(ROIs_tor)[queryHits],
-    roi_end      = end(ROIs_tor)[queryHits],
-    roi_width    = roi_end - roi_start
-  )
-
-df <- df %>%
-  mutate(
-    rel_pos = (summit_start - roi_start) / roi_width
-  )
-```
-
-```{r takes too long,eval=FALSE}
-df <- df %>%
-  left_join(H3K27ac_lookup, by = "Peakid")   # adds cluster column
-
-roi_order <- df %>%
-  count(Peakid, name = "summit_count") %>%
-  arrange(desc(summit_count))
-
-df <- df %>%
-  mutate(roi_factor = factor(Peakid, levels = roi_order$Peakid))
-
-roi_df <- as.data.frame(ROIs_tor) %>%
-  dplyr::select(Peakid, seqnames, start, end, width)
-
-df <- df %>% mutate(
-  rel_centered = rel_pos - 0.5
-)
-
-
-ggplot(df, aes(
-  x = rel_pos,
-  y = roi_factor,
-  color = cluster
-)) +
-  geom_point(alpha = 0.6, size = 1.5) +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  scale_x_continuous(
-    name = "Relative summit position (0 = ROI start, 1 = ROI end)",
-    limits = c(0, 1)
-  ) +
-  ylab("ROIs (ordered by number of summits)") +
-  theme_bw() +
-  theme(
-    panel.grid.minor = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank()
-  )
-
-
-
-```
 ### Merging strategies!
 
 This is now the place I will take my files and now try to apply the same merging strategy as I did the peaks merging strategy.  Step 1: reduce all trt-time summits within 100 bp
 ```{r reduction by trt-time}
-
+###Adding in sampleinfo dataframe
 meta <- as.data.frame(mcols(all_H3K27ac_summits_gr))
 meta2 <- meta %>% 
   left_join(., sampleinfo, by=c("Library_ID"="Library ID"))
@@ -441,130 +383,338 @@ names(reduced_groups_400) <- groups
 
 ```
 
-```{r highest scoring summit per cluster 100}
-highest_per_group <- vector("list", length(reduced_groups))
-names(highest_per_group) <- groups
+Plotting effect of reduction bp number on total number of clusters
+```{r}
+gap_sizes <- seq(0, 500, by = 10)
 
-for(i in seq_along(reduced_groups)) {
-  gr <- reduced_groups[[i]]
+
+# Function to apply reduce for each gap and return counts
+results <- lapply(gap_sizes, function(g) {
+  reduced <- GenomicRanges::reduce(all_H3K27ac_summits_gr, min.gapwidth = g)
+  data.frame(gap = g, n_regions = length(reduced))
+})
+
+# Combine results
+min_gap_summary <- bind_rows(results)
+
+ggplot(min_gap_summary, aes(x = gap, y= n_regions))+
+  geom_line(linewidth=2)+
+  geom_point()+
+  theme_bw(base_size=14)+
+  labs(
+    title = "Effect of Gap Size on Reduced Summits",
+    x = "Gap size (bp)",
+    y = "Number of merged regions"
+  )
+
+```
+```{r get highes per group funciton}
+# Function to pick highest summit per cluster from a reduced GRanges list
+get_highest_per_group <- function(reduced_groups, orig_summits_gr, group_col = "group") {
   
-  # original summits for this group
-  orig <- all_H3K27ac_summits_gr[all_H3K27ac_summits_gr$group == groups[i]]
-  scores <- orig$score
+  groups <- names(reduced_groups)
+  highest_per_group <- vector("list", length(reduced_groups))
+  names(highest_per_group) <- groups
   
-  # revmap is a CompressedIntegerList
-  revmap <- gr$revmap
+  for(i in seq_along(reduced_groups)) {
+    gr <- reduced_groups[[i]]
+    
+    # original summits for this group
+    orig <- orig_summits_gr[mcols(orig_summits_gr)[[group_col]] == groups[i]]
+    scores <- orig$score
+    
+    # revmap is a CompressedIntegerList
+    revmap <- mcols(gr)$revmap
+    
+    # skip if revmap is NULL
+    if(is.null(revmap)) next
+    
+    # unlist all indices once
+    all_idx <- unlist(revmap, use.names = FALSE)
+    
+    # repeat cluster index for each element in revmap
+    cluster_idx <- rep(seq_along(revmap), times = elementNROWS(revmap))
+    
+    # scores for all indices
+    all_scores <- scores[all_idx]
+    
+    # For each cluster, pick the index of the max score
+    max_idx_per_cluster <- tapply(seq_along(all_scores), cluster_idx, function(ii) {
+      ii[which.max(all_scores[ii])]
+    })
+    
+    # Convert back to original indices
+    orig_idx <- all_idx[unlist(max_idx_per_cluster)]
+    
+    # subset original GRanges
+    highest_per_group[[i]] <- orig[orig_idx]
+  }
   
-  # unlist all indices once
+  # Flatten any nested GRangesList
+  flatten_gr <- function(x) {
+    if (inherits(x, "GRanges")) return(x)
+    if (inherits(x, "GRangesList")) return(unlist(x, use.names = FALSE))
+    if (is.list(x)) return(do.call(c, lapply(x, flatten_gr)))
+    stop("Unexpected object type")
+  }
+  
+  highest_summits_gr <- flatten_gr(highest_per_group)
+  
+  # Return as long GRanges with group column
+  highest_summits_df <- bind_rows(
+    lapply(names(highest_per_group), function(gr_name) {
+      as.data.frame(highest_per_group[[gr_name]]) %>%
+        mutate(group = gr_name)
+    })
+  )
+  
+  highest_summits_long_gr <- highest_summits_df %>% GRanges()
+  
+  return(highest_summits_long_gr)
+}
+```
+```{r}
+reduced_sets <- list(
+  "100bp" = reduced_groups,
+  "200bp" = reduced_groups_200,
+  "300bp" = reduced_groups_300,
+  "400bp" = reduced_groups_400
+)
+
+highest_summits_all <- lapply(reduced_sets, get_highest_per_group, orig_summits_gr = all_H3K27ac_summits_gr)
+```
+  
+  Looking at number of summits across groups as a function of min.gap number
+
+```{r across groups mingap}
+ ##Compute counts per group for each reduced set
+summit_counts_group <- lapply(names(highest_summits_all), function(gap_name) {
+  gr <- highest_summits_all[[gap_name]]
+  
+  # make sure group column exists
+  if(!"group" %in% colnames(mcols(gr))) stop("GRanges must have 'group' column")
+  
+  df <- as.data.frame(gr) %>%
+    count(group, name = "n_summits") %>%
+    mutate(gap = gap_name)
+  
+  return(df)
+}) %>% bind_rows()
+
+
+ggplot(summit_counts_group, aes(x = gap, y = n_summits, group = group, color = group)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  theme_classic(base_size = 14) +
+  labs(
+    title = "Effect of min-gap width on number of highest summits per group",
+    x = "Min-gap width (bp)",
+    y = "Number of highest summits",
+    color = "Group"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+### Summit average per ROI
+What is the average number of summits per ROI as a function of min.gapwidth
+
+```{r double reduce function}
+double_reduce_summits <- function(summits_gr, ROIs, groups,
+                                  min_gap_within_seq = c(100,200,300),
+                                  min_gap_across_seq = c(100,200,300),
+                                  BPPARAM = MulticoreParam(4)) {
+  
+  # Pre-split summits by group to avoid repeated subsetting
+  summits_by_group <- split(summits_gr, summits_gr$group)
+  
+  # Create all gap combinations
+  gap_combos <- expand.grid(min_gap_within = min_gap_within_seq,
+                            min_gap_across = min_gap_across_seq,
+                            stringsAsFactors = FALSE)
+  
+  # Apply in parallel for each combination
+  results <- bplapply(seq_len(nrow(gap_combos)), function(i) {
+    g1 <- gap_combos$min_gap_within[i]
+    g2 <- gap_combos$min_gap_across[i]
+    
+    # -----------------
+    # Step 1: Reduce within group
+    # -----------------
+    highest_per_group <- lapply(groups, function(grp) {
+      gr_sub <- summits_by_group[[grp]]
+      if(length(gr_sub) == 0) return(NULL)
+      
+      # reduce within group with revmap
+      red <- GenomicRanges::reduce(gr_sub, min.gapwidth = g1, ignore.strand = TRUE, with.revmap = TRUE)
+      revmap <- mcols(red)$revmap
+      if(length(revmap) == 0) return(NULL)
+      
+      # pick highest score per cluster
+      cluster_idx <- rep(seq_along(revmap), times = elementNROWS(revmap))
+      all_idx <- unlist(revmap, use.names = FALSE)
+      all_scores <- gr_sub$score[all_idx]
+      max_idx_per_cluster <- tapply(seq_along(all_scores), cluster_idx, function(ii) {
+        ii[which.max(all_scores[ii])]
+      })
+      gr_sub[all_idx[unlist(max_idx_per_cluster)]]
+    })
+    
+    highest_per_group <- highest_per_group[!sapply(highest_per_group, is.null)]
+    
+    # -----------------
+    # Step 2: Merge across groups
+    # -----------------
+    if(length(highest_per_group) == 0) return(NULL)
+    all_highest <- do.call(c, highest_per_group)
+    consensus <- GenomicRanges::reduce(all_highest, min.gapwidth = g2, ignore.strand = TRUE)
+    
+    # -----------------
+    # Step 3: Count summits per ROI (vectorized)
+    # -----------------
+    hits <- findOverlaps(ROIs, consensus)
+    counts <- as.data.frame(table(queryHits(hits)))
+    colnames(counts) <- c("ROI_idx", "n_summits")
+    counts$ROI_idx <- as.integer(as.character(counts$ROI_idx))
+    counts$min_gap_within <- g1
+    counts$min_gap_across <- g2
+    counts
+  }, BPPARAM = BPPARAM)
+  
+  # Combine results
+  results_df <- bind_rows(results)
+  
+  return(results_df)
+}
+```
+
+```{r calculating of double reduce}
+
+BPPARAM <- SnowParam(workers = 4, type = "SOCK")  
+register(BPPARAM)
+
+heatmap_data <- double_reduce_summits(
+  summits_gr = all_H3K27ac_summits_gr,
+  ROIs = H3K27ac_sets_gr$all_H3K27ac,
+  groups = unique(all_H3K27ac_summits_gr$group),
+  min_gap_within_seq = c(100,200,300,400),
+  min_gap_across_seq = c(100,200,300,400),
+  BPPARAM = BPPARAM
+)
+
+heatmap_avg <- heatmap_data %>%
+  group_by(min_gap_within, min_gap_across) %>%
+  summarise(mean_summits = mean(n_summits, na.rm = TRUE), .groups = "drop")
+
+```
+
+```{r plot mingap averages}
+ggplot(heatmap_avg, aes(x = factor(min_gap_within),
+                        y = factor(min_gap_across),
+                        fill = mean_summits)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(mean_summits, 1)), color = "black", size = 4) +
+  scale_fill_viridis_c(option = "plasma") +
+  labs(
+    x = "Within-group min-gap (bp)",
+    y = "Across-group min-gap (bp)",
+    fill = "Mean # summits per ROI",
+    title = "Effect of min-gap width on summits per ROI"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+after i figure my final min.gaps, here is where the places are
+```{r}
+
+# --- Step 1: Reduce within groups and pick highest summit per cluster ---
+get_highest_per_group <- function(summits_gr, groups = NULL, min_gap_within = 100) {
+  
+  if(is.null(groups)) {
+    groups <- unique(summits_gr$group)
+  }
+  
+  highest_per_group <- lapply(groups, function(grp) {
+    gr_sub <- summits_gr[summits_gr$group == grp]
+    if(length(gr_sub) == 0) return(NULL)
+    
+    # Reduce within group
+    reduced <- GenomicRanges::reduce(gr_sub, min.gapwidth = min_gap_within, ignore.strand = TRUE, with.revmap = TRUE)
+    
+    # Pick highest scoring summit per cluster
+    revmap <- reduced$revmap
+    scores <- gr_sub$score
+    
+    all_idx <- unlist(revmap, use.names = FALSE)
+    cluster_idx <- rep(seq_along(revmap), times = elementNROWS(revmap))
+    all_scores <- scores[all_idx]
+    
+    max_idx_per_cluster <- tapply(seq_along(all_scores), cluster_idx, function(ii) {
+      ii[which.max(all_scores[ii])]
+    })
+    
+    orig_idx <- all_idx[unlist(max_idx_per_cluster)]
+    
+    gr_sub[orig_idx]
+  })
+  
+  # Flatten list of GRanges
+  highest_per_group <- do.call(c, highest_per_group)
+  return(highest_per_group)
+}
+
+# --- Step 2: Reduce across groups to get final consensus ---
+get_consensus_summits <- function(highest_per_group_gr, min_gap_across = 400) {
+  
+  # Reduce across groups
+  reduced <- GenomicRanges::reduce(highest_per_group_gr, min.gapwidth = min_gap_across, ignore.strand = TRUE, with.revmap = TRUE)
+  
+  # Pick highest scoring summit per cluster across all groups
+  revmap <- reduced$revmap
+  scores <- highest_per_group_gr$score
+  
   all_idx <- unlist(revmap, use.names = FALSE)
-  
-  # repeat cluster index for each element in revmap
   cluster_idx <- rep(seq_along(revmap), times = elementNROWS(revmap))
-  
-  # scores for all indices
   all_scores <- scores[all_idx]
   
-  # For each cluster, pick the index of the max score
   max_idx_per_cluster <- tapply(seq_along(all_scores), cluster_idx, function(ii) {
     ii[which.max(all_scores[ii])]
   })
   
-  # Convert back to original indices
   orig_idx <- all_idx[unlist(max_idx_per_cluster)]
   
-  # subset original GRanges
-  highest_per_group[[i]] <- orig[orig_idx]
+  highest_per_group_gr[orig_idx]
 }
 
-# Recursive function to flatten any nested lists/GRangesList
-flatten_gr <- function(x) {
-  if (inherits(x, "GRanges")) {
-    return(x)
-  } else if (inherits(x, "GRangesList")) {
-    return(unlist(x, use.names = FALSE))
-  } else if (is.list(x)) {
-    # recursively flatten list elements
-    return(do.call(c, lapply(x, flatten_gr)))
-  } else {
-    stop("Unexpected object type")
-  }
+add_ROI_to_consensus <- function(consensus_gr, ROIs_gr) {
+  
+  hits <- findOverlaps(consensus_gr, ROIs_gr)
+  
+  df <- data.frame(
+    summit_chr  = seqnames(consensus_gr)[queryHits(hits)],
+    summit_pos  = start(consensus_gr)[queryHits(hits)],
+    summit_score = consensus_gr$score[queryHits(hits)],
+    Peakid      = ROIs_gr$Peakid[subjectHits(hits)],
+    roi_start   = start(ROIs_gr)[subjectHits(hits)],
+    roi_end     = end(ROIs_gr)[subjectHits(hits)]
+  )
+  
+  df %>%
+    mutate(rel_pos = (summit_pos - roi_start)/(roi_end - roi_start),
+           roi_center = roi_start + (roi_end - roi_start)/2,
+           dist_center = summit_pos - roi_center)
 }
 
-# Apply to your list of highest per group
-highest_summits_gr <- flatten_gr(highest_per_group)
-
-
-highest_summits_df <- bind_rows(
-  lapply(names(highest_summits_gr), function(gr_name) {
-    as.data.frame(highest_summits_gr[[gr_name]]) %>%
-      mutate(group = gr_name)
-  })
-)
-highest_summits_long_gr <- highest_summits_df %>% GRanges()
-
 
 ```
+```{r looking at 100-400}
+highest_100 <- get_highest_per_group(all_H3K27ac_summits_gr, min_gap_within = 100)
 
-```{r up to tornado plots?}
+final_consensus <- get_consensus_summits(highest_100, min_gap_across = 400)
 
-# ROIs
-ROIs <- H3K27ac_sets_gr$all_H3K27ac
-
-# Overlaps
-hits_group <- findOverlaps(ROIs, highest_summits_long_gr)
-
-df_group <- data.frame(
-  Peakid    = ROIs$Peakid[queryHits(hits_group)],
-  summit_pos = start(highest_summits_long_gr)[subjectHits(hits_group)],
-  roi_start  = start(ROIs)[queryHits(hits_group)],
-  roi_end    = end(ROIs)[queryHits(hits_group)]
-)
-
-# Relative position within ROI (0=start, 1=end)
-df_group <- df_group %>%
-  mutate(rel_pos = (summit_pos - roi_start) / (roi_end - roi_start))
+final_df_100_400 <- add_ROI_to_consensus(final_consensus, H3K27ac_sets_gr$all_H3K27ac)
 
 
-roi_order_group <- df_group %>%
-  count(Peakid, name = "summit_count") %>%
-  arrange(desc(summit_count))
-
-
-df_group <- df_group %>%
-  mutate(roi_factor = factor(Peakid, levels = roi_order_group$Peakid)) %>% 
-  left_join(., H3K27ac_lookup, by = "Peakid") %>% 
-  mutate(roi_center = roi_start + (roi_end - roi_start) / 2  ) %>% 
-  mutate(dist_center = summit_pos - roi_center)
-
-
-# df_group %>% 
-# ggplot(., aes(x = rel_pos, y = roi_factor, color = cluster)) +
-#   geom_point(size = 0.5, alpha = 0.7) +   # each summit
-#   scale_x_continuous(limits = c(0,1)) +
-#   labs(x = "Relative position within ROI", y = "ROIs", color = "Set/Cluster") +
-#   theme_minimal() +
-#   theme(
-#     axis.text.y = element_blank(),   # hide ROI labels if too many
-#     axis.ticks.y = element_blank()
-#   )
-```
-
-```{r rel pos}
-# df_group %>%
-#   dplyr::filter(cluster=="Set_3") %>% 
-# ggplot(., aes(x = rel_pos, y = roi_factor, color = cluster)) +
-#   geom_point(size = 0.5, alpha = 0.7) +   # each summit
-#   scale_x_continuous(limits = c(0,1)) +
-#   labs(x = "Relative position within ROI", y = "ROIs", color = "Set/Cluster") +
-#   theme_minimal() +
-#   theme(
-#     axis.text.y = element_blank(),   # hide ROI labels if too many
-#     axis.ticks.y = element_blank()
-#   )
-```
-
-```{r distance from center plot}
-ggplot(df_group, aes(x = dist_center, y = roi_factor, color=cluster)) +
+ggplot(final_df_100_400, aes(x = dist_center, y = Peakid)) +
   ggrastr::geom_point_rast(size = 0.6, alpha = 0.2) +
   geom_vline(xintercept = 0, linetype = "dashed") +  # ROI center
   labs(
@@ -576,9 +726,73 @@ ggplot(df_group, aes(x = dist_center, y = roi_factor, color=cluster)) +
   theme(
     axis.text.y = element_blank(),
     axis.ticks.y = element_blank()
-  )+
-  coord_cartesian(xlim=c(-2000,2000))
+  )
 ```
+
+
+```{r distance from center plot}
+
+final_df_100_400 %>% 
+  group_by(Peakid) %>% 
+  slice_max(summit_score) %>% 
+ggplot(., aes(x = dist_center, y = Peakid)) +
+  ggrastr::geom_point_rast(size = 0.6, alpha = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed") +  # ROI center
+  geom_vline(xintercept = 500, linetype = "dashed",color="red") +  # left 500 
+  geom_vline(xintercept = -500, linetype = "dashed",color="red") +  # right 500
+  geom_vline(xintercept = 250, linetype = "dashed",color="yellow") +  # left 500 
+  geom_vline(xintercept = -250, linetype = "dashed",color="yellow") +  # right 500
+  
+  labs(
+    x = "Distance from ROI center (bp)",
+    y = "ROI",
+    color = "Group"
+  ) +
+  # theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )+
+ coord_cartesian(xlim=c(-2000,2000))
+
+final_df_100_400 %>% 
+  group_by(Peakid) %>% 
+  slice_max(summit_score) %>% 
+ggplot(., aes(x = dist_center)) +
+  geom_density()+
+  geom_vline(xintercept = 0, linetype = "dashed") +  # ROI center
+  geom_vline(xintercept = 500, linetype = "dashed",color="red") +  # left 500 
+  geom_vline(xintercept = -500, linetype = "dashed",color="red") +  # right 500
+  geom_vline(xintercept = 250, linetype = "dashed",color="blue") +  # left 500 
+  geom_vline(xintercept = -250, linetype = "dashed",color="blue") +  # right 500
+ coord_cartesian(xlim=c(-2000,2000))
+
+```
+```{r looking at 200-400}
+highest_200 <- get_highest_per_group(all_H3K27ac_summits_gr, min_gap_within = 200)
+
+final_consensus2 <- get_consensus_summits(highest_200, min_gap_across = 400)
+
+final_df_200_400 <- add_ROI_to_consensus(final_consensus2, H3K27ac_sets_gr$all_H3K27ac)
+
+
+ggplot(final_df_100_400, aes(x = dist_center, y = Peakid)) +
+  ggrastr::geom_point_rast(size = 0.6, alpha = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color="green") +  # ROI center
+  geom_vline(xintercept = 500, linetype = "dashed",color="red") +  # left 500 
+  geom_vline(xintercept = -500, linetype = "dashed",color="red") +  # right 500
+  labs(
+    x = "Distance from ROI center (bp)",
+    y = "ROI",
+    color = "Group"
+  ) +
+  # theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )+coord_cartesian(xlim=c(-2000,2000))
+```
+
 #### function get highest scoring summit clustered by group:
 
 ```{r}
@@ -607,15 +821,6 @@ get_highest_summits_with_cluster_id <- function(gr, min_gap = 100, ignore.strand
     select(seqnames, start = start.orig, end = end.orig, score = score.orig,
            group, cluster_id)
 }
-```
-
-
-```{r}
-redux_main_100 <- get_highest_summits_plyranges(all_H3K27ac_summits_gr,min_gap = 100)
-redux_main_200 <- get_highest_summits_plyranges(all_H3K27ac_summits_gr,min_gap = 200)
-redux_main_300 <- get_highest_summits_plyranges(all_H3K27ac_summits_gr,min_gap = 300)
-redux_main_400 <- get_highest_summits_plyranges(all_H3K27ac_summits_gr,min_gap = 400)
-
 ```
 
 
@@ -655,16 +860,67 @@ reduce_and_pick_highest <- function(gr, gap = 100) {
 ```
 
 ```{r}
+redux_100 <- reduce_and_pick_highest(all_H3K27ac_summits_gr, gap = 100)
+redux_200 <- reduce_and_pick_highest(all_H3K27ac_summits_gr, gap = 200)
+redux_300 <- reduce_and_pick_highest(all_H3K27ac_summits_gr, gap = 300)
 
-redux_100 <- reduce_and_pick_highest(highest_summits_long_gr, gap = 100)
-redux_200 <- reduce_and_pick_highest(highest_summits_long_gr, gap = 200)
-redux_300 <- reduce_and_pick_highest(highest_summits_long_gr, gap = 300)
-
-redux_100 %>% as.data.frame()
-
+redux_Peak_100 <- add_ROI_to_consensus(redux_100, H3K27ac_sets_gr$all_H3K27ac)
+redux_Peak_200 <- add_ROI_to_consensus(redux_200, H3K27ac_sets_gr$all_H3K27ac)
+redux_Peak_300 <- add_ROI_to_consensus(redux_300, H3K27ac_sets_gr$all_H3K27ac)
 ```
 
-```{r}
-pick_best_summit_per_roi(ROIs,redux_100,score_col = "score")
+
+```{r plotting alternates}
+ggplot(redux_Peak_100, aes(x = dist_center, y = Peakid)) +
+  ggrastr::geom_point_rast(size = 0.6, alpha = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed") +  # ROI center
+  geom_vline(xintercept = 500, linetype = "dashed",color="red") +  # left 500 
+  geom_vline(xintercept = -500, linetype = "dashed",color="red") +  # right 500
+  labs(
+    x = "Distance from ROI center (bp)",
+    y = "ROI",
+    color = "Group"
+  ) +
+  # theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )+
+  ggtitle("Only single reduction 100bp")
+
+ggplot(redux_Peak_200, aes(x = dist_center, y = Peakid)) +
+  ggrastr::geom_point_rast(size = 0.6, alpha = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed") +  # ROI center
+  geom_vline(xintercept = 500, linetype = "dashed",color="red") +  # left 500 
+  geom_vline(xintercept = -500, linetype = "dashed",color="red") +  # right 500
+  labs(
+    x = "Distance from ROI center (bp)",
+    y = "ROI",
+    color = "Group"
+  ) +
+  # theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )+
+  ggtitle("Only single reduction 200bp")
+
+ggplot(redux_Peak_300, aes(x = dist_center, y = Peakid)) +
+  ggrastr::geom_point_rast(size = 0.6, alpha = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed") +  # ROI center
+  geom_vline(xintercept = 500, linetype = "dashed",color="red") +  # left 500 
+  geom_vline(xintercept = -500, linetype = "dashed",color="red") +  # right 500
+  labs(
+    x = "Distance from ROI center (bp)",
+    y = "ROI",
+    color = "Group"
+  ) +
+  # theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )+
+  ggtitle("Only single reduction 300bp")
+
 ```
 
