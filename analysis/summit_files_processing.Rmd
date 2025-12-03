@@ -473,6 +473,8 @@ get_highest_per_group <- function(reduced_groups, orig_summits_gr, group_col = "
   return(highest_summits_long_gr)
 }
 ```
+
+
 ```{r}
 reduced_sets <- list(
   "100bp" = reduced_groups,
@@ -627,7 +629,7 @@ after i figure my final min.gaps, here is where the places are
 ```{r}
 
 # --- Step 1: Reduce within groups and pick highest summit per cluster ---
-get_highest_per_group <- function(summits_gr, groups = NULL, min_gap_within = 100) {
+get_highest_per_group_final <- function(summits_gr, groups = NULL, min_gap_within = 100) {
   
   if(is.null(groups)) {
     groups <- unique(summits_gr$group)
@@ -688,6 +690,9 @@ get_consensus_summits <- function(highest_per_group_gr, min_gap_across = 400) {
 add_ROI_to_consensus <- function(consensus_gr, ROIs_gr) {
   
   hits <- findOverlaps(consensus_gr, ROIs_gr)
+   # Extract metadata from consensus_gr
+  consensus_meta <- mcols(consensus_gr)[queryHits(hits), , drop = FALSE]
+  
   
   df <- data.frame(
     summit_chr  = seqnames(consensus_gr)[queryHits(hits)],
@@ -698,6 +703,9 @@ add_ROI_to_consensus <- function(consensus_gr, ROIs_gr) {
     roi_end     = end(ROIs_gr)[subjectHits(hits)]
   )
   
+  # Bind the metadata from consensus_gr
+  df <- cbind(df, as.data.frame(consensus_meta))
+  
   df %>%
     mutate(rel_pos = (summit_pos - roi_start)/(roi_end - roi_start),
            roi_center = roi_start + (roi_end - roi_start)/2,
@@ -706,6 +714,7 @@ add_ROI_to_consensus <- function(consensus_gr, ROIs_gr) {
 
 
 ```
+
 ```{r looking at 100-400}
 highest_100 <- get_highest_per_group(all_H3K27ac_summits_gr, min_gap_within = 100)
 
@@ -795,7 +804,7 @@ ggplot(final_df_100_400, aes(x = dist_center, y = Peakid)) +
 
 #### function get highest scoring summit clustered by group:
 
-```{r}
+```{r, eval=FALSE}
 #' Get highest summit per reduced cluster per group using plyranges
 #'
 #' @param gr GRanges with metadata columns: group, score
@@ -921,6 +930,504 @@ ggplot(redux_Peak_300, aes(x = dist_center, y = Peakid)) +
     axis.ticks.y = element_blank()
   )+
   ggtitle("Only single reduction 300bp")
+
+```
+### Creating Final 100-400 reduction summit set  
+
+Here is how I ran the get_highest_per_group_final
+
+```{r 100 400 highest per group}
+
+### step 1:  reduce within group using 100 bp gap
+highest_100_final <- get_highest_per_group_final(all_H3K27ac_summits_gr, min_gap_within = 100)
+
+
+### step 2: reduce across groups (converge)
+final_consensus_final <- get_consensus_summits(highest_100_final, min_gap_across = 400)
+
+### step 3: add in ROI information
+
+final_df_summits <- add_ROI_to_consensus(final_consensus_final, H3K27ac_sets_gr$all_H3K27ac)
+```
+
+```{r}
+final_df_summits %>% 
+  ggplot(., aes(x=rel_pos))+
+  geom_histogram(bins = 100)+
+  geom_vline(xintercept = 0.5)+
+  ggtitle("Relative position of consensus summits by ROI")
+
+
+```
+
+
+#### Debugging why some ROIs do not have summits when they clearly do in IGV
+```{r}
+
+
+### step 1: Finding which ROIs are without summits
+hits <- findOverlaps(ROIs, final_consensus_final)
+
+roi_has_hit <- unique(queryHits(hits))
+
+roi_index <- seq_along(ROIs)
+
+# ROIs with no summits
+no_summit_idx <- setdiff(roi_index, roi_has_hit)
+
+missing_ROIs <- ROIs[no_summit_idx]
+missing_ROIs
+
+
+```
+
+```{r}
+### Step 2: Check if ROIs ever had a summit to begin with
+raw_hits <- findOverlaps(ROIs, all_H3K27ac_summits_gr)
+missing_raw_idx <- setdiff(roi_index, unique(queryHits(raw_hits)))
+
+ROIs[missing_raw_idx]
+
+### This returns nothing, which means I have a reduction problem.
+
+
+```
+
+No ROIs were summit-less, which means there is a problem in the reduction process.  Let's see if I can suss that out.
+
+```{r}
+
+### This code checked for all ~14,000 ROIs without summits to see if there were any nearby (It runs FOREVER)
+# storage <- for(i in no_summit_idx) {
+#   roi <- ROIs[i]
+#   nearby = subsetByOverlaps(all_H3K27ac_summits_gr, roi, maxgap = 1000)
+# 
+#   cat("\nROI", ROIs$Peakid[i], "had", length(nearby), "nearby summits\n")
+# }
+
+## now we are seeing where those summits may be
+first_level <- get_highest_per_group_final(all_H3K27ac_summits_gr, min_gap_within = 100)
+
+# ROIs with summits after first reduction
+hits1 <- findOverlaps(ROIs, first_level)
+roi1 <- unique(queryHits(hits1))
+
+# After second reduction
+hits2 <- findOverlaps(ROIs, final_consensus_final)
+roi2 <- unique(queryHits(hits2))
+
+lost_after_consensus <- setdiff(roi1, roi2)
+ROIs[lost_after_consensus]
+
+
+
+
+
+
+
+i <- no_summit_idx[1]
+
+roi <- ROIs[i]
+
+inside_raw  <- subsetByOverlaps(all_H3K27ac_summits_gr, roi)
+inside_lvl1 <- subsetByOverlaps(first_level, roi)
+inside_lvl2 <- subsetByOverlaps(final_consensus_final, roi)
+
+nearby_lvl1 <- subsetByOverlaps(first_level, roi, maxgap = 500)
+nearby_lvl2 <- subsetByOverlaps(final_consensus_final, roi, maxgap = 500)
+
+list(
+  raw = length(inside_raw),
+  reduced_within = length(inside_lvl1),
+  reduced_across = length(inside_lvl2),
+  nearby_after_lvl1 = length(nearby_lvl1),
+  nearby_after_lvl2 = length(nearby_lvl2)
+)
+
+```
+
+```{r}
+debug_roi <- function(roi_index, ROIs, summits) {
+  library(GenomicRanges)
+
+  roi <- ROIs[roi_index]
+
+  # Summits overlapping the ROI ± 500 bp
+  nearby <- summits[
+    summits@seqnames == roi@seqnames &
+    summits@ranges@start >= roi@ranges@start - 500 &
+    summits@ranges@end   <= roi@ranges@end + 500
+  ]
+
+  cat("\n### ROI:", roi_index, as.character(roi), "\n")
+  cat("Nearby summits:", length(nearby), "\n")
+
+  # Cluster summits within sets (level 1)
+  lvl1 <- reduce(split(nearby, nearby$set), min.gapwidth = 1)
+  lvl1_flat <- unlist(lvl1)
+  cat("Level 1 reduced:", length(lvl1_flat), "\n")
+
+  # Collapse across sets (level 2)
+  lvl2 <- reduce(lvl1_flat, min.gapwidth = 1)
+  cat("Level 2 reduced (ACROSS):", length(lvl2), "\n")
+
+  # Show coordinates for inspection
+  return(list(
+    roi        = roi,
+    nearby     = nearby,
+    lvl1       = lvl1_flat,
+    lvl2       = lvl2
+  ))
+}
+
+```
+
+```{r revised function}
+
+# -------------------------
+# Step A: reduce within groups and pick top per cluster
+# -------------------------
+get_highest_per_group_revised <- function(summits_gr, group_col = "group", score_col = "score", min_gap_within = 100) {
+  groups <- unique(mcols(summits_gr)[[group_col]])
+  
+  highest_per_group <- lapply(groups, function(g) {
+    gr_sub <- summits_gr[mcols(summits_gr)[[group_col]] == g]
+    if (length(gr_sub) == 0) return(NULL)
+    
+    # reduce and get revmap (mapping reduced -> original indices)
+    reduced <- GenomicRanges::reduce(gr_sub, min.gapwidth = min_gap_within, ignore.strand = TRUE, with.revmap = TRUE)
+    revmap <- mcols(reduced)$revmap
+    if (is.null(revmap) || length(revmap) == 0) return(NULL)
+    
+    # flatten revmap and pick highest-scoring original index per reduced cluster
+    cluster_idx <- rep(seq_along(revmap), times = elementNROWS(revmap))
+    orig_idx <- unlist(revmap, use.names = FALSE)
+    scores <- mcols(gr_sub)[[score_col]]
+    all_scores <- scores[orig_idx]
+    
+    max_idx_per_cluster <- tapply(seq_along(all_scores), cluster_idx, function(ii) {
+      ii[which.max(all_scores[ii])]
+    })
+    chosen_orig_idx <- orig_idx[unlist(max_idx_per_cluster, use.names = FALSE)]
+    
+    # return the original GRanges entries (preserve metadata)
+    gr_sub[chosen_orig_idx]
+  })
+  
+  # remove NULLs and concatenate into a GRanges
+  highest_per_group <- highest_per_group[!sapply(highest_per_group, is.null)]
+  if (length(highest_per_group) == 0) return(GRanges())
+  do.call(c, highest_per_group)
+}
+
+
+# -------------------------
+# Step B: reduce across groups and pick top per cluster
+# -------------------------
+get_consensus_summits_revised <- function(highest_per_group_gr, score_col = "score", min_gap_across = 400) {
+  if (length(highest_per_group_gr) == 0) return(GRanges())
+  
+  # Reduce across groups (ensure we pass a flat GRanges)
+  consensus_red <- GenomicRanges::reduce(highest_per_group_gr, min.gapwidth = min_gap_across, ignore.strand = TRUE, with.revmap = TRUE)
+  revmap <- mcols(consensus_red)$revmap
+  if (is.null(revmap) || length(revmap) == 0) return(GRanges())
+  
+  cluster_idx <- rep(seq_along(revmap), times = elementNROWS(revmap))
+  orig_idx <- unlist(revmap, use.names = FALSE)
+  scores <- mcols(highest_per_group_gr)[[score_col]]
+  all_scores <- scores[orig_idx]
+  
+  max_idx_per_cluster <- tapply(seq_along(all_scores), cluster_idx, function(ii) {
+    ii[which.max(all_scores[ii])]
+  })
+  chosen_orig_idx <- orig_idx[unlist(max_idx_per_cluster, use.names = FALSE)]
+  
+  # Return original summit entries (preserve metadata)
+  highest_per_group_gr[chosen_orig_idx]
+}
+
+
+# -------------------------
+# Step C: assign exactly one summit to each ROI (overlap preferred, fallback to nearest)
+# returns a data.frame and a GRanges of assigned summits
+# -------------------------
+assign_best_summit_to_ROI_revised <- function(consensus_gr, ROIs_gr, max_dist = 500) {
+  # Prepare output containers
+  nROIs <- length(ROIs_gr)
+  if (nROIs == 0) return(list(df = tibble::tibble(), gr = GRanges()))
+  
+  # 1) Exact overlaps: find all overlaps (ROI -> consensus)
+  ov <- findOverlaps(ROIs_gr, consensus_gr)  # query = ROI, subject = consensus
+  ov_df <- NULL
+  if (length(ov) > 0) {
+    ov_df <- data.frame(
+      roi_idx = queryHits(ov),
+      cons_idx = subjectHits(ov),
+      summit_pos = start(consensus_gr)[subjectHits(ov)],
+      summit_score = mcols(consensus_gr)$score[subjectHits(ov)],
+      stringsAsFactors = FALSE
+    )
+    # For each ROI choose the overlapping consensus with highest score
+    ov_df <- ov_df %>%
+      group_by(roi_idx) %>%
+      slice_max(summit_score, with_ties = FALSE) %>%
+      ungroup()
+  } else {
+    ov_df <- data.frame(roi_idx = integer(0), cons_idx = integer(0),
+                        summit_pos = integer(0), summit_score = numeric(0))
+  }
+  
+  # 2) Find nearest consensus for ROIs that have no overlap
+  assigned_roi_idx <- unique(ov_df$roi_idx)
+  roi_unassigned <- setdiff(seq_len(nROIs), assigned_roi_idx)
+  
+  nearest_df <- data.frame(roi_idx = integer(0), cons_idx = integer(0),
+                           summit_pos = integer(0), summit_score = numeric(0), distance = integer(0))
+  if (length(roi_unassigned) > 0 && length(consensus_gr) > 0) {
+    # distanceToNearest gives one nearest consensus per ROI (but we will subset to roi_unassigned)
+    dn <- distanceToNearest(ROIs_gr, consensus_gr)
+    dn_df <- data.frame(
+      roi_idx = queryHits(dn),
+      cons_idx = subjectHits(dn),
+      distance = mcols(dn)$distance,
+      stringsAsFactors = FALSE
+    )
+    # keep only the ROIs we need and apply max_dist cutoff
+    dn_df <- dn_df %>% filter(roi_idx %in% roi_unassigned & distance <= max_dist)
+    if (nrow(dn_df) > 0) {
+      dn_df <- dn_df %>%
+        mutate(summit_pos = start(consensus_gr)[cons_idx],
+               summit_score = mcols(consensus_gr)$score[cons_idx]) %>%
+        group_by(roi_idx) %>%
+        # if multiple at same distance, choose higher score; distanceToNearest returns single nearest usually
+        slice_max(summit_score, with_ties = FALSE) %>%
+        ungroup()
+      nearest_df <- as.data.frame(dn_df)
+    }
+  }
+  
+  # 3) Combine overlap assignments and nearest fallback
+  assigned_df <- bind_rows(
+    ov_df %>% select(roi_idx, cons_idx, summit_pos, summit_score),
+    nearest_df %>% select(roi_idx, cons_idx, summit_pos, summit_score)
+  )
+  
+  # 4) For ROIs that still have no assignment (no overlap and no nearest within max_dist), we will set NA
+  unassigned_final <- setdiff(seq_len(nROIs), assigned_df$roi_idx)
+  
+  # 5) Build output dataframe with ROI metadata and consensus metadata
+  if (nrow(assigned_df) > 0) {
+    out_df <- assigned_df %>%
+      left_join(
+        tibble::tibble(roi_idx = seq_len(nROIs),
+                       Peakid = ROIs_gr$Peakid,
+                       roi_seqname = as.character(seqnames(ROIs_gr)),
+                       roi_start = start(ROIs_gr),
+                       roi_end = end(ROIs_gr)),
+        by = "roi_idx"
+      ) %>%
+      mutate(dist_center = summit_pos - (roi_start + (roi_end - roi_start)/2),
+             rel_pos = (summit_pos - roi_start) / (roi_end - roi_start)) %>%
+      # attach consensus metadata columns (preserve all mcols)
+      rowwise() %>%
+      mutate(cons_meta = list(if (!is.na(cons_idx)) as.list(mcols(consensus_gr)[cons_idx, , drop = FALSE]) else list(NULL))) %>%
+      ungroup()
+    
+    # explode the cons_meta list into columns (safe)
+    cons_meta_df <- do.call(rbind, lapply(out_df$cons_meta, function(x) {
+      if (is.null(x)) return(as.data.frame(matrix(NA, nrow = 1, ncol = 0)))
+      as.data.frame(x, stringsAsFactors = FALSE)
+    }))
+    if (ncol(cons_meta_df) > 0) {
+      out_df <- bind_cols(out_df %>% select(-cons_meta), cons_meta_df)
+    } else {
+      out_df <- out_df %>% select(-cons_meta)
+    }
+  } else {
+    out_df <- tibble::tibble(
+      roi_idx = integer(0), cons_idx = integer(0), summit_pos = integer(0),
+      summit_score = numeric(0), Peakid = character(0), roi_seqname = character(0),
+      roi_start = integer(0), roi_end = integer(0), dist_center = numeric(0), rel_pos = numeric(0)
+    )
+  }
+  
+  # 6) Append rows for ROIs that remain unassigned (all NA for summit info)
+  if (length(unassigned_final) > 0) {
+    missing_rows <- tibble::tibble(
+      roi_idx = unassigned_final,
+      cons_idx = NA_integer_,
+      summit_pos = NA_integer_,
+      summit_score = NA_real_,
+      Peakid = ROIs_gr$Peakid[unassigned_final],
+      roi_seqname = as.character(seqnames(ROIs_gr))[unassigned_final],
+      roi_start = start(ROIs_gr)[unassigned_final],
+      roi_end = end(ROIs_gr)[unassigned_final],
+      dist_center = NA_real_,
+      rel_pos = NA_real_
+    )
+    out_df <- bind_rows(out_df, missing_rows)
+  }
+  
+  # Ensure ordering by ROI index to make downstream joins easy
+  out_df <- out_df %>% arrange(roi_idx)
+  
+  # 7) Also return a GRanges of assigned summits (only those assigned)
+  assigned_rows <- out_df %>% filter(!is.na(cons_idx))
+  if (nrow(assigned_rows) > 0) {
+    assigned_gr <- GRanges(
+      seqnames = assigned_rows$roi_seqname,
+      ranges = IRanges(start = assigned_rows$summit_pos, end = assigned_rows$summit_pos),
+      Peakid = assigned_rows$Peakid
+    )
+    # Attach consensus metadata columns (if present in out_df)
+    meta_cols <- setdiff(colnames(assigned_rows), c("roi_idx","cons_idx","summit_pos","summit_score","Peakid","roi_seqname","roi_start","roi_end","dist_center","rel_pos"))
+    if (length(meta_cols) > 0) {
+      mcols(assigned_gr) <- assigned_rows[, meta_cols, drop = FALSE]
+    }
+  } else {
+    assigned_gr <- GRanges()
+  }
+  
+  return(list(df = out_df, gr = assigned_gr))
+}
+
+
+# -------------------------
+# Wrapper: run whole pipeline and produce final df + GRanges
+# -------------------------
+make_consensus_and_assign <- function(summits_gr, ROIs_gr,
+                                      group_col = "group", score_col = "score",
+                                      min_gap_within = 100, min_gap_across = 400, max_dist = 500) {
+  highest_within <- get_highest_per_group_revised(summits_gr, group_col = group_col, score_col = score_col, min_gap_within = min_gap_within)
+  consensus <- get_consensus_summits_revised(highest_within, score_col = score_col, min_gap_across = min_gap_across)
+  assigned <- assign_best_summit_to_ROI_revised(consensus, ROIs_gr, max_dist = max_dist)
+  
+  # tidy return
+  list(
+    highest_within = highest_within,
+    consensus = consensus,
+    assigned_df = assigned$df,
+    assigned_gr = assigned$gr
+  )
+}
+
+```
+
+```{r}
+res <- make_consensus_and_assign(
+  summits_gr = all_H3K27ac_summits_gr,
+  ROIs_gr = H3K27ac_sets_gr$all_H3K27ac,
+  group_col = "group",
+  score_col = "score",
+  min_gap_within = 100,
+  min_gap_across = 400,
+  max_dist = 500
+)
+
+# data.frame with one row per ROI (assigned or NA)
+final_df <- res$assigned_df
+
+# GRanges of ROIs that received an assigned summit (with metadata)
+assigned_summits_gr <- res$assigned_gr
+
+# Quick checks
+n_missing <- sum(is.na(final_df$summit_pos))
+cat("ROIs lacking any summit within max_dist:", n_missing, "\n")
+
+
+```
+Almost done, now to look at the 6,324 ROIs without summits
+```{r}
+ROIs_no_summit <- final_df %>% 
+  dplyr::filter(is.na(file)) %>% 
+  dplyr::select(Peakid)
+
+length(ROIs_no_summit$Peakid)
+
+no_summits_revised <- ROIs[(ROIs$Peakid %in% ROIs_no_summit$Peakid)]
+
+
+missing_gr <- H3K27ac_sets_gr$all_H3K27ac[H3K27ac_sets_gr$all_H3K27ac$Peakid %in% ROIs_no_summit$Peakid]
+
+nearest_hits <- nearest(missing_gr, all_H3K27ac_summits_gr)
+nearest_dist <- start(all_H3K27ac_summits_gr)[nearest_hits] - start(missing_gr)
+
+ROIs_no_summit$nearest_summit_dist <- nearest_dist
+head(ROIs_no_summit)
+
+
+ROIs_no_summit %>% 
+  ggplot(., aes(x=nearest_summit_dist))+
+  geom_histogram()+
+  ggtitle("nearest summit distance to ROIs without summits")
+```
+
+
+```{r}
+# Example: fallback assignment
+fallback_summits <- lapply(seq_along(ROIs_no_summit$Peakid), function(i) {
+  roi <- ROIs[ROIs$Peakid == ROIs_no_summit$Peakid[i]]
+  summits_in_roi <- all_H3K27ac_summits_gr[queryHits(findOverlaps(all_H3K27ac_summits_gr, roi))]
+  if(length(summits_in_roi) == 0) return(NULL)
+  
+  # Pick highest scoring summit
+  summits_in_roi[which.max(summits_in_roi$score)]
+})
+
+fallback_summits <- do.call(c, fallback_summits)
+
+```
+
+
+```{r redoing cluster membership and export files, eval=FALSE}
+
+
+### adding in cluster membership for export
+
+Final_df_annotated <- final_df  %>% 
+  left_join(H3K27ac_lookup)
+
+SET_1_df <- Final_df_annotated %>% 
+  dplyr::filter(cluster=="Set_1") %>% 
+  dplyr::select(roi_seqname, summit_pos,Peakid) %>% 
+  na.omit()
+Set_1_gr <- GRanges(
+  seqnames = SET_1_df$roi_seqname,
+  ranges = IRanges(start = SET_1_df$summit_pos, end = SET_1_df$summit_pos),
+  name = SET_1_df$Peakid
+)
+
+rtracklayer::export(Set_1_gr, "data/Bed_exports/Set_1_summits.bed")
+
+
+SET_2_df <- Final_df_annotated %>% 
+  dplyr::filter(cluster=="Set_2") %>% 
+  dplyr::select(roi_seqname, summit_pos,Peakid) %>% 
+  na.omit()
+Set_2_gr <- GRanges(
+  seqnames = SET_2_df$roi_seqname,
+  ranges = IRanges(start = SET_2_df$summit_pos, end = SET_2_df$summit_pos),
+  name = SET_2_df$Peakid
+)
+
+rtracklayer::export(Set_2_gr, "data/Bed_exports/Set_2_summits.bed")
+
+SET_3_df <- Final_df_annotated %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  dplyr::select(roi_seqname, summit_pos,Peakid) %>% 
+  na.omit()
+
+Set_3_gr <- GRanges(
+  seqnames = SET_3_df$roi_seqname,
+  ranges = IRanges(start = SET_3_df$summit_pos, end = SET_3_df$summit_pos),
+  name = SET_3_df$Peakid
+)
+
+rtracklayer::export(Set_3_gr, "data/Bed_exports/Set_3_summits.bed")
+
+# rtracklayer::export(all_H3K27ac_summits_gr,"data/Bed_exports/All_summits_bedfile.bed")
+
+# rtracklayer::export(ROIs,"data/Bed_exports/All_ROIs.bed")
 
 ```
 
