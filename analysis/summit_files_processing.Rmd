@@ -1361,7 +1361,7 @@ ROIs_no_summit %>%
   geom_histogram()+
   ggtitle("nearest summit distance to ROIs without summits")
 ```
-
+#Fix Peakid loss
 
 ```{r}
 # Example: fallback assignment
@@ -1376,9 +1376,38 @@ fallback_summits <- lapply(seq_along(ROIs_no_summit$Peakid), function(i) {
 
 fallback_summits <- do.call(c, fallback_summits)
 
+common_cols <- intersect(colnames(mcols(assigned_summits_gr)),
+                         colnames(mcols(fallback_summits)))
+
+assigned_summits_gr <- assigned_summits_gr[, common_cols, drop = FALSE]
+fallback_summits <- fallback_summits[, common_cols, drop = FALSE]
+
+
+mcols(fallback_summits)
+mcols(assigned_summits_gr)
+
+final_consensus_gr <- c(assigned_summits_gr, fallback_summits)
+
+# check metadata
+mcols(final_consensus_gr)       # per-range metadata
+
+
+hits_peakid <- findOverlaps(final_consensus_gr, ROIs)
+
+# assign Peakid from ROIs to the consensus summits
+mcols(final_consensus_gr)$Peakid <- NA_character_  # initialize
+
+mcols(final_consensus_gr)$Peakid[queryHits(hits_peakid)] <- ROIs$Peakid[subjectHits(hits_peakid)]
+
+# check
+head(mcols(final_consensus_gr))
+
+final_consensus_annotated_df <- as.data.frame(final_consensus_gr) %>%
+  left_join(H3K27ac_lookup, by = "Peakid") %>%
+  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster))
 ```
 
-
+# Fix resave with peakid and set
 ```{r redoing cluster membership and export files, eval=FALSE}
 
 
