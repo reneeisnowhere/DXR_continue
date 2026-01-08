@@ -42,3 +42,10 @@ Looking at finalized assigned cluster sets and characteristics
 ### Examining summit and ROI relationship  
 
 [Collecting all summits](https://reneeisnowhere.github.io/DXR_continue/summit_files_processing.html)
+
+[Investigating summits H3K27ac](https://reneeisnowhere.github.io/DXR_continue/H3K27ac summit_processing.html)
+
+[TE overlaps of ROI summits-H3K27ac](https://reneeisnowhere.github.io/DXR_continue/H3K27_TE_overlap.html)
+
+[Investigating summits H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3 summit_processing.html)
+[TE overlaps of ROI summits-H3K9me3]pending
