@@ -692,37 +692,64 @@ library(BSgenome.Hsapiens.UCSC.hg38)
 genome <- BSgenome.Hsapiens.UCSC.hg38
 seqlengths(complete_summit_gr) <- seqlengths(genome)[names(seqlengths(complete_summit_gr))]
 
-SET_1_gr <-   complete_summit_gr[mcols(complete_summit_gr)$group == "Set_1"]
+SET_1_gr <- complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_1"
+]
+resize_and_trim <- function(gr, flank = 300, genome = BSgenome.Hsapiens.UCSC.hg38) {
+  gr <- resize(gr, width = 1 + 2*flank, fix = "center")
+  seqlengths(gr) <- seqlengths(genome)[seqlevels(gr)]
+  gr <- trim(gr)
+  gr <- gr[width(gr) > 0]
+  return(gr)
+}
 
-
-H3K9me3_set1_600 <- resize(SET_1_gr, width = 1 + 300*2, fix = "center")
+H3K9me3_set1_600 <- resize_and_trim(SET_1_gr,flank=300)
+H3K9me3_set1_400 <- resize_and_trim(SET_1_gr,flank=200)
 H3K9me3_set1_600<- trim(H3K9me3_set1_600)
+H3K9me3_set1_600 <- H3K9me3_set1_600[width(H3K9me3_set1_600) > 0]
+
 H3K9me3_set1_400 <- resize(SET_1_gr, width = 1 + 200*2, fix = "center")
 H3K9me3_set1_400<- trim(H3K9me3_set1_400)
+H3K9me3_set1_400 <- H3K9me3_set1_400[width(H3K9me3_set1_400) > 0]
 
 rtracklayer::export(SET_1_gr, "data/Bed_exports/H3K9me3_Set_1_summits.bed")
 rtracklayer::export(H3K9me3_set1_600, "data/Bed_exports/H3K9me3_Set_1_600.bed")
 rtracklayer::export(H3K9me3_set1_400, "data/Bed_exports/H3K9me3_Set_1_400.bed")
 
-SET_2_gr <-   complete_summit_gr[mcols(complete_summit_gr)$group == "Set_2"]
+SET_2_gr <- complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_2"]
 
+H3K9me3_set2_600 <- resize_and_trim(SET_2_gr,flank=300)
+H3K9me3_set2_400 <- resize_and_trim(SET_2_gr,flank=400)
 
 H3K9me3_set2_600 <- resize(SET_2_gr, width = 1 + 300*2, fix = "center")
 H3K9me3_set2_600 <- trim(H3K9me3_set2_600)
+H3K9me3_set2_600 <- H3K9me3_set2_600[width(H3K9me3_set2_600) > 0]
+
 H3K9me3_set2_400 <- resize(SET_2_gr, width = 1 + 200*2, fix = "center")
 H3K9me3_set2_400 <- trim(H3K9me3_set2_400)
+H3K9me3_set2_400 <- H3K9me3_set2_400[width(H3K9me3_set2_400) > 0]
 rtracklayer::export(SET_2_gr, "data/Bed_exports/H3K9me3_Set_2_summits.bed")
 rtracklayer::export(H3K9me3_set2_600, "data/Bed_exports/H3K9me3_Set_2_600.bed")
 rtracklayer::export(H3K9me3_set2_400, "data/Bed_exports/H3K9me3_Set_2_400.bed")
 
+SET_3_gr <- complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_3"]
 
-SET_3_gr <-   complete_summit_gr[mcols(complete_summit_gr)$group == "Set_3"]
-
+H3K9me3_set3_600 <- resize_and_trim(SET_3_gr,flank=300)
+H3K9me3_set3_400 <- resize_and_trim(SET_3_gr,flank=200)
 
 H3K9me3_set3_600 <- resize(SET_3_gr, width = 1 + 300*2, fix = "center")
 H3K9me3_set3_600 <- trim(H3K9me3_set3_600)
+H3K9me3_set3_600 <- H3K9me3_set3_600[width(H3K9me3_set3_600) > 0]
+
 H3K9me3_set3_400 <- resize(SET_3_gr, width = 1 + 200*2, fix = "center")
 H3K9me3_set3_400 <- trim(H3K9me3_set3_400)
+H3K9me3_set3_400 <- H3K9me3_set3_400[width(H3K9me3_set3_400) > 0]
+
 rtracklayer::export(SET_3_gr, "data/Bed_exports/H3K9me3_Set_3_summits.bed")
 rtracklayer::export(H3K9me3_set3_600, "data/Bed_exports/H3K9me3_Set_3_600.bed")
 rtracklayer::export(H3K9me3_set3_400, "data/Bed_exports/H3K9me3_Set_3_400.bed")
