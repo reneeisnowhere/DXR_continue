@@ -402,7 +402,8 @@ ggplot(LINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
 ```
 
 
-### LTR
+### LTR  
+
 Overlapping LTR family summits to get a count
 
 ```{r LTR Overlapping}
@@ -518,8 +519,10 @@ ggplot(LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   theme_classic()+
   facet_wrap(~comparison)
 ```
-### SVA
+### SVA  
+
 Overlapping SVA family with summits to get a count
+
 ```{r SVA Overlapping}
 SVA_hits <- findOverlaps(H3K27ac_summit_gr, SVA_gr, ignore.strand = TRUE)
 SVA_overlap_df <- tibble(
@@ -632,7 +635,8 @@ ggplot(SVA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   theme_classic()+
   facet_wrap(~comparison)
 ```
-### DNA
+### DNA  
+
 Overlapping DNA family with summits to get a count
 
 
