@@ -49,7 +49,8 @@ repeatmasker_clean <- repeatmasker %>% mutate(
   ) %>% 
    mutate(
     start = genoStart + 1,
-    end   = genoEnd)
+    end   = genoEnd)%>% 
+  mutate(repFamily= str_remove(repFamily, "\\?$"))
 
 rpt_split <- split(repeatmasker_clean, repeatmasker_clean$repClass)
 
@@ -102,6 +103,7 @@ H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
 )
 
 ```
+
 ```{r Fisher test information}
 
 # Generic pairwise Fisher test
@@ -217,6 +219,10 @@ SINE_results <- comparisons %>%
   mutate(FDR = p.adjust(p_value, method = "BH"))
 ```
 
+```{r}
+SINE_counts
+total_SINE_summits
+```
 
 ```{r SINE datatable}
 # ---- Prepare the table ----
@@ -334,6 +340,11 @@ LINE_results <- comparisons %>%
   unnest(results) %>%
   mutate(FDR = p.adjust(p_value, method = "BH"))
 
+```
+
+```{r}
+LINE_counts
+total_LINE_summits
 ```
 
 ```{r LINE datatable}
@@ -454,6 +465,11 @@ LTR_results <- comparisons %>%
 
 ```
 
+```{r}
+LTR_counts
+total_LTR_summits
+```
+
 ```{r LTR datatable}
 # ---- Prepare the table ----
 LTR_counts_display <- LTR_results %>%
@@ -568,6 +584,11 @@ SVA_results <- comparisons %>%
   ) %>%
   unnest(results) %>%
   mutate(FDR = p.adjust(p_value, method = "BH"))
+```
+
+```{r}
+SVA_counts
+total_SVA_summits
 ```
 
 ```{r SVA datatable}
@@ -685,6 +706,11 @@ DNA_results <- comparisons %>%
   ) %>%
   unnest(results) %>%
   mutate(FDR = p.adjust(p_value, method = "BH"))
+```
+
+```{r}
+DNA_counts
+total_DNA_summits
 ```
 
 ```{r DNA datatable}
