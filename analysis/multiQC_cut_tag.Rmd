@@ -178,7 +178,7 @@ combo_trim_df %>%
   geom_col(aes(fill=Histone_Mark)) + 
   theme(axis.text.x=element_text(vjust = .2,angle=90))+
   ylab("sequene count")+
-  ggtitle("Read counts by sample and histone mark trimmed adapters")+
+  ggtitle("Paired End reads by sample and histone mark trimmed adapters")+
   scale_y_continuous( expand = expansion(mult = c(0, .1)))
 ```
 
@@ -199,7 +199,7 @@ geom_boxplot(aes(fill=Histone_Mark)) +
   facet_wrap(trt~time)+
   ylab("count")+
   theme(axis.text.x=element_text(vjust = .2,angle=90))+
-  ggtitle("Sequence count by trt and time trimmed adapter")
+  ggtitle("Paired end read count by trt and time, trimmed adapter")
 ```
 
 ### Trim Info
@@ -535,7 +535,7 @@ questionable_frag %>%
 ### Read Analysisafter Filtering
 
 #### Data Initialization
-```{r read noM data}
+```{r read noM data, message=FALSE, warning=FALSE}
 file_list_noM <- list.files(path="data/bam_final",
            pattern ="frag_len_noM\\.txt$",full.names = TRUE)
 read_and_label <- function(file) {
