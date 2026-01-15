@@ -581,7 +581,7 @@ temp_highest_per_group <- get_highest_per_group_parallel(all_H3K9me3_summits_gr,
                                                          min_gap_within = 100,
                                                          workers = workers)
 
-
+# saveRDS(temp_highest_per_group,"data/RDS_files/H3K9me3_temp_highest_per_group.RDS")
 # Concatenate into one GRanges (Step 1.2)
 flat_highest_gr <- (c(temp_highest_per_group$DOX_144R, temp_highest_per_group$DOX_24R,temp_highest_per_group$DOX_24T,temp_highest_per_group$VEH_144R,temp_highest_per_group$VEH_24R,temp_highest_per_group$VEH_24T))
 
@@ -606,7 +606,11 @@ consensus_summits_gr <- (c(consensus_summits$chr1,consensus_summits$chr2,
                            consensus_summits$chr19,consensus_summits$chr20,
                            consensus_summits$chr21,consensus_summits$chr22))
 
+# saveRDS(consensus_summits_gr,"data/RDS_files/H3K9me3_consensus_summits_gr.RDS")
+
 final_data <- assign_best_summit_to_ROI_parallel(consensus_summits_gr, ROIs,max_dist = 500,workers = workers)
+
+# saveRDS(final_data,"data/RDS_files/H3K9me3_final_data.RDS")
 # data.frame with one row per ROI (assigned or NA)
 final_df <- final_data$df
 
@@ -665,6 +669,7 @@ complete_summit_df <- final_df %>%
    group_by(Peakid) %>% 
   slice_min(order_by = abs(dist_center), n = 1) %>% 
   distinct
+# saveRDS(complete_summit_df,"data/RDS_files/H3K9me3_complete_summit_df.RDS")
 
 only_complete <- complete_summit_df %>% filter(!is.na(summit_pos))
 
@@ -682,6 +687,7 @@ meta_cols <- intersect(setdiff(colnames(only_complete), exclude_cols), colnames(
 
 # Assign metadata
 mcols(complete_summit_gr) <- only_complete[, meta_cols, drop = FALSE]
+# saveRDS(complete_summit_gr,"data/RDS_files/H3K9me3_complete_summit_gr.RDS")
 ```
 
 

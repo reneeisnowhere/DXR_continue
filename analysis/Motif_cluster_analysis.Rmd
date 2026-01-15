@@ -462,8 +462,8 @@ H3K27ac_toptable_list %>%
   left_join(set2_27ac, by="group") %>% 
   pivot_longer(cols=!group, values_to = "median_LFC", names_to = "set") %>% 
   ggplot(., aes(x=group, y=median_LFC, group=set, color=set))+
-  geom_point()+
-  geom_line(aes(alpha = 0.8))+
+  geom_point(size=4)+
+  geom_line(aes(alpha = 0.8, linewidth = 4))+
   theme_bw()+
   ggtitle("LFC across time for H3K27ac sets")
 
@@ -1347,8 +1347,8 @@ H3K9me3_toptable_list %>%
   left_join(set2_9me3, by="group") %>% 
   pivot_longer(cols=!group, values_to = "median_LFC", names_to = "set") %>% 
   ggplot(., aes(x=group, y=median_LFC, group=set, color=set))+
-  geom_point()+
-  geom_line(aes(alpha = 0.8))+
+  geom_point(size=4)+
+  geom_line(aes(alpha = 0.8, linewidth=3))+
   theme_bw()+
   ggtitle("LFC across time for H3K9me3 sets")
 

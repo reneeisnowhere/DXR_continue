@@ -249,7 +249,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K27ac_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K27ac, no removal")
+        column_title="Filtered log2cpm H3K27ac, no removal")
 ```
 
 ### H3K27me3 Count Analysis
@@ -275,7 +275,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K27me3_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K27me3 with no removal")
+        column_title="Filtered log2cpm H3K27me3 with no removal")
 ```
 
 ### H3K36me3 Count Analysis
@@ -301,7 +301,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K36me3_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K36me3 with removal of 1 sample")
+        column_title="Filtered log2cpm H3K36me3 with removal of 1 sample")
 ```
 
 ### H3K9me3 Count Analysis
@@ -327,7 +327,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K9me3_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K9me3 with Outlier removal")
+        column_title="Filtered log2cpm H3K9me3 with removal of 3 outliers")
 ```
 
 ### Differential Analysis
@@ -398,9 +398,9 @@ Heatmap(H3K9me3_merged_filt_cor,
 
 #### Setting up Matrix
 ```{r matrix}
-# H3K27ac_annomat <- data.frame(timeset=colnames(H3K27ac_merged_raw)) %>% 
-#   mutate(sample=timeset) %>% 
-#   separate(timeset, into = c("ind","tx","time")) %>% 
+# H3K27ac_annomat <- data.frame(timeset=colnames(H3K27ac_merged_raw)) %>%
+#   mutate(sample=timeset) %>%
+#   separate(timeset, into = c("ind","tx","time")) %>%
 #   mutate(tx=factor(tx, levels = c("VEH", "DOX")),
 #          time=factor(time, levels =c("24T","24R","144R"))) %>%
 #   mutate(ind = gsub("Ind", "", ind)) %>%
@@ -414,9 +414,9 @@ Heatmap(H3K9me3_merged_filt_cor,
 #   gsub("VEH_24R", "5", .) %>%
 #   gsub("VEH_144R", "6", .)
 # 
-# H3K27me3_annomat <- data.frame(timeset=colnames(H3K27me3_merged_raw)) %>% 
-#   mutate(sample=timeset) %>% 
-#   separate(timeset, into = c("ind","tx","time")) %>% 
+# H3K27me3_annomat <- data.frame(timeset=colnames(H3K27me3_merged_raw)) %>%
+#   mutate(sample=timeset) %>%
+#   separate(timeset, into = c("ind","tx","time")) %>%
 #   mutate(tx=factor(tx, levels = c("VEH", "DOX")),
 #          time=factor(time, levels =c("24T","24R","144R"))) %>%
 #   mutate(ind = gsub("Ind", "", ind)) %>%
@@ -488,13 +488,21 @@ colnames(mm_H3K9me3) <- H3K9me3_annomat$txtime %>% unique()
 
 #### H3K27ac
 ```{r H3K27ac PCA_var,eval=FALSE}
-# pca_H3K27ac <- calc_pca(t(H3K27ac_merged_lcpm))
-# pca_var_plot(pca_H3K27ac)
+pca_H3K27ac <- calc_pca(t(H3K27ac_merged_lcpm))
+pca_var_plot(pca_H3K27ac)
 ```
 
 ```{r H3K27ac PCA,eval=FALSE}
 # pca_H3K27ac <- pca_H3K27ac$x %>% cbind(., H3K27ac_annomat)
-# pca_plot(pca_H3K27ac, col_var = "time", shape_var = "tx", text_var = pca_H3K27ac$ind, title = "H3K27ac lcpm PCA")
+pca_H3K27ac_df <- data.frame(pca_H3K27ac$x , H3K27ac_annomat)
+pca_plot(
+  pca_H3K27ac,
+  pca_H3K27ac_df,
+  col_var = "time",
+  shape_var = "tx",
+  text_var = "ind",   # <-- string, not vector
+  title = "H3K27ac filtered lcpm PCA"
+)      +theme_bw()
 ```
 
 ```{r H3K27ac HeatMap 2,eval=FALSE ,fig.width=14,fig.height=14}
@@ -524,8 +532,15 @@ pca_var_plot(pca_H3K27me3)
 ```
 
 ```{r H3K27me3 PCA,eval=FALSE}
-pca_H3K27me3 <- pca_H3K27me3$x %>% cbind(., H3K27me3_annomat)
-pca_plot(pca_H3K27me3, col_var = "time", shape_var = "tx", text_var = pca_H3K27me3$ind, title = "H3K27me3 lcpm PCA")
+pca_H3K27me3_df <- data.frame(pca_H3K27me3$x , H3K27me3_annomat)
+pca_plot(
+  pca_H3K27me3,
+  pca_H3K27me3_df,
+  col_var = "time",
+  shape_var = "tx",
+  text_var = "ind",   # <-- string, not vector
+  title = "H3K27me3 filtered lcpm PCA"
+)   +theme_bw()     
 ```
 
 #### H3K36me3
@@ -542,8 +557,8 @@ pca_plot(
   col_var = "time",
   shape_var = "tx",
   text_var = "ind",   # <-- string, not vector
-  title = "H3K36me3c filtered lcpm PCA"
-)        
+  title = "H3K36me3 filtered lcpm PCA"
+)    +theme_bw()    
 ```
 
 #### H3K9me3
@@ -562,7 +577,7 @@ pca_plot(
   shape_var = "tx",
   text_var = "ind",   # <-- string, not vector
   title = "H3K9me3 filtered lcpm PCA"
-)      
+)  +theme_bw()    
 ```
 
 ### Differential Enrichment and Volcano Plots
@@ -762,11 +777,11 @@ ggVennDiagram(list("24T regions"=genes_H3K9me3_24T,"24R regions"=genes_H3K9me3_2
 
 
 H3K36me3_toplist <- list("H3K36me3_24T"=H3K36me3_24T$data,"H3K36me3_24R"= H3K36me3_24R$data, "H3K36me3_144R"= H3K36me3_144R$data)
-saveRDS(H3K36me3_toplist,"data/DER_data/H3K36me3_toplist_nooutlier.RDS")
+# saveRDS(H3K36me3_toplist,"data/DER_data/H3K36me3_toplist_nooutlier.RDS")
 
 H3K9me3_toplist <- list("H3K9me3_24T"=H3K9me3_24T$data,"H3K9me3_24R"= H3K9me3_24R$data, "H3K9me3_144R"= H3K9me3_144R$data)
 
-saveRDS(H3K9me3_toplist, "data/DER_data/H3K9me3_toplist_nooutlier.RDS")
+# saveRDS(H3K9me3_toplist, "data/DER_data/H3K9me3_toplist_nooutlier.RDS")
 
 ```
 
