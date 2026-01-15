@@ -50,8 +50,8 @@
 <script src="site_libs/dt-ext-fixedcolumns-1.13.6/js/dataTables.fixedColumns.min.js"></script>
 <link href="site_libs/dt-ext-scroller-1.13.6/css/scroller.dataTables.min.css" rel="stylesheet" />
 <script src="site_libs/dt-ext-scroller-1.13.6/js/dataTables.scroller.min.js"></script>
-<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
-<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -405,7 +405,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-09-03
+<strong>Last updated:</strong> 2026-01-15
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -536,15 +536,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeed049ca15ce13600d9fac8778f5576b0c55e73fbtargetblanked049caa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee59970ab355b14083a5d1e49dee0c8ee0a6d4f68targetblanke59970aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/ed049ca15ce13600d9fac8778f5576b0c55e73fb" target="_blank">ed049ca</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e59970ab355b14083a5d1e49dee0c8ee0a6d4f68" target="_blank">e59970a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeed049ca15ce13600d9fac8778f5576b0c55e73fbtargetblanked049caa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee59970ab355b14083a5d1e49dee0c8ee0a6d4f68targetblanke59970aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -554,7 +554,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/ed049ca15ce13600d9fac8778f5576b0c55e73fb" target="_blank">ed049ca</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e59970ab355b14083a5d1e49dee0c8ee0a6d4f68" target="_blank">e59970a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -571,8 +571,12 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
+    Ignored:    data/Other_paper_data/
+    Ignored:    data/RDS_files/
+    Ignored:    data/TE_annotation/
     Ignored:    data/alignment_summary.txt
     Ignored:    data/all_peak_final_dataframe.txt
     Ignored:    data/cell_line_info_.tsv
@@ -581,11 +585,22 @@ Ignored files:
     Ignored:    data/number_frag_peaks_summary.txt
 
 Untracked files:
+    Untracked:  H3K27ac_all_regions_test.bed
+    Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  analysis/GREAT_H3K27ac.Rmd
+    Untracked:  analysis/Top2a_Top2b_expression.Rmd
+    Untracked:  analysis/chromHMM.Rmd
+    Untracked:  analysis/human_genome_composition.Rmd
+    Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
-    Untracked:  code/making_analysis_file_summary.R
+    Untracked:  other_analysis/
 
 Unstaged changes:
+    Modified:   analysis/H3K9me3_summit_processing.Rmd
+    Modified:   analysis/Motif_cluster_analysis.Rmd
     Modified:   analysis/Outlier_removal.Rmd
+    Modified:   analysis/final_analysis.Rmd
+    Modified:   analysis/summit_files_processing.Rmd
 
 </code></pre>
 <p>
@@ -630,6 +645,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/e59970ab355b14083a5d1e49dee0c8ee0a6d4f68/analysis/multiQC_cut_tag.Rmd" target="_blank">e59970a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-15
+</td>
+<td>
+wflow_publish("analysis/multiQC_cut_tag.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/60f3e0ee678091960bfa06807bbd2f9cf97d6f35/docs/multiQC_cut_tag.html" target="_blank">60f3e0e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-09-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1503,7 +1552,7 @@ DOX
   geom_col(aes(fill=Histone_Mark)) + 
   theme(axis.text.x=element_text(vjust = .2,angle=90))+
   ylab(&quot;sequene count&quot;)+
-  ggtitle(&quot;Read counts by sample and histone mark trimmed adapters&quot;)+
+  ggtitle(&quot;Paired End reads by sample and histone mark trimmed adapters&quot;)+
   scale_y_continuous( expand = expansion(mult = c(0, .1)))</code></pre>
 <p><img src="figure/multiQC_cut_tag.Rmd/ct%20vis%20histo-1.png" width="1344" style="display: block; margin: auto;" /></p>
 <p>
@@ -1576,7 +1625,7 @@ geom_boxplot(aes(fill=Histone_Mark)) +
   facet_wrap(trt~time)+
   ylab(&quot;count&quot;)+
   theme(axis.text.x=element_text(vjust = .2,angle=90))+
-  ggtitle(&quot;Sequence count by trt and time trimmed adapter&quot;)</code></pre>
+  ggtitle(&quot;Paired end read count by trt and time, trimmed adapter&quot;)</code></pre>
 <p><img src="figure/multiQC_cut_tag.Rmd/ct%20vis%20box-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-ct-vis-box-1">
@@ -3846,7 +3895,7 @@ Session information
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.4.2 (2024-10-31 ucrt)
 Platform: x86_64-w64-mingw32/x64
-Running under: Windows 11 x64 (build 26100)
+Running under: Windows 11 x64 (build 26200)
 
 Matrix products: default
 
@@ -3891,10 +3940,10 @@ loaded via a namespace (and not attached):
   [5] R.oo_1.27.1                 XML_3.99-0.18              
   [7] DirichletMultinomial_1.48.0 lifecycle_1.0.4            
   [9] rstatix_0.7.2               pwalign_1.2.0              
- [11] doParallel_1.0.17           rprojroot_2.1.0            
+ [11] doParallel_1.0.17           rprojroot_2.1.1            
  [13] vroom_1.6.5                 MASS_7.3-65                
  [15] processx_3.8.6              lattice_0.22-7             
- [17] crosstalk_1.2.1             backports_1.5.0            
+ [17] crosstalk_1.2.2             backports_1.5.0            
  [19] magrittr_2.0.3              plotly_4.11.0              
  [21] sass_0.4.10                 rmarkdown_2.29             
  [23] jquerylib_0.1.4             yaml_2.3.10                
@@ -3945,7 +3994,7 @@ loaded via a namespace (and not attached):
 [113] pillar_1.11.0               vctrs_0.6.5                
 [115] promises_1.3.3              car_3.1-3                  
 [117] xtable_1.8-4                cluster_2.1.8.1            
-[119] evaluate_1.0.4              cli_3.6.5                  
+[119] evaluate_1.0.5              cli_3.6.5                  
 [121] locfit_1.5-9.12             compiler_4.4.2             
 [123] Rsamtools_2.22.0            rlang_1.1.6                
 [125] crayon_1.5.3                ggsignif_0.6.4             
