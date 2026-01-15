@@ -1,0 +1,102 @@
+---
+title: "RNA and H3K27ac"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(readxl)
+```
+
+adding in data files.
+
+The current analysis should be RNA DEGs and ROIs by set expression levels.
+more steps will include viewing the association of DEGs with enrichment/depeletion of ROIs containing TEs by class/familiy with a look at age.
+
+```{r needed data files}
+###Loading all ROIs, already out by Set and combined
+H3K27ac_anno_ROIs <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+
+## Loading single summit locations and adding in 
+H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+
+##assigning Peakid as name of summit region
+ mcols(H3K27ac_summit_gr)$name <- mcols(H3K27ac_summit_gr)$Peakid
+ 
+
+## Creating a lookup file if needed
+H3K27ac_lookup <- imap_dfr(H3K27ac_anno_ROIs[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+
+RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
+
+RNA_cluster_lookup<- readRDS( "data/Other_paper_data/RNA_cluster_lookup.RDS")
+
+```
+
+
+```{r RNA data files, eval=FALSE}
+##For my reference only
+### Loading in RNA expression data
+RNA_toptable_24T <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S3", skip = 1)
+
+RNA_toptable_24R <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S4", skip = 1)
+
+RNA_toptable_144R <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S5", skip = 1)
+
+RNA_acute_cluster <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S6", skip = 1)
+
+RNA_chronic_cluster <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S7", skip = 2)
+
+## Creating R object for my data:
+
+RNA_full_toptable <- RNA_toptable_24T %>% 
+  mutate(timepoint="24T") %>% 
+  bind_rows(., (RNA_toptable_24R %>% 
+                  mutate(timepoint="24R"))) %>% 
+  bind_rows(., (RNA_toptable_144R %>% 
+                  mutate(timepoint="144R")))
+# saveRDS(RNA_full_toptable, "data/Other_paper_data/RNA_full_toptable.RDS")
+
+RNA_cluster_lookup <- RNA_acute_cluster %>% 
+    mutate(Response_Direction="NA") %>% 
+    bind_rows(RNA_chronic_cluster)
+# saveRDS(RNA_cluster_lookup, "data/Other_paper_data/RNA_cluster_lookup.RDS")
+
+```
+
