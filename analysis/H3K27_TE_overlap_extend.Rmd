@@ -222,7 +222,13 @@ SINE_results <- comparisons %>%
 ```
 
 ```{r}
-SINE_counts
+datatable(SINE_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
 total_SINE_summits
 ```
 
@@ -345,7 +351,13 @@ LINE_results <- comparisons %>%
 ```
 
 ```{r}
-LINE_counts
+datatable(LINE_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
 total_LINE_summits
 ```
 
@@ -468,7 +480,13 @@ LTR_results <- comparisons %>%
 ```
 
 ```{r}
-LTR_counts
+datatable(LTR_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
 total_LTR_summits
 ```
 
@@ -589,7 +607,13 @@ SVA_results <- comparisons %>%
 ```
 
 ```{r}
-SVA_counts
+datatable(SVA_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
 total_SVA_summits
 ```
 
@@ -711,7 +735,13 @@ DNA_results <- comparisons %>%
 ```
 
 ```{r}
-DNA_counts
+datatable(DNA_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
 total_DNA_summits
 ```
 
