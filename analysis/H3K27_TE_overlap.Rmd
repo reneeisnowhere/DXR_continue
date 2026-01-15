@@ -733,7 +733,13 @@ DNA_results <- comparisons %>%
 ```
 
 ```{r}
-DNA_counts
+datatable(DNA_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
 total_DNA_summits
 ```
 
