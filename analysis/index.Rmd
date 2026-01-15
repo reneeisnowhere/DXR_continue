@@ -39,14 +39,34 @@ Looking at finalized assigned cluster sets and characteristics
 
 [Starting with repeatmasker overlaps](https://reneeisnowhere.github.io/DXR_continue/repeatmasker_data.html)
 
+
 ### Examining summit and ROI relationship  
 
 [Collecting all summits](https://reneeisnowhere.github.io/DXR_continue/summit_files_processing.html)
 
-[Investigating summits H3K27ac](https://reneeisnowhere.github.io/DXR_continue/H3K27ac summit_processing.html)
+[Investigating summits H3K27ac](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_summit_processing.html) Uses double reduction method to cluster summits across treatment-time, then across all summits.
+
+[Investigating summits H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_summit_processing.html) Uses double reduction method to cluster summits across treatment-time, then across all summits.
 
 [TE overlaps of ROI summits-H3K27ac](https://reneeisnowhere.github.io/DXR_continue/H3K27_TE_overlap.html)
 
-[Investigating summits H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3 summit_processing.html)
+[TE overlaps of ROI summits-H3K27ac extended regions](https://reneeisnowhere.github.io/DXR_continue/H3K27_TE_overlap_extend.html)
 
-[TE overlaps of ROI summits-H3K9me3]pending
+[TE overlaps of ROI summits-H3K27ac using alternate calls of summits](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_summit_topqonly.html)
+
+[TE overlaps of ROI summits-H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TE_overlap.html)
+
+### Summit and transcription factor motif enrichment data
+
+[H3K27ac TF motif enrichment](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_TF_motifs.html)
+
+[H3K9me3 TF motif enrichment](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TF_motifs.html)
+
+
+### Examining RNA data with my data
+
+[RNA integration](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_RNA_integration.html)
+
+
+
+### Examining ChromHMM states and ROIs
