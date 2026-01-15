@@ -1,0 +1,64 @@
+---
+title: "Human genome composition"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+
+```{r packages}
+library(tidyverse)
+library(ggrepel)
+library(plotrix)
+
+
+```
+
+
+Data obtained from   
+Gregory, T. Synergy between sequence and size in Large-scale genomics. Nat Rev Genet 6, 699–708 (2005). https://doi.org/10.1038/nrg1674  
+
+and  
+
+International Human Genome Sequencing Consortium. Initial sequencing and analysis of the human genome. Nature 409, 860–921 (2001). https://doi.org/10.1038/35057062  
+
+```{r data impute}
+
+
+datanum <- data.frame(percent=c(25.9,1.5,20.4,13.1,8.3,2.9,3,5,8,11.6),
+                      type=c("Introns\n25.9%","Protein-\ncoding\n genes\n1.5%","LINEs\n20.4%","SINEs\n13.1%","LTRs\n8.3%","DNAs\n2.9%","Simple\n sequence\n repeats\n3%","Segmental\n duplications\n5%","Misc.\nheterochromatin\n8%", "Misc.\nunique\nsequences\n11.6%"))
+
+
+```
+
+```{r}
+pie3D(datanum$percent,
+      col=hcl.colors(length(datanum$percent), "Spectral"),
+      labels=datanum$type,##labels
+      labelcex=.65,##label text size
+      height=.2,##height
+      shade=0.7,##edge shading, lower is darker
+      border="black",
+      # explode=.4, ##separate sections
+      theta = 1) ##tilt of pieplot)
+```
+
