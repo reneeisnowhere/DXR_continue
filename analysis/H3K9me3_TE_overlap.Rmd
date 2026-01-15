@@ -1,0 +1,850 @@
+---
+title: "H3K9me3 and TE overlap"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+```
+
+First steps: breakdown repeatmasker into groups and pull out the ones by each class I am interested in.  
+```{r repeatmasker loading}
+
+repeatmasker <- read_delim("data/Other_paper_data/repeatmasker_20250911.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+colnames(repeatmasker)
+
+repeatmasker_clean <- repeatmasker %>% mutate(
+    strand = ifelse(strand == "C", "-", "+")
+  ) %>% 
+   mutate(
+    start = genoStart + 1,
+    end   = genoEnd)%>% 
+  mutate(repFamily= str_remove(repFamily, "\\?$"))
+
+rpt_split <- split(repeatmasker_clean, repeatmasker_clean$repClass)
+
+rpt_split_gr_list <- lapply(rpt_split, function(df) {
+  GRanges(
+    seqnames = df$genoName,
+    ranges   = IRanges(start = df$start, end = df$end),
+    strand   = df$strand,
+    repName   = df$repName,
+    repClass  = df$repClass,
+    repFamily = df$repFamily,
+    swScore   = df$swScore,
+    milliDiv  = df$milliDiv,
+    id        = df$id
+  )
+})
+
+
+
+```
+
+```{r subset rpt_split_gr_list}
+SINE_gr <- rpt_split_gr_list$SINE
+
+LINE_gr <- rpt_split_gr_list$LINE
+
+LTR_gr <- rpt_split_gr_list$LTR
+
+SVA_gr <- rpt_split_gr_list$Retroposon
+
+DNA_gr <- rpt_split_gr_list$DNA
+```
+
+```{r loading H3K9me3 data}
+H3K9me3_summit_gr <- readRDS("data/RDS_files/H3K9me3_complete_summit_gr.RDS")
+
+
+peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
+
+H3K9me3_lookup <- imap_dfr(peakAnnoList_H3K9me3[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+
+##assigning Peakid as name of summit region
+ mcols(H3K9me3_summit_gr)$name <- mcols(H3K9me3_summit_gr)$Peakid
+ 
+ comparisons <- tibble(
+  cluster2 = c("Set_2", "Set_3"),
+  cluster1 = c("Set_1", "Set_1")
+)
+
+```
+
+```{r Fisher test information}
+
+# Generic pairwise Fisher test
+test_pair_TE_generic <- function(df_long, te_name, cluster1, cluster2) {
+  
+   sub_df <- df_long %>%
+    filter(TE_type == te_name) %>%
+    complete(
+      cluster = c(cluster1, cluster2),
+      status  = c("TE", "not_TE"),
+      fill = list(count = 0))
+   
+   # enforce fixed order
+ status_levels <- c("TE", "not_TE")
+  
+  # assume "status" column has TE vs wnot_TE automatically
+  statuses <- unique(sub_df$status)
+  
+  if(length(statuses) != 2) {
+    # ensure we have exactly two categories, fill missing with 0
+    sub_df <- sub_df %>%
+      complete(cluster, status, fill = list(count = 0))
+    statuses <- unique(sub_df$status)
+  }
+  
+  # extract counts for cluster1
+  c1_counts <- sub_df %>%
+    filter(cluster == cluster1) %>%
+   arrange(factor(status, levels = status_levels)) %>%  # ensure same order
+    pull(count)
+  
+  # extract counts for cluster2
+  c2_counts <- sub_df %>%
+    filter(cluster == cluster2) %>%
+    arrange(factor(status, levels = status_levels)) %>%
+    pull(count)
+  
+  # build 2x2 matrix
+  mat <- matrix(
+    c(c2_counts, c1_counts),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      cluster = c(cluster2, cluster1),
+      category = status_levels
+    )
+  )
+  
+  ft <- tryCatch(
+    fisher.test(mat, workspace = 2e8),
+    error = function(e) fisher.test(mat, simulate.p.value = TRUE, B = 1e5)
+  )
+  
+  tibble(
+    TE_type     = te_name,
+    comparison  = paste(cluster2, "vs", cluster1),
+    odds_ratio  = ft$estimate,
+    lower_CI    = ft$conf.int[1],
+    upper_CI    = ft$conf.int[2],
+    p_value     = ft$p.value
+  )
+}
+```
+
+
+### SINE
+Overlapping SINE family with summits to get a count
+
+```{r SINE Overlapping}
+sine_hits <- findOverlaps(H3K9me3_summit_gr, SINE_gr, ignore.strand = TRUE)
+SINE_overlap_df <- tibble(
+  summit_id = queryHits(sine_hits),
+  cluster   = mcols(H3K9me3_summit_gr)$cluster[queryHits(sine_hits)],
+  TE_type   = mcols(SINE_gr)$repFamily[subjectHits(sine_hits)])
+
+SINE_counts <- SINE_overlap_df %>%
+  count(cluster, TE_type, name = "count") %>%
+  mutate(status = "TE")
+
+total_SINE_summits <- tibble(
+  cluster = mcols(H3K9me3_summit_gr)$cluster
+) %>% count(cluster, name = "total")
+
+not_SINE_counts <- SINE_counts %>%
+  left_join(total_SINE_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  select(cluster, TE_type, status, count)
+
+SINE_df_long <- bind_rows(SINE_counts %>%
+                            dplyr::select(cluster, TE_type, status, count),
+                          not_SINE_counts) %>% 
+  filter(!is.na(cluster))
+
+SINE_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      SINE_df_long %>%
+        distinct(TE_type) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            SINE_df_long,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+```
+
+```{r sine counts table}
+datatable(SINE_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
+ 
+
+
+```
+
+```{r SINE datatable}
+# ---- Prepare the table ----
+SINE_counts_display <- SINE_results %>%
+  # 1. Split comparison
+  separate(comparison, into = c("cluster2", "cluster1"), sep = " vs ", remove = FALSE) %>%
+  
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %>%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio > 1 ~ "enriched",
+    odds_ratio < 1 ~ "depleted",
+    TRUE           ~ "neutral"
+  )) %>%
+  
+  # 4. Flag significant
+  mutate(significant = FDR < 0.05) %>%
+  
+  # Optional: arrange for readability
+  arrange(cluster2, direction, desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  SINE_counts_display,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %>%
+  # Conditional coloring by direction
+  formatStyle(
+    'direction',
+    target = 'row',
+    backgroundColor = styleEqual(
+      c('enriched', 'depleted'),
+      c('#FFDD99', '#99CCFF')  # enriched = light orange, depleted = light blue
+    )
+  ) %>%
+  # Bold significant rows
+  formatStyle(
+    'significant',
+    fontWeight = styleEqual(TRUE, 'bold')
+  ) %>%
+  # Round numeric columns for readability
+  formatRound(columns = c('odds_ratio','log2OR','FDR'), digits = 2)
+```
+
+```{r Plot SINE}
+ggplot(SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "SINE family enrichment at ROI summits"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
+```
+
+
+
+### LINE
+Overlapping LINE family with summits to get a count
+```{r LINE Overlapping}
+LINE_hits <- findOverlaps(H3K9me3_summit_gr, LINE_gr, ignore.strand = TRUE)
+LINE_overlap_df <- tibble(
+  summit_id = queryHits(LINE_hits),
+  cluster   = mcols(H3K9me3_summit_gr)$cluster[queryHits(LINE_hits)],
+  TE_type   = mcols(LINE_gr)$repFamily[subjectHits(LINE_hits)])
+
+LINE_counts <- LINE_overlap_df %>%
+  count(cluster, TE_type, name = "count") %>%
+  mutate(status = "TE")
+
+total_LINE_summits <- tibble(
+  cluster = mcols(H3K9me3_summit_gr)$cluster
+) %>% count(cluster, name = "total")
+
+not_LINE_counts <- LINE_counts %>%
+  left_join(total_LINE_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  select(cluster, TE_type, status, count)
+
+LINE_df_long <- bind_rows(LINE_counts %>%
+                            dplyr::select(cluster, TE_type, status, count),
+                          not_LINE_counts) %>% 
+  filter(!is.na(cluster))
+
+LINE_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      LINE_df_long %>%
+        distinct(TE_type) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            LINE_df_long,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+```
+
+```{r}
+datatable(LINE_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
+ 
+total_LINE_summits
+```
+
+```{r LINE datatable}
+# ---- Prepare the table ----
+LINE_counts_display <- LINE_results %>%
+  # 1. Split comparison
+  separate(comparison, into = c("cluster2", "cluster1"), sep = " vs ", remove = FALSE) %>%
+  
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %>%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio > 1 ~ "enriched",
+    odds_ratio < 1 ~ "depleted",
+    TRUE           ~ "neutral"
+  )) %>%
+  
+  # 4. Flag significant
+  mutate(significant = FDR < 0.05) %>%
+  
+  # Optional: arrange for readability
+  arrange(cluster2, direction, desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  LINE_counts_display,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %>%
+  # Conditional coloring by direction
+  formatStyle(
+    'direction',
+    target = 'row',
+    backgroundColor = styleEqual(
+      c('enriched', 'depleted'),
+      c('#FFDD99', '#99CCFF')  # enriched = light orange, depleted = light blue
+    )
+  ) %>%
+  # Bold significant rows
+  formatStyle(
+    'significant',
+    fontWeight = styleEqual(TRUE, 'bold')
+  ) %>%
+  # Round numeric columns for readability
+  formatRound(columns = c('odds_ratio','log2OR','FDR'), digits = 2)
+```
+```{r Plot LINE}
+ggplot(LINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "LINE family enrichment at ROI summits"
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)
+```
+
+
+### LTR  
+
+Overlapping LTR family summits to get a count
+
+```{r LTR Overlapping}
+LTR_hits <- findOverlaps(H3K9me3_summit_gr, LTR_gr, ignore.strand = TRUE)
+LTR_overlap_df <- tibble(
+  summit_id = queryHits(LTR_hits),
+  cluster   = mcols(H3K9me3_summit_gr)$cluster[queryHits(LTR_hits)],
+  TE_type   = mcols(LTR_gr)$repFamily[subjectHits(LTR_hits)])
+
+LTR_counts <- LTR_overlap_df %>%
+  count(cluster, TE_type, name = "count") %>%
+  mutate(status = "TE")
+
+total_LTR_summits <- tibble(
+  cluster = mcols(H3K9me3_summit_gr)$cluster
+) %>% count(cluster, name = "total")
+
+not_LTR_counts <- LTR_counts %>%
+  left_join(total_LTR_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  select(cluster, TE_type, status, count)
+
+LTR_df_long <- bind_rows(LTR_counts %>%
+                            dplyr::select(cluster, TE_type, status, count),
+                          not_LTR_counts) %>% 
+  filter(!is.na(cluster))
+
+LTR_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      LTR_df_long %>%
+        distinct(TE_type) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            LTR_df_long,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+```
+
+```{r}
+datatable(LTR_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
+ 
+total_LTR_summits
+```
+
+```{r LTR datatable}
+# ---- Prepare the table ----
+LTR_counts_display <- LTR_results %>%
+  # 1. Split comparison
+  separate(comparison, into = c("cluster2", "cluster1"), sep = " vs ", remove = FALSE) %>%
+  
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %>%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio > 1 ~ "enriched",
+    odds_ratio < 1 ~ "depleted",
+    TRUE           ~ "neutral"
+  )) %>%
+  
+  # 4. Flag significant
+  mutate(significant = FDR < 0.05) %>%
+  
+  # Optional: arrange for readability
+  arrange(cluster2, direction, desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  LTR_counts_display,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %>%
+  # Conditional coloring by direction
+  formatStyle(
+    'direction',
+    target = 'row',
+    backgroundColor = styleEqual(
+      c('enriched', 'depleted'),
+      c('#FFDD99', '#99CCFF')  # enriched = light orange, depleted = light blue
+    )
+  ) %>%
+  # Bold significant rows
+  formatStyle(
+    'significant',
+    fontWeight = styleEqual(TRUE, 'bold')
+  ) %>%
+  # Round numeric columns for readability
+  formatRound(columns = c('odds_ratio','log2OR','FDR'), digits = 2)
+```
+
+```{r Plot LTR}
+ggplot(LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "LTR family enrichment at ROI summits"
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)
+```
+### SVA  
+
+Overlapping SVA family with summits to get a count
+
+```{r SVA Overlapping}
+SVA_hits <- findOverlaps(H3K9me3_summit_gr, SVA_gr, ignore.strand = TRUE)
+SVA_overlap_df <- tibble(
+  summit_id = queryHits(SVA_hits),
+  cluster   = mcols(H3K9me3_summit_gr)$cluster[queryHits(SVA_hits)],
+  TE_type   = mcols(SVA_gr)$repName[subjectHits(SVA_hits)])
+
+SVA_counts <- SVA_overlap_df %>%
+  count(cluster, TE_type, name = "count") %>%
+  mutate(status = "TE")
+
+total_SVA_summits <- tibble(
+  cluster = mcols(H3K9me3_summit_gr)$cluster
+) %>% count(cluster, name = "total")
+
+not_SVA_counts <- SVA_counts %>%
+  left_join(total_SVA_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  select(cluster, TE_type, status, count)
+
+SVA_df_long <- bind_rows(SVA_counts %>%
+                            dplyr::select(cluster, TE_type, status, count),
+                          not_SVA_counts) %>% 
+  filter(!is.na(cluster))
+
+SVA_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      SVA_df_long %>%
+        distinct(TE_type) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            SVA_df_long,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+```
+
+```{r}
+datatable(SVA_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
+total_SVA_summits
+```
+
+```{r SVA datatable}
+# ---- Prepare the table ----
+SVA_counts_display <- SVA_results %>%
+  # 1. Split comparison
+  separate(comparison, into = c("cluster2", "cluster1"), sep = " vs ", remove = FALSE) %>%
+  
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %>%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio > 1 ~ "enriched",
+    odds_ratio < 1 ~ "depleted",
+    TRUE           ~ "neutral"
+  )) %>%
+  
+  # 4. Flag significant
+  mutate(significant = FDR < 0.05) %>%
+  
+  # Optional: arrange for readability
+  arrange(cluster2, direction, desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  SVA_counts_display,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %>%
+  # Conditional coloring by direction
+  formatStyle(
+    'direction',
+    target = 'row',
+    backgroundColor = styleEqual(
+      c('enriched', 'depleted'),
+      c('#FFDD99', '#99CCFF')  # enriched = light orange, depleted = light blue
+    )
+  ) %>%
+  # Bold significant rows
+  formatStyle(
+    'significant',
+    fontWeight = styleEqual(TRUE, 'bold')
+  ) %>%
+  # Round numeric columns for readability
+  formatRound(columns = c('odds_ratio','log2OR','FDR'), digits = 2)
+```
+
+```{r Plot SVA}
+ggplot(SVA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "SVA family enrichment at ROI summits"
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)
+```
+### DNA  
+
+Overlapping DNA family with summits to get a count
+
+
+```{r DNA Overlapping}
+DNA_hits <- findOverlaps(H3K9me3_summit_gr, DNA_gr, ignore.strand = TRUE)
+DNA_overlap_df <- tibble(
+  summit_id = queryHits(DNA_hits),
+  cluster   = mcols(H3K9me3_summit_gr)$cluster[queryHits(DNA_hits)],
+  TE_type   = mcols(DNA_gr)$repFamily[subjectHits(DNA_hits)])
+
+DNA_counts <- DNA_overlap_df %>%
+  count(cluster, TE_type, name = "count") %>%
+  mutate(status = "TE")
+
+total_DNA_summits <- tibble(
+  cluster = mcols(H3K9me3_summit_gr)$cluster
+) %>% count(cluster, name = "total")
+
+not_DNA_counts <- DNA_counts %>%
+  left_join(total_DNA_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  select(cluster, TE_type, status, count)
+
+DNA_df_long <- bind_rows(DNA_counts %>%
+                            dplyr::select(cluster, TE_type, status, count),
+                          not_DNA_counts) %>% 
+  filter(!is.na(cluster))
+
+DNA_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      DNA_df_long %>%
+        distinct(TE_type) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            DNA_df_long,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+```
+
+```{r}
+datatable(DNA_counts,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
+total_DNA_summits
+```
+
+```{r DNA datatable}
+# ---- Prepare the table ----
+DNA_counts_display <- DNA_results %>%
+  # 1. Split comparison
+  separate(comparison, into = c("cluster2", "cluster1"), sep = " vs ", remove = FALSE) %>%
+  
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %>%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio > 1 ~ "enriched",
+    odds_ratio < 1 ~ "depleted",
+    TRUE           ~ "neutral"
+  )) %>%
+  
+  # 4. Flag significant
+  mutate(significant = FDR < 0.05) %>%
+  
+  # Optional: arrange for readability
+  arrange(cluster2, direction, desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  DNA_counts_display,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %>%
+  # Conditional coloring by direction
+  formatStyle(
+    'direction',
+    target = 'row',
+    backgroundColor = styleEqual(
+      c('enriched', 'depleted'),
+      c('#FFDD99', '#99CCFF')  # enriched = light orange, depleted = light blue
+    )
+  ) %>%
+  # Bold significant rows
+  formatStyle(
+    'significant',
+    fontWeight = styleEqual(TRUE, 'bold')
+  ) %>%
+  # Round numeric columns for readability
+  formatRound(columns = c('odds_ratio','log2OR','FDR'), digits = 2)
+```
+
+```{r Plot DNA}
+ggplot(DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "DNA family enrichment at ROI summits"
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)
+```
+
+```{r}
+
+```
+
+
+```{r making named bedfiles, eval=FALSE}
+peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
+
+out_dir <- "data/Bed_exports/H3K9me3_sets"
+set_list <- names(peakAnnoList_H3K9me3)
+
+for (group_name in set_list) {
+  cs <- peakAnnoList_H3K9me3[[group_name]]
+  gr <- cs@anno
+  
+  # Set BED name column
+  mcols(gr)$name <- mcols(gr)$Peakid
+  
+  # Optional: if you want a score column
+  if(!"score" %in% colnames(mcols(gr))) {
+    mcols(gr)$score <- 0
+  }
+  
+  # Export to BED
+ bed_file <- file.path(out_dir, paste0(group_name, "_H3K9me3.bed"))
+  
+  # Export
+  export(gr, bed_file, format = "BED")
+  
+  cat("Exported:", bed_file, "\n")
+}
+
+```
+
+
