@@ -33,9 +33,10 @@ library(genomation)
 library(readr)
 library(rtracklayer)
 library(stringr)
+library(DT)
 
 ```
-
+Summit calls method 1
 ```{r loading motif data Set2}
 
 H3K27ac_Set2_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
@@ -169,12 +170,6 @@ H3K27ac_Set3_data %>%
 
 ```{r}
 
-
-H3K27ac_Set2_data$motif_name
-
-H3K27ac_Set3_data$motif_name
-
-
 ggVennDiagram::ggVennDiagram(list("H3K27ac_Set2"=H3K27ac_Set2_data$motif_name,"H3K27ac_Set3"=H3K27ac_Set3_data$motif_name))+
   ggtitle("H3K27ac motif overlap")+
   coord_cartesian(clip = "off") +
@@ -182,5 +177,237 @@ ggVennDiagram::ggVennDiagram(list("H3K27ac_Set2"=H3K27ac_Set2_data$motif_name,"H
     plot.margin = margin(20, 60, 20, 60)  # top, right, bottom, left
   )
   
+```
+
+```{r method1 list}
+# test_bind
+# xstreme_rank_bind
+DT::datatable((H3K27ac_Set2_data %>% 
+  dplyr::select(RANK,CLUSTER,ID,ALT_ID,EVALUE, CONSENSUS)),
+  rownames = FALSE,
+  caption = htmltools::tags$caption(
+    style = "caption-side: top; text-align: left; font-weight: bold;",
+    "Method 1: Set 2 H3K27ac"
+  ),
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = FALSE,
+    scrollX = TRUE)) 
+
+DT::datatable((H3K27ac_Set3_data %>% 
+  dplyr::select(RANK,CLUSTER,ID,ALT_ID,EVALUE, CONSENSUS.x)),
+  rownames = FALSE,
+  caption = htmltools::tags$caption(
+    style = "caption-side: top; text-align: left; font-weight: bold;",
+    "Method 1: Set 3 H3K27ac"
+  ),
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = FALSE,
+    scrollX = TRUE)) 
+
+
+```
+
+### Summit calls method 2
+```{r loading motif data Set2 met2}
+
+H3K27ac_Set2_met2_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+H3K27ac_Set2_met2_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+
+H3K27ac_Set2_met2_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+
+
+H3K27ac_Set2_met2_tomtom <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/streme_tomtom_out/tomtom.tsv", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+test_bind_met2 <- bind_rows(H3K27ac_Set2_met2_sea_disc_out, H3K27ac_Set2_met2_sea_known) %>% 
+  dplyr::select(DB:ENR_RATIO) %>% 
+  group_by(ID,ALT_ID, ENR_RATIO) %>% distinct()
+
+
+```
+
+```{r loading motif data Set3_met2}
+
+H3K27ac_Set3_met2_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+H3K27ac_Set3_met2_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+
+H3K27ac_Set3_met2_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+
+
+H3K27ac_Set3_met2_tomtom <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/streme_tomtom_out/tomtom.tsv", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+test_bind3_met2 <-bind_rows(H3K27ac_Set3_met2_sea_disc_out, H3K27ac_Set3_met2_sea_known) %>%
+  dplyr::select(DB:ENR_RATIO) %>% 
+  group_by(ID,ALT_ID) %>% 
+  distinct()
+
+
+```
+
+
+```{r  making data sets met2}
+H3K27ac_Set2_data_met2 <- H3K27ac_Set2_met2_xstreme %>% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(test_bind_met2) %>% 
+  mutate(diff_per=`TP%` -`FP%`)
+
+H3K27ac_Set3_data_met2 <- H3K27ac_Set3_met2_xstreme %>% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(test_bind3_met2, by=c("ID"="ID","ALT_ID"="ALT_ID")) %>% 
+  mutate(diff_per=`TP%` -`FP%`)
+
+```
+
+```{r met2 list}
+# test_bind
+# xstreme_rank_bind
+DT::datatable((H3K27ac_Set2_data_met2 %>% 
+  dplyr::select(RANK,CLUSTER,ID,ALT_ID,EVALUE, CONSENSUS)),
+  rownames = FALSE,
+  caption = htmltools::tags$caption(
+    style = "caption-side: top; text-align: left; font-weight: bold;",
+    "Method 2: Set 2 H3K27ac"
+  ),
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = FALSE,
+    scrollX = TRUE)) 
+
+DT::datatable((H3K27ac_Set3_data_met2 %>% 
+  dplyr::select(RANK,CLUSTER,ID,ALT_ID,EVALUE, CONSENSUS.x)),
+  rownames = FALSE,
+  caption = htmltools::tags$caption(
+    style = "caption-side: top; text-align: left; font-weight: bold;",
+    "Method 2: Set 3 H3K27ac"
+  ),
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = FALSE,
+    scrollX = TRUE)) 
+
+
+```
+
+
+### Summit calls method 3
+```{r loading motif data Set2 met3}
+
+H3K27ac_Set2_met3_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+H3K27ac_Set2_met3_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+
+H3K27ac_Set2_met3_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+
+
+H3K27ac_Set2_met3_tomtom <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/streme_tomtom_out/tomtom.tsv", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+test_bind_met3 <- bind_rows(H3K27ac_Set2_met3_sea_disc_out, H3K27ac_Set2_met3_sea_known) %>% 
+  dplyr::select(DB:ENR_RATIO) %>% 
+  group_by(ID,ALT_ID, ENR_RATIO) %>% distinct()
+
+
+```
+
+```{r loading motif data Set3_met3}
+
+H3K27ac_Set3_met3_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+H3K27ac_Set3_met3_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+
+H3K27ac_Set3_met3_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+
+
+H3K27ac_Set3_met3_tomtom <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/streme_tomtom_out/tomtom.tsv", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+test_bind3_met3 <-bind_rows(H3K27ac_Set3_met3_sea_disc_out, H3K27ac_Set3_met3_sea_known) %>%
+  dplyr::select(DB:ENR_RATIO) %>% 
+  group_by(ID,ALT_ID) %>% 
+  distinct()
+
+
+```
+
+
+```{r  making data sets met3}
+H3K27ac_Set2_data_met3 <- H3K27ac_Set2_met3_xstreme %>% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(test_bind_met3) %>% 
+  mutate(diff_per=`TP%` -`FP%`)
+
+H3K27ac_Set3_data_met3 <- H3K27ac_Set3_met3_xstreme %>% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(test_bind3_met3, by=c("ID"="ID","ALT_ID"="ALT_ID")) %>% 
+  mutate(diff_per=`TP%` -`FP%`)
+
+```
+```{r met3 list}
+# test_bind
+# xstreme_rank_bind
+DT::datatable((H3K27ac_Set2_data_met3 %>% 
+  dplyr::select(RANK,CLUSTER,ID,ALT_ID,EVALUE, CONSENSUS)),
+  rownames = FALSE,
+  caption = htmltools::tags$caption(
+    style = "caption-side: top; text-align: left; font-weight: bold;",
+    "Method 3: Set 2 H3K27ac"
+  ),
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = FALSE,
+    scrollX = TRUE)) 
+
+DT::datatable((H3K27ac_Set3_data_met3 %>% 
+  dplyr::select(RANK,CLUSTER,ID,ALT_ID,EVALUE, CONSENSUS.x)),
+  rownames = FALSE,
+  caption = htmltools::tags$caption(
+    style = "caption-side: top; text-align: left; font-weight: bold;",
+    "Method 3: Set 3 H3K27ac"
+  ),
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = FALSE,
+    scrollX = TRUE)) 
+
+
 ```
 
