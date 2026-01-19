@@ -234,14 +234,14 @@ test_bind_met2 <- bind_rows(H3K27ac_Set2_met2_sea_disc_out, H3K27ac_Set2_met2_se
 
 ```{r loading motif data Set3_met2}
 
-H3K27ac_Set3_met2_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+H3K27ac_Set3_met2_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set3_400_alt/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
 
-H3K27ac_Set3_met2_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+H3K27ac_Set3_met2_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set3_400_alt/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
 
-H3K27ac_Set3_met2_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+H3K27ac_Set3_met2_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set3_400_alt/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
 
 
-H3K27ac_Set3_met2_tomtom <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/streme_tomtom_out/tomtom.tsv", 
+H3K27ac_Set3_met2_tomtom <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set3_400_alt/streme_tomtom_out/tomtom.tsv", 
     delim = "\t", escape_double = FALSE, 
     trim_ws = TRUE)
 
@@ -335,14 +335,14 @@ test_bind_met3 <- bind_rows(H3K27ac_Set2_met3_sea_disc_out, H3K27ac_Set2_met3_se
 
 ```{r loading motif data Set3_met3}
 
-H3K27ac_Set3_met3_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+H3K27ac_Set3_met3_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set3_400_alt_concat/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
 
-H3K27ac_Set3_met3_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+H3K27ac_Set3_met3_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set3_400_alt_concat/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
 
-H3K27ac_Set3_met3_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+H3K27ac_Set3_met3_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set3_400_alt_concat/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
 
 
-H3K27ac_Set3_met3_tomtom <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt_concat/streme_tomtom_out/tomtom.tsv", 
+H3K27ac_Set3_met3_tomtom <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set3_400_alt_concat/streme_tomtom_out/tomtom.tsv", 
     delim = "\t", escape_double = FALSE, 
     trim_ws = TRUE)
 
