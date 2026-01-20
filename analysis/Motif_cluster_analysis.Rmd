@@ -1406,4 +1406,31 @@ Sets_H3K9me3_top %>%
 # saveRDS(Sets_H3K9me3_top,"data/motif_lists/H3K9me3_toplistbymotif.RDS")
 ```
 
+```{r exporting sets, eval=FALSE}
+peakAnnoList_H3K36me3 <- readRDS("data/motif_lists/H3K36me3_annotated_peaks.RDS")
+
+out_dir <- "data/Bed_exports/H3K36me3_sets"
+set_list <- names(peakAnnoList_H3K36me3)
+
+for (group_name in set_list) {
+  cs <- peakAnnoList_H3K36me3[[group_name]]
+  gr <- cs@anno
+  
+  # Set BED name column
+  mcols(gr)$name <- mcols(gr)$Peakid
+  
+  # Optional: if you want a score column
+  if(!"score" %in% colnames(mcols(gr))) {
+    mcols(gr)$score <- 0
+  }
+  
+  # Export to BED
+ bed_file <- file.path(out_dir, paste0(group_name, "_H3K36me3_ROI.bed"))
+  
+  # Export
+  export(gr, bed_file, format = "BED")
+  
+  cat("Exported:", bed_file, "\n")
+}
+```
 
