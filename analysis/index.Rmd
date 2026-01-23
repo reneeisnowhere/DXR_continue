@@ -48,13 +48,20 @@ Looking at finalized assigned cluster sets and characteristics
 
 [Investigating summits H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_summit_processing.html) Uses double reduction method to cluster summits across treatment-time, then across all summits.
 
+[Investigating summits H3K36me3](https://reneeisnowhere.github.io/DXR_continue/H3K36me3_summit_processing.html) Uses double reduction method to cluster summits across treatment-time, then across all summits.
+
+[Investigating summits H3K27me3](https://reneeisnowhere.github.io/DXR_continue/H3K27me3_summit_processing.html) Uses double reduction method to cluster summits across treatment-time, then across all summits.
+
+
 [TE overlaps of ROI summits-H3K27ac](https://reneeisnowhere.github.io/DXR_continue/H3K27_TE_overlap.html)
 
 [TE overlaps of ROI summits-H3K27ac extended regions](https://reneeisnowhere.github.io/DXR_continue/H3K27_TE_overlap_extend.html)
 
 [TE overlaps of ROI summits-H3K27ac using alternate calls of summits](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_summit_topqonly.html)
 
-[TE overlaps of ROI summits-H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TE_overlap.html)
+[TE overlaps of ROI summits-H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TE_overlap.html)  
+
+
 
 ### Summit and transcription factor motif enrichment data
 
