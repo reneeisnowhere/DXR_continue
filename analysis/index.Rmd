@@ -61,6 +61,12 @@ Looking at finalized assigned cluster sets and characteristics
 
 [TE overlaps of ROI summits-H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TE_overlap.html)  
 
+[TE overlaps of ROI summits-H3K36me3](https://reneeisnowhere.github.io/DXR_continue/H3K36me3_TE_overlap.html)  
+
+
+[TE overlaps of ROI summits-H3K27me3](https://reneeisnowhere.github.io/DXR_continue/H3K27me3_TE_overlap.html)  
+
+
 
 
 ### Summit and transcription factor motif enrichment data
