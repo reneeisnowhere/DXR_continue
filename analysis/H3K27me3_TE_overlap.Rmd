@@ -1,5 +1,5 @@
 ---
-title: "H3K27ac and TE overlap"
+title: "H3K27me3 and TE overlap"
 author: "Renee Matthews"
 date: "`r Sys.Date()`"
 output: html_document
@@ -84,22 +84,22 @@ SVA_gr <- rpt_split_gr_list$Retroposon
 DNA_gr <- rpt_split_gr_list$DNA
 ```
 
-```{r loading H3K27ac data}
-H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+```{r loading H3K27me3 data}
+H3K27me3_summit_gr <- readRDS("data/RDS_files/H3K27me3_complete_summit_gr.RDS")
 
 
-peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+peakAnnoList_H3K27me3 <- readRDS("data/motif_lists/H3K27me3_annotated_peaks.RDS")
 
-H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+H3K27me3_lookup <- imap_dfr(peakAnnoList_H3K27me3[1:3], ~
   tibble(Peakid = .x@anno$Peakid, cluster = .y)
 )
 
 ##assigning Peakid as name of summit region
- mcols(H3K27ac_summit_gr)$name <- mcols(H3K27ac_summit_gr)$Peakid
+ mcols(H3K27me3_summit_gr)$name <- mcols(H3K27me3_summit_gr)$Peakid
  
  comparisons <- tibble(
-  cluster2 = c("Set_2", "Set_3"),
-  cluster1 = c("Set_1", "Set_1")
+  cluster2 = c("Set_2"),
+  cluster1 = c("Set_1")
 )
 
 ```
@@ -173,10 +173,10 @@ test_pair_TE_generic <- function(df_long, te_name, cluster1, cluster2) {
 Overlapping SINE family with summits to get a count
 
 ```{r SINE Overlapping}
-sine_hits <- findOverlaps(H3K27ac_summit_gr, SINE_gr, ignore.strand = TRUE)
+sine_hits <- findOverlaps(H3K27me3_summit_gr, SINE_gr, ignore.strand = TRUE)
 SINE_overlap_df <- tibble(
   summit_id = queryHits(sine_hits),
-  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(sine_hits)],
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(sine_hits)],
   TE_type   = mcols(SINE_gr)$repFamily[subjectHits(sine_hits)])
 
 SINE_counts <- SINE_overlap_df %>%
@@ -184,7 +184,7 @@ SINE_counts <- SINE_overlap_df %>%
   mutate(status = "TE")
 
 total_SINE_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27me3_summit_gr)$cluster
 ) %>% count(cluster, name = "total")
 
 not_SINE_counts <- SINE_counts %>%
@@ -219,7 +219,7 @@ SINE_results <- comparisons %>%
   mutate(FDR = p.adjust(p_value, method = "BH"))
 ```
 
-```{r}
+```{r sine counts table}
 datatable(SINE_counts,
   rownames = FALSE,
   filter = 'top',       # add filter/search boxes
@@ -227,7 +227,9 @@ datatable(SINE_counts,
     pageLength = 10,
     autoWidth = TRUE,
     scrollX = TRUE))
-total_SINE_summits
+ 
+
+
 ```
 
 ```{r SINE datatable}
@@ -290,7 +292,7 @@ ggplot(SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "SINE family enrichment at ROI summits\nH3K27ac"
+    title = "SINE family enrichment at ROI summits\nH3K27me3"
   ) +
   theme_classic() +
   facet_wrap(~comparison)
@@ -301,10 +303,10 @@ ggplot(SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
 ### LINE
 Overlapping LINE family with summits to get a count
 ```{r LINE Overlapping}
-LINE_hits <- findOverlaps(H3K27ac_summit_gr, LINE_gr, ignore.strand = TRUE)
+LINE_hits <- findOverlaps(H3K27me3_summit_gr, LINE_gr, ignore.strand = TRUE)
 LINE_overlap_df <- tibble(
   summit_id = queryHits(LINE_hits),
-  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(LINE_hits)],
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(LINE_hits)],
   TE_type   = mcols(LINE_gr)$repFamily[subjectHits(LINE_hits)])
 
 LINE_counts <- LINE_overlap_df %>%
@@ -312,7 +314,7 @@ LINE_counts <- LINE_overlap_df %>%
   mutate(status = "TE")
 
 total_LINE_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27me3_summit_gr)$cluster
 ) %>% count(cluster, name = "total")
 
 not_LINE_counts <- LINE_counts %>%
@@ -356,6 +358,7 @@ datatable(LINE_counts,
     pageLength = 10,
     autoWidth = TRUE,
     scrollX = TRUE))
+ 
 total_LINE_summits
 ```
 
@@ -418,7 +421,7 @@ ggplot(LINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "LINE family enrichment at ROI summits\nH3K27ac"
+    title = "LINE family enrichment at ROI summits\nH3K27me3"
   ) +
   theme_classic()+
   facet_wrap(~comparison)
@@ -430,10 +433,10 @@ ggplot(LINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
 Overlapping LTR family summits to get a count
 
 ```{r LTR Overlapping}
-LTR_hits <- findOverlaps(H3K27ac_summit_gr, LTR_gr, ignore.strand = TRUE)
+LTR_hits <- findOverlaps(H3K27me3_summit_gr, LTR_gr, ignore.strand = TRUE)
 LTR_overlap_df <- tibble(
   summit_id = queryHits(LTR_hits),
-  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(LTR_hits)],
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(LTR_hits)],
   TE_type   = mcols(LTR_gr)$repFamily[subjectHits(LTR_hits)])
 
 LTR_counts <- LTR_overlap_df %>%
@@ -441,7 +444,7 @@ LTR_counts <- LTR_overlap_df %>%
   mutate(status = "TE")
 
 total_LTR_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27me3_summit_gr)$cluster
 ) %>% count(cluster, name = "total")
 
 not_LTR_counts <- LTR_counts %>%
@@ -485,6 +488,7 @@ datatable(LTR_counts,
     pageLength = 10,
     autoWidth = TRUE,
     scrollX = TRUE))
+ 
 total_LTR_summits
 ```
 
@@ -548,7 +552,7 @@ ggplot(LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "LTR family enrichment at ROI summits\nH3K27ac"
+    title = "LTR family enrichment at ROI summits\nH3K27me3"
   ) +
   theme_classic()+
   facet_wrap(~comparison)
@@ -558,10 +562,10 @@ ggplot(LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
 Overlapping SVA family with summits to get a count
 
 ```{r SVA Overlapping}
-SVA_hits <- findOverlaps(H3K27ac_summit_gr, SVA_gr, ignore.strand = TRUE)
+SVA_hits <- findOverlaps(H3K27me3_summit_gr, SVA_gr, ignore.strand = TRUE)
 SVA_overlap_df <- tibble(
   summit_id = queryHits(SVA_hits),
-  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(SVA_hits)],
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(SVA_hits)],
   TE_type   = mcols(SVA_gr)$repName[subjectHits(SVA_hits)])
 
 SVA_counts <- SVA_overlap_df %>%
@@ -569,7 +573,7 @@ SVA_counts <- SVA_overlap_df %>%
   mutate(status = "TE")
 
 total_SVA_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27me3_summit_gr)$cluster
 ) %>% count(cluster, name = "total")
 
 not_SVA_counts <- SVA_counts %>%
@@ -675,7 +679,7 @@ ggplot(SVA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "SVA family enrichment at ROI summits\nH3K27ac"
+    title = "SVA family enrichment at ROI summits\nH3K27me3"
   ) +
   theme_classic()+
   facet_wrap(~comparison)
@@ -686,10 +690,10 @@ Overlapping DNA family with summits to get a count
 
 
 ```{r DNA Overlapping}
-DNA_hits <- findOverlaps(H3K27ac_summit_gr, DNA_gr, ignore.strand = TRUE)
+DNA_hits <- findOverlaps(H3K27me3_summit_gr, DNA_gr, ignore.strand = TRUE)
 DNA_overlap_df <- tibble(
   summit_id = queryHits(DNA_hits),
-  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(DNA_hits)],
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(DNA_hits)],
   TE_type   = mcols(DNA_gr)$repFamily[subjectHits(DNA_hits)])
 
 DNA_counts <- DNA_overlap_df %>%
@@ -697,7 +701,7 @@ DNA_counts <- DNA_overlap_df %>%
   mutate(status = "TE")
 
 total_DNA_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27me3_summit_gr)$cluster
 ) %>% count(cluster, name = "total")
 
 not_DNA_counts <- DNA_counts %>%
@@ -803,25 +807,22 @@ ggplot(DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "DNA family enrichment at ROI summits\nH3K27ac"
+    title = "DNA family enrichment at ROI summits\nH3K27me3"
   ) +
   theme_classic()+
   facet_wrap(~comparison)
 ```
 
-```{r}
-
-```
 
 
 ```{r making named bedfiles, eval=FALSE}
-peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+peakAnnoList_H3K27me3 <- readRDS("data/motif_lists/H3K27me3_annotated_peaks.RDS")
 
-out_dir <- "data/Bed_exports/H3K27ac_sets"
-set_list <- names(peakAnnoList_H3K27ac)
+out_dir <- "data/Bed_exports/H3K27me3_sets"
+set_list <- names(peakAnnoList_H3K27me3)
 
 for (group_name in set_list) {
-  cs <- peakAnnoList_H3K27ac[[group_name]]
+  cs <- peakAnnoList_H3K27me3[[group_name]]
   gr <- cs@anno
   
   # Set BED name column
@@ -833,7 +834,7 @@ for (group_name in set_list) {
   }
   
   # Export to BED
- bed_file <- file.path(out_dir, paste0(group_name, "_H3K27ac.bed"))
+ bed_file <- file.path(out_dir, paste0(group_name, "_H3K27me3.bed"))
   
   # Export
   export(gr, bed_file, format = "BED")

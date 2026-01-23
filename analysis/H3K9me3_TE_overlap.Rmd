@@ -292,7 +292,7 @@ ggplot(SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "SINE family enrichment at ROI summits"
+    title = "SINE family enrichment at ROI summits\nH3K9me3"
   ) +
   theme_classic() +
   facet_wrap(~comparison)
@@ -421,7 +421,7 @@ ggplot(LINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "LINE family enrichment at ROI summits"
+    title = "LINE family enrichment at ROI summits\nH3K9me3"
   ) +
   theme_classic()+
   facet_wrap(~comparison)
@@ -552,7 +552,7 @@ ggplot(LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "LTR family enrichment at ROI summits"
+    title = "LTR family enrichment at ROI summits\nH3K9me3"
   ) +
   theme_classic()+
   facet_wrap(~comparison)
@@ -679,7 +679,7 @@ ggplot(SVA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "SVA family enrichment at ROI summits"
+    title = "SVA family enrichment at ROI summits\nH3K9me3"
   ) +
   theme_classic()+
   facet_wrap(~comparison)
@@ -807,7 +807,7 @@ ggplot(DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "DNA family enrichment at ROI summits"
+    title = "DNA family enrichment at ROI summits\nH3K9me3"
   ) +
   theme_classic()+
   facet_wrap(~comparison)
