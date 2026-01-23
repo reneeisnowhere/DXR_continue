@@ -1,0 +1,462 @@
+---
+title: "ChromHMM"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 400px;
+}
+```
+
+
+```{r}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(readxl)
+library(ChIPseeker)
+```
+
+This is the AIC/BIC plots genrated to figure out how many states we wanted to use for our modeling of our data:
+```{r TACC generated}
+aic_bic_table_TACC <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TACC_models/model_selection_summary.tsv", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+aic_bic_table_TACC %>% 
+   pivot_longer(cols=c(AIC,BIC), names_to = "test_type",values_to = "calculation") %>% 
+  ggplot(.,aes(x=States,y=calculation))+
+  geom_point()+
+  geom_line()+
+  facet_wrap(~test_type)
+  
+```
+
+The results point to 16 states yielding the best results.
+
+I ran the models for 16 states and here is the outcome of those results:
+
+Here is the emission table of the results:
+```{r emission of 16 states}
+
+emission_16state <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/TACC_models/Chrom_model_16states_final/emissions_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+emission_16state %>% 
+  mutate(`State (Emission order)`=factor(`State (Emission order)`, levels=c(1:16))) %>% 
+  pivot_longer(., !`State (Emission order)`, names_to = "Histone",values_to = "emission") %>% 
+  mutate(Histone=factor(Histone,levels=c("H3K27ac","H3K36me3","H3K27me3","H3K9me3"))) %>% 
+  ggplot(., aes(x=Histone, y=`State (Emission order)`, fill=emission))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_x_discrete(expand = c(0, 0)) +
+scale_y_discrete(expand = c(0, 0), limits = rev)+
+  coord_fixed()+
+    theme_classic()+
+  ggtitle("Emission Parameters")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+Here is the transition plot of the results:
+
+```{r transition of 16 states}
+
+transition_16state <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/TACC_models/Chrom_model_16states_final/transitions_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+transition_16state %>% 
+  mutate(`State (from\\to) (Emission order)`=factor(`State (from\\to) (Emission order)`, levels=c(1:16)))%>%
+  dplyr::rename(state_from_to=`State (from\\to) (Emission order)`) %>% 
+  pivot_longer(., !state_from_to, names_to = "States",values_to = "transition") %>% 
+  mutate(States=factor(States, levels=c(1:16))) %>% 
+  
+  ggplot(., aes(x=States, y=state_from_to, fill=transition))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_x_discrete(expand = c(0, 0)) +
+scale_y_discrete(expand = c(0, 0), limits = rev)+
+  coord_fixed()+
+    theme_classic()+
+  ggtitle("Transition Parameters")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+### Enrichment across the states:
+looking at enrichment of Features across the states by each group.  This helps with the classification and interpretation of what each state represents.
+
+```{r loading other features enrichment}
+DOX_24T_full <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/rerun_regions/24t_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24T")
+
+DOX_24R_full <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/rerun_regions/24R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24R")
+
+DOX_144R_full <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/rerun_regions/144R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>% mutate(group="DOX_144R")
+
+
+VEH_24T_full <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/rerun_regions/24t_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24T")
+
+VEH_24R_full <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/rerun_regions/24R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24R")
+
+VEH_144R_full <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/rerun_regions/144R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_144R") 
+ 
+```
+```{r loading gene enrichment}
+DOX_24T_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-internal-enrichment/24t_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24T")
+
+DOX_24R_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-internal-enrichment/24R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24R")
+
+DOX_144R_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-internal-enrichment/144R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>% mutate(group="DOX_144R")
+
+
+VEH_24T_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-internal-enrichment/24t_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24T")
+
+VEH_24R_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-internal-enrichment/24R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24R")
+
+VEH_144R_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-internal-enrichment/144R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_144R") 
+ all_genes_states <- 
+  VEH_144R_gene %>% 
+  bind_rows(DOX_144R_gene) %>% 
+   bind_rows(DOX_24R_gene) %>% 
+   bind_rows(VEH_24R_gene) %>% 
+   bind_rows(DOX_24T_gene) %>% 
+   bind_rows(VEH_24T_gene) 
+ 
+```
+```{r loading ZFP_run data}
+DOX_24T_ZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ZFP_run/24t_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24T")
+
+DOX_24R_ZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ZFP_run/24R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24R")
+
+DOX_144R_ZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ZFP_run/144R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>% mutate(group="DOX_144R")
+
+
+VEH_24T_ZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ZFP_run/24t_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24T")
+
+VEH_24R_ZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ZFP_run/24R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24R")
+
+VEH_144R_ZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ZFP_run/144R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_144R") 
+ all_ZFPs_states <- 
+  VEH_144R_ZFP %>% 
+  bind_rows(DOX_144R_ZFP) %>% 
+   bind_rows(DOX_24R_ZFP) %>% 
+   bind_rows(VEH_24R_ZFP) %>% 
+   bind_rows(DOX_24T_ZFP) %>% 
+   bind_rows(VEH_24T_ZFP) 
+ 
+ just_ZFP <- all_ZFPs_states[,c("State (Emission order)","ZFP_proteins.bed","group")]
+ just_ZFP %>% 
+   dplyr::filter(`State (Emission order)` !="Base")
+
+```
+
+```{r making the large plotting dataframe}
+all_files_states <- 
+  VEH_144R_full %>% 
+  bind_rows(DOX_144R_full) %>% 
+   bind_rows(DOX_24R_full) %>% 
+   bind_rows(VEH_24R_full) %>% 
+   bind_rows(DOX_24T_full) %>% 
+   bind_rows(VEH_24T_full) 
+
+long_file <- all_files_states %>% 
+  dplyr::select(`State (Emission order)`,
+                `Genome %`,
+                `GRCh38-cCREs.bed`,
+                `SCREEN_hg38_CA-CTCF.bed`:SCREEN_hg38_pELS.bed,
+                Set_1_H3K27ac_ROI.bed:Set_3_H3K27ac_ROI.bed,
+                all_H3K27ac_H3K27ac_ROI.bed,
+                LINE_rptmasker.bed,
+                SINE_rptmasker.bed,
+                LTR_rptmasker.bed,
+                DNA_rptmasker.bed,
+                Retroposon_rptmasker.bed,
+                RC_rptmasker.bed,
+                Low_complexity_rptmasker.bed,
+                RNA_rptmasker.bed,
+                Satellite_rptmasker.bed,
+                Simple_repeat_rptmasker.bed,
+                Unknown_rptmasker.bed, 
+                rRNA_rptmasker.bed:group) %>% 
+  mutate(`State (Emission order)`=factor(`State (Emission order)`, levels = c(paste0("E", 1:16),"Base"))) %>%
+  dplyr::filter(`State (Emission order)` != "Base") %>% 
+  pivot_longer(., cols=!c(`State (Emission order)`,group), names_to = "Identity",values_to = "Fold_enrichment") %>% 
+  mutate(Identity=str_remove(Identity,".bed")) %>% 
+  mutate(Identity=factor(Identity, 
+                         levels=c("Genome %",
+                                  "GRCh38-cCREs",
+                                  "SCREEN_hg38_CA-CTCF",
+                                  "SCREEN_hg38_CA-H3K4me3",
+                                  "SCREEN_hg38_CA-TF",
+                                  "SCREEN_hg38_CA",
+                                  "SCREEN_hg38_PLS",
+                                  "SCREEN_hg38_TF",
+                                  "SCREEN_hg38_pELS",
+                                  "SCREEN_hg38_dELS",
+                                  "all_H3K27ac_H3K27ac_ROI",
+                                  "Set_1_H3K27ac_ROI",
+                                  "Set_2_H3K27ac_ROI",
+                                  "Set_3_H3K27ac_ROI",
+                                  "LINE_rptmasker",
+                                  "SINE_rptmasker",
+                                  "LTR_rptmasker",
+                                  "DNA_rptmasker",
+                                  "Retroposon_rptmasker",
+                                  "RC_rptmasker",
+                                  "Low_complexity_rptmasker",
+                                  "RNA_rptmasker",
+                                  "Satellite_rptmasker",
+                                  "Simple_repeat_rptmasker",
+                                  "Unknown_rptmasker", 
+                                  "rRNA_rptmasker",
+                                  "scRNA_rptmasker",
+                                  "snRNA_rptmasker",
+                                  "srpRNA_rptmasker",
+                                  "tRNA_rptmasker"))) %>% 
+   mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R")))
+
+```
+
+```{r plot dataframe for genes}
+
+# columns to pivot (exclude ID columns)
+id_cols <- c("State (Emission order)", "group")
+
+all_genes_states_long <-
+all_genes_states %>%
+  mutate(`State (Emission order)`=paste0("E",`State (Emission order)`)) %>% 
+  left_join(just_ZFP) %>% 
+  
+  mutate(`State (Emission order)` = factor(`State (Emission order)`,
+                                           levels = c(paste0("E",1:16),"EBase"))) %>%
+  filter(`State (Emission order)` != "EBase") %>%
+  
+  pivot_longer(
+    cols = -all_of(id_cols),
+    names_to = "Identity",
+    values_to = "Fold_enrichment"
+  ) %>%
+  # preserve original order
+  mutate(Identity = factor(Identity, levels =c( names(all_genes_states)[!names(all_genes_states) %in% id_cols],"ZFP_proteins.bed"))) %>% 
+         # create cleaned label for plotting
+         mutate(Identity_label = case_when(
+      str_detect(Identity, "\\.hg38\\.bed\\.gz$") ~ str_remove(Identity, "\\.hg38\\.bed\\.gz$"),
+      str_detect(Identity, "\\.bed$") ~ str_remove(Identity, "\\.bed$"),
+      TRUE ~ Identity   # keep everything else unchanged
+    ),
+    group = factor(group,
+                        levels = c("VEH_24T","VEH_24R","VEH_144R",
+                                   "DOX_24T","DOX_24R","DOX_144R"))) 
+
+  
+final_order <- unique(all_genes_states_long$Identity_label)
+
+all_genes_states_long <- all_genes_states_long %>% 
+  mutate(Identity_label=factor(Identity_label,levels=final_order))
+
+```
+
+### Looking a genomic features:
+
+```{r plot all genes states, fig.width=12, fig.height=6}
+
+all_genes_states_long %>% 
+  group_by(Identity) %>%   # i.e. per annotation column
+  mutate(
+    FE_min = min(Fold_enrichment, na.rm = TRUE),
+    FE_max = max(Fold_enrichment, na.rm = TRUE),
+    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
+  ) %>% 
+    ggplot(.,aes(x=Identity_label,y=`State (Emission order)`, fill=chromhmm_scaled))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "transformed scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  facet_wrap(~group, nrow=1, ncol=6)+
+    scale_y_discrete(limits=rev)+
+  ggtitle("Genic region enrichment across states")+
+  coord_fixed()
+
+
+```
+
+
+```{r enchacers plot, fig.height=8}
+long_file %>% 
+  dplyr::filter(stringr::str_detect(Identity, "SCREEN")) %>% 
+   group_by(Identity) %>%   # i.e. per annotation column
+  mutate(
+    FE_min = min(Fold_enrichment, na.rm = TRUE),
+    FE_max = max(Fold_enrichment, na.rm = TRUE),
+    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
+  ) %>% 
+    ggplot(.,aes(x=Identity,y=`State (Emission order)`, fill=chromhmm_scaled))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "transformed scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  facet_wrap(~group, nrow=1, ncol=6)+
+    scale_y_discrete(limits=rev)+
+  ggtitle("Enhancer enrichment acros states")+
+  coord_fixed()
+```
+### Cormotif set enrichment across states  
+
+Each Histone will have slices of their own states.  Here are all sets next to all states
+
+
+```{r fig.width=12, fig.height=8}
+order <- c("Genome %",
+"all_H3K27ac_H3K27ac_ROI.bed",
+"Set_1_H3K27ac_ROI.bed" ,
+"Set_2_H3K27ac_ROI.bed",
+"Set_3_H3K27ac_ROI.bed",
+"all_H3K36me3_regions_H3K36me3_ROI.bed",
+"Set_1_H3K36me3_ROI.bed",
+"Set_2_H3K36me3_ROI.bed",
+"all_H3K27me3_regions_H3K27me3_ROI.bed",
+"Set_1_H3K27me3_ROI.bed",               
+"all_H3K9me3_regions_H3K9me3_ROI.bed",           
+"Set_2_H3K27me3_ROI.bed" ,              
+"Set_1_H3K9me3_ROI.bed",               
+"Set_2_H3K9me3_ROI.bed", 
+"Set_3_H3K9me3_ROI.bed" ,               
+"ZFP_proteins.bed")                  
+
+all_ZFPs_states %>%
+  mutate(
+    `State (Emission order)` = as.character(`State (Emission order)`),
+    `State (Emission order)` = case_when(
+      `State (Emission order)` %in% as.character(1:16) ~ paste0("E", `State (Emission order)`),
+      TRUE ~ `State (Emission order)`)) %>% 
+  mutate(`State (Emission order)` = factor(`State (Emission order)`,
+                                           levels = c(paste0("E",1:16), "Base"))) %>%
+  filter(`State (Emission order)` != "Base") %>% 
+  pivot_longer(., -c(`State (Emission order)`,group), names_to = "Identity", values_to="Fold_enrichment") %>% 
+   mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R"))) %>% 
+  mutate(Identity=factor(Identity, levels=order)) %>% 
+  dplyr::filter(Identity!="ZFP_proteins.bed") %>% 
+  group_by(Identity) %>%   # i.e. per annotation column
+  mutate(
+    FE_min = min(Fold_enrichment, na.rm = TRUE),
+    FE_max = max(Fold_enrichment, na.rm = TRUE),
+    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
+  ) %>% 
+    ggplot(.,aes(x=Identity,y=`State (Emission order)`, fill=chromhmm_scaled))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "transformed scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  facet_wrap(~group, nrow=2, ncol=3)+
+    scale_y_discrete(limits=rev)+
+  ggtitle("Cormotif across states")+
+  coord_fixed()
+
+  
+  
+```
+
+

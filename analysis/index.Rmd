@@ -83,3 +83,6 @@ Looking at finalized assigned cluster sets and characteristics
 
 
 ### Examining ChromHMM states and ROIs
+[ChromHMM states and other plots](https://reneeisnowhere.github.io/DXR_continue/chromHMM.html)
+
+
