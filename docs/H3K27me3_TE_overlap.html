@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Renee Matthews" />
+
+<meta name="date" content="2026-01-23" />
+
+<title>H3K27me3 and TE overlap</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="site_libs/nouislider-7.0.10/jquery.nouislider.min.js"></script>
+<link href="site_libs/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="site_libs/selectize-0.12.0/selectize.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DXR_project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/reneeisnowhere/DXR_continue">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">H3K27me3 and TE overlap</h1>
+<h4 class="author">Renee Matthews</h4>
+<h4 class="date">2026-01-23</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-01-23
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>DXR_continue/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250701code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250701)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250701code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250701)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee8e2585dd98364ae0f670ad865ce8227134a3698targetblanke8e2585a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e8e2585dd98364ae0f670ad865ce8227134a3698" target="_blank">e8e2585</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee8e2585dd98364ae0f670ad865ce8227134a3698targetblanke8e2585a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e8e2585dd98364ae0f670ad865ce8227134a3698" target="_blank">e8e2585</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/Bed_exports/
+    Ignored:    data/Cormotif_data/
+    Ignored:    data/DER_data/
+    Ignored:    data/Other_paper_data/
+    Ignored:    data/RDS_files/
+    Ignored:    data/TE_annotation/
+    Ignored:    data/alignment_summary.txt
+    Ignored:    data/all_peak_final_dataframe.txt
+    Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/motif_lists/
+    Ignored:    data/number_frag_peaks_summary.txt
+
+Untracked files:
+    Untracked:  H3K27ac_all_regions_test.bed
+    Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  analysis/GREAT_H3K27ac.Rmd
+    Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_cisRE.Rmd
+    Untracked:  analysis/Top2a_Top2b_expression.Rmd
+    Untracked:  analysis/chromHMM.Rmd
+    Untracked:  analysis/maps_and_plots.Rmd
+    Untracked:  analysis/proteomics.Rmd
+    Untracked:  other_analysis/
+
+Unstaged changes:
+    Modified:   analysis/H3K27_TE_overlap_extend.Rmd
+    Modified:   analysis/H3K27ac_RNA_integration.Rmd
+    Modified:   analysis/H3K27ac_TF_motifs.Rmd
+    Modified:   analysis/final_analysis.Rmd
+    Modified:   analysis/repeatmasker_data.Rmd
+    Modified:   analysis/summit_files_processing.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/H3K27me3_TE_overlap.Rmd</code>)
+and HTML (<code>docs/H3K27me3_TE_overlap.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/e8e2585dd98364ae0f670ad865ce8227134a3698/analysis/H3K27me3_TE_overlap.Rmd" target="_blank">e8e2585</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-23
+</td>
+<td>
+image update
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+</style>
+<pre class="r"><code>library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)</code></pre>
+<p>First steps: breakdown repeatmasker into groups and pull out the ones
+by each class I am interested in.</p>
+<pre class="r"><code>repeatmasker &lt;- read_delim(&quot;data/Other_paper_data/repeatmasker_20250911.txt&quot;, 
+    delim = &quot;\t&quot;, escape_double = FALSE, 
+    trim_ws = TRUE)
+colnames(repeatmasker)</code></pre>
+<pre><code> [1] &quot;#bin&quot;      &quot;swScore&quot;   &quot;milliDiv&quot;  &quot;milliDel&quot;  &quot;milliIns&quot;  &quot;genoName&quot; 
+ [7] &quot;genoStart&quot; &quot;genoEnd&quot;   &quot;genoLeft&quot;  &quot;strand&quot;    &quot;repName&quot;   &quot;repClass&quot; 
+[13] &quot;repFamily&quot; &quot;repStart&quot;  &quot;repEnd&quot;    &quot;repLeft&quot;   &quot;id&quot;       </code></pre>
+<pre class="r"><code>repeatmasker_clean &lt;- repeatmasker %&gt;% mutate(
+    strand = ifelse(strand == &quot;C&quot;, &quot;-&quot;, &quot;+&quot;)
+  ) %&gt;% 
+   mutate(
+    start = genoStart + 1,
+    end   = genoEnd)%&gt;% 
+  mutate(repFamily= str_remove(repFamily, &quot;\\?$&quot;))
+
+rpt_split &lt;- split(repeatmasker_clean, repeatmasker_clean$repClass)
+
+rpt_split_gr_list &lt;- lapply(rpt_split, function(df) {
+  GRanges(
+    seqnames = df$genoName,
+    ranges   = IRanges(start = df$start, end = df$end),
+    strand   = df$strand,
+    repName   = df$repName,
+    repClass  = df$repClass,
+    repFamily = df$repFamily,
+    swScore   = df$swScore,
+    milliDiv  = df$milliDiv,
+    id        = df$id
+  )
+})</code></pre>
+<pre class="r"><code>SINE_gr &lt;- rpt_split_gr_list$SINE
+
+LINE_gr &lt;- rpt_split_gr_list$LINE
+
+LTR_gr &lt;- rpt_split_gr_list$LTR
+
+SVA_gr &lt;- rpt_split_gr_list$Retroposon
+
+DNA_gr &lt;- rpt_split_gr_list$DNA</code></pre>
+<pre class="r"><code>H3K27me3_summit_gr &lt;- readRDS(&quot;data/RDS_files/H3K27me3_complete_summit_gr.RDS&quot;)
+
+
+peakAnnoList_H3K27me3 &lt;- readRDS(&quot;data/motif_lists/H3K27me3_annotated_peaks.RDS&quot;)
+
+H3K27me3_lookup &lt;- imap_dfr(peakAnnoList_H3K27me3[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+
+##assigning Peakid as name of summit region
+ mcols(H3K27me3_summit_gr)$name &lt;- mcols(H3K27me3_summit_gr)$Peakid
+ 
+ comparisons &lt;- tibble(
+  cluster2 = c(&quot;Set_2&quot;),
+  cluster1 = c(&quot;Set_1&quot;)
+)</code></pre>
+<pre class="r"><code># Generic pairwise Fisher test
+test_pair_TE_generic &lt;- function(df_long, te_name, cluster1, cluster2) {
+  
+   sub_df &lt;- df_long %&gt;%
+    filter(TE_type == te_name) %&gt;%
+    complete(
+      cluster = c(cluster1, cluster2),
+      status  = c(&quot;TE&quot;, &quot;not_TE&quot;),
+      fill = list(count = 0))
+   
+   # enforce fixed order
+ status_levels &lt;- c(&quot;TE&quot;, &quot;not_TE&quot;)
+  
+  # assume &quot;status&quot; column has TE vs wnot_TE automatically
+  statuses &lt;- unique(sub_df$status)
+  
+  if(length(statuses) != 2) {
+    # ensure we have exactly two categories, fill missing with 0
+    sub_df &lt;- sub_df %&gt;%
+      complete(cluster, status, fill = list(count = 0))
+    statuses &lt;- unique(sub_df$status)
+  }
+  
+  # extract counts for cluster1
+  c1_counts &lt;- sub_df %&gt;%
+    filter(cluster == cluster1) %&gt;%
+   arrange(factor(status, levels = status_levels)) %&gt;%  # ensure same order
+    pull(count)
+  
+  # extract counts for cluster2
+  c2_counts &lt;- sub_df %&gt;%
+    filter(cluster == cluster2) %&gt;%
+    arrange(factor(status, levels = status_levels)) %&gt;%
+    pull(count)
+  
+  # build 2x2 matrix
+  mat &lt;- matrix(
+    c(c2_counts, c1_counts),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      cluster = c(cluster2, cluster1),
+      category = status_levels
+    )
+  )
+  
+  ft &lt;- tryCatch(
+    fisher.test(mat, workspace = 2e8),
+    error = function(e) fisher.test(mat, simulate.p.value = TRUE, B = 1e5)
+  )
+  
+  tibble(
+    TE_type     = te_name,
+    comparison  = paste(cluster2, &quot;vs&quot;, cluster1),
+    odds_ratio  = ft$estimate,
+    lower_CI    = ft$conf.int[1],
+    upper_CI    = ft$conf.int[2],
+    p_value     = ft$p.value
+  )
+}</code></pre>
+<div id="sine" class="section level3">
+<h3>SINE</h3>
+<p>Overlapping SINE family with summits to get a count</p>
+<pre class="r"><code>sine_hits &lt;- findOverlaps(H3K27me3_summit_gr, SINE_gr, ignore.strand = TRUE)
+SINE_overlap_df &lt;- tibble(
+  summit_id = queryHits(sine_hits),
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(sine_hits)],
+  TE_type   = mcols(SINE_gr)$repFamily[subjectHits(sine_hits)])
+
+SINE_counts &lt;- SINE_overlap_df %&gt;%
+  count(cluster, TE_type, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_SINE_summits &lt;- tibble(
+  cluster = mcols(H3K27me3_summit_gr)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_SINE_counts &lt;- SINE_counts %&gt;%
+  left_join(total_SINE_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  select(cluster, TE_type, status, count)
+
+SINE_df_long &lt;- bind_rows(SINE_counts %&gt;%
+                            dplyr::select(cluster, TE_type, status, count),
+                          not_SINE_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+SINE_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      SINE_df_long %&gt;%
+        distinct(TE_type) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            SINE_df_long,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))</code></pre>
+<pre class="r"><code>datatable(SINE_counts,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1cc7fc7fd0704f0fe11c" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1cc7fc7fd0704f0fe11c">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"5472\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["5S-Deu-L2","Alu","MIR","tRNA","tRNA-Deu","tRNA-RTE","Alu","MIR","5S-Deu-L2","Alu","MIR","tRNA","tRNA-Deu","tRNA-RTE"],[30,5435,4984,30,8,51,1,10,30,5472,5034,30,8,53],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code># ---- Prepare the table ----
+SINE_counts_display &lt;- SINE_results %&gt;%
+  # 1. Split comparison
+  separate(comparison, into = c(&quot;cluster2&quot;, &quot;cluster1&quot;), sep = &quot; vs &quot;, remove = FALSE) %&gt;%
+  
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %&gt;%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio &gt; 1 ~ &quot;enriched&quot;,
+    odds_ratio &lt; 1 ~ &quot;depleted&quot;,
+    TRUE           ~ &quot;neutral&quot;
+  )) %&gt;%
+  
+  # 4. Flag significant
+  mutate(significant = FDR &lt; 0.05) %&gt;%
+  
+  # Optional: arrange for readability
+  arrange(cluster2, direction, desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  SINE_counts_display,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %&gt;%
+  # Conditional coloring by direction
+  formatStyle(
+    &#39;direction&#39;,
+    target = &#39;row&#39;,
+    backgroundColor = styleEqual(
+      c(&#39;enriched&#39;, &#39;depleted&#39;),
+      c(&#39;#FFDD99&#39;, &#39;#99CCFF&#39;)  # enriched = light orange, depleted = light blue
+    )
+  ) %&gt;%
+  # Bold significant rows
+  formatStyle(
+    &#39;significant&#39;,
+    fontWeight = styleEqual(TRUE, &#39;bold&#39;)
+  ) %&gt;%
+  # Round numeric columns for readability
+  formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1f1aee943cb026952af4" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1f1aee943cb026952af4">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1.28345364338999\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.606755380274198\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.002703814082762\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.016222884496572\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Alu","5S-Deu-L2","tRNA","tRNA-Deu","tRNA-RTE","MIR"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.1128324124943379,0,0,0,0,1.283453643389988],[0.00284736062371631,0,0,0,0,0.6067553802741971],[0.635026078676838,null,null,null,null,2.406457932894491],[0.002703814082762071,1,1,1,1,0.4633929271924241],[0.01622288449657243,1,1,1,1,1],[-3.147746535769309,null,null,null,null,0.3600311886603966],["depleted","depleted","depleted","depleted","depleted","enriched"],[true,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<pre class="r"><code>ggplot(SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;SINE family enrichment at ROI summits\nH3K27me3&quot;
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/Plot%20SINE-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="line" class="section level3">
+<h3>LINE</h3>
+<p>Overlapping LINE family with summits to get a count</p>
+<pre class="r"><code>LINE_hits &lt;- findOverlaps(H3K27me3_summit_gr, LINE_gr, ignore.strand = TRUE)
+LINE_overlap_df &lt;- tibble(
+  summit_id = queryHits(LINE_hits),
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(LINE_hits)],
+  TE_type   = mcols(LINE_gr)$repFamily[subjectHits(LINE_hits)])
+
+LINE_counts &lt;- LINE_overlap_df %&gt;%
+  count(cluster, TE_type, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_LINE_summits &lt;- tibble(
+  cluster = mcols(H3K27me3_summit_gr)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_LINE_counts &lt;- LINE_counts %&gt;%
+  left_join(total_LINE_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  select(cluster, TE_type, status, count)
+
+LINE_df_long &lt;- bind_rows(LINE_counts %&gt;%
+                            dplyr::select(cluster, TE_type, status, count),
+                          not_LINE_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+LINE_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      LINE_df_long %&gt;%
+        distinct(TE_type) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            LINE_df_long,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))</code></pre>
+<pre class="r"><code>datatable(LINE_counts,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-7d15ac70e14e0faa7e6f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-7d15ac70e14e0faa7e6f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"7985\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["CR1","Dong-R4","L1","L2","Penelope","RTE-BovB","RTE-X","L1","L2","CR1","Dong-R4","L1","L2","Penelope","RTE-BovB","RTE-X"],[661,1,6263,7919,4,99,101,2,11,663,1,6302,7985,4,101,103],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>total_LINE_summits</code></pre>
+<pre><code># A tibble: 3 × 2
+  cluster               total
+  &lt;chr&gt;                 &lt;int&gt;
+1 Set_1                148911
+2 Set_2                   235
+3 all_H3K27me3_regions 150464</code></pre>
+<pre class="r"><code># ---- Prepare the table ----
+LINE_counts_display &lt;- LINE_results %&gt;%
+  # 1. Split comparison
+  separate(comparison, into = c(&quot;cluster2&quot;, &quot;cluster1&quot;), sep = &quot; vs &quot;, remove = FALSE) %&gt;%
+  
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %&gt;%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio &gt; 1 ~ &quot;enriched&quot;,
+    odds_ratio &lt; 1 ~ &quot;depleted&quot;,
+    TRUE           ~ &quot;neutral&quot;
+  )) %&gt;%
+  
+  # 4. Flag significant
+  mutate(significant = FDR &lt; 0.05) %&gt;%
+  
+  # Optional: arrange for readability
+  arrange(cluster2, direction, desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  LINE_counts_display,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %&gt;%
+  # Conditional coloring by direction
+  formatStyle(
+    &#39;direction&#39;,
+    target = &#39;row&#39;,
+    backgroundColor = styleEqual(
+      c(&#39;enriched&#39;, &#39;depleted&#39;),
+      c(&#39;#FFDD99&#39;, &#39;#99CCFF&#39;)  # enriched = light orange, depleted = light blue
+    )
+  ) %&gt;%
+  # Bold significant rows
+  formatStyle(
+    &#39;significant&#39;,
+    fontWeight = styleEqual(TRUE, &#39;bold&#39;)
+  ) %&gt;%
+  # Round numeric columns for readability
+  formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-ac686cfa6b0ab6d13cf6" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ac686cfa6b0ab6d13cf6">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.874315527140372\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.43006229958836\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.00504149409978\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.035290458698463\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["L2","L1","CR1","Dong-R4","Penelope","RTE-BovB","RTE-X"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.8743155271403714,0.1955058590712013,0,0,0,0,0],[0.4300622995883597,0.02350443929320002,0,0,0,0,0],[1.595651785242291,0.7144899038120008,null,null,null,null,null],[0.7717331295598058,0.00504149409978045,1,1,1,1,1],[1,0.03529045869846315,1,1,1,1,1],[-0.1937740745531083,-2.354716250903051,null,null,null,null,null],["depleted","depleted","depleted","depleted","depleted","depleted","depleted"],[false,true,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<pre class="r"><code>ggplot(LINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;LINE family enrichment at ROI summits\nH3K27me3&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/Plot%20LINE-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ltr" class="section level3">
+<h3>LTR</h3>
+<p>Overlapping LTR family summits to get a count</p>
+<pre class="r"><code>LTR_hits &lt;- findOverlaps(H3K27me3_summit_gr, LTR_gr, ignore.strand = TRUE)
+LTR_overlap_df &lt;- tibble(
+  summit_id = queryHits(LTR_hits),
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(LTR_hits)],
+  TE_type   = mcols(LTR_gr)$repFamily[subjectHits(LTR_hits)])
+
+LTR_counts &lt;- LTR_overlap_df %&gt;%
+  count(cluster, TE_type, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_LTR_summits &lt;- tibble(
+  cluster = mcols(H3K27me3_summit_gr)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_LTR_counts &lt;- LTR_counts %&gt;%
+  left_join(total_LTR_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  select(cluster, TE_type, status, count)
+
+LTR_df_long &lt;- bind_rows(LTR_counts %&gt;%
+                            dplyr::select(cluster, TE_type, status, count),
+                          not_LTR_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+LTR_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      LTR_df_long %&gt;%
+        distinct(TE_type) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            LTR_df_long,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))</code></pre>
+<pre class="r"><code>datatable(LTR_counts,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-4676504a9d21e95bf556" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-4676504a9d21e95bf556">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"5531\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["ERV1","ERVK","ERVL","ERVL-MaLR","Gypsy","LTR","ERV1","ERVL","ERVL-MaLR","Gypsy","ERV1","ERVK","ERVL","ERVL-MaLR","Gypsy","LTR"],[3168,208,5195,5482,496,33,4,3,8,1,3186,210,5226,5531,498,33],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>total_LTR_summits</code></pre>
+<pre><code># A tibble: 3 × 2
+  cluster               total
+  &lt;chr&gt;                 &lt;int&gt;
+1 Set_1                148911
+2 Set_2                   235
+3 all_H3K27me3_regions 150464</code></pre>
+<pre class="r"><code># ---- Prepare the table ----
+LTR_counts_display &lt;- LTR_results %&gt;%
+  # 1. Split comparison
+  separate(comparison, into = c(&quot;cluster2&quot;, &quot;cluster1&quot;), sep = &quot; vs &quot;, remove = FALSE) %&gt;%
+  
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %&gt;%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio &gt; 1 ~ &quot;enriched&quot;,
+    odds_ratio &lt; 1 ~ &quot;depleted&quot;,
+    TRUE           ~ &quot;neutral&quot;
+  )) %&gt;%
+  
+  # 4. Flag significant
+  mutate(significant = FDR &lt; 0.05) %&gt;%
+  
+  # Optional: arrange for readability
+  arrange(cluster2, direction, desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  LTR_counts_display,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %&gt;%
+  # Conditional coloring by direction
+  formatStyle(
+    &#39;direction&#39;,
+    target = &#39;row&#39;,
+    backgroundColor = styleEqual(
+      c(&#39;enriched&#39;, &#39;depleted&#39;),
+      c(&#39;#FFDD99&#39;, &#39;#99CCFF&#39;)  # enriched = light orange, depleted = light blue
+    )
+  ) %&gt;%
+  # Bold significant rows
+  formatStyle(
+    &#39;significant&#39;,
+    fontWeight = styleEqual(TRUE, &#39;bold&#39;)
+  ) %&gt;%
+  # Round numeric columns for readability
+  formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-c272118e3de6abfa29a4" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c272118e3de6abfa29a4">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1.27872901746851\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.393072034560096\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.072096607145805\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.432579642874835\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["ERVL-MaLR","ERV1","ERVL","ERVK","LTR","Gypsy"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.9220663305986108,0.7966195809681194,0.3577294983016647,0,0,1.278729017468511],[0.393072034560096,0.2150991183954468,0.07320940814630839,0,0,0.03217465323268557],[1.849265644954412,2.069468327336955,1.05911736304177,null,null,7.227456479586487],[1,0.8224971315013823,0.07209660714580586,1,1,0.5438877797126542],[1,1,0.4325796428748352,1,1,1],[-0.1170575574826432,-0.3280371531988047,-1.483059007309451,null,null,0.3547105671319072],["depleted","depleted","depleted","depleted","depleted","enriched"],[false,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<pre class="r"><code>ggplot(LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;LTR family enrichment at ROI summits\nH3K27me3&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/Plot%20LTR-1.png" width="672" style="display: block; margin: auto;" />
+### SVA</p>
+<p>Overlapping SVA family with summits to get a count</p>
+<pre class="r"><code>SVA_hits &lt;- findOverlaps(H3K27me3_summit_gr, SVA_gr, ignore.strand = TRUE)
+SVA_overlap_df &lt;- tibble(
+  summit_id = queryHits(SVA_hits),
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(SVA_hits)],
+  TE_type   = mcols(SVA_gr)$repName[subjectHits(SVA_hits)])
+
+SVA_counts &lt;- SVA_overlap_df %&gt;%
+  count(cluster, TE_type, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_SVA_summits &lt;- tibble(
+  cluster = mcols(H3K27me3_summit_gr)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_SVA_counts &lt;- SVA_counts %&gt;%
+  left_join(total_SVA_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  select(cluster, TE_type, status, count)
+
+SVA_df_long &lt;- bind_rows(SVA_counts %&gt;%
+                            dplyr::select(cluster, TE_type, status, count),
+                          not_SVA_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+SVA_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      SVA_df_long %&gt;%
+        distinct(TE_type) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            SVA_df_long,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))</code></pre>
+<pre class="r"><code>datatable(SVA_counts,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0d0a58fb401ace3924c9" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0d0a58fb401ace3924c9">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"2\" data-max=\"8\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F","SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F"],[3,3,2,7,2,2,3,4,2,8,2,2],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>total_SVA_summits</code></pre>
+<pre><code># A tibble: 3 × 2
+  cluster               total
+  &lt;chr&gt;                 &lt;int&gt;
+1 Set_1                148911
+2 Set_2                   235
+3 all_H3K27me3_regions 150464</code></pre>
+<pre class="r"><code># ---- Prepare the table ----
+SVA_counts_display &lt;- SVA_results %&gt;%
+  # 1. Split comparison
+  separate(comparison, into = c(&quot;cluster2&quot;, &quot;cluster1&quot;), sep = &quot; vs &quot;, remove = FALSE) %&gt;%
+  
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %&gt;%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio &gt; 1 ~ &quot;enriched&quot;,
+    odds_ratio &lt; 1 ~ &quot;depleted&quot;,
+    TRUE           ~ &quot;neutral&quot;
+  )) %&gt;%
+  
+  # 4. Flag significant
+  mutate(significant = FDR &lt; 0.05) %&gt;%
+  
+  # Optional: arrange for readability
+  arrange(cluster2, direction, desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  SVA_counts_display,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %&gt;%
+  # Conditional coloring by direction
+  formatStyle(
+    &#39;direction&#39;,
+    target = &#39;row&#39;,
+    backgroundColor = styleEqual(
+      c(&#39;enriched&#39;, &#39;depleted&#39;),
+      c(&#39;#FFDD99&#39;, &#39;#99CCFF&#39;)  # enriched = light orange, depleted = light blue
+    )
+  ) %&gt;%
+  # Bold significant rows
+  formatStyle(
+    &#39;significant&#39;,
+    fontWeight = styleEqual(TRUE, &#39;bold&#39;)
+  ) %&gt;%
+  # Round numeric columns for readability
+  formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-b12ecdfcc414070ada7f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-b12ecdfcc414070ada7f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0,0,0,0,0,0],[0,0,0,0,0,0],[null,null,null,null,null,null],[1,1,1,1,1,1],[1,1,1,1,1,1],[null,null,null,null,null,null],["depleted","depleted","depleted","depleted","depleted","depleted"],[false,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<pre class="r"><code>ggplot(SVA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;SVA family enrichment at ROI summits\nH3K27me3&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/Plot%20SVA-1.png" width="672" style="display: block; margin: auto;" />
+### DNA</p>
+<p>Overlapping DNA family with summits to get a count</p>
+<pre class="r"><code>DNA_hits &lt;- findOverlaps(H3K27me3_summit_gr, DNA_gr, ignore.strand = TRUE)
+DNA_overlap_df &lt;- tibble(
+  summit_id = queryHits(DNA_hits),
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(DNA_hits)],
+  TE_type   = mcols(DNA_gr)$repFamily[subjectHits(DNA_hits)])
+
+DNA_counts &lt;- DNA_overlap_df %&gt;%
+  count(cluster, TE_type, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_DNA_summits &lt;- tibble(
+  cluster = mcols(H3K27me3_summit_gr)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_DNA_counts &lt;- DNA_counts %&gt;%
+  left_join(total_DNA_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  select(cluster, TE_type, status, count)
+
+DNA_df_long &lt;- bind_rows(DNA_counts %&gt;%
+                            dplyr::select(cluster, TE_type, status, count),
+                          not_DNA_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+DNA_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      DNA_df_long %&gt;%
+        distinct(TE_type) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            DNA_df_long,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))</code></pre>
+<pre class="r"><code>datatable(DNA_counts,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-316a36fbbf64cb69d355" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-316a36fbbf64cb69d355">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"1749\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["DNA","MULE-MuDR","PiggyBac","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tip100","PiggyBac","TcMar-Tigger","hAT-Charlie","DNA","MULE-MuDR","PiggyBac","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tip100"],[16,25,2,28,21,805,63,31,142,1735,703,1,9,1,16,25,3,29,21,838,64,31,143,1749,707],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>total_DNA_summits</code></pre>
+<pre><code># A tibble: 3 × 2
+  cluster               total
+  &lt;chr&gt;                 &lt;int&gt;
+1 Set_1                148911
+2 Set_2                   235
+3 all_H3K27me3_regions 150464</code></pre>
+<pre class="r"><code># ---- Prepare the table ----
+DNA_counts_display &lt;- DNA_results %&gt;%
+  # 1. Split comparison
+  separate(comparison, into = c(&quot;cluster2&quot;, &quot;cluster1&quot;), sep = &quot; vs &quot;, remove = FALSE) %&gt;%
+  
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %&gt;%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio &gt; 1 ~ &quot;enriched&quot;,
+    odds_ratio &lt; 1 ~ &quot;depleted&quot;,
+    TRUE           ~ &quot;neutral&quot;
+  )) %&gt;%
+  
+  # 4. Flag significant
+  mutate(significant = FDR &lt; 0.05) %&gt;%
+  
+  # Optional: arrange for readability
+  arrange(cluster2, direction, desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  DNA_counts_display,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %&gt;%
+  # Conditional coloring by direction
+  formatStyle(
+    &#39;direction&#39;,
+    target = &#39;row&#39;,
+    backgroundColor = styleEqual(
+      c(&#39;enriched&#39;, &#39;depleted&#39;),
+      c(&#39;#FFDD99&#39;, &#39;#99CCFF&#39;)  # enriched = light orange, depleted = light blue
+    )
+  ) %&gt;%
+  # Bold significant rows
+  formatStyle(
+    &#39;significant&#39;,
+    fontWeight = styleEqual(TRUE, &#39;bold&#39;)
+  ) %&gt;%
+  # Round numeric columns for readability
+  formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0f59f945287a722aca07" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0f59f945287a722aca07">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"315.03640810465\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"5.37121085075978\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"7.095136063e-06\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"7.8046496696e-05\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["hAT-Charlie","DNA","MULE-MuDR","TcMar-Mariner","TcMar-Tc2","hAT","hAT-Ac","hAT-Blackjack","hAT-Tip100","PiggyBac","TcMar-Tigger"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.3625278177088356,0,0,0,0,0,0,0,0,315.0364081046498,7.327026738490494],[0.009137074282986575,0,0,0,0,0,0,0,0,5.371210850759778,3.295274236121153],[2.042324009063821,null,null,null,null,null,null,null,null,7136.935548991004,14.2269124904433],[0.5335938497758526,1,1,1,1,1,1,1,1,0.004719499491814723,7.095136063335788e-06],[1,1,1,1,1,1,1,1,1,0.02595724720498098,7.804649669669367e-05],[-1.463836393743758,null,null,null,null,null,null,null,null,8.299374757297631,2.87322788050842],["depleted","depleted","depleted","depleted","depleted","depleted","depleted","depleted","depleted","enriched","enriched"],[false,false,false,false,false,false,false,false,false,true,true]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<pre class="r"><code>ggplot(DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;DNA family enrichment at ROI summits\nH3K27me3&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/Plot%20DNA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>peakAnnoList_H3K27me3 &lt;- readRDS(&quot;data/motif_lists/H3K27me3_annotated_peaks.RDS&quot;)
+
+out_dir &lt;- &quot;data/Bed_exports/H3K27me3_sets&quot;
+set_list &lt;- names(peakAnnoList_H3K27me3)
+
+for (group_name in set_list) {
+  cs &lt;- peakAnnoList_H3K27me3[[group_name]]
+  gr &lt;- cs@anno
+  
+  # Set BED name column
+  mcols(gr)$name &lt;- mcols(gr)$Peakid
+  
+  # Optional: if you want a score column
+  if(!&quot;score&quot; %in% colnames(mcols(gr))) {
+    mcols(gr)$score &lt;- 0
+  }
+  
+  # Export to BED
+ bed_file &lt;- file.path(out_dir, paste0(group_name, &quot;_H3K27me3.bed&quot;))
+  
+  # Export
+  export(gr, bed_file, format = &quot;BED&quot;)
+  
+  cat(&quot;Exported:&quot;, bed_file, &quot;\n&quot;)
+}</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26200)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] DT_0.33              ggrepel_0.9.6        rtracklayer_1.66.0  
+ [4] genomation_1.38.0    plyranges_1.26.0     GenomicRanges_1.58.0
+ [7] GenomeInfoDb_1.42.3  IRanges_2.40.1       S4Vectors_0.44.0    
+[10] BiocGenerics_0.52.0  lubridate_1.9.4      forcats_1.0.0       
+[13] stringr_1.5.1        dplyr_1.1.4          purrr_1.1.0         
+[16] readr_2.1.5          tidyr_1.3.1          tibble_3.3.0        
+[19] ggplot2_3.5.2        tidyverse_2.0.0      workflowr_1.7.1     
+
+loaded via a namespace (and not attached):
+ [1] bitops_1.0-9                rlang_1.1.6                
+ [3] magrittr_2.0.3              git2r_0.36.2               
+ [5] gridBase_0.4-7              matrixStats_1.5.0          
+ [7] compiler_4.4.2              getPass_0.2-4              
+ [9] callr_3.7.6                 vctrs_0.6.5                
+[11] reshape2_1.4.4              pkgconfig_2.0.3            
+[13] crayon_1.5.3                fastmap_1.2.0              
+[15] XVector_0.46.0              labeling_0.4.3             
+[17] utf8_1.2.6                  Rsamtools_2.22.0           
+[19] promises_1.3.3              rmarkdown_2.29             
+[21] tzdb_0.5.0                  UCSC.utils_1.2.0           
+[23] ps_1.9.1                    bit_4.6.0                  
+[25] xfun_0.52                   zlibbioc_1.52.0            
+[27] cachem_1.1.0                jsonlite_2.0.0             
+[29] later_1.4.2                 DelayedArray_0.32.0        
+[31] BiocParallel_1.40.2         parallel_4.4.2             
+[33] R6_2.6.1                    bslib_0.9.0                
+[35] stringi_1.8.7               RColorBrewer_1.1-3         
+[37] jquerylib_0.1.4             Rcpp_1.1.0                 
+[39] SummarizedExperiment_1.36.0 knitr_1.50                 
+[41] httpuv_1.6.16               Matrix_1.7-3               
+[43] timechange_0.3.0            tidyselect_1.2.1           
+[45] rstudioapi_0.17.1           dichromat_2.0-0.1          
+[47] abind_1.4-8                 yaml_2.3.10                
+[49] seqPattern_1.38.0           codetools_0.2-20           
+[51] curl_7.0.0                  processx_3.8.6             
+[53] lattice_0.22-7              plyr_1.8.9                 
+[55] Biobase_2.66.0              withr_3.0.2                
+[57] evaluate_1.0.5              Biostrings_2.74.1          
+[59] pillar_1.11.0               MatrixGenerics_1.18.1      
+[61] whisker_0.4.1               KernSmooth_2.23-26         
+[63] generics_0.1.4              vroom_1.6.5                
+[65] rprojroot_2.1.1             RCurl_1.98-1.17            
+[67] hms_1.1.3                   scales_1.4.0               
+[69] glue_1.8.0                  tools_4.4.2                
+[71] BiocIO_1.16.0               data.table_1.17.8          
+[73] BSgenome_1.74.0             GenomicAlignments_1.42.0   
+[75] fs_1.6.6                    XML_3.99-0.18              
+[77] impute_1.80.0               plotrix_3.8-4              
+[79] crosstalk_1.2.2             colorspace_2.1-1           
+[81] GenomeInfoDbData_1.2.13     restfulr_0.0.16            
+[83] cli_3.6.5                   S4Arrays_1.6.0             
+[85] gtable_0.3.6                sass_0.4.10                
+[87] digest_0.6.37               SparseArray_1.6.2          
+[89] htmlwidgets_1.6.4           rjson_0.2.23               
+[91] farver_2.1.2                htmltools_0.5.8.1          
+[93] lifecycle_1.0.4             httr_1.4.7                 
+[95] bit64_4.6.0-1              </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
