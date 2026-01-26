@@ -43,15 +43,15 @@ repeatmasker <- read_delim("data/Other_paper_data/repeatmasker_20250911.txt",
     delim = "\t", escape_double = FALSE, 
     trim_ws = TRUE)
 colnames(repeatmasker)
-
-repeatmasker_clean <-
-repeatmasker %>% mutate(
+autosomes <- paste0("chr", 1:22)
+repeatmasker_clean <- repeatmasker %>% mutate(
     strand = ifelse(strand == "C", "-", "+")
   ) %>% 
    mutate(
     start = genoStart + 1,
-    end   = genoEnd) %>% 
-  mutate(repFamily= str_remove(repFamily, "\\?$"))
+    end   = genoEnd)%>% 
+  mutate(repFamily= str_remove(repFamily, "\\?$")) %>% 
+  dplyr::filter(genoName %in% autosomes)
 
 rpt_split <- split(repeatmasker_clean, repeatmasker_clean$repClass)
 
@@ -811,15 +811,40 @@ ggplot(DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   facet_wrap(~comparison)
 ```
 
-```{r}
+```{r making named bedfiles, eval=FALSE}
+names(rpt_split_gr_list)
+
+out_dir <- "data/Bed_exports/repeatmasker_sets"
+set_list <- names(rpt_split_gr_list)
+
+for (group_name in set_list) {
+  gr <- rpt_split_gr_list[[group_name]]
+  
+  
+  # Set BED name column
+  mcols(gr)$name <- mcols(gr)$repName
+  # 
+  # # Optional: if you want a score column
+  # if(!"score" %in% colnames(mcols(gr))) {
+  #   mcols(gr)$score <- 0
+  # }
+  # 
+  # Export to BED
+ bed_file <- file.path(out_dir, paste0(group_name, "_rptmasker.bed"))
+  
+  # Export
+  rtracklayer::export(gr, bed_file, format = "BED")
+  
+  cat("Exported:", bed_file, "\n")
+}
 
 ```
 
 
-```{r making named bedfiles, eval=FALSE}
+```{r making named bedfiles 1, eval=FALSE}
 peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
 
-out_dir <- "data/Bed_exports/H3K27ac_sets"
+out_dir <- "data/Bed_exports/repeatmasker_sets"
 set_list <- names(peakAnnoList_H3K27ac)
 
 for (group_name in set_list) {

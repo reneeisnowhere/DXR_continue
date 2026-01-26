@@ -38,19 +38,22 @@ library(DT)
 
 First steps: breakdown repeatmasker into groups and pull out the ones by each class I am interested in.  
 ```{r repeatmasker loading}
-
+autosomes <- paste0("chr", 1:22)
 repeatmasker <- read_delim("data/Other_paper_data/repeatmasker_20250911.txt", 
     delim = "\t", escape_double = FALSE, 
     trim_ws = TRUE)
 colnames(repeatmasker)
 
+autosomes <- paste0("chr", 1:22)
 repeatmasker_clean <- repeatmasker %>% mutate(
     strand = ifelse(strand == "C", "-", "+")
   ) %>% 
    mutate(
     start = genoStart + 1,
     end   = genoEnd)%>% 
-  mutate(repFamily= str_remove(repFamily, "\\?$"))
+  mutate(repFamily= str_remove(repFamily, "\\?$")) %>% 
+  dplyr::filter(genoName %in% autosomes)
+
 
 rpt_split <- split(repeatmasker_clean, repeatmasker_clean$repClass)
 

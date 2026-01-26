@@ -44,13 +44,16 @@ repeatmasker <- read_delim("data/Other_paper_data/repeatmasker_20250911.txt",
     trim_ws = TRUE)
 colnames(repeatmasker)
 
+autosomes <- paste0("chr", 1:22)
 repeatmasker_clean <- repeatmasker %>% mutate(
     strand = ifelse(strand == "C", "-", "+")
   ) %>% 
    mutate(
     start = genoStart + 1,
     end   = genoEnd)%>% 
-  mutate(repFamily= str_remove(repFamily, "\\?$"))
+  mutate(repFamily= str_remove(repFamily, "\\?$")) %>% 
+  dplyr::filter(genoName %in% autosomes)
+
 
 rpt_split <- split(repeatmasker_clean, repeatmasker_clean$repClass)
 
