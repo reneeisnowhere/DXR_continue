@@ -1,0 +1,160 @@
+---
+title: "H3K36me3 TF enrichment"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+
+```{r packages}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+
+```
+
+```{r loading motif data Set2}
+
+H3K36me3_Set2_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K36me3/H3K36me3_set2_400/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+H3K36me3_Set2_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K36me3/H3K36me3_set2_400/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+
+H3K36me3_Set2_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K36me3/H3K36me3_set2_400/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+
+
+H3K36me3_Set2_tomtom <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K36me3/H3K36me3_set2_400/streme_tomtom_out/tomtom.tsv", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+test_bind <-bind_rows(H3K36me3_Set2_sea_disc_out, H3K36me3_Set2_sea_known) %>% 
+  dplyr::select(DB:ENR_RATIO) %>% 
+  group_by(ID,ALT_ID, ENR_RATIO) %>% distinct()
+
+
+```
+
+
+
+
+```{r  making data sets}
+H3K36me3_Set2_data <- H3K36me3_Set2_xstreme %>% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(test_bind, by=c("ID"="ID","ALT_ID"="ALT_ID")) %>% 
+  mutate(diff_per=`TP%` -`FP%`)
+
+
+```
+
+
+```{r}
+
+H3K36me3_Set2_data %>% 
+  # dplyr::filter(ENR_RATIO>1.2) %>% 
+  group_by(CLUSTER) %>%
+  slice_min(EVALUE, with_ties = FALSE) %>% 
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+   # mutate(Facets=case_when(log10Evalue>20~"A",
+   #                        log10Evalue<20 & log10Evalue>4 ~"B",
+   #                        TRUE ~ "C")) %>% 
+   # dplyr::filter(Facets=="A") %>% 
+  # group_by(Facets) %>% tally()
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*2), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./2,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET2 enrichment over SET1\n  H3K36me3"))
+  # facet_wrap(~Facets)
+
+# H3K36me3_Set2_data %>% 
+#   dplyr::filter(ENR_RATIO>1.2) %>% 
+#   group_by(CLUSTER) %>% 
+#   slice_min(EVALUE, with_ties = FALSE) %>% 
+#    mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+#    mutate(Facets=case_when(log10Evalue>20~"A",
+#                           log10Evalue<20 & log10Evalue>4 ~"B",
+#                           TRUE ~ "C")) %>% 
+#    dplyr::filter(Facets=="B") %>% 
+#   # group_by(Facets) %>% tally()
+#   ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+#   geom_col(aes(x=log10Evalue))+
+#   geom_point(aes(x=`TP%`*2), size =4)+
+#   scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./2,name="Percent of peaks with motif"))+
+#   theme_classic()+
+#   ylab("Enriched TF motif")+
+#   ggtitle(paste("SET2 enrichment over SET1 Enrichment ratio >1.2"))+
+#   facet_wrap(~Facets)
+
+
+
+
+
+```
+
+
+```{r enrichment ratio dispersion}
+H3K36me3_Set2_data %>% 
+  ggplot(., aes (x= ENR_RATIO)) +
+  geom_density()+
+  # geom_point(aes(x=`TP%`*2), size =4)+
+  # scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./2,name="Percent of peaks with motif"))+
+  theme_classic()+
+  # ylab("Enriched TF motif")+
+  ggtitle(paste("Span of enrichment ratios for Set2"))
+
+
+
+
+
+```
+
+```{r}
+H3K36me3_Set2_data %>% 
+  group_by(CLUSTER) %>% 
+   dplyr::filter(EVALUE<0.05) %>% 
+  slice_max(ENR_RATIO, with_ties = FALSE) %>% 
+ 
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+   # mutate(Facets=case_when(log10Evalue>20~"A",
+   #                        log10Evalue<20 & log10Evalue>4 ~"B",
+   #                        TRUE ~ "C")) %>% 
+   # dplyr::filter(Facets=="A") %>% 
+  # group_by(Facets) %>% tally()
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`ENR_RATIO`*20), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./20,name="Enrichment Ratio"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET2 enrichment over SET1\n Top Enrichment Ratio by cluster  H3K36me3"))
+```
