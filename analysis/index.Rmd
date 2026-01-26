@@ -75,6 +75,10 @@ Looking at finalized assigned cluster sets and characteristics
 
 [H3K9me3 TF motif enrichment](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TF_motifs.html)
 
+[H3K27me3 TF motif enrichment](https://reneeisnowhere.github.io/DXR_continue/H3K27me3_TF_motifs.html)
+
+[H3K36me3 TF motif enrichment](https://reneeisnowhere.github.io/DXR_continue/H3K36me3_TF_motifs.html)
+
 
 ### Examining RNA data with my data
 
