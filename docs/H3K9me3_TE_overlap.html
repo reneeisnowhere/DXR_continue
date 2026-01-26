@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-01-23" />
+<meta name="date" content="2026-01-26" />
 
 <title>H3K9me3 and TE overlap</title>
 
@@ -374,7 +374,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">H3K9me3 and TE overlap</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-01-23</h4>
+<h4 class="date">2026-01-26</h4>
 
 </div>
 
@@ -403,7 +403,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-01-23
+<strong>Last updated:</strong> 2026-01-26
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee8e2585dd98364ae0f670ad865ce8227134a3698targetblanke8e2585a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreea44db38c6403ac414feb308dc99bf6b31d347fdatargetblanka44db38a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e8e2585dd98364ae0f670ad865ce8227134a3698" target="_blank">e8e2585</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/a44db38c6403ac414feb308dc99bf6b31d347fda" target="_blank">a44db38</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee8e2585dd98364ae0f670ad865ce8227134a3698targetblanke8e2585a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreea44db38c6403ac414feb308dc99bf6b31d347fdatargetblanka44db38a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e8e2585dd98364ae0f670ad865ce8227134a3698" target="_blank">e8e2585</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/a44db38c6403ac414feb308dc99bf6b31d347fda" target="_blank">a44db38</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -589,15 +589,14 @@ Untracked files:
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
     Untracked:  analysis/H3K27ac_cisRE.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
-    Untracked:  analysis/chromHMM.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27_TE_overlap_extend.Rmd
     Modified:   analysis/H3K27ac_RNA_integration.Rmd
     Modified:   analysis/H3K27ac_TF_motifs.Rmd
+    Modified:   analysis/chromHMM.Rmd
     Modified:   analysis/final_analysis.Rmd
     Modified:   analysis/repeatmasker_data.Rmd
     Modified:   analysis/summit_files_processing.Rmd
@@ -645,6 +644,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a44db38c6403ac414feb308dc99bf6b31d347fda/analysis/H3K9me3_TE_overlap.Rmd" target="_blank">a44db38</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-26
+</td>
+<td>
+new overlaps autosomal only
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/H3K9me3_TE_overlap.html" target="_blank">177cb71</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -741,20 +774,24 @@ library(ggrepel)
 library(DT)</code></pre>
 <p>First steps: breakdown repeatmasker into groups and pull out the ones
 by each class I am interested in.</p>
-<pre class="r"><code>repeatmasker &lt;- read_delim(&quot;data/Other_paper_data/repeatmasker_20250911.txt&quot;, 
+<pre class="r"><code>autosomes &lt;- paste0(&quot;chr&quot;, 1:22)
+repeatmasker &lt;- read_delim(&quot;data/Other_paper_data/repeatmasker_20250911.txt&quot;, 
     delim = &quot;\t&quot;, escape_double = FALSE, 
     trim_ws = TRUE)
 colnames(repeatmasker)</code></pre>
 <pre><code> [1] &quot;#bin&quot;      &quot;swScore&quot;   &quot;milliDiv&quot;  &quot;milliDel&quot;  &quot;milliIns&quot;  &quot;genoName&quot; 
  [7] &quot;genoStart&quot; &quot;genoEnd&quot;   &quot;genoLeft&quot;  &quot;strand&quot;    &quot;repName&quot;   &quot;repClass&quot; 
 [13] &quot;repFamily&quot; &quot;repStart&quot;  &quot;repEnd&quot;    &quot;repLeft&quot;   &quot;id&quot;       </code></pre>
-<pre class="r"><code>repeatmasker_clean &lt;- repeatmasker %&gt;% mutate(
+<pre class="r"><code>autosomes &lt;- paste0(&quot;chr&quot;, 1:22)
+repeatmasker_clean &lt;- repeatmasker %&gt;% mutate(
     strand = ifelse(strand == &quot;C&quot;, &quot;-&quot;, &quot;+&quot;)
   ) %&gt;% 
    mutate(
     start = genoStart + 1,
     end   = genoEnd)%&gt;% 
-  mutate(repFamily= str_remove(repFamily, &quot;\\?$&quot;))
+  mutate(repFamily= str_remove(repFamily, &quot;\\?$&quot;)) %&gt;% 
+  dplyr::filter(genoName %in% autosomes)
+
 
 rpt_split &lt;- split(repeatmasker_clean, repeatmasker_clean$repClass)
 
@@ -999,6 +1036,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/figure/H3K9me3_TE_overlap.Rmd/Plot SINE-1.png" target="_blank">177cb71</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/e47c684bd4d2e5102f95aca7171055f14844d4e1/docs/figure/H3K9me3_TE_overlap.Rmd/Plot SINE-1.png" target="_blank">e47c684</a>
 </td>
 <td>
@@ -1162,6 +1210,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/figure/H3K9me3_TE_overlap.Rmd/Plot LINE-1.png" target="_blank">177cb71</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/e47c684bd4d2e5102f95aca7171055f14844d4e1/docs/figure/H3K9me3_TE_overlap.Rmd/Plot LINE-1.png" target="_blank">e47c684</a>
@@ -1329,6 +1388,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/figure/H3K9me3_TE_overlap.Rmd/Plot LTR-1.png" target="_blank">177cb71</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/e47c684bd4d2e5102f95aca7171055f14844d4e1/docs/figure/H3K9me3_TE_overlap.Rmd/Plot LTR-1.png" target="_blank">e47c684</a>
 </td>
 <td>
@@ -1494,6 +1564,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/figure/H3K9me3_TE_overlap.Rmd/Plot SVA-1.png" target="_blank">177cb71</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/e47c684bd4d2e5102f95aca7171055f14844d4e1/docs/figure/H3K9me3_TE_overlap.Rmd/Plot SVA-1.png" target="_blank">e47c684</a>
 </td>
 <td>
@@ -1657,6 +1738,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/figure/H3K9me3_TE_overlap.Rmd/Plot DNA-1.png" target="_blank">177cb71</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/e47c684bd4d2e5102f95aca7171055f14844d4e1/docs/figure/H3K9me3_TE_overlap.Rmd/Plot DNA-1.png" target="_blank">e47c684</a>
