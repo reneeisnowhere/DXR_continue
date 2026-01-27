@@ -37,6 +37,7 @@ library(ChIPseeker)
 library(plyranges)
 library(ggsignif)
 library(ggpubr)
+library(ggrepel)
 ```
 
 
@@ -61,14 +62,49 @@ peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
 
 ```{r making granges dfs}
 
+autosomes <- paste0("chr", 1:22)
+repeatmasker_clean <- repeatmasker %>% mutate(
+    strand = ifelse(strand == "C", "-", "+")
+  ) %>% 
+   mutate(
+    start = genoStart + 1,
+    end   = genoEnd)%>% 
+  mutate(repFamily= str_remove(repFamily, "\\?$")) %>% 
+  dplyr::filter(genoName %in% autosomes)
 
-rmskr_std_gr <- repeatmasker %>% 
-   makeGRangesFromDataFrame(., seqnames="genoName", keep.extra.columns=TRUE,
-                                      start.field="genoStart",
-                                      end.field="genoEnd",
-                                      starts.in.df.are.0based=TRUE) %>% 
-  keepStandardChromosomes(., pruning.mode = "coarse")
 
+rpt_split <- split(repeatmasker_clean, repeatmasker_clean$repClass)
+
+rpt_split_gr_list <- lapply(rpt_split, function(df) {
+  GRanges(
+    seqnames = df$genoName,
+    ranges   = IRanges(start = df$start, end = df$end),
+    strand   = df$strand,
+    repName   = df$repName,
+    repClass  = df$repClass,
+    repFamily = df$repFamily,
+    swScore   = df$swScore,
+    milliDiv  = df$milliDiv,
+    id        = df$id
+  )
+})
+
+rmskr_std_gr <- GRanges(
+  seqnames = repeatmasker_clean$genoName,
+  ranges   = IRanges(
+    start = repeatmasker_clean$start,
+    end   = repeatmasker_clean$end
+  ),
+  strand   = repeatmasker_clean$strand,
+  repName   = repeatmasker_clean$repName,
+  repClass  = repeatmasker_clean$repClass,
+  repFamily = repeatmasker_clean$repFamily,
+  swScore   = repeatmasker_clean$swScore,
+  milliDiv  = repeatmasker_clean$milliDiv,
+  milliDel  = repeatmasker_clean$milliDel,
+  milliIns  = repeatmasker_clean$milliIns,
+  id        = repeatmasker_clean$id
+)
 ##checking chromosomes
 #seqlevels(rmskr_std_gr)
 
@@ -1161,6 +1197,21 @@ H3K27ac_counts_long %>%
     axis.text.x = element_text(angle = 45, hjust = 1),
     strip.text = element_text(face = "bold")
   )
+
+H3K27ac_results_1bp %>% 
+  mutate(TE_label=str_remove(TE_type,"_status$")) %>% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE class enrichment at ROIs\nH3K27ac"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
 ```
 
 ##### results for 50% TE overlap H3K27ac 
@@ -1195,7 +1246,20 @@ H3K27ac_counts_long_50per %>%
     axis.text.x = element_text(angle = 45, hjust = 1),
     strip.text = element_text(face = "bold")
   )
-  
+  H3K27ac_results_50per %>% 
+  mutate(TE_label=str_remove(TE_type,"_status$")) %>% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE class enrichment at ROIs\nH3K27ac 50%"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
 
 ```
 
@@ -1235,6 +1299,21 @@ H3K27me3_counts_long %>%
     axis.text.x = element_text(angle = 45, hjust = 1),
     strip.text = element_text(face = "bold")
   )
+
+H3K27me3_results_1bp %>% 
+  mutate(TE_label=str_remove(TE_type,"_status$")) %>% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE class enrichment at ROIs\nH3K27me3"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
 ```
 
 ##### results for 50% TE overlap H3K27me3 
@@ -1268,7 +1347,20 @@ H3K27me3_counts_long_50per %>%
     axis.text.x = element_text(angle = 45, hjust = 1),
     strip.text = element_text(face = "bold")
   )
-  
+  H3K27me3_results_50per %>% 
+  mutate(TE_label=str_remove(TE_type,"_status$")) %>% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE class enrichment at ROIs\nH3K27me3 50%"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
 
 ```
 
@@ -1306,6 +1398,21 @@ H3K36me3_counts_long %>%
     axis.text.x = element_text(angle = 45, hjust = 1),
     strip.text = element_text(face = "bold")
   )
+
+H3K36me3_results_1bp %>% 
+  mutate(TE_label=str_remove(TE_type,"_status$")) %>% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE class enrichment at ROIs\nH3K36me3"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
 ```
 
 ##### results for 50% TE overlap H3K36me3 
@@ -1340,7 +1447,20 @@ H3K36me3_counts_long_50per %>%
     strip.text = element_text(face = "bold")
   )
   
-
+H3K36me3_results_50per %>% 
+  mutate(TE_label=str_remove(TE_type,"_status$")) %>% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE class enrichment at ROIs\nH3K36me3 50%"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
 ```
 
 
@@ -1377,6 +1497,21 @@ H3K9me3_counts_long %>%
     axis.text.x = element_text(angle = 45, hjust = 1),
     strip.text = element_text(face = "bold")
   )
+
+H3K9me3_results_1bp %>% 
+  mutate(TE_label=str_remove(TE_type,"_status$")) %>% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE class enrichment at ROIs\nH3K9me3"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
 ```
 
 ##### results for 50% TE overlap H3K9me3 
@@ -1411,7 +1546,20 @@ H3K9me3_counts_long_50per %>%
     strip.text = element_text(face = "bold")
   )
   
-
+H3K9me3_results_50per %>% 
+  mutate(TE_label=str_remove(TE_type,"_status$")) %>% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE class enrichment at ROIs\nH3K9me3 50%"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
 ```
 ### Creating non-overlapping TE data sets to be used later
 
