@@ -399,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-10-06
+<strong>Last updated:</strong> 2026-01-27
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree2b33697633da05a1731d20f3bad90126f7c1d5eetargetblank2b33697a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree673eebdedb2cd2546f9573503d389c1b8cfefeb6targetblank673eebda">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/2b33697633da05a1731d20f3bad90126f7c1d5ee" target="_blank">2b33697</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/673eebdedb2cd2546f9573503d389c1b8cfefeb6" target="_blank">673eebd</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree2b33697633da05a1731d20f3bad90126f7c1d5eetargetblank2b33697a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree673eebdedb2cd2546f9573503d389c1b8cfefeb6targetblank673eebda"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/2b33697633da05a1731d20f3bad90126f7c1d5ee" target="_blank">2b33697</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/673eebdedb2cd2546f9573503d389c1b8cfefeb6" target="_blank">673eebd</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -565,9 +565,11 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
     Ignored:    data/Other_paper_data/
+    Ignored:    data/RDS_files/
     Ignored:    data/TE_annotation/
     Ignored:    data/alignment_summary.txt
     Ignored:    data/all_peak_final_dataframe.txt
@@ -577,16 +579,22 @@ Ignored files:
     Ignored:    data/number_frag_peaks_summary.txt
 
 Untracked files:
+    Untracked:  H3K27ac_all_regions_test.bed
+    Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  analysis/GREAT_H3K27ac.Rmd
+    Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_cisRE.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
-    Untracked:  analysis/chromHMM.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
-    Untracked:  analysis/summit_files_processing.Rmd
-    Untracked:  code/making_analysis_file_summary.R
+    Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/Outlier_removal.Rmd
+    Modified:   analysis/H3K27ac_RNA_integration.Rmd
+    Modified:   analysis/H3K27ac_TF_motifs.Rmd
+    Modified:   analysis/chromHMM.Rmd
     Modified:   analysis/final_analysis.Rmd
+    Modified:   analysis/summit_files_processing.Rmd
 
 </code></pre>
 <p>
@@ -631,6 +639,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/673eebdedb2cd2546f9573503d389c1b8cfefeb6/analysis/repeatmasker_data.Rmd" target="_blank">673eebd</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+<td>
+updates to graph
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/712c8a51b968fa57afca71b8666c05255d203319/docs/repeatmasker_data.html" target="_blank">712c8a5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -947,7 +989,8 @@ library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(ChIPseeker)
 library(plyranges)
 library(ggsignif)
-library(ggpubr)</code></pre>
+library(ggpubr)
+library(ggrepel)</code></pre>
 <p>Loading data files</p>
 <pre class="r"><code>repeatmasker &lt;- read_delim(&quot;data/Other_paper_data/repeatmasker_20250911.txt&quot;, 
     delim = &quot;\t&quot;, escape_double = FALSE, 
@@ -956,13 +999,49 @@ library(ggpubr)</code></pre>
 peakAnnoList_H3K27me3 &lt;- readRDS(&quot;data/motif_lists/H3K27me3_annotated_peaks.RDS&quot;)
 peakAnnoList_H3K36me3 &lt;- readRDS(&quot;data/motif_lists/H3K36me3_annotated_peaks.RDS&quot;)
 peakAnnoList_H3K9me3 &lt;- readRDS(&quot;data/motif_lists/H3K9me3_annotated_peaks.RDS&quot;)</code></pre>
-<pre class="r"><code>rmskr_std_gr &lt;- repeatmasker %&gt;% 
-   makeGRangesFromDataFrame(., seqnames=&quot;genoName&quot;, keep.extra.columns=TRUE,
-                                      start.field=&quot;genoStart&quot;,
-                                      end.field=&quot;genoEnd&quot;,
-                                      starts.in.df.are.0based=TRUE) %&gt;% 
-  keepStandardChromosomes(., pruning.mode = &quot;coarse&quot;)
+<pre class="r"><code>autosomes &lt;- paste0(&quot;chr&quot;, 1:22)
+repeatmasker_clean &lt;- repeatmasker %&gt;% mutate(
+    strand = ifelse(strand == &quot;C&quot;, &quot;-&quot;, &quot;+&quot;)
+  ) %&gt;% 
+   mutate(
+    start = genoStart + 1,
+    end   = genoEnd)%&gt;% 
+  mutate(repFamily= str_remove(repFamily, &quot;\\?$&quot;)) %&gt;% 
+  dplyr::filter(genoName %in% autosomes)
 
+
+rpt_split &lt;- split(repeatmasker_clean, repeatmasker_clean$repClass)
+
+rpt_split_gr_list &lt;- lapply(rpt_split, function(df) {
+  GRanges(
+    seqnames = df$genoName,
+    ranges   = IRanges(start = df$start, end = df$end),
+    strand   = df$strand,
+    repName   = df$repName,
+    repClass  = df$repClass,
+    repFamily = df$repFamily,
+    swScore   = df$swScore,
+    milliDiv  = df$milliDiv,
+    id        = df$id
+  )
+})
+
+rmskr_std_gr &lt;- GRanges(
+  seqnames = repeatmasker_clean$genoName,
+  ranges   = IRanges(
+    start = repeatmasker_clean$start,
+    end   = repeatmasker_clean$end
+  ),
+  strand   = repeatmasker_clean$strand,
+  repName   = repeatmasker_clean$repName,
+  repClass  = repeatmasker_clean$repClass,
+  repFamily = repeatmasker_clean$repFamily,
+  swScore   = repeatmasker_clean$swScore,
+  milliDiv  = repeatmasker_clean$milliDiv,
+  milliDel  = repeatmasker_clean$milliDel,
+  milliIns  = repeatmasker_clean$milliIns,
+  id        = repeatmasker_clean$id
+)
 ##checking chromosomes
 #seqlevels(rmskr_std_gr)
 
@@ -2332,6 +2411,21 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>H3K27ac_results_1bp %&gt;% 
+  mutate(TE_label=str_remove(TE_type,&quot;_status$&quot;)) %&gt;% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;TE class enrichment at ROIs\nH3K27ac&quot;
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%20df-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="results-for-50-te-overlap-h3k27ac" class="section level5">
 <h5>results for 50% TE overlap H3K27ac</h5>
@@ -2404,6 +2498,21 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>  H3K27ac_results_50per %&gt;% 
+  mutate(TE_label=str_remove(TE_type,&quot;_status$&quot;)) %&gt;% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;TE class enrichment at ROIs\nH3K27ac 50%&quot;
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27ac%2050%20per%20df-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="h3k27me3-proportions" class="section level3">
@@ -2477,6 +2586,21 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>H3K27me3_results_1bp %&gt;% 
+  mutate(TE_label=str_remove(TE_type,&quot;_status$&quot;)) %&gt;% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;TE class enrichment at ROIs\nH3K27me3&quot;
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%20df-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="results-for-50-te-overlap-h3k27me3" class="section level5">
 <h5>results for 50% TE overlap H3K27me3</h5>
@@ -2548,6 +2672,21 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>  H3K27me3_results_50per %&gt;% 
+  mutate(TE_label=str_remove(TE_type,&quot;_status$&quot;)) %&gt;% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;TE class enrichment at ROIs\nH3K27me3 50%&quot;
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K27me3%2050%20per%20df-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="h3k36me3-proportions" class="section level3">
@@ -2621,6 +2760,21 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>H3K36me3_results_1bp %&gt;% 
+  mutate(TE_label=str_remove(TE_type,&quot;_status$&quot;)) %&gt;% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;TE class enrichment at ROIs\nH3K36me3&quot;
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%20df-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="results-for-50-te-overlap-h3k36me3" class="section level5">
 <h5>results for 50% TE overlap H3K36me3</h5>
@@ -2692,6 +2846,21 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>H3K36me3_results_50per %&gt;% 
+  mutate(TE_label=str_remove(TE_type,&quot;_status$&quot;)) %&gt;% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;TE class enrichment at ROIs\nH3K36me3 50%&quot;
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K36me3%2050%20per%20df-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="h3k9me3-proportions" class="section level3">
@@ -2765,6 +2934,21 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>H3K9me3_results_1bp %&gt;% 
+  mutate(TE_label=str_remove(TE_type,&quot;_status$&quot;)) %&gt;% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;TE class enrichment at ROIs\nH3K9me3&quot;
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%20df-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="results-for-50-te-overlap-h3k9me3" class="section level5">
 <h5>results for 50% TE overlap H3K9me3</h5>
@@ -2847,11 +3031,22 @@ reneeisnowhere
 </table>
 </div>
 </div>
-</div>
-</div>
-<div id="creating-non-overlapping-te-data-sets-to-be-used-later"
-class="section level3">
-<h3>Creating non-overlapping TE data sets to be used later</h3>
+<pre class="r"><code>H3K9me3_results_50per %&gt;% 
+  mutate(TE_label=str_remove(TE_type,&quot;_status$&quot;)) %&gt;% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;TE class enrichment at ROIs\nH3K9me3 50%&quot;
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/repeatmasker_data.Rmd/H3K9me3%2050%20per%20df-2.png" width="672" style="display: block; margin: auto;" />
+### Creating non-overlapping TE data sets to be used later</p>
 <pre class="r"><code>rmskr_nonoverlapping_H3K27ac_gr$te_len &lt;- width(rmskr_nonoverlapping_H3K27ac_gr)
  
 non_ol_H3K27ac_df &lt;- rmskr_nonoverlapping_H3K27ac_gr %&gt;% 
@@ -2912,6 +3107,7 @@ non_ol_H3K9me3_df &lt;- rmskr_nonoverlapping_H3K9me3_gr %&gt;%
      mutate(ppr_div=milliDiv/1e-9) %&gt;% 
   dplyr::select(seqnames, start, end, width, strand, Peakid, te_len, pct_te_overlap, repName, repClass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)
 # dplyr::select(seqnames, start, end, width, strand, Peakid, annotation, geneChr, geneStart, geneEnd, geneLength, geneStrand,geneId,transcriptId, distanceToTSS, hit, overlap_bp, roi_len,pct_roi_overlap,te_len, pct_te_overlap, repName, repclass, repFamily, milliDiv, milliDel, milliIns, cluster, special_type, ppr_div)</code></pre>
+</div>
 </div>
 <div id="creating-human-genome-all-te-for-comparisons"
 class="section level3">
@@ -2977,6 +3173,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/712c8a51b968fa57afca71b8666c05255d203319/docs/figure/repeatmasker_data.Rmd/H3K27ac divergence-1.png" target="_blank">712c8a5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/f5c590c5aa215fddd95ced4184e04551368a6824/docs/figure/repeatmasker_data.Rmd/H3K27ac divergence-1.png" target="_blank">f5c590c</a>
@@ -3088,6 +3295,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/712c8a51b968fa57afca71b8666c05255d203319/docs/figure/repeatmasker_data.Rmd/H3K27ac divergence-2.png" target="_blank">712c8a5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/f5c590c5aa215fddd95ced4184e04551368a6824/docs/figure/repeatmasker_data.Rmd/H3K27ac divergence-2.png" target="_blank">f5c590c</a>
@@ -3305,6 +3523,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/712c8a51b968fa57afca71b8666c05255d203319/docs/figure/repeatmasker_data.Rmd/H3K27me3 divergence-1.png" target="_blank">712c8a5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/f5c590c5aa215fddd95ced4184e04551368a6824/docs/figure/repeatmasker_data.Rmd/H3K27me3 divergence-1.png" target="_blank">f5c590c</a>
 </td>
 <td>
@@ -3406,6 +3635,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/712c8a51b968fa57afca71b8666c05255d203319/docs/figure/repeatmasker_data.Rmd/H3K27me3 divergence-2.png" target="_blank">712c8a5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/f5c590c5aa215fddd95ced4184e04551368a6824/docs/figure/repeatmasker_data.Rmd/H3K27me3 divergence-2.png" target="_blank">f5c590c</a>
@@ -3620,6 +3860,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/712c8a51b968fa57afca71b8666c05255d203319/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-1.png" target="_blank">712c8a5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/f5c590c5aa215fddd95ced4184e04551368a6824/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-1.png" target="_blank">f5c590c</a>
 </td>
 <td>
@@ -3722,6 +3973,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/712c8a51b968fa57afca71b8666c05255d203319/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-2.png" target="_blank">712c8a5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/f5c590c5aa215fddd95ced4184e04551368a6824/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-2.png" target="_blank">f5c590c</a>
 </td>
 <td>
@@ -3822,6 +4084,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/712c8a51b968fa57afca71b8666c05255d203319/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-3.png" target="_blank">712c8a5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/f5c590c5aa215fddd95ced4184e04551368a6824/docs/figure/repeatmasker_data.Rmd/H3K36me3 divergence-3.png" target="_blank">f5c590c</a>
@@ -4013,6 +4286,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/712c8a51b968fa57afca71b8666c05255d203319/docs/figure/repeatmasker_data.Rmd/H3K9me3 divergence-1.png" target="_blank">712c8a5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/f5c590c5aa215fddd95ced4184e04551368a6824/docs/figure/repeatmasker_data.Rmd/H3K9me3 divergence-1.png" target="_blank">f5c590c</a>
 </td>
 <td>
@@ -4114,6 +4398,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/712c8a51b968fa57afca71b8666c05255d203319/docs/figure/repeatmasker_data.Rmd/H3K9me3 divergence-2.png" target="_blank">712c8a5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2025-10-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/f5c590c5aa215fddd95ced4184e04551368a6824/docs/figure/repeatmasker_data.Rmd/H3K9me3 divergence-2.png" target="_blank">f5c590c</a>
@@ -6081,7 +6376,7 @@ Session information
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.4.2 (2024-10-31 ucrt)
 Platform: x86_64-w64-mingw32/x64
-Running under: Windows 11 x64 (build 26100)
+Running under: Windows 11 x64 (build 26200)
 
 Matrix products: default
 
@@ -6101,33 +6396,34 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] ggpubr_0.6.1                            
- [2] ggsignif_0.6.4                          
- [3] plyranges_1.26.0                        
- [4] ChIPseeker_1.42.1                       
- [5] TxDb.Hsapiens.UCSC.hg38.knownGene_3.20.0
- [6] GenomicFeatures_1.58.0                  
- [7] AnnotationDbi_1.68.0                    
- [8] Biobase_2.66.0                          
- [9] BiocParallel_1.40.2                     
-[10] GenomicRanges_1.58.0                    
-[11] GenomeInfoDb_1.42.3                     
-[12] IRanges_2.40.1                          
-[13] S4Vectors_0.44.0                        
-[14] BiocGenerics_0.52.0                     
-[15] genomation_1.38.0                       
-[16] DT_0.33                                 
-[17] lubridate_1.9.4                         
-[18] forcats_1.0.0                           
-[19] stringr_1.5.1                           
-[20] dplyr_1.1.4                             
-[21] purrr_1.1.0                             
-[22] readr_2.1.5                             
-[23] tidyr_1.3.1                             
-[24] tibble_3.3.0                            
-[25] ggplot2_3.5.2                           
-[26] tidyverse_2.0.0                         
-[27] workflowr_1.7.1                         
+ [1] ggrepel_0.9.6                           
+ [2] ggpubr_0.6.1                            
+ [3] ggsignif_0.6.4                          
+ [4] plyranges_1.26.0                        
+ [5] ChIPseeker_1.42.1                       
+ [6] TxDb.Hsapiens.UCSC.hg38.knownGene_3.20.0
+ [7] GenomicFeatures_1.58.0                  
+ [8] AnnotationDbi_1.68.0                    
+ [9] Biobase_2.66.0                          
+[10] BiocParallel_1.40.2                     
+[11] GenomicRanges_1.58.0                    
+[12] GenomeInfoDb_1.42.3                     
+[13] IRanges_2.40.1                          
+[14] S4Vectors_0.44.0                        
+[15] BiocGenerics_0.52.0                     
+[16] genomation_1.38.0                       
+[17] DT_0.33                                 
+[18] lubridate_1.9.4                         
+[19] forcats_1.0.0                           
+[20] stringr_1.5.1                           
+[21] dplyr_1.1.4                             
+[22] purrr_1.1.0                             
+[23] readr_2.1.5                             
+[24] tidyr_1.3.1                             
+[25] tibble_3.3.0                            
+[26] ggplot2_3.5.2                           
+[27] tidyverse_2.0.0                         
+[28] workflowr_1.7.1                         
 
 loaded via a namespace (and not attached):
   [1] splines_4.4.2                          
@@ -6165,110 +6461,109 @@ loaded via a namespace (and not attached):
  [33] git2r_0.36.2                           
  [34] GenomeInfoDbData_1.2.13                
  [35] enrichplot_1.26.6                      
- [36] ggrepel_0.9.6                          
- [37] tidytree_0.4.6                         
- [38] codetools_0.2-20                       
- [39] DelayedArray_0.32.0                    
- [40] DOSE_4.0.1                             
- [41] tidyselect_1.2.1                       
- [42] aplot_0.2.8                            
- [43] UCSC.utils_1.2.0                       
- [44] farver_2.1.2                           
- [45] matrixStats_1.5.0                      
- [46] GenomicAlignments_1.42.0               
- [47] jsonlite_2.0.0                         
- [48] Formula_1.2-5                          
- [49] tools_4.4.2                            
- [50] treeio_1.30.0                          
- [51] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
- [52] Rcpp_1.1.0                             
- [53] glue_1.8.0                             
- [54] SparseArray_1.6.2                      
- [55] xfun_0.52                              
- [56] qvalue_2.38.0                          
- [57] MatrixGenerics_1.18.1                  
- [58] withr_3.0.2                            
- [59] fastmap_1.2.0                          
- [60] boot_1.3-32                            
- [61] callr_3.7.6                            
- [62] caTools_1.18.3                         
- [63] digest_0.6.37                          
- [64] timechange_0.3.0                       
- [65] R6_2.6.1                               
- [66] gridGraphics_0.5-1                     
- [67] seqPattern_1.38.0                      
- [68] colorspace_2.1-1                       
- [69] GO.db_3.20.0                           
- [70] gtools_3.9.5                           
- [71] dichromat_2.0-0.1                      
- [72] RSQLite_2.4.3                          
- [73] R.methodsS3_1.8.2                      
- [74] utf8_1.2.6                             
- [75] generics_0.1.4                         
- [76] data.table_1.17.8                      
- [77] rtracklayer_1.66.0                     
- [78] httr_1.4.7                             
- [79] htmlwidgets_1.6.4                      
- [80] S4Arrays_1.6.0                         
- [81] whisker_0.4.1                          
- [82] pkgconfig_2.0.3                        
- [83] gtable_0.3.6                           
- [84] blob_1.2.4                             
- [85] impute_1.80.0                          
- [86] XVector_0.46.0                         
- [87] htmltools_0.5.8.1                      
- [88] carData_3.0-5                          
- [89] fgsea_1.32.4                           
- [90] scales_1.4.0                           
- [91] png_0.1-8                              
- [92] ggfun_0.2.0                            
- [93] knitr_1.50                             
- [94] rstudioapi_0.17.1                      
- [95] tzdb_0.5.0                             
- [96] reshape2_1.4.4                         
- [97] rjson_0.2.23                           
- [98] nlme_3.1-168                           
- [99] curl_7.0.0                             
-[100] cachem_1.1.0                           
-[101] KernSmooth_2.23-26                     
-[102] parallel_4.4.2                         
-[103] restfulr_0.0.16                        
-[104] pillar_1.11.0                          
-[105] vctrs_0.6.5                            
-[106] gplots_3.2.0                           
-[107] promises_1.3.3                         
-[108] car_3.1-3                              
-[109] evaluate_1.0.5                         
-[110] cli_3.6.5                              
-[111] compiler_4.4.2                         
-[112] Rsamtools_2.22.0                       
-[113] rlang_1.1.6                            
-[114] crayon_1.5.3                           
-[115] labeling_0.4.3                         
-[116] ps_1.9.1                               
-[117] getPass_0.2-4                          
-[118] plyr_1.8.9                             
-[119] fs_1.6.6                               
-[120] stringi_1.8.7                          
-[121] gridBase_0.4-7                         
-[122] Biostrings_2.74.1                      
-[123] lazyeval_0.2.2                         
-[124] GOSemSim_2.32.0                        
-[125] Matrix_1.7-3                           
-[126] BSgenome_1.74.0                        
-[127] hms_1.1.3                              
-[128] patchwork_1.3.2                        
-[129] bit64_4.6.0-1                          
-[130] KEGGREST_1.46.0                        
-[131] SummarizedExperiment_1.36.0            
-[132] igraph_2.1.4                           
-[133] broom_1.0.9                            
-[134] memoise_2.0.1                          
-[135] bslib_0.9.0                            
-[136] ggtree_3.14.0                          
-[137] fastmatch_1.1-6                        
-[138] bit_4.6.0                              
-[139] ape_5.8-1                              </code></pre>
+ [36] tidytree_0.4.6                         
+ [37] codetools_0.2-20                       
+ [38] DelayedArray_0.32.0                    
+ [39] DOSE_4.0.1                             
+ [40] tidyselect_1.2.1                       
+ [41] aplot_0.2.8                            
+ [42] UCSC.utils_1.2.0                       
+ [43] farver_2.1.2                           
+ [44] matrixStats_1.5.0                      
+ [45] GenomicAlignments_1.42.0               
+ [46] jsonlite_2.0.0                         
+ [47] Formula_1.2-5                          
+ [48] tools_4.4.2                            
+ [49] treeio_1.30.0                          
+ [50] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+ [51] Rcpp_1.1.0                             
+ [52] glue_1.8.0                             
+ [53] SparseArray_1.6.2                      
+ [54] xfun_0.52                              
+ [55] qvalue_2.38.0                          
+ [56] MatrixGenerics_1.18.1                  
+ [57] withr_3.0.2                            
+ [58] fastmap_1.2.0                          
+ [59] boot_1.3-32                            
+ [60] callr_3.7.6                            
+ [61] caTools_1.18.3                         
+ [62] digest_0.6.37                          
+ [63] timechange_0.3.0                       
+ [64] R6_2.6.1                               
+ [65] gridGraphics_0.5-1                     
+ [66] seqPattern_1.38.0                      
+ [67] colorspace_2.1-1                       
+ [68] GO.db_3.20.0                           
+ [69] gtools_3.9.5                           
+ [70] dichromat_2.0-0.1                      
+ [71] RSQLite_2.4.3                          
+ [72] R.methodsS3_1.8.2                      
+ [73] utf8_1.2.6                             
+ [74] generics_0.1.4                         
+ [75] data.table_1.17.8                      
+ [76] rtracklayer_1.66.0                     
+ [77] httr_1.4.7                             
+ [78] htmlwidgets_1.6.4                      
+ [79] S4Arrays_1.6.0                         
+ [80] whisker_0.4.1                          
+ [81] pkgconfig_2.0.3                        
+ [82] gtable_0.3.6                           
+ [83] blob_1.2.4                             
+ [84] impute_1.80.0                          
+ [85] XVector_0.46.0                         
+ [86] htmltools_0.5.8.1                      
+ [87] carData_3.0-5                          
+ [88] fgsea_1.32.4                           
+ [89] scales_1.4.0                           
+ [90] png_0.1-8                              
+ [91] ggfun_0.2.0                            
+ [92] knitr_1.50                             
+ [93] rstudioapi_0.17.1                      
+ [94] tzdb_0.5.0                             
+ [95] reshape2_1.4.4                         
+ [96] rjson_0.2.23                           
+ [97] nlme_3.1-168                           
+ [98] curl_7.0.0                             
+ [99] cachem_1.1.0                           
+[100] KernSmooth_2.23-26                     
+[101] parallel_4.4.2                         
+[102] restfulr_0.0.16                        
+[103] pillar_1.11.0                          
+[104] vctrs_0.6.5                            
+[105] gplots_3.2.0                           
+[106] promises_1.3.3                         
+[107] car_3.1-3                              
+[108] evaluate_1.0.5                         
+[109] cli_3.6.5                              
+[110] compiler_4.4.2                         
+[111] Rsamtools_2.22.0                       
+[112] rlang_1.1.6                            
+[113] crayon_1.5.3                           
+[114] labeling_0.4.3                         
+[115] ps_1.9.1                               
+[116] getPass_0.2-4                          
+[117] plyr_1.8.9                             
+[118] fs_1.6.6                               
+[119] stringi_1.8.7                          
+[120] gridBase_0.4-7                         
+[121] Biostrings_2.74.1                      
+[122] lazyeval_0.2.2                         
+[123] GOSemSim_2.32.0                        
+[124] Matrix_1.7-3                           
+[125] BSgenome_1.74.0                        
+[126] hms_1.1.3                              
+[127] patchwork_1.3.2                        
+[128] bit64_4.6.0-1                          
+[129] KEGGREST_1.46.0                        
+[130] SummarizedExperiment_1.36.0            
+[131] igraph_2.1.4                           
+[132] broom_1.0.9                            
+[133] memoise_2.0.1                          
+[134] bslib_0.9.0                            
+[135] ggtree_3.14.0                          
+[136] fastmatch_1.1-6                        
+[137] bit_4.6.0                              
+[138] ape_5.8-1                              </code></pre>
 </div>
 </div>
 </div>
