@@ -38,6 +38,9 @@ library(ggrepel)
 library(DT)
 library(readxl)
 library(ChIPseeker)
+library(regioneR)
+
+library(GenomeInfoDb)
 ```
 
 This is the AIC/BIC plots genrated to figure out how many states we wanted to use for our modeling of our data:
@@ -181,6 +184,7 @@ VEH_24R_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-inter
 VEH_144R_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-internal-enrichment/144R_VEH_16.txt", 
     delim = "\t", escape_double = FALSE, 
     trim_ws = TRUE)%>% mutate(group="VEH_144R") 
+
  all_genes_states <- 
   VEH_144R_gene %>% 
   bind_rows(DOX_144R_gene) %>% 
@@ -367,6 +371,7 @@ all_genes_states_long %>%
 
 ```
 
+#### Enhancer plot  
 
 ```{r enchacers plot, fig.height=8}
 long_file %>% 
@@ -411,8 +416,8 @@ order <- c("Genome %",
 "Set_2_H3K36me3_ROI.bed",
 "all_H3K27me3_regions_H3K27me3_ROI.bed",
 "Set_1_H3K27me3_ROI.bed",               
-"all_H3K9me3_regions_H3K9me3_ROI.bed",           
 "Set_2_H3K27me3_ROI.bed" ,              
+"all_H3K9me3_regions_H3K9me3_ROI.bed",  
 "Set_1_H3K9me3_ROI.bed",               
 "Set_2_H3K9me3_ROI.bed", 
 "Set_3_H3K9me3_ROI.bed" ,               
@@ -458,5 +463,431 @@ all_ZFPs_states %>%
   
   
 ```
+### Adding annotation to states
 
+```{r annotation}
+
+States_anno <- data.frame("State"=c(paste0("E",1:16)),
+"Name"=c("Heterochromatin",
+"Quiescent_Low_Coverage",
+"Repressed_Heterochromatin",
+"Repressed_ZNF_regions",
+"Strong_Polycomb_Repressed",
+ "Bivalent_Enhancer",
+"Bivalent_Poised_TSS1",
+"Bivalent_Poised_TSS2",
+ "Weak_Distal_Genic_Enhancer",
+ "Active_Genic_Enhancer1",
+ "Active_Proximal_Enhancer",
+  "Active_Genic_Enhancer2",
+ "Active_TSS",
+ "Very_Weak_Transcription",
+ "Genic_Strong_Transcription",
+ "Genic_Weak_Transcription"))
+
+SOIs <- c("E4","E10","E11","E12","E13")
+
+```
+
+```{r repeatplot, fig.width=10}
+long_file %>% 
+  dplyr::filter(stringr::str_detect(Identity, "_rptmasker")) %>% 
+  mutate(rpt=case_when(Identity=="LINE_rptmasker"~"LINE",
+                       Identity=="SINE_rptmasker"~"SINE",
+                       Identity=="LTR_rptmasker"~"LTR",
+                       Identity=="DNA_rptmasker"~"DNA",
+                       Identity=="Retroposon_rptmasker"~"SVA",
+                       TRUE~"Other")) %>% 
+  dplyr::filter(rpt != "Other") %>% 
+  group_by(Identity) %>%   # i.e. per annotation column
+  mutate(
+    FE_min = min(Fold_enrichment, na.rm = TRUE),
+    FE_max = max(Fold_enrichment, na.rm = TRUE),
+    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
+  ) %>% 
+    ggplot(.,aes(x=rpt,y=`State (Emission order)`, fill=chromhmm_scaled))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "transformed scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  facet_wrap(~group, nrow=2, ncol=3)+
+    scale_y_discrete(limits=rev)+
+  ggtitle("Transposable elements across states")+
+  coord_fixed()
+```
+
+
+
+
+### SOI data
+
+Now to pull in the segmentation data for just the SOI (states of interest).
+
+```{r  SOI 1, eval=FALSE}
+##getting all segmentation file locations
+seg_files <- list.files(
+  "C:/Users/renee/Other_projects_data/DXR_data/TACC_models/Chrom_model_16states_final/",
+  pattern = "segments.bed$",
+  full.names = TRUE)
+### coversion to grages list
+chromhmm_gr <- map_df(seg_files, function(f) {
+  cond <- basename(f) |> str_remove("_segments.bed")
+  import(f) |> 
+    as.data.frame() |>
+    mutate(condition = cond)
+})
+# saveRDS(chromhmm_gr,"data/RDS_files/chromhmm_granges_segmentation_files.RDS")
+autosomes <- paste0("chr", 1:22)
+```
+
+```{r SOI 2, eval=FALSE}
+## filtering for the states I want and removing X and y chromosome
+chromhmm_sub <- chromhmm_gr %>%
+  filter(name %in% SOIs) %>% 
+  filter(seqnames %in% autosomes)
+
+repeatmasker <- read_delim("data/Other_paper_data/repeatmasker_20250911.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+
+repeatmasker_clean <- repeatmasker %>% mutate(
+    strand = ifelse(strand == "C", "-", "+")
+  ) %>% 
+   mutate(
+    start = genoStart + 1,
+    end   = genoEnd)%>% 
+  mutate(repFamily= str_remove(repFamily, "\\?$")) %>%
+  # mutate(repClass= str_remove(repClass, "\\?$")) %>%
+  dplyr::filter(genoName %in% autosomes)
+  
+
+rpt_split <- split(repeatmasker_clean, repeatmasker_clean$repClass)
+
+rpt_split_gr_list <- lapply(rpt_split, function(df) {
+  GRanges(
+    seqnames = df$genoName,
+    ranges   = IRanges(start = df$start, end = df$end),
+    strand   = df$strand,
+    repName   = df$repName,
+    repClass  = df$repClass,
+    repFamily = df$repFamily,
+    swScore   = df$swScore,
+    milliDiv  = df$milliDiv,
+    id        = df$id
+  )
+})
+
+SINE_gr <- rpt_split_gr_list$SINE
+
+LINE_gr <- rpt_split_gr_list$LINE
+
+LTR_gr <- rpt_split_gr_list$LTR
+
+SVA_gr <- rpt_split_gr_list$Retroposon
+
+DNA_gr <- rpt_split_gr_list$DNA
+
+subsetchromhmm_gr <- GRanges(
+  seqnames = chromhmm_sub$seqnames,
+  ranges   = IRanges(chromhmm_sub$start, chromhmm_sub$end),
+  state    = chromhmm_sub$name,
+  condition = chromhmm_sub$condition)
+
+
+```
+
+
+### Questions and overlapping section  
+
+```{r loading ROIs, eval=FALSE}
+
+H3K27ac_anno_ROIs <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+
+H3K27ac_anno_ROIs_gr <- do.call(c,
+  lapply(names(H3K27ac_anno_ROIs), function(group_name) {
+
+    cs <- H3K27ac_anno_ROIs[[group_name]]
+    gr <- cs@anno
+
+    # add metadata
+    mcols(gr)$set  <- group_name
+    mcols(gr)$name <- mcols(gr)$Peakid
+
+    gr}))
+seqlevelsStyle(H3K27ac_anno_ROIs_gr)
+seqlevelsStyle(subsetchromhmm_gr)
+
+##confirm both use UCSC
+```
+```{r overlap sets 1, eval=FALSE}
+H3K27ac_hits <- findOverlaps(H3K27ac_anno_ROIs_gr, subsetchromhmm_gr)
+
+H3K27ac_roi_state_annotated <- H3K27ac_anno_ROIs_gr[queryHits(H3K27ac_hits)]
+
+mcols(H3K27ac_roi_state_annotated) <- cbind(
+  mcols(H3K27ac_roi_state_annotated),
+  mcols(subsetchromhmm_gr[subjectHits(H3K27ac_hits)]))
+table(mcols(H3K27ac_roi_state_annotated)$state)
+table(mcols(H3K27ac_roi_state_annotated)$set, mcols(H3K27ac_roi_state_annotated)$state)
+
+
+H3K27ac_state_summary <-H3K27ac_roi_state_annotated %>%
+  as.data.frame() %>%
+  group_by(set, condition, state) %>%
+  summarise(
+    n_peaks = n(),
+    total_bp = sum(width),
+    .groups = "drop") %>%
+  group_by(set, condition) %>%
+  mutate(
+    frac_peaks = n_peaks / sum(n_peaks),
+    frac_bp    = total_bp / sum(total_bp)
+  ) %>%
+  ungroup()
+```
+
+```{r Looking at overlap data for my own purpose, eval=FALSE}
+
+### Need to know that an ROI can overlap more than 1 state, say state 11 twice in a set of  ROIs.
+
+H3K27ac_roi_state_annotated %>% 
+  as.data.frame() %>% 
+  # distinct(Peakid) ##146222
+  dplyr::filter(set %in% c("Set_1","Set_2","Set_3")) %>% 
+  # distinct(Peakid) ##114832
+ dplyr::filter(state=="E10") %>% 
+  # distinct(Peakid)##28,079
+  group_by(set, condition, Peakid) %>% tally() %>% group_by(n) %>% tally()
+### the above show grouping can lead to bp overcounting
+
+H3K27ac_E10_roi_gr <- H3K27ac_roi_state_annotated[ mcols(H3K27ac_roi_state_annotated)$state=="E10" &
+                                      mcols(H3K27ac_roi_state_annotated)$set %in% c("Set_1","Set_2","Set_3") ]
+
+# reduce ROIs to merge any duplicates
+H3K27ac_E10_roi_gr_unique <- GenomicRanges::reduce(H3K27ac_E10_roi_gr)  # merges overlapping ranges within each ROI
+
+# compute bp per set
+as.data.frame(H3K27ac_E10_roi_gr_unique)# %>%
+  group_by(set, condition) %>%
+  summarise(total_bp = sum(width))
+  
+  ### this just give the exact bp coverage of E10 for bp of ROI in each set and condition.
+
+```
+Now I am just going to only pull out unique Peakids by Set and then overlap with repeatmasker data
+
+```{r Looking just at E10, eval=FALSE}
+H3K27ac_E10_roi_df <- H3K27ac_E10_roi_gr %>% 
+  as.data.frame() %>% 
+ group_by(Peakid, set, condition, seqnames) %>%
+  summarise(
+    start = min(start),
+    end = max(end),
+    .groups = "drop")
+ 
+H3K27ac_E10_roi_reduced_gr <- GRanges(
+  seqnames = H3K27ac_E10_roi_df$seqnames,
+  ranges = IRanges(start = H3K27ac_E10_roi_df$start, end = H3K27ac_E10_roi_df$end),
+  Peakid = H3K27ac_E10_roi_df$Peakid,
+  set = H3K27ac_E10_roi_df$set,
+  condition = H3K27ac_E10_roi_df$condition)
+
+te_list <- c("LINE","SINE","LTR","DNA","Retroposon")
+
+H3K27ac_E10_roi_te_hits <- lapply(te_list, function(te_class) {
+  te_gr <- rpt_split_gr_list[[te_class]]
+  
+  hits <- findOverlaps(H3K27ac_E10_roi_reduced_gr, te_gr)
+  if (length(hits) == 0) return(NULL)
+
+  roi_hits <- H3K27ac_E10_roi_reduced_gr[queryHits(hits)]
+
+  mcols(roi_hits)$TE_class <- te_class
+  mcols(roi_hits)$repClass <- mcols(te_gr)$repClass[subjectHits(hits)]
+  mcols(roi_hits)$repFamily <- mcols(te_gr)$repFamily[subjectHits(hits)]
+  mcols(roi_hits)$repName <- mcols(te_gr)$repName[subjectHits(hits)]
+
+  roi_hits
+})
+
+names(H3K27ac_E10_roi_te_hits) <- te_list
+```
+```{r pulling permtest values function, eval=FALSE}
+extract_enrichment <- function(perm_obj, condition_name = NULL) {
+  # Extract observed overlaps
+  obs <- perm_obj$numOverlaps$observed
+
+  # Extract expected overlaps (mean of permuted)
+  exp <- mean(perm_obj$numOverlaps$permuted)
+  
+  # Enrichment ratio
+  enrich <- obs / exp
+  
+  # Z-score
+  zscore <- perm_obj$numOverlaps$zscore
+  
+  # Return as a data frame
+  df <- data.frame(
+    Condition = condition_name,
+    Observed = obs,
+    Expected = exp,
+    Enrichment = enrich,
+    Zscore = zscore
+  )
+  
+  return(df)
+}
+```
+
+
+```{r, eval=FALSE}
+
+
+genome_gr <- getGenomeAndMask("hg38")$genome
+genome_autosomes <- genome_gr[seqnames(genome_gr) %in% autosomes]
+
+test_set_E10_24T <- H3K27ac_E10_roi_te_hits$LINE[ mcols(H3K27ac_E10_roi_te_hits$LINE)$condition=="24T_DOX_16" &
+                                      mcols(H3K27ac_E10_roi_te_hits$LINE)$set == "Set_2" ]
+
+test_set_E10_24R <- H3K27ac_E10_roi_te_hits$LINE[ mcols(H3K27ac_E10_roi_te_hits$LINE)$condition=="24R_DOX_16" &
+                                      mcols(H3K27ac_E10_roi_te_hits$LINE)$set == "Set_2" ]
+
+test_set_E10_144R <- H3K27ac_E10_roi_te_hits$LINE[ mcols(H3K27ac_E10_roi_te_hits$LINE)$condition=="144R_DOX_16" &
+                                      mcols(H3K27ac_E10_roi_te_hits$LINE)$set == "Set_2" ]
+
+
+
+
+# 
+perm_test_24T_E10_s2_H3K27ac <- permTest(A= test_set_E10_24T,
+                          B= rpt_split_gr_list$LINE,
+                          ntimes=1000,
+                          randomize.function=randomizeRegions,
+                          evaluate.function = numOverlaps,
+                          genome=genome_autosomes,
+                          count.once= TRUE,
+                          verbose = TRUE)
+
+perm_test_24R_E10_s2_H3K27ac <- permTest(A= test_set_E10_24R,
+                          B= rpt_split_gr_list$LINE,
+                          ntimes=1000,
+                          randomize.function=randomizeRegions,
+                          evaluate.function = numOverlaps,
+                          genome=genome_autosomes,
+                          count.once= TRUE,
+                          verbose = TRUE)
+
+perm_test_144R_E10_s2_H3K27ac <- permTest(A= test_set_E10_144R,
+                          B= rpt_split_gr_list$LINE,
+                          ntimes=1000,
+                          randomize.function=randomizeRegions,
+                          evaluate.function = numOverlaps,
+                          genome=genome_autosomes,
+                          count.once= TRUE,
+                          verbose = TRUE)
+# 
+# A <- extract_enrichment(perm_test_24T_E10_s2_H3K27ac,"S2_E10_24T" )
+# B <- extract_enrichment(perm_test_24R_E10_s2_H3K27ac,"S2_E10_24R" )
+# C <- extract_enrichment(perm_test_144R_E10_s2_H3K27ac,"S2_E10_144R" )
+# test <- bind_rows(A,B,C)
+plot(perm_test_24R_E10_s2_H3K27ac)
+plot(perm_test_24T_E10_s2_H3K27ac)
+plot(perm_test_144R_E10_s2_H3K27ac)
+# saveRDS(test, "data/RDS_files/permtest_H3K27ac_S2_LINE.RDS")
+```
+
+
+```{r overlap sets 3, eval=FALSE}
+H3K27ac_144R_set1_summary <- H3K27ac_state_summary %>%
+  filter(set == "Set_1", condition %in% c("144R_VEH_16", "144R_DOX_16"))
+
+
+ggplot(H3K27ac_144R_set1_summary, aes(x = condition, y = frac_peaks, fill = state)) +
+  geom_col(position = "stack") +
+  ylab("Fraction of peaks per state") +
+  xlab("Condition") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_classic() +
+  ggtitle("State composition in Set1: VEH144R vs DOX144R")
+
+H3K27ac_144R_set1_wide <- H3K27ac_144R_set1_summary %>%
+  select(condition, state, frac_peaks) %>%
+  tidyr::pivot_wider(names_from = condition, values_from = frac_peaks)
+
+H3K27ac_144R_set1_wide <- H3K27ac_144R_set1_wide %>%
+  mutate(frac_ratio = `144R_DOX_16` / `144R_VEH_16`)
+
+
+
+######-24R------------------------------------------------------
+H3K27ac_24R_set1_summary <- H3K27ac_state_summary %>%
+  filter(set == "Set_1", condition %in% c("24R_VEH_16", "24R_DOX_16"))
+
+
+ggplot(H3K27ac_24R_set1_summary, aes(x = condition, y = frac_peaks, fill = state)) +
+  geom_col(position = "stack") +
+  ylab("Fraction of peaks per state") +
+  xlab("Condition") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_classic() +
+  ggtitle("State composition in Set1: VEH24R vs DOX24R")
+
+H3K27ac_24R_set1_wide <- H3K27ac_24R_set1_summary %>%
+  select(condition, state, frac_peaks) %>%
+  tidyr::pivot_wider(names_from = condition, values_from = frac_peaks)
+
+H3K27ac_24R_set1_wide <- H3K27ac_24R_set1_wide %>%
+  mutate(frac_ratio = `24R_DOX_16` / `24R_VEH_16`)
+
+
+######-24TR------------------------------------------------------
+H3K27ac_24T_set1_summary <- H3K27ac_state_summary %>%
+  filter(set == "Set_1", condition %in% c("24T_VEH_16", "24T_DOX_16"))
+
+
+ggplot(H3K27ac_24T_set1_summary, aes(x = condition, y = frac_peaks, fill = state)) +
+  geom_col(position = "stack") +
+  ylab("Fraction of peaks per state") +
+  xlab("Condition") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_classic() +
+  ggtitle("State composition in Set1: VEH24T vs DOX24T")
+
+H3K27ac_24T_set1_wide <- H3K27ac_24T_set1_summary %>%
+  select(condition, state, frac_peaks) %>%
+  tidyr::pivot_wider(names_from = condition, values_from = frac_peaks)
+
+H3K27ac_24T_set1_wide <- H3K27ac_24T_set1_wide %>%
+  mutate(frac_ratio = `24T_DOX_16` / `24T_VEH_16`)
+```
+
+Graphing what I have so far.  I grouped the overlapping data by sets, so I have all ROIs, all set_1 ROIs, all set_2 rois all set_3 rois.
+
+Now I want to see the breakdown of these states across condtitions in my ROIs-  note I have already done a Fold enrichment, so this should mimic that.
+
+```{r, eval=FALSE}
+ggplot(H3K27ac_state_summary, aes(x = set, y = frac_peaks, fill = state)) +
+  geom_col(position = "stack") +
+  facet_wrap(~condition) +
+  ylab("Fraction of peaks per state") +
+  xlab("ROI Set") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_classic()
+
+table1 <- table(
+  H3K27ac_roi_state_annotated$set[H3K27ac_roi_state_annotated$condition == "144R_VEH_16"],
+  H3K27ac_roi_state_annotated$state[H3K27ac_roi_state_annotated$condition == "144R_VEH_16"]
+)
+
+chisq.test(table1)
+```
 
