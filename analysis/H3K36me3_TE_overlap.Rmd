@@ -97,6 +97,9 @@ H3K36me3_lookup <- imap_dfr(peakAnnoList_H3K36me3[1:3], ~
   tibble(Peakid = .x@anno$Peakid, cluster = .y)
 )
 
+H3K36me3_sets_gr <- lapply(peakAnnoList_H3K36me3, function(df) {
+  as_granges(df)
+})
 ##assigning Peakid as name of summit region
  mcols(H3K36me3_summit_gr)$name <- mcols(H3K36me3_summit_gr)$Peakid
  
@@ -300,7 +303,97 @@ ggplot(SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   theme_classic() +
   facet_wrap(~comparison)
 ```
+#### Overlapping SINE family with ROIs to get a count
 
+```{r Overlapping function}
+count_sine_families <- function(peak_gr, sine_gr, cluster_name) {
+  
+  hits <- findOverlaps(peak_gr, sine_gr)
+  
+  if (length(hits) == 0) {
+    return(tibble(
+      cluster = cluster_name,
+      TE_type = character(),
+      status  = character(),
+      count   = integer()
+    ))
+  }
+  
+  hit_df <- tibble(
+    family = ifelse(
+      mcols(sine_gr)$repFamily[subjectHits(hits)] == "SVA",
+      mcols(sine_gr)$repName[subjectHits(hits)],
+      mcols(sine_gr)$repFamily[subjectHits(hits)]
+    )
+  )
+  
+  ## TE counts per family (Alu/MIR vs SVA_A/B/C…)
+  te_counts <- hit_df %>%
+    count(family, name = "count") %>%
+    mutate(
+      cluster = cluster_name,
+      TE_type = family,
+      status  = "TE"
+    )
+  
+  ## non-TE peaks (no SINE overlap)
+  n_total_peaks <- length(peak_gr)
+  n_sine_peaks  <- length(unique(queryHits(hits)))
+  
+  not_te <- tibble(
+    cluster = cluster_name,
+    TE_type = unique(te_counts$TE_type),
+    status  = "not_TE",
+    count   = n_total_peaks - n_sine_peaks
+  )
+  
+  bind_rows(te_counts, not_te)
+}
+```
+
+
+```{r Apply ROI SINE}
+fullROI_long_sine <- purrr::imap_dfr(
+  H3K36me3_sets_gr,
+  ~count_sine_families(.x, SINE_gr, .y)
+)
+
+
+SINE_results_full <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      fullROI_long_sine %>%
+        distinct(family) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            fullROI_long_sine,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(SINE_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+    geom_vline(xintercept = 1, linetype = 3) +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "SINE family enrichment at full ROI\nH3K36me3"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
+
+```
 
 
 ### LINE
@@ -429,7 +522,51 @@ ggplot(LINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   theme_classic()+
   facet_wrap(~comparison)
 ```
+#### Overlapping LINE family with ROIs to get a count
 
+
+```{r Apply ROI LINE}
+fullROI_long_LINE <- purrr::imap_dfr(
+  H3K36me3_sets_gr,
+  ~count_sine_families(.x, LINE_gr, .y)
+)
+
+
+LINE_results_full <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      fullROI_long_LINE %>%
+        distinct(family) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            fullROI_long_LINE,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(LINE_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+    geom_vline(xintercept = 1, linetype = 3) +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "LINE family enrichment at full ROI\nH3K36me3"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
+
+```
 
 ### LTR  
 
@@ -560,6 +697,56 @@ ggplot(LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   theme_classic()+
   facet_wrap(~comparison)
 ```
+#### Overlapping LTR family with ROIs to get a count
+
+
+```{r Apply ROI LTR}
+fullROI_long_LTR <- purrr::imap_dfr(
+  H3K36me3_sets_gr,
+  ~count_sine_families(.x, LTR_gr, .y)
+)
+
+
+LTR_results_full <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      fullROI_long_LTR %>%
+        distinct(family) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            fullROI_long_LTR,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(LTR_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+    geom_vline(xintercept = 1, linetype = 3) +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "LTR family enrichment at full ROI\nH3K36me3"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
+
+```
+
+
+
+
+
 ### SVA  
 
 Overlapping SVA family with summits to get a count
@@ -687,6 +874,53 @@ ggplot(SVA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   theme_classic()+
   facet_wrap(~comparison)
 ```
+#### Overlapping SVA family with ROIs to get a count
+
+
+```{r Apply ROI SVA}
+fullROI_long_SVA <- purrr::imap_dfr(
+  H3K36me3_sets_gr,
+  ~count_sine_families(.x, SVA_gr, .y)
+)
+
+
+SVA_results_full <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      fullROI_long_SVA %>%
+        distinct(family) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            fullROI_long_SVA,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(SVA_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+    geom_vline(xintercept = 1, linetype = 3) +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "SVA family enrichment at full ROI\nH3K36me3"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
+
+```
+
+
 ### DNA  
 
 Overlapping DNA family with summits to get a count
@@ -848,3 +1082,48 @@ for (group_name in set_list) {
 ```
 
 
+#### Overlapping DNA family with ROIs to get a count
+
+
+```{r Apply ROI DNA}
+fullROI_long_DNA <- purrr::imap_dfr(
+  H3K36me3_sets_gr,
+  ~count_sine_families(.x, DNA_gr, .y)
+)
+
+
+DNA_results_full <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      fullROI_long_DNA %>%
+        distinct(family) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_generic(
+            fullROI_long_DNA,
+            te_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(DNA_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+    geom_vline(xintercept = 1, linetype = 3) +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "DNA family enrichment at full ROI\nH3K36me3"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
+
+```
