@@ -13,7 +13,7 @@
 
 <meta name="date" content="2026-01-30" />
 
-<title>H3K9me3 and TE overlap</title>
+<title>TEs across histones</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -37,6 +37,15 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -359,7 +368,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">H3K9me3 and TE overlap</h1>
+<h1 class="title toc-ignore">TEs across histones</h1>
 <h4 class="author">Renee Matthews</h4>
 <h4 class="date">2026-01-30</h4>
 
@@ -521,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree6ec912d62115111b2255d0ef3b0aed1c6b4d5f0atargetblank6ec912da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5d99b72bef4af1941ce6bedd7f0c1f13b9646b59targetblank5d99b72a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/6ec912d62115111b2255d0ef3b0aed1c6b4d5f0a" target="_blank">6ec912d</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5d99b72bef4af1941ce6bedd7f0c1f13b9646b59" target="_blank">5d99b72</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree6ec912d62115111b2255d0ef3b0aed1c6b4d5f0atargetblank6ec912da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5d99b72bef4af1941ce6bedd7f0c1f13b9646b59targetblank5d99b72a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/6ec912d62115111b2255d0ef3b0aed1c6b4d5f0a" target="_blank">6ec912d</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5d99b72bef4af1941ce6bedd7f0c1f13b9646b59" target="_blank">5d99b72</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -590,7 +599,6 @@ Unstaged changes:
     Modified:   analysis/H3K27ac_TF_motifs.Rmd
     Modified:   analysis/chromHMM.Rmd
     Modified:   analysis/final_analysis.Rmd
-    Modified:   analysis/index.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
 </code></pre>
@@ -637,6 +645,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/5d99b72bef4af1941ce6bedd7f0c1f13b9646b59/analysis/dual_histone_TE_investigation.Rmd" target="_blank">5d99b72</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+<td>
+updates
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/97aa6710b1f27bb324fa78b23e1755464f85475d/docs/dual_histone_TE_investigation.html" target="_blank">97aa671</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -720,14 +762,34 @@ rpt_split_gr_list &lt;- lapply(rpt_split, function(df) {
   )
 })</code></pre>
 <pre class="r"><code>SINE_gr &lt;- rpt_split_gr_list$SINE
+SINE_df &lt;- SINE_gr %&gt;% 
+  as.data.frame()
+
+SINE_split_df &lt;- split(SINE_df, SINE_df$repFamily)
 
 LINE_gr &lt;- rpt_split_gr_list$LINE
+LINE_df &lt;- LINE_gr %&gt;% 
+  as.data.frame()
+
+LINE_split_df &lt;- split(LINE_df, LINE_df$repFamily)
 
 LTR_gr &lt;- rpt_split_gr_list$LTR
+LTR_df &lt;- LTR_gr %&gt;% 
+  as.data.frame()
+
+LTR_split_df &lt;- split(LTR_df, LTR_df$repFamily)
 
 SVA_gr &lt;- rpt_split_gr_list$Retroposon
+SVA_df &lt;- SVA_gr %&gt;% 
+  as.data.frame()
 
-DNA_gr &lt;- rpt_split_gr_list$DNA</code></pre>
+SVA_split_df &lt;- split(SVA_df, SVA_df$repFamily)
+
+DNA_gr &lt;- rpt_split_gr_list$DNA
+DNA_df &lt;- DNA_gr %&gt;% 
+  as.data.frame()
+
+DNA_split_df &lt;- split(DNA_df, DNA_df$repFamily)</code></pre>
 <p>Pulling in ROI granges for H3K27ac and H3K9me3</p>
 <pre class="r"><code>peakAnnoList_H3K9me3 &lt;- readRDS(&quot;data/motif_lists/H3K9me3_annotated_peaks.RDS&quot;)
 peakAnnoList_H3K27ac &lt;- readRDS(&quot;data/motif_lists/H3K27ac_annotated_peaks.RDS&quot;)
@@ -747,13 +809,11 @@ H3K27ac_sets_gr &lt;- lapply(peakAnnoList_H3K27ac, function(df) {
   as_granges(df)
 })</code></pre>
 <pre class="r"><code>H3K9me3_toplist &lt;- readRDS( &quot;data/DER_data/H3K9me3_toplist_nooutlier.RDS&quot;)
-# H3K36me3_toplist &lt;- readRDS( &quot;data/DER_data/H3K36me3_toplist_nooutlier.RDS&quot;)
-# H3K27me3_toplist &lt;- readRDS( &quot;data/DER_data/H3K27me3_toplist.RDS&quot;)
+
 H3K27ac_toplist &lt;- readRDS( &quot;data/DER_data/H3K27ac_toplist.RDS&quot;)
 
 H3K27ac_toptable_list &lt;- bind_rows(H3K27ac_toplist, .id = &quot;group&quot;)
-# H3K27me3_toptable_list &lt;- bind_rows(H3K27me3_toplist, .id = &quot;group&quot;)
-# H3K36me3_toptable_list &lt;- bind_rows(H3K36me3_toplist, .id = &quot;group&quot;)
+
 H3K9me3_toptable_list &lt;- bind_rows(H3K9me3_toplist, .id = &quot;group&quot;)
 
 K9me3_lfctable &lt;- H3K9me3_toptable_list %&gt;% 
@@ -924,6 +984,43 @@ at TEs that up in one and down in another.</p>
   ) +
   theme_classic()</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/SINE%20K9K27ac%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-SINE-K9K27ac-plot-1">
+Past versions of "SINE K9K27ac plot-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-SINE-K9K27ac-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97aa6710b1f27bb324fa78b23e1755464f85475d/docs/figure/dual_histone_TE_investigation.Rmd/SINE K9K27ac plot-1.png" target="_blank">97aa671</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>SINE_RM_lfc_concordance %&gt;% 
   ggplot(., aes(x=K27ac_24R, y=K9me3_24R))+
   geom_point(, alpha=0.2, size=1)+
@@ -938,6 +1035,43 @@ at TEs that up in one and down in another.</p>
   ) +
   theme_classic()</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/SINE%20K9K27ac%20plot-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-SINE-K9K27ac-plot-2">
+Past versions of "SINE K9K27ac plot-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-SINE-K9K27ac-plot-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97aa6710b1f27bb324fa78b23e1755464f85475d/docs/figure/dual_histone_TE_investigation.Rmd/SINE K9K27ac plot-2.png" target="_blank">97aa671</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>SINE_RM_lfc_concordance %&gt;% 
   ggplot(., aes(x=K27ac_144R, y=K9me3_144R))+
   geom_point(, alpha=0.2, size=1)+
@@ -952,6 +1086,43 @@ at TEs that up in one and down in another.</p>
   ) +
   theme_classic()</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/SINE%20K9K27ac%20plot-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-SINE-K9K27ac-plot-3">
+Past versions of "SINE K9K27ac plot-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-SINE-K9K27ac-plot-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97aa6710b1f27bb324fa78b23e1755464f85475d/docs/figure/dual_histone_TE_investigation.Rmd/SINE K9K27ac plot-3.png" target="_blank">97aa671</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="ltr" class="section level3">
 <h3>LTR</h3>
@@ -1016,18 +1187,10 @@ length(unique(common_LTR_RMs))</code></pre>
 H3K9me3_LTR_peakid &lt;- LTR_overlap_df_H3K9me3 %&gt;% 
   dplyr::filter(RM_id %in% common_LTR_RMs) %&gt;% 
   left_join(., H3K9me3_lookup) %&gt;% 
-  distinct(Peakid)
-  
-
-
-
-# ggVennDiagram(list(H3K27ac=H3K27ac_LTR_peakid_split$Set_1$RM_id,H3K9me3= H3K9me3_LTR_peakid_split$Set_1$RM_id))+
-#   ggtitle(&quot;No Response overlaping TEs&quot;)
-# ggVennDiagram(list(H3K27ac=H3K27ac_LTR_peakid_split$Set_1$RM_id,H3K9me3= H3K9me3_LTR_peakid_split$Set_2$RM_id))+
-#   ggtitle(&quot;Set-3 overlaping TEs&quot;)</code></pre>
+  distinct(Peakid)</code></pre>
 <p>I struggled with figuring out whether a TE is unique to a peak. I do
-have some LTR elements mapping to multiple peaks, but not a whole
-lot.</p>
+have some LTR elements mapping to multiple peaks, and more than SINEs
+most likely due to the increased TE lengths.</p>
 <pre class="r"><code>LTR_overlap_df_H3K9me3 %&gt;%
   count(RM_id, name = &quot;n_peaks&quot;) %&gt;%
   count(n_peaks)</code></pre>
@@ -1133,6 +1296,43 @@ at TEs that up in one and down in another.</p>
   ) +
   theme_classic()</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-K9K27ac-plot-1">
+Past versions of "LTR K9K27ac plot-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-K9K27ac-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97aa6710b1f27bb324fa78b23e1755464f85475d/docs/figure/dual_histone_TE_investigation.Rmd/LTR K9K27ac plot-1.png" target="_blank">97aa671</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
   ggplot(., aes(x=K27ac_24R, y=K9me3_24R, color=cluster))+
   geom_point(, alpha=0.2, size=2)+
@@ -1147,6 +1347,43 @@ at TEs that up in one and down in another.</p>
   ) +
   theme_classic()</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-K9K27ac-plot-2">
+Past versions of "LTR K9K27ac plot-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-K9K27ac-plot-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97aa6710b1f27bb324fa78b23e1755464f85475d/docs/figure/dual_histone_TE_investigation.Rmd/LTR K9K27ac plot-2.png" target="_blank">97aa671</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
   ggplot(., aes(x=K27ac_144R, y=K9me3_144R, color=cluster))+
   geom_point(, alpha=0.2, size=2)+
@@ -1162,6 +1399,85 @@ at TEs that up in one and down in another.</p>
   ) +
   theme_classic()</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-K9K27ac-plot-3">
+Past versions of "LTR K9K27ac plot-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-K9K27ac-plot-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97aa6710b1f27bb324fa78b23e1755464f85475d/docs/figure/dual_histone_TE_investigation.Rmd/LTR K9K27ac plot-3.png" target="_blank">97aa671</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
+  ggplot(., aes(x=K27ac_24T, y=K27ac_24R, color=cluster))+
+  geom_point(, alpha=0.2, size=2)+
+  geom_density_2d(color= &quot;black&quot;)+
+   # sm_statCorr(corr_method=&quot;spearman&quot;)+
+   geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color=&quot;red&quot;) +
+  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color=&quot;red&quot;) +
+  labs(
+    x = &quot;H3K27ac logFC (24T)&quot;,
+    y = &quot;H3K9me3 logFC (24T)&quot;,
+    title = &quot;Concordance of chromatin changes at shared LTRs for 24T v 24R H3K27ac&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
+  ggplot(., aes(x=K27ac_24T, y=K27ac_144R, color=cluster))+
+  geom_point(, alpha=0.2, size=2)+
+  geom_density_2d(color= &quot;black&quot;)+
+   # sm_statCorr(corr_method=&quot;spearman&quot;)+
+   geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color=&quot;red&quot;) +
+  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color=&quot;red&quot;) +
+  labs(
+    x = &quot;H3K27ac logFC (24T)&quot;,
+    y = &quot;H3K9me3 logFC (24T)&quot;,
+    title = &quot;Concordance of chromatin changes at shared LTRs for 24T v 144R H3K27ac&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
+  ggplot(., aes(x=K27ac_24R, y=K27ac_144R, color=cluster))+
+  geom_point(, alpha=0.2, size=2)+
+  geom_density_2d(color= &quot;black&quot;)+
+   # sm_statCorr(corr_method=&quot;spearman&quot;)+
+   geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color=&quot;red&quot;) +
+  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color=&quot;red&quot;) +
+  labs(
+    x = &quot;H3K27ac logFC (24T)&quot;,
+    y = &quot;H3K9me3 logFC (24T)&quot;,
+    title = &quot;Concordance of chromatin changes at shared LTRs for 24R v 144R H3K27ac&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>K27ac_unfiltered_long &lt;- K27ac_lfctable %&gt;% 
   left_join(H3K27ac_lookup, by = c(&quot;genes&quot; = &quot;Peakid&quot;)) %&gt;% 
   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
@@ -1203,6 +1519,43 @@ K9me3_median_unfilt_lfc %&gt;%
   theme_bw()+
   ggtitle(&quot;LFC across time for H3K27ac sets&quot;)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97aa6710b1f27bb324fa78b23e1755464f85475d/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-8-1.png" target="_blank">97aa671</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>K27ac_median_LTR_lfc &lt;- K27ac_unfiltered_long %&gt;%
   dplyr::filter(genes %in% H3K27ac_LTR_peakid$Peakid) %&gt;% 
   group_by(cluster, group) %&gt;%
@@ -1228,6 +1581,43 @@ ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
   theme_bw()+
   ggtitle(&quot;H3K9me3 unfiltered solid line\nH3K27ac dotted line absolute LFC All regions&quot;)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97aa6710b1f27bb324fa78b23e1755464f85475d/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-8-2.png" target="_blank">97aa671</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>K9me3_median_LTR_lfc %&gt;% 
 ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
   geom_point(size=4)+
@@ -1238,6 +1628,141 @@ ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
   theme_bw()+
   ggtitle(&quot;H3K9me3 solid line\nH3K27ac dotted line absolute LFC overlapping LTR regions&quot;)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-3">
+Past versions of unnamed-chunk-8-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97aa6710b1f27bb324fa78b23e1755464f85475d/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-8-3.png" target="_blank">97aa671</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Now I am trying to break down by LTR families:</p>
+<pre class="r"><code>LTR_overlap_df_H3K27ac %&gt;% 
+  group_by(TE_type) %&gt;% 
+  tally() %&gt;% 
+   ungroup() %&gt;% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = &quot;caption-side: top; text-align: left;&quot;,
+      &quot;H3K27ac LTR specific overlap counts by TE familiy&quot;),
+    options = list(pageLength = 10,
+      autoWidth = TRUE,
+      dom = &quot;tip&quot;))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-c7fc7fd0704f0fe11c1f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: left;\">H3K27ac LTR specific overlap counts by TE familiy<\/caption>","data":[["ERV1","ERVK","ERVL","ERVL-MaLR","Gypsy","LTR"],[9126,720,9086,15497,1375,138]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"dom":"tip","columnDefs":[{"className":"dt-right","targets":1},{"name":"TE_type","targets":0},{"name":"n","targets":1}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code># now I want to breakup common_LTR_RMs and plot by family of LTR.
+ 
+
+
+K27_family_plot &lt;- function(lfc_df,
+                            split_list, 
+                            grp=&quot;K27ac&quot;,
+                            repFamily,
+                            repName){
+
+  rm_ids &lt;- split_list[[repName]]$RM_id
+  
+  lfc_df %&gt;% 
+  dplyr::filter(RM_id %in% rm_ids) %&gt;%
+  dplyr::filter(cluster != &quot;NA&quot;) %&gt;% 
+  pivot_longer(.,cols=c(starts_with(grp)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+  group_by(cluster, group) %&gt;%
+  summarise(median_abs_LFC = median(abs(LFC), na.rm = TRUE),
+            .groups = &quot;drop&quot;)%&gt;% 
+  mutate(time=str_remove(group,grp))%&gt;% 
+  mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;))) %&gt;% 
+  ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
+  geom_point(size=4)+
+  geom_line(aes(alpha = 0.8, linewidth = 4))+
+  theme_bw()+
+  ggtitle(paste0(grp,&quot; absolute LFC overlapping &quot;,repFamily,&quot;:&quot;,repName))
+}</code></pre>
+<pre class="r"><code>names(LTR_split_df)</code></pre>
+<pre><code>[1] &quot;ERV1&quot;      &quot;ERVK&quot;      &quot;ERVL&quot;      &quot;ERVL-MaLR&quot; &quot;Gypsy&quot;     &quot;LTR&quot;      </code></pre>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERV1&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERVK&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERVL&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERVL-MaLR&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;Gypsy&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;LTR&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_K9_family_plot &lt;- function(lfc_df,
+                            split_list, 
+                            marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;),
+                            repClass,
+                            repFam){
+
+  
+  rm_ids &lt;- split_list[[repFam]]$RM_id
+  
+  lfc_df %&gt;% 
+  dplyr::filter(RM_id %in% rm_ids,
+                cluster != &quot;NA&quot;) %&gt;% 
+  pivot_longer(.,cols=tidyselect::matches(paste0(&quot;^(&quot;,paste(marks,collapse = &quot;|&quot;), &quot;)&quot;)),
+               names_to=&quot;group&quot;, 
+               values_to = &quot;LFC&quot;) %&gt;% 
+     mutate(mark = stringr::str_extract(group, paste(marks, collapse=&quot;|&quot;)),
+      time = stringr::str_remove(group, paste(marks, collapse=&quot;|&quot;)),
+      time = factor(time, levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;))) %&gt;% 
+  group_by(cluster, mark ,time) %&gt;%
+  summarise(median_abs_LFC = median(abs(LFC), na.rm = TRUE),
+            .groups = &quot;drop&quot;)%&gt;% 
+  ggplot(., aes(x=time, y=median_abs_LFC, group=interaction(cluster,mark), color=cluster, linetype=mark, shape=mark))+
+  geom_point(size=4)+
+  geom_line(aes(alpha = 0.8, linewidth = 4))+
+  theme_bw()+
+  labs(title = paste0(&quot;Both histones, absolute LFC overlapping &quot;,repClass,&quot;:&quot;,repFam),
+      y = &quot;Median |LFC|&quot;,
+      x = &quot;Time&quot;
+    )
+}</code></pre>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;ERVL&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;ERVK&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;ERV1&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;ERVL-MaLR&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;Gypsy&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;LTR&quot;)</code></pre>
+<p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-6.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1294,146 +1819,147 @@ loaded via a namespace (and not attached):
  [13] vroom_1.6.5                            
  [14] processx_3.8.6                         
  [15] lattice_0.22-7                         
- [16] backports_1.5.0                        
- [17] magrittr_2.0.3                         
- [18] Hmisc_5.2-3                            
- [19] sass_0.4.10                            
- [20] rmarkdown_2.29                         
- [21] jquerylib_0.1.4                        
- [22] yaml_2.3.10                            
- [23] plotrix_3.8-4                          
- [24] httpuv_1.6.16                          
- [25] ggtangle_0.0.7                         
- [26] cowplot_1.2.0                          
- [27] DBI_1.2.3                              
- [28] RColorBrewer_1.1-3                     
- [29] abind_1.4-8                            
- [30] zlibbioc_1.52.0                        
- [31] R.utils_2.13.0                         
- [32] RCurl_1.98-1.17                        
- [33] yulab.utils_0.2.1                      
- [34] nnet_7.3-20                            
- [35] rappdirs_0.3.3                         
- [36] git2r_0.36.2                           
- [37] GenomeInfoDbData_1.2.13                
- [38] enrichplot_1.26.6                      
- [39] tidytree_0.4.6                         
- [40] codetools_0.2-20                       
- [41] DelayedArray_0.32.0                    
- [42] DOSE_4.0.1                             
- [43] tidyselect_1.2.1                       
- [44] aplot_0.2.8                            
- [45] UCSC.utils_1.2.0                       
- [46] farver_2.1.2                           
- [47] matrixStats_1.5.0                      
- [48] base64enc_0.1-3                        
- [49] GenomicAlignments_1.42.0               
- [50] jsonlite_2.0.0                         
- [51] Formula_1.2-5                          
- [52] tools_4.4.2                            
- [53] treeio_1.30.0                          
- [54] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
- [55] Rcpp_1.1.0                             
- [56] glue_1.8.0                             
- [57] gridExtra_2.3                          
- [58] SparseArray_1.6.2                      
- [59] mgcv_1.9-3                             
- [60] xfun_0.52                              
- [61] qvalue_2.38.0                          
- [62] MatrixGenerics_1.18.1                  
- [63] withr_3.0.2                            
- [64] fastmap_1.2.0                          
- [65] boot_1.3-32                            
- [66] callr_3.7.6                            
- [67] caTools_1.18.3                         
- [68] digest_0.6.37                          
- [69] timechange_0.3.0                       
- [70] R6_2.6.1                               
- [71] gridGraphics_0.5-1                     
- [72] seqPattern_1.38.0                      
- [73] colorspace_2.1-1                       
- [74] GO.db_3.20.0                           
- [75] gtools_3.9.5                           
- [76] dichromat_2.0-0.1                      
- [77] RSQLite_2.4.3                          
- [78] R.methodsS3_1.8.2                      
- [79] generics_0.1.4                         
- [80] data.table_1.17.8                      
- [81] httr_1.4.7                             
- [82] htmlwidgets_1.6.4                      
- [83] S4Arrays_1.6.0                         
- [84] whisker_0.4.1                          
- [85] pkgconfig_2.0.3                        
- [86] gtable_0.3.6                           
- [87] blob_1.2.4                             
- [88] impute_1.80.0                          
- [89] XVector_0.46.0                         
- [90] htmltools_0.5.8.1                      
- [91] carData_3.0-5                          
- [92] pwr_1.3-0                              
- [93] fgsea_1.32.4                           
- [94] scales_1.4.0                           
- [95] Biobase_2.66.0                         
- [96] png_0.1-8                              
- [97] ggfun_0.2.0                            
- [98] knitr_1.50                             
- [99] rstudioapi_0.17.1                      
-[100] tzdb_0.5.0                             
-[101] reshape2_1.4.4                         
-[102] rjson_0.2.23                           
-[103] checkmate_2.3.3                        
-[104] nlme_3.1-168                           
-[105] curl_7.0.0                             
-[106] zoo_1.8-14                             
-[107] cachem_1.1.0                           
-[108] KernSmooth_2.23-26                     
-[109] parallel_4.4.2                         
-[110] foreign_0.8-90                         
-[111] AnnotationDbi_1.68.0                   
-[112] restfulr_0.0.16                        
-[113] pillar_1.11.0                          
-[114] vctrs_0.6.5                            
-[115] gplots_3.2.0                           
-[116] ggpubr_0.6.1                           
-[117] promises_1.3.3                         
-[118] car_3.1-3                              
-[119] cluster_2.1.8.1                        
-[120] htmlTable_2.4.3                        
-[121] evaluate_1.0.5                         
-[122] isoband_0.2.7                          
-[123] GenomicFeatures_1.58.0                 
-[124] cli_3.6.5                              
-[125] compiler_4.4.2                         
-[126] Rsamtools_2.22.0                       
-[127] rlang_1.1.6                            
-[128] crayon_1.5.3                           
-[129] ggsignif_0.6.4                         
-[130] labeling_0.4.3                         
-[131] ps_1.9.1                               
-[132] getPass_0.2-4                          
-[133] plyr_1.8.9                             
-[134] fs_1.6.6                               
-[135] stringi_1.8.7                          
-[136] gridBase_0.4-7                         
-[137] BiocParallel_1.40.2                    
-[138] Biostrings_2.74.1                      
-[139] lazyeval_0.2.2                         
-[140] GOSemSim_2.32.0                        
-[141] Matrix_1.7-3                           
-[142] BSgenome_1.74.0                        
-[143] hms_1.1.3                              
-[144] patchwork_1.3.2                        
-[145] bit64_4.6.0-1                          
-[146] KEGGREST_1.46.0                        
-[147] SummarizedExperiment_1.36.0            
-[148] broom_1.0.9                            
-[149] igraph_2.1.4                           
-[150] memoise_2.0.1                          
-[151] bslib_0.9.0                            
-[152] ggtree_3.14.0                          
-[153] fastmatch_1.1-6                        
-[154] bit_4.6.0                              
-[155] ape_5.8-1                              </code></pre>
+ [16] crosstalk_1.2.2                        
+ [17] backports_1.5.0                        
+ [18] magrittr_2.0.3                         
+ [19] Hmisc_5.2-3                            
+ [20] sass_0.4.10                            
+ [21] rmarkdown_2.29                         
+ [22] jquerylib_0.1.4                        
+ [23] yaml_2.3.10                            
+ [24] plotrix_3.8-4                          
+ [25] httpuv_1.6.16                          
+ [26] ggtangle_0.0.7                         
+ [27] cowplot_1.2.0                          
+ [28] DBI_1.2.3                              
+ [29] RColorBrewer_1.1-3                     
+ [30] abind_1.4-8                            
+ [31] zlibbioc_1.52.0                        
+ [32] R.utils_2.13.0                         
+ [33] RCurl_1.98-1.17                        
+ [34] yulab.utils_0.2.1                      
+ [35] nnet_7.3-20                            
+ [36] rappdirs_0.3.3                         
+ [37] git2r_0.36.2                           
+ [38] GenomeInfoDbData_1.2.13                
+ [39] enrichplot_1.26.6                      
+ [40] tidytree_0.4.6                         
+ [41] codetools_0.2-20                       
+ [42] DelayedArray_0.32.0                    
+ [43] DOSE_4.0.1                             
+ [44] tidyselect_1.2.1                       
+ [45] aplot_0.2.8                            
+ [46] UCSC.utils_1.2.0                       
+ [47] farver_2.1.2                           
+ [48] matrixStats_1.5.0                      
+ [49] base64enc_0.1-3                        
+ [50] GenomicAlignments_1.42.0               
+ [51] jsonlite_2.0.0                         
+ [52] Formula_1.2-5                          
+ [53] tools_4.4.2                            
+ [54] treeio_1.30.0                          
+ [55] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+ [56] Rcpp_1.1.0                             
+ [57] glue_1.8.0                             
+ [58] gridExtra_2.3                          
+ [59] SparseArray_1.6.2                      
+ [60] mgcv_1.9-3                             
+ [61] xfun_0.52                              
+ [62] qvalue_2.38.0                          
+ [63] MatrixGenerics_1.18.1                  
+ [64] withr_3.0.2                            
+ [65] fastmap_1.2.0                          
+ [66] boot_1.3-32                            
+ [67] callr_3.7.6                            
+ [68] caTools_1.18.3                         
+ [69] digest_0.6.37                          
+ [70] timechange_0.3.0                       
+ [71] R6_2.6.1                               
+ [72] gridGraphics_0.5-1                     
+ [73] seqPattern_1.38.0                      
+ [74] colorspace_2.1-1                       
+ [75] GO.db_3.20.0                           
+ [76] gtools_3.9.5                           
+ [77] dichromat_2.0-0.1                      
+ [78] RSQLite_2.4.3                          
+ [79] R.methodsS3_1.8.2                      
+ [80] generics_0.1.4                         
+ [81] data.table_1.17.8                      
+ [82] httr_1.4.7                             
+ [83] htmlwidgets_1.6.4                      
+ [84] S4Arrays_1.6.0                         
+ [85] whisker_0.4.1                          
+ [86] pkgconfig_2.0.3                        
+ [87] gtable_0.3.6                           
+ [88] blob_1.2.4                             
+ [89] impute_1.80.0                          
+ [90] XVector_0.46.0                         
+ [91] htmltools_0.5.8.1                      
+ [92] carData_3.0-5                          
+ [93] pwr_1.3-0                              
+ [94] fgsea_1.32.4                           
+ [95] scales_1.4.0                           
+ [96] Biobase_2.66.0                         
+ [97] png_0.1-8                              
+ [98] ggfun_0.2.0                            
+ [99] knitr_1.50                             
+[100] rstudioapi_0.17.1                      
+[101] tzdb_0.5.0                             
+[102] reshape2_1.4.4                         
+[103] rjson_0.2.23                           
+[104] checkmate_2.3.3                        
+[105] nlme_3.1-168                           
+[106] curl_7.0.0                             
+[107] zoo_1.8-14                             
+[108] cachem_1.1.0                           
+[109] KernSmooth_2.23-26                     
+[110] parallel_4.4.2                         
+[111] foreign_0.8-90                         
+[112] AnnotationDbi_1.68.0                   
+[113] restfulr_0.0.16                        
+[114] pillar_1.11.0                          
+[115] vctrs_0.6.5                            
+[116] gplots_3.2.0                           
+[117] ggpubr_0.6.1                           
+[118] promises_1.3.3                         
+[119] car_3.1-3                              
+[120] cluster_2.1.8.1                        
+[121] htmlTable_2.4.3                        
+[122] evaluate_1.0.5                         
+[123] isoband_0.2.7                          
+[124] GenomicFeatures_1.58.0                 
+[125] cli_3.6.5                              
+[126] compiler_4.4.2                         
+[127] Rsamtools_2.22.0                       
+[128] rlang_1.1.6                            
+[129] crayon_1.5.3                           
+[130] ggsignif_0.6.4                         
+[131] labeling_0.4.3                         
+[132] ps_1.9.1                               
+[133] getPass_0.2-4                          
+[134] plyr_1.8.9                             
+[135] fs_1.6.6                               
+[136] stringi_1.8.7                          
+[137] gridBase_0.4-7                         
+[138] BiocParallel_1.40.2                    
+[139] Biostrings_2.74.1                      
+[140] lazyeval_0.2.2                         
+[141] GOSemSim_2.32.0                        
+[142] Matrix_1.7-3                           
+[143] BSgenome_1.74.0                        
+[144] hms_1.1.3                              
+[145] patchwork_1.3.2                        
+[146] bit64_4.6.0-1                          
+[147] KEGGREST_1.46.0                        
+[148] SummarizedExperiment_1.36.0            
+[149] broom_1.0.9                            
+[150] igraph_2.1.4                           
+[151] memoise_2.0.1                          
+[152] bslib_0.9.0                            
+[153] ggtree_3.14.0                          
+[154] fastmatch_1.1-6                        
+[155] bit_4.6.0                              
+[156] ape_5.8-1                              </code></pre>
 </div>
 </div>
 </div>
