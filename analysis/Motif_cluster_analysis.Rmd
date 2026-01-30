@@ -307,6 +307,41 @@ for (nm in names(peakAnnoList_H3K27ac_std)) {
 
 ```
 
+#### Histone proportions
+```{r H3K27ac histone prop}
+H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+all_H3K27ac_regions %>%  
+  mutate(group="H3K27ac") %>% 
+  left_join(., H3K27ac_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  ggplot(., aes(y=group,fill=cluster))+
+  geom_bar()+
+  geom_text(aes( label = scales::percent(..prop..),
+                   x= ..prop.. ), stat= "count", vjust = -.5)+
+  ggtitle("H3K27ac proportions of ROIs")+
+  theme_classic()
+
+
+all_H3K27ac_regions %>%  
+  mutate(group="H3K27ac") %>% 
+  left_join(., H3K27ac_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  mutate(cluster=factor(cluster, levels = c("Set_1","Set_2","Set_3","NA"))) %>% 
+  ggplot(., aes(x=cluster,y = after_stat(prop),fill=cluster, group=1))+
+  geom_bar(aes(stat="count"))+
+  geom_text(aes( label = scales::percent(after_stat(prop))),
+            stat= "count", vjust = -.5)+
+  scale_y_continuous(
+    labels = scales::percent,
+    expand = expansion(mult = c(0, 0.1))
+  ) +
+  ggtitle("H3K27ac proportions of ROIs")+
+  theme_classic()
+
+```
+
+
 #### LFC H3K27ac
   Set1
 ```{r H3K27ac LFC set 1}
@@ -626,6 +661,42 @@ for(nm in names(peakAnnoList_H3K27me3)) {
 }
 ```
 
+#### Histone proportions
+```{r H3K27me3 histone prop}
+H3K27me3_lookup <- imap_dfr(peakAnnoList_H3K27me3[1:2], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+all_H3K27me3_regions %>%  
+  mutate(group="H3K27me3") %>% 
+  left_join(., H3K27me3_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  ggplot(., aes(y=group,fill=cluster))+
+  geom_bar()+
+  geom_text(aes( label = scales::percent(..prop..),
+                   x= ..prop.. ), stat= "count", vjust = -.5)+
+  ggtitle("H3K27me3 proportions of ROIs")+
+  theme_classic()
+
+
+all_H3K27me3_regions %>%  
+  mutate(group="H3K27me3") %>% 
+  left_join(., H3K27me3_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  mutate(cluster=factor(cluster, levels = c("Set_1","Set_2","NA"))) %>% 
+  ggplot(., aes(x=cluster,y = after_stat(prop),fill=cluster, group=1))+
+  geom_bar(aes(stat="count"))+
+  geom_text(aes( label = scales::percent(after_stat(prop))),
+            stat= "count", vjust = -.5)+
+  scale_y_continuous(
+    labels = scales::percent,
+    expand = expansion(mult = c(0, 0.1))
+  ) +
+  ggtitle("H3K27me3 proportions of ROIs")+
+  theme_classic()
+
+```
+
+
+
 #### LFC H3K27me3
   Set1
 ```{r H3K27me3 LFC set 1}
@@ -888,6 +959,41 @@ for(nm in names(peakAnnoList_H3K36me3)) {
   title(main = nm)  # base R title
 }
 ```
+
+#### Histone proportions
+```{r H3K36me3 histone prop}
+H3K36me3_lookup <- imap_dfr(peakAnnoList_H3K36me3[1:2], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+all_H3K36me3_regions %>%  
+  mutate(group="H3K36me3") %>% 
+  left_join(., H3K36me3_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  ggplot(., aes(y=group,fill=cluster))+
+  geom_bar()+
+  geom_text(aes( label = scales::percent(..prop..),
+                   x= ..prop.. ), stat= "count", vjust = -.5)+
+  ggtitle("H3K36me3 proportions of ROIs")+
+  theme_classic()
+
+
+all_H3K36me3_regions %>%  
+  mutate(group="H3K36me3") %>% 
+  left_join(., H3K36me3_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  mutate(cluster=factor(cluster, levels = c("Set_1","Set_2","NA"))) %>% 
+  ggplot(., aes(x=cluster,y = after_stat(prop), group=1))+
+  geom_bar(aes(stat="count"))+
+  geom_text(aes( label = scales::percent(after_stat(prop))),
+            stat= "count", vjust = -.5)+
+  scale_y_continuous(
+    labels = scales::percent,
+    expand = expansion(mult = c(0, 0.1))
+  ) +
+  ggtitle("H3K36me3 proportions of ROIs")+
+  theme_classic()
+
+```
+
 
 #### LFC H3K36me3
   Set1
@@ -1190,6 +1296,40 @@ for(nm in names(peakAnnoList_H3K9me3)) {
 ```
 
 
+
+#### Histone proportions
+```{r H3K9me3 histone prop}
+H3K9me3_lookup <- imap_dfr(peakAnnoList_H3K9me3[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+all_H3K9me3_regions %>%  
+  mutate(group="H3K9me3") %>% 
+  left_join(., H3K9me3_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  ggplot(., aes(y=group,fill=cluster))+
+  geom_bar()+
+  geom_text(aes( label = scales::percent(..prop..),
+                   x= ..prop.. ), stat= "count", vjust = -.5)+
+  ggtitle("H3K9me3 proportions of ROIs")+
+  theme_classic()
+
+
+all_H3K9me3_regions %>%  
+  mutate(group="H3K9me3") %>% 
+  left_join(., H3K9me3_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  mutate(cluster=factor(cluster, levels = c("Set_1","Set_2","Set_3","NA"))) %>% 
+  ggplot(., aes(x=cluster,y = after_stat(prop),fill=cluster, group=1))+
+  geom_bar(aes(stat="count"))+
+  geom_text(aes( label = scales::percent(after_stat(prop))),
+            stat= "count", vjust = -.5)+
+  scale_y_continuous(
+    labels = scales::percent,
+    expand = expansion(mult = c(0, 0.1))
+  ) +
+  ggtitle("H3K9me3 proportions of ROIs")+
+  theme_classic()
+
+```
 #### LFC H3K9me3
   Set1
 ```{r H3K9me3 LFC set 1}
