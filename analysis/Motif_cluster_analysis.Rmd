@@ -339,6 +339,25 @@ all_H3K27ac_regions %>%
   ggtitle("H3K27ac proportions of ROIs")+
   theme_classic()
 
+all_H3K27ac_regions %>%  
+  mutate(group="H3K27ac") %>% 
+  left_join(., H3K27ac_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  group_by(cluster) %>% 
+  tally(name = "n_ROIs") %>% 
+  ungroup() %>% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left;",
+      "H3K27ac ROI counts per cluster"
+    ),
+    options = list(
+      pageLength = 10,
+      autoWidth = TRUE,
+      dom = "tip"
+    )
+  )
 ```
 
 
@@ -693,6 +712,27 @@ all_H3K27me3_regions %>%
   ggtitle("H3K27me3 proportions of ROIs")+
   theme_classic()
 
+
+
+all_H3K27me3_regions %>%  
+  mutate(group="H3K27me3") %>% 
+  left_join(., H3K27me3_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  group_by(cluster) %>% 
+  tally(name = "n_ROIs") %>% 
+  ungroup() %>% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left;",
+      "H3K27me3 ROI counts per cluster"
+    ),
+    options = list(
+      pageLength = 10,
+      autoWidth = TRUE,
+      dom = "tip"
+    )
+  )
 ```
 
 
@@ -992,6 +1032,29 @@ all_H3K36me3_regions %>%
   ggtitle("H3K36me3 proportions of ROIs")+
   theme_classic()
 
+
+all_H3K36me3_regions %>%  
+  mutate(group="H3K36me3") %>% 
+  left_join(., H3K36me3_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  group_by(cluster) %>% 
+  tally(name = "n_ROIs") %>% 
+  ungroup() %>% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left;",
+      "H3K36me3 ROI counts per cluster"
+    ),
+    options = list(
+      pageLength = 10,
+      autoWidth = TRUE,
+      dom = "tip",
+      columnDefs = list(
+        list(className = "dt-head-center", targets = "_all"),
+        list(className = "dt-center", targets = "_all")
+      )
+  ))
 ```
 
 
@@ -1318,7 +1381,7 @@ all_H3K9me3_regions %>%
   left_join(., H3K9me3_lookup) %>% 
    tidyr::replace_na(list(cluster = "NA")) %>% 
   mutate(cluster=factor(cluster, levels = c("Set_1","Set_2","Set_3","NA"))) %>% 
-  ggplot(., aes(x=cluster,y = after_stat(prop),fill=cluster, group=1))+
+  ggplot(., aes(x=cluster,y = after_stat(prop), group=1))+
   geom_bar(aes(stat="count"))+
   geom_text(aes( label = scales::percent(after_stat(prop))),
             stat= "count", vjust = -.5)+
@@ -1329,6 +1392,26 @@ all_H3K9me3_regions %>%
   ggtitle("H3K9me3 proportions of ROIs")+
   theme_classic()
 
+
+all_H3K9me3_regions %>%  
+  mutate(group="H3K9me3") %>% 
+  left_join(., H3K9me3_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  group_by(cluster) %>% 
+  tally(name = "n_ROIs") %>% 
+  ungroup() %>% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left;",
+      "H3K9me3 ROI counts per cluster"
+    ),
+    options = list(
+      pageLength = 10,
+      autoWidth = TRUE,
+      dom = "tip"
+    )
+  )
 ```
 #### LFC H3K9me3
   Set1
