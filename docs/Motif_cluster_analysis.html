@@ -37,6 +37,15 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -390,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-01-20
+<strong>Last updated:</strong> 2026-01-30
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeaecae6bfee0f2a33e30a8bd5f1edb3a3ba206fc6targetblankaecae6ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree0886e0db4b5ba420ffe2e4f9b4d69a976c623b5atargetblank0886e0da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/aecae6bfee0f2a33e30a8bd5f1edb3a3ba206fc6" target="_blank">aecae6b</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/0886e0db4b5ba420ffe2e4f9b4d69a976c623b5a" target="_blank">0886e0d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeaecae6bfee0f2a33e30a8bd5f1edb3a3ba206fc6targetblankaecae6ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree0886e0db4b5ba420ffe2e4f9b4d69a976c623b5atargetblank0886e0da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/aecae6bfee0f2a33e30a8bd5f1edb3a3ba206fc6" target="_blank">aecae6b</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/0886e0db4b5ba420ffe2e4f9b4d69a976c623b5a" target="_blank">0886e0d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -572,22 +581,25 @@ Ignored files:
 Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
     Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  analysis/ATAC_integration_data1.Rmd
     Untracked:  analysis/GREAT_H3K27ac.Rmd
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_TE_investigation.Rmd
     Untracked:  analysis/H3K27ac_cisRE.Rmd
+    Untracked:  analysis/H3K27me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K36me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K9me3_TE_investigation.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
-    Untracked:  analysis/chromHMM.Rmd
+    Untracked:  analysis/dual_histone_TE_investigation.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
-    Untracked:  code/ZNF_genes_bedfile_creation.R
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27_TE_overlap_extend.Rmd
     Modified:   analysis/H3K27ac_RNA_integration.Rmd
     Modified:   analysis/H3K27ac_TF_motifs.Rmd
+    Modified:   analysis/chromHMM.Rmd
     Modified:   analysis/final_analysis.Rmd
-    Modified:   analysis/repeatmasker_data.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
 </code></pre>
@@ -634,6 +646,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0886e0db4b5ba420ffe2e4f9b4d69a976c623b5a/analysis/Motif_cluster_analysis.Rmd" target="_blank">0886e0d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+<td>
+adding in stats and counts
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/916fa970366ba57014e8fa99e5378aa1b98cf51c/analysis/Motif_cluster_analysis.Rmd" target="_blank">916fa97</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+<td>
+wflow_publish("analysis/Motif_cluster_analysis.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/95e92c166f46fe7fbbe125610cd6171c6a637d25/docs/Motif_cluster_analysis.html" target="_blank">95e92c1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1364,6 +1427,59 @@ reneeisnowhere
 </div>
 </div>
 </div>
+<div id="histone-proportions" class="section level4">
+<h4>Histone proportions</h4>
+<pre class="r"><code>H3K27ac_lookup &lt;- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+all_H3K27ac_regions %&gt;%  
+  mutate(group=&quot;H3K27ac&quot;) %&gt;% 
+  left_join(., H3K27ac_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  ggplot(., aes(y=group,fill=cluster))+
+  geom_bar()+
+  geom_text(aes( label = scales::percent(..prop..),
+                   x= ..prop.. ), stat= &quot;count&quot;, vjust = -.5)+
+  ggtitle(&quot;H3K27ac proportions of ROIs&quot;)+
+  theme_classic()</code></pre>
+<p><img src="figure/Motif_cluster_analysis.Rmd/H3K27ac%20histone%20prop-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>all_H3K27ac_regions %&gt;%  
+  mutate(group=&quot;H3K27ac&quot;) %&gt;% 
+  left_join(., H3K27ac_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  mutate(cluster=factor(cluster, levels = c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;Set_3&quot;,&quot;NA&quot;))) %&gt;% 
+  ggplot(., aes(x=cluster,y = after_stat(prop),fill=cluster, group=1))+
+  geom_bar(aes(stat=&quot;count&quot;))+
+  geom_text(aes( label = scales::percent(after_stat(prop))),
+            stat= &quot;count&quot;, vjust = -.5)+
+  scale_y_continuous(
+    labels = scales::percent,
+    expand = expansion(mult = c(0, 0.1))
+  ) +
+  ggtitle(&quot;H3K27ac proportions of ROIs&quot;)+
+  theme_classic()</code></pre>
+<p><img src="figure/Motif_cluster_analysis.Rmd/H3K27ac%20histone%20prop-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>all_H3K27ac_regions %&gt;%  
+  mutate(group=&quot;H3K27ac&quot;) %&gt;% 
+  left_join(., H3K27ac_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  group_by(cluster) %&gt;% 
+  tally(name = &quot;n_ROIs&quot;) %&gt;% 
+  ungroup() %&gt;% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = &quot;caption-side: top; text-align: left;&quot;,
+      &quot;H3K27ac ROI counts per cluster&quot;
+    ),
+    options = list(
+      pageLength = 10,
+      autoWidth = TRUE,
+      dom = &quot;tip&quot;
+    )
+  )</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-c7fc7fd0704f0fe11c1f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: left;\">H3K27ac ROI counts per cluster<\/caption>","data":[["NA","Set_1","Set_2","Set_3"],[31979,110084,1385,6623]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>n_ROIs<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"dom":"tip","columnDefs":[{"className":"dt-right","targets":1},{"name":"cluster","targets":0},{"name":"n_ROIs","targets":1}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
 <div id="lfc-h3k27ac" class="section level4">
 <h4>LFC H3K27ac</h4>
 <p>Set1</p>
@@ -1628,6 +1744,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/95e92c166f46fe7fbbe125610cd6171c6a637d25/docs/figure/Motif_cluster_analysis.Rmd/H3K27ac line plot LFC set 3-1.png" target="_blank">95e92c1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1ce5e7155a8f8bcd92e85a971ea7b5b5fe9a367d/docs/figure/Motif_cluster_analysis.Rmd/H3K27ac line plot LFC set 3-1.png" target="_blank">1ce5e71</a>
@@ -2085,6 +2212,59 @@ reneeisnowhere
 </table>
 </div>
 </div>
+</div>
+<div id="histone-proportions-1" class="section level4">
+<h4>Histone proportions</h4>
+<pre class="r"><code>H3K27me3_lookup &lt;- imap_dfr(peakAnnoList_H3K27me3[1:2], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+all_H3K27me3_regions %&gt;%  
+  mutate(group=&quot;H3K27me3&quot;) %&gt;% 
+  left_join(., H3K27me3_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  ggplot(., aes(y=group,fill=cluster))+
+  geom_bar()+
+  geom_text(aes( label = scales::percent(..prop..),
+                   x= ..prop.. ), stat= &quot;count&quot;, vjust = -.5)+
+  ggtitle(&quot;H3K27me3 proportions of ROIs&quot;)+
+  theme_classic()</code></pre>
+<p><img src="figure/Motif_cluster_analysis.Rmd/H3K27me3%20histone%20prop-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>all_H3K27me3_regions %&gt;%  
+  mutate(group=&quot;H3K27me3&quot;) %&gt;% 
+  left_join(., H3K27me3_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  mutate(cluster=factor(cluster, levels = c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;NA&quot;))) %&gt;% 
+  ggplot(., aes(x=cluster,y = after_stat(prop),fill=cluster, group=1))+
+  geom_bar(aes(stat=&quot;count&quot;))+
+  geom_text(aes( label = scales::percent(after_stat(prop))),
+            stat= &quot;count&quot;, vjust = -.5)+
+  scale_y_continuous(
+    labels = scales::percent,
+    expand = expansion(mult = c(0, 0.1))
+  ) +
+  ggtitle(&quot;H3K27me3 proportions of ROIs&quot;)+
+  theme_classic()</code></pre>
+<p><img src="figure/Motif_cluster_analysis.Rmd/H3K27me3%20histone%20prop-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>all_H3K27me3_regions %&gt;%  
+  mutate(group=&quot;H3K27me3&quot;) %&gt;% 
+  left_join(., H3K27me3_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  group_by(cluster) %&gt;% 
+  tally(name = &quot;n_ROIs&quot;) %&gt;% 
+  ungroup() %&gt;% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = &quot;caption-side: top; text-align: left;&quot;,
+      &quot;H3K27me3 ROI counts per cluster&quot;
+    ),
+    options = list(
+      pageLength = 10,
+      autoWidth = TRUE,
+      dom = &quot;tip&quot;
+    )
+  )</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1aee943cb026952af47d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: left;\">H3K27me3 ROI counts per cluster<\/caption>","data":[["NA","Set_1","Set_2"],[1318,148911,235]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>n_ROIs<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"dom":"tip","columnDefs":[{"className":"dt-right","targets":1},{"name":"cluster","targets":0},{"name":"n_ROIs","targets":1}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="lfc-h3k27me3" class="section level4">
 <h4>LFC H3K27me3</h4>
@@ -2706,6 +2886,62 @@ reneeisnowhere
 </table>
 </div>
 </div>
+</div>
+<div id="histone-proportions-2" class="section level4">
+<h4>Histone proportions</h4>
+<pre class="r"><code>H3K36me3_lookup &lt;- imap_dfr(peakAnnoList_H3K36me3[1:2], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+all_H3K36me3_regions %&gt;%  
+  mutate(group=&quot;H3K36me3&quot;) %&gt;% 
+  left_join(., H3K36me3_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  ggplot(., aes(y=group,fill=cluster))+
+  geom_bar()+
+  geom_text(aes( label = scales::percent(..prop..),
+                   x= ..prop.. ), stat= &quot;count&quot;, vjust = -.5)+
+  ggtitle(&quot;H3K36me3 proportions of ROIs&quot;)+
+  theme_classic()</code></pre>
+<p><img src="figure/Motif_cluster_analysis.Rmd/H3K36me3%20histone%20prop-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>all_H3K36me3_regions %&gt;%  
+  mutate(group=&quot;H3K36me3&quot;) %&gt;% 
+  left_join(., H3K36me3_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  mutate(cluster=factor(cluster, levels = c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;NA&quot;))) %&gt;% 
+  ggplot(., aes(x=cluster,y = after_stat(prop), group=1))+
+  geom_bar(aes(stat=&quot;count&quot;))+
+  geom_text(aes( label = scales::percent(after_stat(prop))),
+            stat= &quot;count&quot;, vjust = -.5)+
+  scale_y_continuous(
+    labels = scales::percent,
+    expand = expansion(mult = c(0, 0.1))
+  ) +
+  ggtitle(&quot;H3K36me3 proportions of ROIs&quot;)+
+  theme_classic()</code></pre>
+<p><img src="figure/Motif_cluster_analysis.Rmd/H3K36me3%20histone%20prop-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>all_H3K36me3_regions %&gt;%  
+  mutate(group=&quot;H3K36me3&quot;) %&gt;% 
+  left_join(., H3K36me3_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  group_by(cluster) %&gt;% 
+  tally(name = &quot;n_ROIs&quot;) %&gt;% 
+  ungroup() %&gt;% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = &quot;caption-side: top; text-align: left;&quot;,
+      &quot;H3K36me3 ROI counts per cluster&quot;
+    ),
+    options = list(
+      pageLength = 10,
+      autoWidth = TRUE,
+      dom = &quot;tip&quot;,
+      columnDefs = list(
+        list(className = &quot;dt-head-center&quot;, targets = &quot;_all&quot;),
+        list(className = &quot;dt-center&quot;, targets = &quot;_all&quot;)
+      )
+  ))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-15ac70e14e0faa7e6fac" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: left;\">H3K36me3 ROI counts per cluster<\/caption>","data":[["NA","Set_1","Set_2"],[53310,131856,1558]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>n_ROIs<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"dom":"tip","columnDefs":[{"className":"dt-head-center","targets":"_all"},{"className":"dt-center","targets":"_all"},{"name":"cluster","targets":0},{"name":"n_ROIs","targets":1}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="lfc-h3k36me3" class="section level4">
 <h4>LFC H3K36me3</h4>
@@ -3438,6 +3674,59 @@ reneeisnowhere
 </div>
 </div>
 </div>
+<div id="histone-proportions-3" class="section level4">
+<h4>Histone proportions</h4>
+<pre class="r"><code>H3K9me3_lookup &lt;- imap_dfr(peakAnnoList_H3K9me3[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+all_H3K9me3_regions %&gt;%  
+  mutate(group=&quot;H3K9me3&quot;) %&gt;% 
+  left_join(., H3K9me3_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  ggplot(., aes(y=group,fill=cluster))+
+  geom_bar()+
+  geom_text(aes( label = scales::percent(..prop..),
+                   x= ..prop.. ), stat= &quot;count&quot;, vjust = -.5)+
+  ggtitle(&quot;H3K9me3 proportions of ROIs&quot;)+
+  theme_classic()</code></pre>
+<p><img src="figure/Motif_cluster_analysis.Rmd/H3K9me3%20histone%20prop-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>all_H3K9me3_regions %&gt;%  
+  mutate(group=&quot;H3K9me3&quot;) %&gt;% 
+  left_join(., H3K9me3_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  mutate(cluster=factor(cluster, levels = c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;Set_3&quot;,&quot;NA&quot;))) %&gt;% 
+  ggplot(., aes(x=cluster,y = after_stat(prop), group=1))+
+  geom_bar(aes(stat=&quot;count&quot;))+
+  geom_text(aes( label = scales::percent(after_stat(prop))),
+            stat= &quot;count&quot;, vjust = -.5)+
+  scale_y_continuous(
+    labels = scales::percent,
+    expand = expansion(mult = c(0, 0.1))
+  ) +
+  ggtitle(&quot;H3K9me3 proportions of ROIs&quot;)+
+  theme_classic()</code></pre>
+<p><img src="figure/Motif_cluster_analysis.Rmd/H3K9me3%20histone%20prop-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>all_H3K9me3_regions %&gt;%  
+  mutate(group=&quot;H3K9me3&quot;) %&gt;% 
+  left_join(., H3K9me3_lookup) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
+  group_by(cluster) %&gt;% 
+  tally(name = &quot;n_ROIs&quot;) %&gt;% 
+  ungroup() %&gt;% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = &quot;caption-side: top; text-align: left;&quot;,
+      &quot;H3K9me3 ROI counts per cluster&quot;
+    ),
+    options = list(
+      pageLength = 10,
+      autoWidth = TRUE,
+      dom = &quot;tip&quot;
+    )
+  )</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-686cfa6b0ab6d13cf646" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-686cfa6b0ab6d13cf646">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: left;\">H3K9me3 ROI counts per cluster<\/caption>","data":[["NA","Set_1","Set_2","Set_3"],[18017,196147,3494,989]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>n_ROIs<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"dom":"tip","columnDefs":[{"className":"dt-right","targets":1},{"name":"cluster","targets":0},{"name":"n_ROIs","targets":1}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
 <div id="lfc-h3k9me3" class="section level4">
 <h4>LFC H3K9me3</h4>
 <p>Set1</p>
@@ -3704,6 +3993,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/95e92c166f46fe7fbbe125610cd6171c6a637d25/docs/figure/Motif_cluster_analysis.Rmd/H3K9me3 line plot LFC set 3-1.png" target="_blank">95e92c1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1ce5e7155a8f8bcd92e85a971ea7b5b5fe9a367d/docs/figure/Motif_cluster_analysis.Rmd/H3K9me3 line plot LFC set 3-1.png" target="_blank">1ce5e71</a>
 </td>
 <td>
@@ -3950,137 +4250,138 @@ loaded via a namespace (and not attached):
  [36] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
  [37] shape_1.4.6.1                          
  [38] BiocIO_1.16.0                          
- [39] vroom_1.6.5                            
- [40] gtools_3.9.5                           
- [41] car_3.1-3                              
- [42] GO.db_3.20.0                           
- [43] Matrix_1.7-3                           
- [44] ggbeeswarm_0.7.2                       
- [45] abind_1.4-8                            
- [46] R.methodsS3_1.8.2                      
- [47] lifecycle_1.0.4                        
- [48] whisker_0.4.1                          
- [49] yaml_2.3.10                            
- [50] carData_3.0-5                          
- [51] SummarizedExperiment_1.36.0            
- [52] gplots_3.2.0                           
- [53] qvalue_2.38.0                          
- [54] SparseArray_1.6.2                      
- [55] blob_1.2.4                             
- [56] promises_1.3.3                         
- [57] crayon_1.5.3                           
- [58] ggtangle_0.0.7                         
- [59] lattice_0.22-7                         
- [60] KEGGREST_1.46.0                        
- [61] pillar_1.11.0                          
- [62] knitr_1.50                             
- [63] fgsea_1.32.4                           
- [64] rjson_0.2.23                           
- [65] boot_1.3-32                            
- [66] codetools_0.2-20                       
- [67] fastmatch_1.1-6                        
- [68] glue_1.8.0                             
- [69] getPass_0.2-4                          
- [70] ggfun_0.2.0                            
- [71] treeio_1.30.0                          
- [72] vctrs_0.6.5                            
- [73] png_0.1-8                              
- [74] gtable_0.3.6                           
- [75] cachem_1.1.0                           
- [76] xfun_0.52                              
- [77] S4Arrays_1.6.0                         
- [78] survival_3.8-3                         
- [79] iterators_1.0.14                       
- [80] statmod_1.5.0                          
- [81] nlme_3.1-168                           
- [82] ggtree_3.14.0                          
- [83] bit64_4.6.0-1                          
- [84] rprojroot_2.1.1                        
- [85] bslib_0.9.0                            
- [86] vipor_0.4.7                            
- [87] KernSmooth_2.23-26                     
- [88] rpart_4.1.24                           
- [89] colorspace_2.1-1                       
- [90] DBI_1.2.3                              
- [91] Hmisc_5.2-3                            
- [92] seqPattern_1.38.0                      
- [93] nnet_7.3-20                            
- [94] tidyselect_1.2.1                       
- [95] processx_3.8.6                         
- [96] bit_4.6.0                              
- [97] compiler_4.4.2                         
- [98] curl_7.0.0                             
- [99] git2r_0.36.2                           
-[100] htmlTable_2.4.3                        
-[101] SparseM_1.84-2                         
-[102] xml2_1.4.0                             
-[103] DelayedArray_0.32.0                    
-[104] rtracklayer_1.66.0                     
-[105] caTools_1.18.3                         
-[106] checkmate_2.3.3                        
-[107] scales_1.4.0                           
-[108] callr_3.7.6                            
-[109] rappdirs_0.3.3                         
-[110] digest_0.6.37                          
-[111] rmarkdown_2.29                         
-[112] XVector_0.46.0                         
-[113] htmltools_0.5.8.1                      
-[114] pkgconfig_2.0.3                        
-[115] base64enc_0.1-3                        
-[116] MatrixGenerics_1.18.1                  
-[117] fastmap_1.2.0                          
-[118] rlang_1.1.6                            
-[119] GlobalOptions_0.1.2                    
-[120] htmlwidgets_1.6.4                      
-[121] UCSC.utils_1.2.0                       
-[122] farver_2.1.2                           
-[123] jquerylib_0.1.4                        
-[124] zoo_1.8-14                             
-[125] jsonlite_2.0.0                         
-[126] GOSemSim_2.32.0                        
-[127] R.oo_1.27.1                            
-[128] RCurl_1.98-1.17                        
-[129] magrittr_2.0.3                         
-[130] polynom_1.4-1                          
-[131] Formula_1.2-5                          
-[132] GenomeInfoDbData_1.2.13                
-[133] ggplotify_0.1.2                        
-[134] patchwork_1.3.2                        
-[135] Rcpp_1.1.0                             
-[136] ape_5.8-1                              
-[137] stringi_1.8.7                          
-[138] zlibbioc_1.52.0                        
-[139] MASS_7.3-65                            
-[140] plyr_1.8.9                             
-[141] ggrepel_0.9.6                          
-[142] parallel_4.4.2                         
-[143] Biostrings_2.74.1                      
-[144] splines_4.4.2                          
-[145] hms_1.1.3                              
-[146] circlize_0.4.16                        
-[147] locfit_1.5-9.12                        
-[148] ps_1.9.1                               
-[149] igraph_2.1.4                           
-[150] reshape2_1.4.4                         
-[151] XML_3.99-0.18                          
-[152] evaluate_1.0.5                         
-[153] tzdb_0.5.0                             
-[154] foreach_1.5.2                          
-[155] httpuv_1.6.16                          
-[156] MatrixModels_0.5-4                     
-[157] clue_0.3-66                            
-[158] gridBase_0.4-7                         
-[159] broom_1.0.9                            
-[160] restfulr_0.0.16                        
-[161] tidytree_0.4.6                         
-[162] rstatix_0.7.2                          
-[163] later_1.4.2                            
-[164] aplot_0.2.8                            
-[165] memoise_2.0.1                          
-[166] beeswarm_0.4.0                         
-[167] GenomicAlignments_1.42.0               
-[168] cluster_2.1.8.1                        
-[169] timechange_0.3.0                       </code></pre>
+ [39] crosstalk_1.2.2                        
+ [40] vroom_1.6.5                            
+ [41] gtools_3.9.5                           
+ [42] car_3.1-3                              
+ [43] GO.db_3.20.0                           
+ [44] Matrix_1.7-3                           
+ [45] ggbeeswarm_0.7.2                       
+ [46] abind_1.4-8                            
+ [47] R.methodsS3_1.8.2                      
+ [48] lifecycle_1.0.4                        
+ [49] whisker_0.4.1                          
+ [50] yaml_2.3.10                            
+ [51] carData_3.0-5                          
+ [52] SummarizedExperiment_1.36.0            
+ [53] gplots_3.2.0                           
+ [54] qvalue_2.38.0                          
+ [55] SparseArray_1.6.2                      
+ [56] blob_1.2.4                             
+ [57] promises_1.3.3                         
+ [58] crayon_1.5.3                           
+ [59] ggtangle_0.0.7                         
+ [60] lattice_0.22-7                         
+ [61] KEGGREST_1.46.0                        
+ [62] pillar_1.11.0                          
+ [63] knitr_1.50                             
+ [64] fgsea_1.32.4                           
+ [65] rjson_0.2.23                           
+ [66] boot_1.3-32                            
+ [67] codetools_0.2-20                       
+ [68] fastmatch_1.1-6                        
+ [69] glue_1.8.0                             
+ [70] getPass_0.2-4                          
+ [71] ggfun_0.2.0                            
+ [72] treeio_1.30.0                          
+ [73] vctrs_0.6.5                            
+ [74] png_0.1-8                              
+ [75] gtable_0.3.6                           
+ [76] cachem_1.1.0                           
+ [77] xfun_0.52                              
+ [78] S4Arrays_1.6.0                         
+ [79] survival_3.8-3                         
+ [80] iterators_1.0.14                       
+ [81] statmod_1.5.0                          
+ [82] nlme_3.1-168                           
+ [83] ggtree_3.14.0                          
+ [84] bit64_4.6.0-1                          
+ [85] rprojroot_2.1.1                        
+ [86] bslib_0.9.0                            
+ [87] vipor_0.4.7                            
+ [88] KernSmooth_2.23-26                     
+ [89] rpart_4.1.24                           
+ [90] colorspace_2.1-1                       
+ [91] DBI_1.2.3                              
+ [92] Hmisc_5.2-3                            
+ [93] seqPattern_1.38.0                      
+ [94] nnet_7.3-20                            
+ [95] tidyselect_1.2.1                       
+ [96] processx_3.8.6                         
+ [97] bit_4.6.0                              
+ [98] compiler_4.4.2                         
+ [99] curl_7.0.0                             
+[100] git2r_0.36.2                           
+[101] htmlTable_2.4.3                        
+[102] SparseM_1.84-2                         
+[103] xml2_1.4.0                             
+[104] DelayedArray_0.32.0                    
+[105] rtracklayer_1.66.0                     
+[106] caTools_1.18.3                         
+[107] checkmate_2.3.3                        
+[108] scales_1.4.0                           
+[109] callr_3.7.6                            
+[110] rappdirs_0.3.3                         
+[111] digest_0.6.37                          
+[112] rmarkdown_2.29                         
+[113] XVector_0.46.0                         
+[114] htmltools_0.5.8.1                      
+[115] pkgconfig_2.0.3                        
+[116] base64enc_0.1-3                        
+[117] MatrixGenerics_1.18.1                  
+[118] fastmap_1.2.0                          
+[119] rlang_1.1.6                            
+[120] GlobalOptions_0.1.2                    
+[121] htmlwidgets_1.6.4                      
+[122] UCSC.utils_1.2.0                       
+[123] farver_2.1.2                           
+[124] jquerylib_0.1.4                        
+[125] zoo_1.8-14                             
+[126] jsonlite_2.0.0                         
+[127] GOSemSim_2.32.0                        
+[128] R.oo_1.27.1                            
+[129] RCurl_1.98-1.17                        
+[130] magrittr_2.0.3                         
+[131] polynom_1.4-1                          
+[132] Formula_1.2-5                          
+[133] GenomeInfoDbData_1.2.13                
+[134] ggplotify_0.1.2                        
+[135] patchwork_1.3.2                        
+[136] Rcpp_1.1.0                             
+[137] ape_5.8-1                              
+[138] stringi_1.8.7                          
+[139] zlibbioc_1.52.0                        
+[140] MASS_7.3-65                            
+[141] plyr_1.8.9                             
+[142] ggrepel_0.9.6                          
+[143] parallel_4.4.2                         
+[144] Biostrings_2.74.1                      
+[145] splines_4.4.2                          
+[146] hms_1.1.3                              
+[147] circlize_0.4.16                        
+[148] locfit_1.5-9.12                        
+[149] ps_1.9.1                               
+[150] igraph_2.1.4                           
+[151] reshape2_1.4.4                         
+[152] XML_3.99-0.18                          
+[153] evaluate_1.0.5                         
+[154] tzdb_0.5.0                             
+[155] foreach_1.5.2                          
+[156] httpuv_1.6.16                          
+[157] MatrixModels_0.5-4                     
+[158] clue_0.3-66                            
+[159] gridBase_0.4-7                         
+[160] broom_1.0.9                            
+[161] restfulr_0.0.16                        
+[162] tidytree_0.4.6                         
+[163] rstatix_0.7.2                          
+[164] later_1.4.2                            
+[165] aplot_0.2.8                            
+[166] memoise_2.0.1                          
+[167] beeswarm_0.4.0                         
+[168] GenomicAlignments_1.42.0               
+[169] cluster_2.1.8.1                        
+[170] timechange_0.3.0                       </code></pre>
 </div>
 </div>
 </div>
