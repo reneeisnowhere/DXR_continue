@@ -66,8 +66,9 @@ Looking at finalized assigned cluster sets and characteristics
 
 [TE overlaps of ROI summits-H3K27me3](https://reneeisnowhere.github.io/DXR_continue/H3K27me3_TE_overlap.html)  
 
+###  TEs and ROIs
 
-
+[Looking at TE families across histones](https://reneeisnowhere.github.io/DXR_continue/dual_histone_TE_investigation.html)  
 
 ### Summit and transcription factor motif enrichment data
 
