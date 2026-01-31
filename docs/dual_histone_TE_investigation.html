@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5d99b72bef4af1941ce6bedd7f0c1f13b9646b59targetblank5d99b72a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree1cf92f0dd0eb1a61fd0a9bbf37c69b7aaa87206btargetblank1cf92f0a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5d99b72bef4af1941ce6bedd7f0c1f13b9646b59" target="_blank">5d99b72</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/1cf92f0dd0eb1a61fd0a9bbf37c69b7aaa87206b" target="_blank">1cf92f0</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5d99b72bef4af1941ce6bedd7f0c1f13b9646b59targetblank5d99b72a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree1cf92f0dd0eb1a61fd0a9bbf37c69b7aaa87206btargetblank1cf92f0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5d99b72bef4af1941ce6bedd7f0c1f13b9646b59" target="_blank">5d99b72</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/1cf92f0dd0eb1a61fd0a9bbf37c69b7aaa87206b" target="_blank">1cf92f0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -645,6 +645,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1cf92f0dd0eb1a61fd0a9bbf37c69b7aaa87206b/analysis/dual_histone_TE_investigation.Rmd" target="_blank">1cf92f0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+<td>
+updates to plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/dual_histone_TE_investigation.html" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -822,7 +856,9 @@ K9me3_lfctable &lt;- H3K9me3_toptable_list %&gt;%
 
 K27ac_lfctable &lt;- H3K27ac_toptable_list %&gt;% 
   dplyr::select(group,genes, logFC) %&gt;% 
-  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC)</code></pre>
+  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC)
+
+cluster_colors &lt;- c(&quot;Set_1&quot; = &quot;#d93e40&quot;,&quot;Set_2&quot; = &quot;#1c9f50&quot;,&quot;Set_3&quot; = &quot;#3570b3&quot;,&quot;NA&quot;  =&quot;grey70&quot;)</code></pre>
 <div id="sine" class="section level3">
 <h3>SINE</h3>
 <p>Overlapping SINE family with ROIs</p>
@@ -1261,29 +1297,33 @@ K27ac_rmid_lfc &lt;- data_frame(RM_id=common_LTR_RMs) %&gt;%
             .groups=&quot;drop&quot;) %&gt;% 
    tidyr::replace_na(list(cluster = &quot;NA&quot;))
 
-K9me3_rmid_lfc &lt;- data_frame(RM_id=common_LTR_RMs) %&gt;% 
+K9me3_rmid_lfc &lt;-
+data_frame(RM_id=common_LTR_RMs) %&gt;% 
   left_join(.,(LTR_overlap_df_H3K9me3 %&gt;% 
     dplyr::filter(RM_id %in% common_LTR_RMs) %&gt;% 
     distinct(RM_id,Peakid, .keep_all = TRUE) %&gt;% 
     mutate(K9me3_Peakid=Peakid) %&gt;% 
     dplyr::select(RM_id, K9me3_Peakid))) %&gt;% 
   left_join(K9me3_lfctable, by =c(&quot;K9me3_Peakid&quot;=&quot;genes&quot;)) %&gt;% 
+  left_join(., H3K9me3_lookup,by =c(&quot;K9me3_Peakid&quot;=&quot;Peakid&quot;)) %&gt;% 
   group_by(RM_id) %&gt;% 
   summarize(K9me3_24T=mean(H3K9me3_24T, na.rm=TRUE),
              K9me3_24R=mean(H3K9me3_24R,na.rm=TRUE),
              K9me3_144R=mean(H3K9me3_144R, na.rm=TRUE),
+            cluster=dplyr::first(cluster),
             n_K9me3_peaks = dplyr::n(),
-            .groups=&quot;drop&quot;)
+            .groups=&quot;drop&quot;) %&gt;% 
+   tidyr::replace_na(list(cluster = &quot;NA&quot;))
 
 
 
 LTR_RM_lfc_concordance &lt;- tibble(RM_id = common_LTR_RMs) %&gt;%
   left_join(K27ac_rmid_lfc, by = &quot;RM_id&quot;) %&gt;%
-  left_join(K9me3_rmid_lfc,  by = &quot;RM_id&quot;)</code></pre>
+  left_join(K9me3_rmid_lfc,  by = &quot;RM_id&quot;) </code></pre>
 <p>Now to try to visualize this concordance. I am specifically looking
 at TEs that up in one and down in another.</p>
 <pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
-  ggplot(., aes(x=K27ac_24T, y=K9me3_24T, color=cluster))+
+  ggplot(., aes(x=K27ac_24T, y=K9me3_24T, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= &quot;black&quot;)+
    # sm_statCorr(corr_method=&quot;spearman&quot;)+
@@ -1294,7 +1334,8 @@ at TEs that up in one and down in another.</p>
     y = &quot;H3K9me3 logFC (24T)&quot;,
     title = &quot;Concordance of chromatin changes at shared LTRs for 24T&quot;
   ) +
-  theme_classic()</code></pre>
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-K9K27ac-plot-1">
@@ -1334,7 +1375,7 @@ reneeisnowhere
 </div>
 </div>
 <pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
-  ggplot(., aes(x=K27ac_24R, y=K9me3_24R, color=cluster))+
+  ggplot(., aes(x=K27ac_24R, y=K9me3_24R, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= &quot;black&quot;)+
    # sm_statCorr(corr_method=&quot;spearman&quot;)+
@@ -1345,7 +1386,8 @@ reneeisnowhere
     y = &quot;H3K9me3 logFC (24R)&quot;,
     title = &quot;Concordance of chromatin changes at shared LTRs for 24R&quot;
   ) +
-  theme_classic()</code></pre>
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-K9K27ac-plot-2">
@@ -1385,7 +1427,7 @@ reneeisnowhere
 </div>
 </div>
 <pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
-  ggplot(., aes(x=K27ac_144R, y=K9me3_144R, color=cluster))+
+  ggplot(., aes(x=K27ac_144R, y=K9me3_144R, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= &quot;black&quot;)+
      # sm_statCorr(corr_method=&quot;spearman&quot;)+
@@ -1397,7 +1439,8 @@ reneeisnowhere
     y = &quot;H3K9me3 logFC (144R)&quot;,
     title = &quot;Concordance of chromatin changes at shared LTRs for 144R&quot;
   ) +
-  theme_classic()</code></pre>
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-3.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-K9K27ac-plot-3">
@@ -1437,7 +1480,7 @@ reneeisnowhere
 </div>
 </div>
 <pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
-  ggplot(., aes(x=K27ac_24T, y=K27ac_24R, color=cluster))+
+  ggplot(., aes(x=K27ac_24T, y=K27ac_24R, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= &quot;black&quot;)+
    # sm_statCorr(corr_method=&quot;spearman&quot;)+
@@ -1445,13 +1488,51 @@ reneeisnowhere
   geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color=&quot;red&quot;) +
   labs(
     x = &quot;H3K27ac logFC (24T)&quot;,
-    y = &quot;H3K9me3 logFC (24T)&quot;,
+    y = &quot;H3K27ac logFC (24R)&quot;,
     title = &quot;Concordance of chromatin changes at shared LTRs for 24T v 24R H3K27ac&quot;
   ) +
-  theme_classic()</code></pre>
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-K9K27ac-plot-4">
+Past versions of "LTR K9K27ac plot-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-K9K27ac-plot-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/LTR K9K27ac plot-4.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
-  ggplot(., aes(x=K27ac_24T, y=K27ac_144R, color=cluster))+
+  ggplot(., aes(x=K27ac_24T, y=K27ac_144R, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= &quot;black&quot;)+
    # sm_statCorr(corr_method=&quot;spearman&quot;)+
@@ -1459,25 +1540,101 @@ reneeisnowhere
   geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color=&quot;red&quot;) +
   labs(
     x = &quot;H3K27ac logFC (24T)&quot;,
-    y = &quot;H3K9me3 logFC (24T)&quot;,
+    y = &quot;H3K27ac logFC (144R)&quot;,
     title = &quot;Concordance of chromatin changes at shared LTRs for 24T v 144R H3K27ac&quot;
   ) +
-  theme_classic()</code></pre>
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-K9K27ac-plot-5">
+Past versions of "LTR K9K27ac plot-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-K9K27ac-plot-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/LTR K9K27ac plot-5.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>LTR_RM_lfc_concordance %&gt;% 
-  ggplot(., aes(x=K27ac_24R, y=K27ac_144R, color=cluster))+
+  ggplot(., aes(x=K27ac_24R, y=K27ac_144R, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= &quot;black&quot;)+
-   # sm_statCorr(corr_method=&quot;spearman&quot;)+
+   sm_statCorr(corr_method=&quot;spearman&quot;)+
    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color=&quot;red&quot;) +
   geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color=&quot;red&quot;) +
   labs(
-    x = &quot;H3K27ac logFC (24T)&quot;,
-    y = &quot;H3K9me3 logFC (24T)&quot;,
+    x = &quot;H3K27ac logFC (24R)&quot;,
+    y = &quot;H3K27ac logFC (144)&quot;,
     title = &quot;Concordance of chromatin changes at shared LTRs for 24R v 144R H3K27ac&quot;
   ) +
-  theme_classic()</code></pre>
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/LTR%20K9K27ac%20plot-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-K9K27ac-plot-6">
+Past versions of "LTR K9K27ac plot-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-K9K27ac-plot-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/LTR K9K27ac plot-6.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>K27ac_unfiltered_long &lt;- K27ac_lfctable %&gt;% 
   left_join(H3K27ac_lookup, by = c(&quot;genes&quot; = &quot;Peakid&quot;)) %&gt;% 
   tidyr::replace_na(list(cluster = &quot;NA&quot;)) %&gt;% 
@@ -1517,7 +1674,8 @@ K9me3_median_unfilt_lfc %&gt;%
   geom_point(size=4)+
   geom_line(aes(alpha = 0.8, linewidth = 4))+
   theme_bw()+
-  ggtitle(&quot;LFC across time for H3K27ac sets&quot;)</code></pre>
+  ggtitle(&quot;LFC across time for H3K9me3 sets&quot;)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
@@ -1579,7 +1737,8 @@ ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
   geom_line(data=K27ac_median_unfilt_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
    geom_point(data=K27ac_median_unfilt_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
   theme_bw()+
-  ggtitle(&quot;H3K9me3 unfiltered solid line\nH3K27ac dotted line absolute LFC All regions&quot;)</code></pre>
+  ggtitle(&quot;H3K9me3 unfiltered solid line\nH3K27ac dotted line absolute LFC All regions&quot;)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
@@ -1626,7 +1785,8 @@ ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
   geom_line(data=K27ac_median_LTR_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
    geom_point(data=K27ac_median_LTR_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
   theme_bw()+
-  ggtitle(&quot;H3K9me3 solid line\nH3K27ac dotted line absolute LFC overlapping LTR regions&quot;)</code></pre>
+  ggtitle(&quot;H3K9me3 solid line\nH3K27ac dotted line absolute LFC overlapping LTR regions&quot;)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-3">
@@ -1709,60 +1869,580 @@ K27_family_plot &lt;- function(lfc_df,
 }</code></pre>
 <pre class="r"><code>names(LTR_split_df)</code></pre>
 <pre><code>[1] &quot;ERV1&quot;      &quot;ERVK&quot;      &quot;ERVL&quot;      &quot;ERVL-MaLR&quot; &quot;Gypsy&quot;     &quot;LTR&quot;      </code></pre>
-<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERV1&quot;)</code></pre>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERV1&quot;)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERVK&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-1.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERVK&quot;)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERVL&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-2">
+Past versions of unnamed-chunk-9-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-2.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERVL&quot;)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERVL-MaLR&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-3">
+Past versions of unnamed-chunk-9-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-3.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;ERVL-MaLR&quot;)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;Gypsy&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-4">
+Past versions of unnamed-chunk-9-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-4.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;Gypsy&quot;)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-5.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;LTR&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-5">
+Past versions of unnamed-chunk-9-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-5.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>K27_family_plot(K27ac_rmid_lfc, LTR_split_df,&quot;K27ac&quot;,&quot;LTR&quot;,&quot;LTR&quot;)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-6">
+Past versions of unnamed-chunk-9-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-9-6.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>K27_K9_family_plot &lt;- function(lfc_df,
                             split_list, 
                             marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;),
+                            time_levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;),
                             repClass,
                             repFam){
 
+  if (!repFam %in% names(split_list)) {
+  stop(&quot;repFam not found in split_list: &quot;, repFam)}
   
   rm_ids &lt;- split_list[[repFam]]$RM_id
   
   lfc_df %&gt;% 
-  dplyr::filter(RM_id %in% rm_ids,
-                cluster != &quot;NA&quot;) %&gt;% 
-  pivot_longer(.,cols=tidyselect::matches(paste0(&quot;^(&quot;,paste(marks,collapse = &quot;|&quot;), &quot;)&quot;)),
-               names_to=&quot;group&quot;, 
-               values_to = &quot;LFC&quot;) %&gt;% 
-     mutate(mark = stringr::str_extract(group, paste(marks, collapse=&quot;|&quot;)),
-      time = stringr::str_remove(group, paste(marks, collapse=&quot;|&quot;)),
-      time = factor(time, levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;))) %&gt;% 
-  group_by(cluster, mark ,time) %&gt;%
-  summarise(median_abs_LFC = median(abs(LFC), na.rm = TRUE),
-            .groups = &quot;drop&quot;)%&gt;% 
-  ggplot(., aes(x=time, y=median_abs_LFC, group=interaction(cluster,mark), color=cluster, linetype=mark, shape=mark))+
-  geom_point(size=4)+
-  geom_line(aes(alpha = 0.8, linewidth = 4))+
-  theme_bw()+
-  labs(title = paste0(&quot;Both histones, absolute LFC overlapping &quot;,repClass,&quot;:&quot;,repFam),
+    dplyr::filter(RM_id %in% rm_ids) %&gt;% 
+    dplyr::rename(
+    cluster_K27ac = tidyselect::any_of(&quot;cluster.x&quot;),
+    cluster_K9me3 = tidyselect::any_of(&quot;cluster.y&quot;)) %&gt;% 
+      tidyr::pivot_longer(
+      cols = tidyselect::matches(paste0(&quot;^(&quot;, paste(marks, collapse = &quot;|&quot;), &quot;)&quot;)),
+      names_to = &quot;group&quot;,
+      values_to = &quot;LFC&quot;
+    ) %&gt;%
+    dplyr::mutate(
+      mark = stringr::str_extract(group, paste(marks, collapse = &quot;|&quot;)),
+      time = stringr::str_remove(group, paste(marks, collapse = &quot;|&quot;)),
+      time = factor(time, levels = time_levels),
+
+      cluster = dplyr::case_when(
+        mark == &quot;K27ac&quot; ~ cluster_K27ac,
+        mark == &quot;K9me3&quot; ~ cluster_K9me3
+      )
+    ) %&gt;%
+    dplyr::filter(!is.na(cluster)) %&gt;%
+    dplyr::group_by(cluster, mark, time) %&gt;%
+    dplyr::summarise(
+      median_abs_LFC = median(abs(LFC), na.rm = TRUE),
+      n_RM = dplyr::n_distinct(RM_id),
+      .groups = &quot;drop&quot;) %&gt;% 
+  ggplot(., aes(x = time,
+      y = median_abs_LFC,
+      color = cluster,
+      linetype = mark,
+      shape = mark,
+      group = interaction(cluster, mark))) +
+    geom_line(linewidth = 1.1, alpha = 0.85) +
+    geom_point(size = 3) +
+    scale_linetype_manual(
+  values = c(&quot;K9me3&quot;  = &quot;solid&quot;,&quot;K27ac&quot; = &quot;dotted&quot;))+
+    scale_color_manual(values = cluster_colors, drop = FALSE)+
+    theme_bw() +
+    labs(
       y = &quot;Median |LFC|&quot;,
-      x = &quot;Time&quot;
-    )
+      x = &quot;Time&quot;,
+      title = paste0(&quot;Both histones, absolute LFC overlapping &quot;,repClass,&quot;:&quot;,repFam))
 }</code></pre>
-<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;ERVL&quot;)</code></pre>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;),time_levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;), &quot;LTR&quot;,repFam=&quot;ERVL&quot;)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;ERVK&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-1.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;),time_levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;), &quot;LTR&quot;,repFam=&quot;ERVK&quot;)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;ERV1&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-2">
+Past versions of unnamed-chunk-10-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-2.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;),time_levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;), &quot;LTR&quot;,repFam=&quot;ERV1&quot;)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;ERVL-MaLR&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-3">
+Past versions of unnamed-chunk-10-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-3.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;),time_levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;), &quot;LTR&quot;,repFam=&quot;ERVL-MaLR&quot;)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;Gypsy&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-4">
+Past versions of unnamed-chunk-10-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-4.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;),time_levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;), &quot;LTR&quot;,repFam=&quot;Gypsy&quot;)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-5.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;), &quot;LTR&quot;,repFam=&quot;LTR&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-5">
+Past versions of unnamed-chunk-10-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-5.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c(&quot;K27ac&quot;,&quot;K9me3&quot;),time_levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;), &quot;LTR&quot;,repFam=&quot;LTR&quot;)</code></pre>
 <p><img src="figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-6">
+Past versions of unnamed-chunk-10-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29dda48380b5b0e21dde405a29d4399c76bd06af/docs/figure/dual_histone_TE_investigation.Rmd/unnamed-chunk-10-6.png" target="_blank">29dda48</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>rm_id_test &lt;- LTR_split_df$ERV1$RM_id
+LTR_RM_lfc_concordance %&gt;% 
+  dplyr::filter(RM_id %in% rm_id_test) %&gt;% 
+                
+    dplyr::rename(&quot;cluster_K27ac&quot;=cluster.x,
+                  &quot;cluster_K9me3&quot;=cluster.y) %&gt;% 
+pivot_longer(
+    cols = tidyselect::matches(&quot;^(K27ac|K9me3)&quot;),
+    names_to = &quot;group&quot;,
+    values_to = &quot;LFC&quot;
+  ) %&gt;% 
+  mutate(
+    mark = stringr::str_extract(group, &quot;K27ac|K9me3&quot;),
+    time = stringr::str_remove(group, &quot;K27ac|K9me3&quot;),
+    time = factor(time, levels = c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)),
+
+    ## mark-aware cluster assignment
+    cluster = dplyr::case_when(
+      mark == &quot;K27ac&quot; ~ cluster_K27ac,
+      mark == &quot;K9me3&quot; ~ cluster_K9me3
+    )
+  ) %&gt;% 
+  filter(!is.na(cluster)) %&gt;%   # only drop when THAT mark has no cluster
+  group_by(cluster, mark, time) %&gt;%
+  summarise(
+    median_abs_LFC = median(abs(LFC), na.rm = TRUE),
+    n_RM = dplyr::n_distinct(RM_id),
+    .groups = &quot;drop&quot;
+  ) %&gt;% 
+   ggplot(.,  aes(
+    x = time,
+    y = median_abs_LFC,
+    color = cluster,
+    linetype = mark,
+    shape = mark,
+    group = interaction(cluster, mark))) +
+  geom_line(linewidth = 1.1, alpha = 0.85) +
+  geom_point(size = 3) +
+  theme_bw() +
+  labs(
+    y = &quot;Median |LFC|&quot;,
+    x = &quot;Time&quot;,
+    title = &quot;Shared LTR:ERV1: mark-specific cluster behavior&quot;
+  )</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
