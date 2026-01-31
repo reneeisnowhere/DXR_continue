@@ -157,6 +157,9 @@ K9me3_lfctable <- H3K9me3_toptable_list %>%
 K27ac_lfctable <- H3K27ac_toptable_list %>% 
   dplyr::select(group,genes, logFC) %>% 
   pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC)
+
+cluster_colors <- c("Set_1" = "#d93e40","Set_2" = "#1c9f50","Set_3" = "#3570b3","NA"  ="grey70")
+
 ```
 
 
@@ -488,25 +491,30 @@ K27ac_rmid_lfc <- data_frame(RM_id=common_LTR_RMs) %>%
             .groups="drop") %>% 
    tidyr::replace_na(list(cluster = "NA"))
 
-K9me3_rmid_lfc <- data_frame(RM_id=common_LTR_RMs) %>% 
+K9me3_rmid_lfc <-
+data_frame(RM_id=common_LTR_RMs) %>% 
   left_join(.,(LTR_overlap_df_H3K9me3 %>% 
     dplyr::filter(RM_id %in% common_LTR_RMs) %>% 
     distinct(RM_id,Peakid, .keep_all = TRUE) %>% 
     mutate(K9me3_Peakid=Peakid) %>% 
     dplyr::select(RM_id, K9me3_Peakid))) %>% 
   left_join(K9me3_lfctable, by =c("K9me3_Peakid"="genes")) %>% 
+  left_join(., H3K9me3_lookup,by =c("K9me3_Peakid"="Peakid")) %>% 
   group_by(RM_id) %>% 
   summarize(K9me3_24T=mean(H3K9me3_24T, na.rm=TRUE),
              K9me3_24R=mean(H3K9me3_24R,na.rm=TRUE),
              K9me3_144R=mean(H3K9me3_144R, na.rm=TRUE),
+            cluster=dplyr::first(cluster),
             n_K9me3_peaks = dplyr::n(),
-            .groups="drop")
+            .groups="drop") %>% 
+   tidyr::replace_na(list(cluster = "NA"))
 
 
 
 LTR_RM_lfc_concordance <- tibble(RM_id = common_LTR_RMs) %>%
   left_join(K27ac_rmid_lfc, by = "RM_id") %>%
-  left_join(K9me3_rmid_lfc,  by = "RM_id")
+  left_join(K9me3_rmid_lfc,  by = "RM_id") 
+  
 
 ```
 
@@ -516,7 +524,7 @@ Now to try to visualize this concordance.  I am specifically looking at TEs that
 
 ```{r LTR K9K27ac plot}
 LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24T, y=K9me3_24T, color=cluster))+
+  ggplot(., aes(x=K27ac_24T, y=K9me3_24T, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= "black")+
    # sm_statCorr(corr_method="spearman")+
@@ -527,10 +535,11 @@ LTR_RM_lfc_concordance %>%
     y = "H3K9me3 logFC (24T)",
     title = "Concordance of chromatin changes at shared LTRs for 24T"
   ) +
-  theme_classic()
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
 
 LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24R, y=K9me3_24R, color=cluster))+
+  ggplot(., aes(x=K27ac_24R, y=K9me3_24R, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= "black")+
    # sm_statCorr(corr_method="spearman")+
@@ -541,11 +550,12 @@ LTR_RM_lfc_concordance %>%
     y = "H3K9me3 logFC (24R)",
     title = "Concordance of chromatin changes at shared LTRs for 24R"
   ) +
-  theme_classic()
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
 
 
 LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_144R, y=K9me3_144R, color=cluster))+
+  ggplot(., aes(x=K27ac_144R, y=K9me3_144R, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= "black")+
      # sm_statCorr(corr_method="spearman")+
@@ -557,10 +567,11 @@ LTR_RM_lfc_concordance %>%
     y = "H3K9me3 logFC (144R)",
     title = "Concordance of chromatin changes at shared LTRs for 144R"
   ) +
-  theme_classic()
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
 
 LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24T, y=K27ac_24R, color=cluster))+
+  ggplot(., aes(x=K27ac_24T, y=K27ac_24R, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= "black")+
    # sm_statCorr(corr_method="spearman")+
@@ -568,13 +579,14 @@ LTR_RM_lfc_concordance %>%
   geom_vline(xintercept = 0, linetype = "dashed", color="red") +
   labs(
     x = "H3K27ac logFC (24T)",
-    y = "H3K9me3 logFC (24T)",
+    y = "H3K27ac logFC (24R)",
     title = "Concordance of chromatin changes at shared LTRs for 24T v 24R H3K27ac"
   ) +
-  theme_classic()
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
 
 LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24T, y=K27ac_144R, color=cluster))+
+  ggplot(., aes(x=K27ac_24T, y=K27ac_144R, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= "black")+
    # sm_statCorr(corr_method="spearman")+
@@ -582,24 +594,26 @@ LTR_RM_lfc_concordance %>%
   geom_vline(xintercept = 0, linetype = "dashed", color="red") +
   labs(
     x = "H3K27ac logFC (24T)",
-    y = "H3K9me3 logFC (24T)",
+    y = "H3K27ac logFC (144R)",
     title = "Concordance of chromatin changes at shared LTRs for 24T v 144R H3K27ac"
   ) +
-  theme_classic()
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
 
 LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24R, y=K27ac_144R, color=cluster))+
+  ggplot(., aes(x=K27ac_24R, y=K27ac_144R, color=cluster.x))+
   geom_point(, alpha=0.2, size=2)+
   geom_density_2d(color= "black")+
-   # sm_statCorr(corr_method="spearman")+
+   sm_statCorr(corr_method="spearman")+
    geom_hline(yintercept = 0, linetype = "dashed", color="red") +
   geom_vline(xintercept = 0, linetype = "dashed", color="red") +
   labs(
-    x = "H3K27ac logFC (24T)",
-    y = "H3K9me3 logFC (24T)",
+    x = "H3K27ac logFC (24R)",
+    y = "H3K27ac logFC (144)",
     title = "Concordance of chromatin changes at shared LTRs for 24R v 144R H3K27ac"
   ) +
-  theme_classic()
+  theme_classic()+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
 ```
 
 
@@ -645,7 +659,8 @@ K9me3_median_unfilt_lfc %>%
   geom_point(size=4)+
   geom_line(aes(alpha = 0.8, linewidth = 4))+
   theme_bw()+
-  ggtitle("LFC across time for H3K27ac sets")
+  ggtitle("LFC across time for H3K9me3 sets")+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
 
 
 K27ac_median_LTR_lfc <- K27ac_unfiltered_long %>%
@@ -671,7 +686,8 @@ ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
   geom_line(data=K27ac_median_unfilt_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
    geom_point(data=K27ac_median_unfilt_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
   theme_bw()+
-  ggtitle("H3K9me3 unfiltered solid line\nH3K27ac dotted line absolute LFC All regions")
+  ggtitle("H3K9me3 unfiltered solid line\nH3K27ac dotted line absolute LFC All regions")+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
 
 K9me3_median_LTR_lfc %>% 
 ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
@@ -681,7 +697,8 @@ ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
   geom_line(data=K27ac_median_LTR_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
    geom_point(data=K27ac_median_LTR_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
   theme_bw()+
-  ggtitle("H3K9me3 solid line\nH3K27ac dotted line absolute LFC overlapping LTR regions")
+  ggtitle("H3K9me3 solid line\nH3K27ac dotted line absolute LFC overlapping LTR regions")+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
 
 
 
@@ -734,12 +751,19 @@ K27_family_plot <- function(lfc_df,
 
 ```{r}
 names(LTR_split_df)
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERV1")
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERVK")
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERVL")
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERVL-MaLR")
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","Gypsy")
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","LTR")
+K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERV1")+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
+K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERVK")+
+  scale_color_manual(values = cluster_colors, drop = FALSE)+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
+K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERVL")+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
+K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERVL-MaLR")+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
+K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","Gypsy")+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
+K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","LTR")+
+  scale_color_manual(values = cluster_colors, drop = FALSE)
 
 
 ```
@@ -752,42 +776,119 @@ K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","LTR")
 K27_K9_family_plot <- function(lfc_df,
                             split_list, 
                             marks=c("K27ac","K9me3"),
+                            time_levels = c("_24T", "_24R", "_144R"),
                             repClass,
                             repFam){
 
+  if (!repFam %in% names(split_list)) {
+  stop("repFam not found in split_list: ", repFam)}
   
   rm_ids <- split_list[[repFam]]$RM_id
   
   lfc_df %>% 
-  dplyr::filter(RM_id %in% rm_ids,
-                cluster != "NA") %>% 
-  pivot_longer(.,cols=tidyselect::matches(paste0("^(",paste(marks,collapse = "|"), ")")),
-               names_to="group", 
-               values_to = "LFC") %>% 
-     mutate(mark = stringr::str_extract(group, paste(marks, collapse="|")),
-      time = stringr::str_remove(group, paste(marks, collapse="|")),
-      time = factor(time, levels = c("_24T", "_24R", "_144R"))) %>% 
-  group_by(cluster, mark ,time) %>%
-  summarise(median_abs_LFC = median(abs(LFC), na.rm = TRUE),
-            .groups = "drop")%>% 
-  ggplot(., aes(x=time, y=median_abs_LFC, group=interaction(cluster,mark), color=cluster, linetype=mark, shape=mark))+
-  geom_point(size=4)+
-  geom_line(aes(alpha = 0.8, linewidth = 4))+
-  theme_bw()+
-  labs(title = paste0("Both histones, absolute LFC overlapping ",repClass,":",repFam),
+    dplyr::filter(RM_id %in% rm_ids) %>% 
+    dplyr::rename(
+    cluster_K27ac = tidyselect::any_of("cluster.x"),
+    cluster_K9me3 = tidyselect::any_of("cluster.y")) %>% 
+      tidyr::pivot_longer(
+      cols = tidyselect::matches(paste0("^(", paste(marks, collapse = "|"), ")")),
+      names_to = "group",
+      values_to = "LFC"
+    ) %>%
+    dplyr::mutate(
+      mark = stringr::str_extract(group, paste(marks, collapse = "|")),
+      time = stringr::str_remove(group, paste(marks, collapse = "|")),
+      time = factor(time, levels = time_levels),
+
+      cluster = dplyr::case_when(
+        mark == "K27ac" ~ cluster_K27ac,
+        mark == "K9me3" ~ cluster_K9me3
+      )
+    ) %>%
+    dplyr::filter(!is.na(cluster)) %>%
+    dplyr::group_by(cluster, mark, time) %>%
+    dplyr::summarise(
+      median_abs_LFC = median(abs(LFC), na.rm = TRUE),
+      n_RM = dplyr::n_distinct(RM_id),
+      .groups = "drop") %>% 
+  ggplot(., aes(x = time,
+      y = median_abs_LFC,
+      color = cluster,
+      linetype = mark,
+      shape = mark,
+      group = interaction(cluster, mark))) +
+    geom_line(linewidth = 1.1, alpha = 0.85) +
+    geom_point(size = 3) +
+    scale_linetype_manual(
+  values = c("K9me3"  = "solid","K27ac" = "dotted"))+
+    scale_color_manual(values = cluster_colors, drop = FALSE)+
+    theme_bw() +
+    labs(
       y = "Median |LFC|",
-      x = "Time"
-    )
+      x = "Time",
+      title = paste0("Both histones, absolute LFC overlapping ",repClass,":",repFam))
 }
+
 
 ```
 ```{r}
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"), "LTR",repFam="ERVL")
 
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"), "LTR",repFam="ERVK")
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"), "LTR",repFam="ERV1")
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"), "LTR",repFam="ERVL-MaLR")
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"), "LTR",repFam="Gypsy")
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"), "LTR",repFam="LTR")
+
+K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="ERVL")
+
+K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="ERVK")
+K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="ERV1")
+K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="ERVL-MaLR")
+K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="Gypsy")
+K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="LTR")
+
+
+```
+```{r, eval=FALSE}
+rm_id_test <- LTR_split_df$ERV1$RM_id
+LTR_RM_lfc_concordance %>% 
+  dplyr::filter(RM_id %in% rm_id_test) %>% 
+                
+    dplyr::rename("cluster_K27ac"=cluster.x,
+                  "cluster_K9me3"=cluster.y) %>% 
+pivot_longer(
+    cols = tidyselect::matches("^(K27ac|K9me3)"),
+    names_to = "group",
+    values_to = "LFC"
+  ) %>% 
+  mutate(
+    mark = stringr::str_extract(group, "K27ac|K9me3"),
+    time = stringr::str_remove(group, "K27ac|K9me3"),
+    time = factor(time, levels = c("_24T","_24R","_144R")),
+
+    ## mark-aware cluster assignment
+    cluster = dplyr::case_when(
+      mark == "K27ac" ~ cluster_K27ac,
+      mark == "K9me3" ~ cluster_K9me3
+    )
+  ) %>% 
+  filter(!is.na(cluster)) %>%   # only drop when THAT mark has no cluster
+  group_by(cluster, mark, time) %>%
+  summarise(
+    median_abs_LFC = median(abs(LFC), na.rm = TRUE),
+    n_RM = dplyr::n_distinct(RM_id),
+    .groups = "drop"
+  ) %>% 
+   ggplot(.,  aes(
+    x = time,
+    y = median_abs_LFC,
+    color = cluster,
+    linetype = mark,
+    shape = mark,
+    group = interaction(cluster, mark))) +
+  geom_line(linewidth = 1.1, alpha = 0.85) +
+  geom_point(size = 3) +
+  theme_bw() +
+  labs(
+    y = "Median |LFC|",
+    x = "Time",
+    title = "Shared LTR:ERV1: mark-specific cluster behavior"
+  )
+
 ```
 
