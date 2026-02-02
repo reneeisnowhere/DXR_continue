@@ -68,7 +68,11 @@ Looking at finalized assigned cluster sets and characteristics
 
 ###  TEs and ROIs
 
-[Looking at TE families across histones](https://reneeisnowhere.github.io/DXR_continue/dual_histone_TE_investigation.html)  
+[Looking at TE families centered on TEs across histones](https://reneeisnowhere.github.io/DXR_continue/dual_histone_TE_investigation.html)  
+
+[Looking at TE families centered on H3K27ac ROIs histones](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_TE_investigation.html) 
+
+[Looking at TE families centered on H3K9me3 ROIs histones](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TE_investigation.html) 
 
 ### Summit and transcription factor motif enrichment data
 
