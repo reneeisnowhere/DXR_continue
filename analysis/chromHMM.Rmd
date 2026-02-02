@@ -194,6 +194,7 @@ VEH_144R_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-inte
    bind_rows(VEH_24T_gene) 
  
 ```
+
 ```{r loading ZFP_run data}
 DOX_24T_ZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ZFP_run/24t_DOX_16.txt", 
     delim = "\t", escape_double = FALSE, 
@@ -232,6 +233,43 @@ VEH_144R_ZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_
    dplyr::filter(`State (Emission order)` !="Base")
 
 ```
+
+```{r loading ATAC_run}
+
+DOX_24T_ATAC <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ATAC_run/24t_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24T")
+
+DOX_24R_ATAC <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ATAC_run/24R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24R")
+
+DOX_144R_ATAC <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ATAC_run/144R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>% mutate(group="DOX_144R")
+
+
+VEH_24T_ATAC <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ATAC_run/24t_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24T")
+
+VEH_24R_ATAC <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ATAC_run/24R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24R")
+
+VEH_144R_ATAC <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ATAC_run/144R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_144R") 
+ all_ATAC_states <- 
+  VEH_144R_ATAC %>% 
+  bind_rows(DOX_144R_ATAC) %>% 
+   bind_rows(DOX_24R_ATAC) %>% 
+   bind_rows(VEH_24R_ATAC) %>% 
+   bind_rows(DOX_24T_ATAC) %>% 
+   bind_rows(VEH_24T_ATAC) 
+ 
+```
+
 
 ```{r making the large plotting dataframe}
 all_files_states <- 
@@ -397,7 +435,7 @@ long_file %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   facet_wrap(~group, nrow=1, ncol=6)+
     scale_y_discrete(limits=rev)+
-  ggtitle("Enhancer enrichment acros states")+
+  ggtitle("All Enhancer types enrichment across states")+
   coord_fixed()
 ```
 ### Cormotif set enrichment across states  
@@ -485,7 +523,7 @@ States_anno <- data.frame("State"=c(paste0("E",1:16)),
  "Genic_Strong_Transcription",
  "Genic_Weak_Transcription"))
 
-SOIs <- c("E4","E10","E11","E12","E13")
+# SOIs <- c("E4","E10","E11","E12","E13")
 
 ```
 
@@ -523,9 +561,45 @@ long_file %>%
   ggtitle("Transposable elements across states")+
   coord_fixed()
 ```
+### ATAC and cardiac enhancer enrichment
+
+```{r cardiac enchacers plot, fig.height=8}
+
+ATAC_long_file <- all_ATAC_states %>% 
+  filter(`State (Emission order)` != "Base") %>% 
+  pivot_longer(., -c(`State (Emission order)`,group), names_to = "Identity", values_to="Fold_enrichment") %>% 
+   mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R")),
+          `State (Emission order)`=factor(`State (Emission order)`, levels = paste0("E",1:16)))
 
 
+ATAC_long_file %>% 
+  # dplyr::filter(stringr::str_detect(Identity, "SCREEN")) %>% 
+   group_by(Identity) %>%   # i.e. per annotation column
+  mutate(
+    FE_min = min(Fold_enrichment, na.rm = TRUE),
+    FE_max = max(Fold_enrichment, na.rm = TRUE),
+    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
+  ) %>% 
+    ggplot(.,aes(x=Identity,y=`State (Emission order)`, fill=chromhmm_scaled))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "transformed scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  facet_wrap(~group, nrow=1, ncol=6)+
+    scale_y_discrete(limits=rev)+
+  ggtitle("CAR/DAR and cardiac Enhancer types enrichment across states")+
+  coord_fixed()
+```
 
+Looking at SINE elements that overlap H3K27ac ROI elements
 
 ### SOI data
 
