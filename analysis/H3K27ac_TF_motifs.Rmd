@@ -36,7 +36,10 @@ library(stringr)
 library(DT)
 
 ```
-Summit calls method 1
+
+### Summit calls method 1  
+
+
 ```{r loading motif data Set2}
 
 H3K27ac_Set2_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
@@ -107,11 +110,6 @@ H3K27ac_Set3_data <- H3K27ac_Set3_xstreme %>%
 
 ```{r}
 
-# H3K27ac_Set2_data %>% 
-#   group_by(CLUSTER) %>% tally()
-#   arrange(.,EVALUE) %>% 
-#   slice_min(EVALUE, with_ties = FALSE) 
-#   
 H3K27ac_Set2_data %>% 
   dplyr::filter(ENR_RATIO>1.2) %>% 
   group_by(CLUSTER) %>% 
@@ -139,6 +137,37 @@ H3K27ac_Set3_data %>%
   ggtitle(paste("SET3 enrichment over SET1, Enrichment ratio > 1.1"))
 
 ```
+
+```{r enrichment by cluster}
+
+H3K27ac_Set2_data %>% 
+  dplyr::filter(ENR_RATIO>1.2) %>% 
+  group_by(CLUSTER) %>% 
+  slice_min(EVALUE, with_ties = FALSE) %>% 
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*2), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./2,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET2 enrichment over SET1, Enrichment ratio >1.2"))
+
+H3K27ac_Set3_data %>% 
+  dplyr::filter(ENR_RATIO>1.1) %>%
+  group_by(CLUSTER) %>% 
+  slice_min(EVALUE, with_ties = FALSE) %>% 
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*1), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET3 enrichment over SET1, Enrichment ratio > 1.1"))
+
+```  
+
 
 
 ```{r enrichment ratio dispersion}
@@ -211,7 +240,185 @@ DT::datatable((H3K27ac_Set3_data %>%
 
 ```
 
-### Summit calls method 2
+```{r set 2 by facet}
+H3K27ac_Set2_data %>% 
+dplyr::filter(EVALUE<0.05) %>% 
+   group_by(CLUSTER) %>% 
+  slice_min(RANK, with_ties = FALSE) %>% 
+  ungroup() %>% 
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>%
+    mutate(Facets=case_when(RANK <15~"A",
+                              log10Evalue >15 & log10Evalue <40~"B",
+            log10Evalue>40~"C")) %>% 
+  dplyr::filter(Facets=="A") %>% 
+    ggplot(., aes (y= reorder(motif_name, log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+   geom_point(aes(x=ENR_RATIO*40, color=ENR_RATIO), size =4)+
+  scale_x_continuous(expand = c(0, .125),
+  sec.axis = sec_axis(~ . /40, name = "Enrichment Ratio"))+
+ 
+  facet_wrap(~Facets )+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET2 enrichment over SET1\n top Enrichment Ratio by Cluster H3K27ac"))
+
+
+
+H3K27ac_Set2_data %>% 
+dplyr::filter(EVALUE<0.05) %>% 
+   group_by(CLUSTER) %>% 
+  slice_min(RANK, with_ties = FALSE) %>% 
+  ungroup() %>% 
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>%
+    mutate(Facets=case_when(RANK <15~"A",
+                              log10Evalue >15 & log10Evalue <40~"B",
+            log10Evalue>40~"C")) %>% 
+  dplyr::filter(Facets=="B") %>% 
+     ggplot(., aes (y= reorder(motif_name, log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=ENR_RATIO*10, color=ENR_RATIO), size =4)+
+  
+  scale_x_continuous(
+  expand = c(0, .125),
+  sec.axis = sec_axis(~ . / 10, name = "Enrichment Ratio")
+)+
+  scale_color_viridis_c(
+    name = "Enrichment Ratio",
+    option = "plasma") +
+  tidytext::scale_y_reordered()+
+  facet_wrap(~Facets )+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET2 enrichment over SET1\n top Enrichment Ratio by Cluster H3K27ac"))
+
+
+
+H3K27ac_Set2_data %>% 
+dplyr::filter(EVALUE<0.05) %>% 
+   group_by(CLUSTER) %>% 
+  slice_min(RANK, with_ties = FALSE) %>% 
+  ungroup() %>% 
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>%
+     mutate(Facets=case_when(RANK <15~"A",
+                              log10Evalue >15 & log10Evalue <40~"B",
+            log10Evalue>40~"C")) %>% 
+  dplyr::filter(Facets=="C") %>% 
+     ggplot(., aes (y= reorder(motif_name, log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=ENR_RATIO*.8, color=ENR_RATIO), size =4)+
+  scale_x_continuous(
+  expand = c(0, .125),
+  sec.axis = sec_axis(~ . / .8, name = "Enrichment Ratio")
+)+
+  scale_color_viridis_c(
+    name = "Enrichment Ratio",
+    option = "plasma") +
+  facet_wrap(~Facets )+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET2 enrichment over SET1\n top Enrichment Ratio by Cluster H3K27ac"))
+```
+
+```{r set 3 by facet}
+H3K27ac_Set3_data %>% 
+dplyr::filter(EVALUE<0.05) %>% 
+   group_by(CLUSTER) %>% 
+  slice_min(RANK, with_ties = FALSE) %>% 
+  ungroup() %>% 
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>%
+    mutate(Facets=case_when(log10Evalue >10~"A",
+                              log10Evalue <10 & log10Evalue >5~"B",
+            log10Evalue<5~"C")) %>% 
+  dplyr::filter(Facets=="A") %>% 
+    ggplot(., aes (y= reorder(motif_name, log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=ENR_RATIO*10, color=ENR_RATIO), size =4)+
+  geom_vline(
+  xintercept = 1*10,
+  linetype = "dotted",
+  linewidth = 1, color="red")+
+  scale_x_continuous(
+  expand = c(0, .125),
+  sec.axis = sec_axis(~ . / 10, name = "Enrichment Ratio")
+)+
+   scale_color_viridis_c(
+    name = "Enrichment Ratio",
+    option = "plasma") +
+  tidytext::scale_y_reordered()+
+  facet_wrap(~Facets )+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET3 enrichment over SET1\n top Enrichment Ratio by Cluster H3K27ac"))
+
+
+
+H3K27ac_Set3_data %>% 
+  dplyr::filter(EVALUE<0.05) %>% 
+   group_by(CLUSTER) %>% 
+  slice_min(RANK, with_ties = FALSE) %>% 
+  ungroup() %>% 
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>%
+    mutate(Facets=case_when(log10Evalue >10~"A",
+                              log10Evalue <10 & log10Evalue >5~"B",
+            log10Evalue<5~"C")) %>% 
+  dplyr::filter(Facets=="B") %>% 
+    ggplot(., aes (y= tidytext::reorder_within(motif_name, log10Evalue, Facets))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=ENR_RATIO*5, color=ENR_RATIO), size =4)+
+  geom_vline(
+  xintercept = 1*5,
+  linetype = "dotted",
+  linewidth = 1, color="red")+
+  scale_x_continuous(
+  expand = c(0, .125),
+  sec.axis = sec_axis(~ . / 5, name = "Enrichment Ratio")
+)+ scale_color_viridis_c(
+    name = "Enrichment Ratio",
+    option = "plasma"
+  ) +
+  tidytext::scale_y_reordered()+
+  facet_wrap(~Facets )+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET3 enrichment over SET1\n top Enrichment Ratio by Cluster H3K27ac"))
+
+
+
+H3K27ac_Set3_data %>% 
+dplyr::filter(EVALUE<0.05) %>% 
+   group_by(CLUSTER) %>% 
+  slice_min(RANK, with_ties = FALSE) %>% 
+  ungroup() %>% 
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>%
+    mutate(Facets=case_when(log10Evalue >10~"A",
+                              log10Evalue <10 & log10Evalue >5~"B",
+            log10Evalue<5~"C")) %>% 
+  dplyr::filter(Facets=="C") %>% 
+    ggplot(., aes (y= tidytext::reorder_within(motif_name, log10Evalue, Facets))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=ENR_RATIO*.05,color= pmin(ENR_RATIO, 5)), size =4)+
+  scale_x_continuous(
+  expand = c(0, .125),
+  sec.axis = sec_axis(~ . /.05, name = "Enrichment Ratio")
+)+
+   scale_color_viridis_c(
+    name = "Enrichment Ratio",
+    option = "plasma"
+  ) +
+  tidytext::scale_y_reordered()+
+  facet_wrap(~Facets )+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET3 enrichment over SET1\n top Enrichment Ratio by Cluster H3K27ac"))
+
+
+```
+
+
+
+
+### Summit calls method 2  
+
 ```{r loading motif data Set2 met2}
 
 H3K27ac_Set2_met2_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400_alt/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
@@ -410,4 +617,35 @@ DT::datatable((H3K27ac_Set3_data_met3 %>%
 
 
 ```
+
+```{r direct compare}
+
+toplist_direct_set2 <- list("set2_met1"=H3K27ac_Set2_data$ALT_ID,
+"set2_met2"=H3K27ac_Set2_data_met2$ALT_ID,
+"set2_met3"=H3K27ac_Set2_data_met3$ALT_ID)
+
+toplist_direct_set3 <- list("set3_met1"=H3K27ac_Set3_data$ALT_ID,
+"set3_met2"=H3K27ac_Set3_data_met2$ALT_ID,
+"set3_met3"=H3K27ac_Set3_data_met3$ALT_ID)
+
+
+
+```
+
+```{r}
+ Shared_motifs_set2 <- Reduce(intersect, toplist_direct_set2)
+ggVennDiagram::ggVennDiagram(toplist_direct_set2)+scale_fill_gradient(
+    low = "white",
+    high = "blue"
+  )
+
+ Shared_motifs_set3 <- Reduce(intersect, toplist_direct_set3)
+ggVennDiagram::ggVennDiagram(toplist_direct_set3)+scale_fill_gradient(
+    low = "white",
+    high = "red"
+  )
+```
+
+
+
 
