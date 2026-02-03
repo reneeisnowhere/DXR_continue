@@ -153,11 +153,21 @@ H3K9me3_toptable_list <- bind_rows(H3K9me3_toplist, .id = "group")
 
 K9me3_lfctable <- H3K9me3_toptable_list %>% 
   dplyr::select(group,genes, logFC) %>% 
-  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC)
+  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %>%
+  dplyr::left_join(H3K9me3_lookup, by =c("genes"="Peakid")) %>% 
+  mutate(case= case_when(H3K9me3_24T > 0 & H3K9me3_24R >0 & H3K9me3_144R>0~"A",
+                              H3K9me3_24T < 0 & H3K9me3_24R <0 & H3K9me3_144R<0~"B",
+                              TRUE ~ "C")) %>% 
+  mutate(set_case=paste0(cluster,"_",case))
 
 K27ac_lfctable <- H3K27ac_toptable_list %>% 
   dplyr::select(group,genes, logFC) %>% 
-  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC)
+  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %>% 
+  dplyr::left_join(H3K27ac_lookup,by =c("genes"="Peakid")) %>% 
+  mutate(case= case_when(H3K27ac_24T > 0 & H3K27ac_24R >0 & H3K27ac_144R>0~"A",
+                              H3K27ac_24T < 0 & H3K27ac_24R <0 & H3K27ac_144R<0~"B",
+                              TRUE ~ "C")) %>% 
+  mutate(set_case=paste0(cluster,"_",case))
 
 cluster_colors <- c("Set_1" = "#d93e40","Set_2" = "#1c9f50","Set_3" = "#3570b3","NA"  ="grey70")
 
@@ -458,7 +468,7 @@ SVA_overlap_df %>%
 
 ### Looking for overlapping information: LTR specific  
 
-Here I am exploring H3K27ac ROIs which overlap LTRs and also overlap H3K9me3 ROIs, then exploring LFC of the H3K27ac ROI sets across families of LTRs.  First I wanted to know how many H3K27ac ROIs overlap LTRs, and howmany of those are more than one LTR:
+Here I am exploring H3K27ac ROIs which overlap LTRs and also overlap H3K9me3 ROIs, then exploring LFC of the H3K27ac ROI sets across families of LTRs.  First I wanted to know how many H3K27ac ROIs overlap LTRs, and how many of those are more than one LTR:
 ```{r H3K9me3 overalapping regions}
 
 LTR_overlap_df %>% 
@@ -497,7 +507,7 @@ LTR_overlap_df %>%
 ```{r}
 LTR_overlap_df %>% 
   dplyr::filter(Peakid %in% K9me3_only_K27ac_peakids$Peakid) %>% 
-  left_join(., H3K27ac_lookup) %>% 
+  
   left_join(., K27ac_lfctable, by = c("Peakid"="genes")) %>% 
   group_by(TE_type) %>% 
   tally() %>% 
@@ -530,7 +540,6 @@ LTR_overlap_df %>%
   facet_wrap(~cluster)
 
 LTR_K9me3_H3K27ac_lfc <- LTR_overlap_df %>% 
-  dplyr::left_join(H3K27ac_lookup) %>% 
    left_join(., K27ac_lfctable, by = c("Peakid"="genes")) %>%
    dplyr::filter(Peakid %in% K9me3_only_K27ac_peakids$Peakid)
 
@@ -575,9 +584,174 @@ plot_K27_family(LTR_K9me3_H3K27ac_lfc,"H3K27ac","LTR","LTR")+
 ```
 
 
+#### Raw LFC exploration
+
+
+This will look at Raw LFC for all H3K27ac ROIs that overlap an LTR
+
+```{r}
+LTR_overlap_df %>% 
+  
+   left_join(., K27ac_lfctable, by = c("Peakid"="genes")) %>% 
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+  group_by(cluster, group) %>%
+  # summarise(median_LFC = median(LFC), na.rm = TRUE),
+  #           .groups = "drop")%>% 
+  dplyr::filter(cluster=="Set_2") %>% 
+   mutate(time=str_remove(group,"H3K27ac"))%>% 
+  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))  %>% 
+  ggplot(., aes(x=time, y = LFC, group=Peakid))+
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  theme_classic() +
+  labs(
+    x = "Time point",
+    y = "Log2 Fold Change",
+    title = "H3K27ac LFC  for Set_2 LTR-overlapping regions")
+
+LTR_overlap_df %>% 
+   left_join(., K27ac_lfctable, by = c("Peakid"="genes")) %>% 
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+  group_by(cluster, group) %>%
+  # summarise(median_LFC = median(LFC), na.rm = TRUE),
+  #           .groups = "drop")%>% 
+  # dplyr::filter(cluster=="Set_3") %>% 
+   mutate(time=str_remove(group,"H3K27ac"))%>% 
+  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))  %>% 
+  ggplot(., aes(x=time, y = LFC, group=Peakid, color=case))+
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  theme_classic() +
+  facet_wrap(~cluster)+
+  labs(
+    x = "Time point",
+    y = "Log2 Fold Change",
+    title = "H3K27ac LFC  for all LTR-overlapping regions")
+```
+
+Getting some number about how many, etc...
 
 
 ```{r}
+
+LTR_overlap_df %>% 
+  dplyr::left_join(H3K27ac_lookup) %>% 
+  group_by(TE_type,cluster) %>% 
+  tally() %>% 
+  pivot_wider(id_cols = TE_type, names_from = cluster, values_from = n) %>% 
+  ungroup() %>% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left;",
+      "H3K27ac LTR specific overlap counts by TE familiy"),
+    options = list(pageLength = 10,
+      autoWidth = TRUE,
+      dom = "tip"))
+
+```
+
+now breaking out by family
+
+```{r}
+
+
+LTR_overlap_df %>% 
+   left_join(., K27ac_lfctable, by = c("Peakid"="genes")) %>% 
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+  group_by(cluster, group) %>%
+  # summarise(median_LFC = median(LFC), na.rm = TRUE),
+  #           .groups = "drop")%>% 
+  dplyr::filter(cluster=="Set_2") %>% 
+   mutate(time=str_remove(group,"H3K27ac"))%>% 
+  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))  %>% 
+  ggplot(., aes(x=time, y = LFC, group=Peakid, color=case))+
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  theme_classic() +
+  facet_wrap(~TE_type)+
+  labs(
+    x = "Time point",
+    y = "Log2 Fold Change",
+    title = "H3K27ac LFC  for Set_2 LTR-overlapping regions")
+
+
+LTR_overlap_df %>% 
+  left_join(., K27ac_lfctable, by = c("Peakid"="genes")) %>% 
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+  group_by(cluster, group) %>%
+  # summarise(median_LFC = median(LFC), na.rm = TRUE),
+  #           .groups = "drop")%>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+   mutate(time=str_remove(group,"H3K27ac"))%>% 
+  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))  %>% 
+  ggplot(., aes(x=time, y = LFC, group=Peakid, color=case))+
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  theme_classic() +
+  facet_wrap(~TE_type)+
+  labs(
+    x = "Time point",
+    y = "Log2 Fold Change",
+    title = "H3K27ac LFC  for Set_3 LTR-overlapping regions")
+```
+There appears to be a lot of variation on LFC.  Direction is obscuring information.  I am now attempting to create a list of ROIs by set where LFC across time is always >0 (The up group), another set where LFC across time is always <0 (The down group), and the catch all mixed group. 
+
+```{r split groups by LFC}
+### already added to the K27ac_lfctable
+# LTR_overlap_df %>% 
+#   dplyr::left_join(H3K27ac_lookup) %>% 
+#    left_join(., K27ac_lfctable, by = c("Peakid"="genes")) %>% 
+#    mutate(case= case_when(H3K27ac_24T > 0 & H3K27ac_24R >0 & H3K27ac_144R>0~"A",
+#                               H3K27ac_24T < 0 & H3K27ac_24R <0 & H3K27ac_144R<0~"B",
+#                               TRUE ~ "C")) %>% 
+#   mutate(set_case=paste0(cluster,"_",case))
+median_df <- K27ac_lfctable %>% 
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+  mutate(
+    time = stringr::str_remove(group, "H3K27ac"),
+    time = factor(time, levels = c("_24T", "_24R", "_144R"))
+  ) %>%
+  group_by(cluster, time) %>% 
+  summarise(
+    median_LFC = median(LFC, na.rm = TRUE),
+    n_peaks = dplyr::n(),
+    .groups = "drop")
+  
+K27ac_lfctable %>% 
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+   mutate(time=str_remove(group,"H3K27ac"))%>% 
+  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))  %>% 
+  ggplot(., aes(x=time, y = LFC, group=genes, color=case))+
+  ggrastr::rasterise(geom_line(alpha = 0.15)) +
+  ggrastr::geom_point_rast(size = 1) +
+  geom_line(data=median_df, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
+  theme_classic() +
+  facet_wrap(~cluster)+
+  labs(
+    x = "Time point",
+    y = "Log2 Fold Change",
+    title = "H3K27ac LFC  for all H3K27ac regions")
+```
+```{r}
+K27ac_lfctable %>% 
+  group_by(cluster,case) %>% 
+  tally() %>% pivot_wider(id_cols=case, names_from = cluster, values_from = n) %>% 
+  mutate(type=case_when(case=="A"~"All LFC > 0",
+                        case=="B" ~ "All LFC < 0",
+                        case=="C"~"Mixed up and down LFC")) %>% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left;",
+      "H3K27ac ROI counts stratified by LFC case"),
+    options = list(pageLength = 10,
+      autoWidth = TRUE,
+      dom = "tip"))
+```
+
+
+```{r export set_case list, eval=FALSE}
 
 ```
 
