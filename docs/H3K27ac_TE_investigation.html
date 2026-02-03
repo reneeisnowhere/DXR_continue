@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-02-02" />
+<meta name="date" content="2026-02-03" />
 
 <title>H3K27ac and TE overlap</title>
 
@@ -370,7 +370,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">H3K27ac and TE overlap</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-02-02</h4>
+<h4 class="date">2026-02-03</h4>
 
 </div>
 
@@ -399,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-02
+<strong>Last updated:</strong> 2026-02-03
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree343c4bf52bbc54c945b863369ff3589192325a63targetblank343c4bfa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5a8af7889146c606397c2d19de244d4876de9631targetblank5a8af78a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/343c4bf52bbc54c945b863369ff3589192325a63" target="_blank">343c4bf</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5a8af7889146c606397c2d19de244d4876de9631" target="_blank">5a8af78</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree343c4bf52bbc54c945b863369ff3589192325a63targetblank343c4bfa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5a8af7889146c606397c2d19de244d4876de9631targetblank5a8af78a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/343c4bf52bbc54c945b863369ff3589192325a63" target="_blank">343c4bf</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5a8af7889146c606397c2d19de244d4876de9631" target="_blank">5a8af78</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -588,7 +588,6 @@ Untracked files:
     Untracked:  analysis/H3K27ac_cisRE.Rmd
     Untracked:  analysis/H3K27me3_TE_investigation.Rmd
     Untracked:  analysis/H3K36me3_TE_investigation.Rmd
-    Untracked:  analysis/H3K9me3_TE_investigation.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
@@ -596,10 +595,8 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/H3K27ac_RNA_integration.Rmd
-    Modified:   analysis/H3K27ac_TF_motifs.Rmd
     Modified:   analysis/dual_histone_TE_investigation.Rmd
     Modified:   analysis/final_analysis.Rmd
-    Modified:   analysis/index.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
 </code></pre>
@@ -646,6 +643,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/5a8af7889146c606397c2d19de244d4876de9631/analysis/H3K27ac_TE_investigation.Rmd" target="_blank">5a8af78</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-03
+</td>
+<td>
+adding LFC and color
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/H3K27ac_TE_investigation.html" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -796,11 +827,21 @@ H3K9me3_toptable_list &lt;- bind_rows(H3K9me3_toplist, .id = &quot;group&quot;)
 
 K9me3_lfctable &lt;- H3K9me3_toptable_list %&gt;% 
   dplyr::select(group,genes, logFC) %&gt;% 
-  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC)
+  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %&gt;%
+  dplyr::left_join(H3K9me3_lookup, by =c(&quot;genes&quot;=&quot;Peakid&quot;)) %&gt;% 
+  mutate(case= case_when(H3K9me3_24T &gt; 0 &amp; H3K9me3_24R &gt;0 &amp; H3K9me3_144R&gt;0~&quot;A&quot;,
+                              H3K9me3_24T &lt; 0 &amp; H3K9me3_24R &lt;0 &amp; H3K9me3_144R&lt;0~&quot;B&quot;,
+                              TRUE ~ &quot;C&quot;)) %&gt;% 
+  mutate(set_case=paste0(cluster,&quot;_&quot;,case))
 
 K27ac_lfctable &lt;- H3K27ac_toptable_list %&gt;% 
   dplyr::select(group,genes, logFC) %&gt;% 
-  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC)
+  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %&gt;% 
+  dplyr::left_join(H3K27ac_lookup,by =c(&quot;genes&quot;=&quot;Peakid&quot;)) %&gt;% 
+  mutate(case= case_when(H3K27ac_24T &gt; 0 &amp; H3K27ac_24R &gt;0 &amp; H3K27ac_144R&gt;0~&quot;A&quot;,
+                              H3K27ac_24T &lt; 0 &amp; H3K27ac_24R &lt;0 &amp; H3K27ac_144R&lt;0~&quot;B&quot;,
+                              TRUE ~ &quot;C&quot;)) %&gt;% 
+  mutate(set_case=paste0(cluster,&quot;_&quot;,case))
 
 cluster_colors &lt;- c(&quot;Set_1&quot; = &quot;#d93e40&quot;,&quot;Set_2&quot; = &quot;#1c9f50&quot;,&quot;Set_3&quot; = &quot;#3570b3&quot;,&quot;NA&quot;  =&quot;grey70&quot;)</code></pre>
 <pre class="r"><code># Generic pairwise Fisher test
@@ -902,6 +943,43 @@ SINE_overlap_df %&gt;%
    )+
   facet_wrap(~cluster)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/SINE%20Overlapping-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-SINE-Overlapping-1">
+Past versions of "SINE Overlapping-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-SINE-Overlapping-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/SINE Overlapping-1.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>SINE_overlap_df %&gt;% 
   dplyr::left_join(H3K27ac_lookup) %&gt;% 
   dplyr::filter(cluster %in% c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;Set_3&quot;)) %&gt;% 
@@ -916,6 +994,43 @@ SINE_overlap_df %&gt;%
    )+
   facet_wrap(~repName)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/SINE%20Overlapping%202-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-SINE-Overlapping-2-1">
+Past versions of "SINE Overlapping 2-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-SINE-Overlapping-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/SINE Overlapping 2-1.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="line" class="section level3">
 <h3>LINE</h3>
@@ -955,6 +1070,43 @@ LINE_overlap_df %&gt;%
    )+
   facet_wrap(~cluster)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/LINE%20Overlapping-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LINE-Overlapping-1">
+Past versions of "LINE Overlapping-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-LINE-Overlapping-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/LINE Overlapping-1.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="ltr" class="section level3">
 <h3>LTR</h3>
@@ -994,6 +1146,43 @@ LTR_overlap_df %&gt;%
    )+
   facet_wrap(~cluster)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/LTR%20Overlapping-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-Overlapping-1">
+Past versions of "LTR Overlapping-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-Overlapping-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/LTR Overlapping-1.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="dna" class="section level3">
 <h3>DNA</h3>
@@ -1033,6 +1222,43 @@ DNA_overlap_df %&gt;%
    )+
   facet_wrap(~cluster)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/DNA%20Overlapping-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DNA-Overlapping-1">
+Past versions of "DNA Overlapping-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-DNA-Overlapping-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/DNA Overlapping-1.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="svaretroposon" class="section level3">
 <h3>SVA/Retroposon</h3>
@@ -1072,6 +1298,43 @@ SVA_overlap_df %&gt;%
    )+
   facet_wrap(~cluster)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/SVA%20Overlapping-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-SVA-Overlapping-1">
+Past versions of "SVA Overlapping-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-SVA-Overlapping-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/SVA Overlapping-1.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="looking-for-overlapping-information-ltr-specific"
 class="section level3">
@@ -1079,7 +1342,7 @@ class="section level3">
 <p>Here I am exploring H3K27ac ROIs which overlap LTRs and also overlap
 H3K9me3 ROIs, then exploring LFC of the H3K27ac ROI sets across families
 of LTRs. First I wanted to know how many H3K27ac ROIs overlap LTRs, and
-howmany of those are more than one LTR:</p>
+how many of those are more than one LTR:</p>
 <pre class="r"><code>LTR_overlap_df %&gt;% 
   count(Peakid, name = &quot;n_peaks&quot;) %&gt;%
   count(n_peaks)</code></pre>
@@ -1155,7 +1418,7 @@ least one H3K9me3</p>
 <h4>LFC of those regions</h4>
 <pre class="r"><code>LTR_overlap_df %&gt;% 
   dplyr::filter(Peakid %in% K9me3_only_K27ac_peakids$Peakid) %&gt;% 
-  left_join(., H3K27ac_lookup) %&gt;% 
+  
   left_join(., K27ac_lfctable, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
   group_by(TE_type) %&gt;% 
   tally() %&gt;% 
@@ -1185,8 +1448,44 @@ least one H3K9me3</p>
    )+
   facet_wrap(~cluster)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-5-1.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>LTR_K9me3_H3K27ac_lfc &lt;- LTR_overlap_df %&gt;% 
-  dplyr::left_join(H3K27ac_lookup) %&gt;% 
    left_join(., K27ac_lfctable, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;%
    dplyr::filter(Peakid %in% K9me3_only_K27ac_peakids$Peakid)</code></pre>
 <pre class="r"><code>plot_K27_family &lt;- function(lfc_df,
@@ -1213,21 +1512,398 @@ least one H3K9me3</p>
 <pre class="r"><code>plot_K27_family(LTR_K9me3_H3K27ac_lfc,&quot;H3K27ac&quot;,&quot;LTR&quot;,&quot;ERV1&quot;)+
   scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/LTR%20lfc%20H3K9me3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-lfc-H3K9me3-1">
+Past versions of "LTR lfc H3K9me3-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-lfc-H3K9me3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/LTR lfc H3K9me3-1.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_K27_family(LTR_K9me3_H3K27ac_lfc,&quot;H3K27ac&quot;,&quot;LTR&quot;,&quot;ERVK&quot;)+
   scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/LTR%20lfc%20H3K9me3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-lfc-H3K9me3-2">
+Past versions of "LTR lfc H3K9me3-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-lfc-H3K9me3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/LTR lfc H3K9me3-2.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_K27_family(LTR_K9me3_H3K27ac_lfc,&quot;H3K27ac&quot;,&quot;LTR&quot;,&quot;ERVL&quot;)+
   scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/LTR%20lfc%20H3K9me3-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-lfc-H3K9me3-3">
+Past versions of "LTR lfc H3K9me3-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-lfc-H3K9me3-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/LTR lfc H3K9me3-3.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_K27_family(LTR_K9me3_H3K27ac_lfc,&quot;H3K27ac&quot;,&quot;LTR&quot;,&quot;Gypsy&quot;)+
   scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/LTR%20lfc%20H3K9me3-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-lfc-H3K9me3-4">
+Past versions of "LTR lfc H3K9me3-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-lfc-H3K9me3-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/LTR lfc H3K9me3-4.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_K27_family(LTR_K9me3_H3K27ac_lfc,&quot;H3K27ac&quot;,&quot;LTR&quot;,&quot;ERVL-MaLR&quot;)+
   scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/LTR%20lfc%20H3K9me3-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-lfc-H3K9me3-5">
+Past versions of "LTR lfc H3K9me3-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-lfc-H3K9me3-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/LTR lfc H3K9me3-5.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_K27_family(LTR_K9me3_H3K27ac_lfc,&quot;H3K27ac&quot;,&quot;LTR&quot;,&quot;LTR&quot;)+
   scale_color_manual(values = cluster_colors, drop = FALSE)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/LTR%20lfc%20H3K9me3-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-lfc-H3K9me3-6">
+Past versions of "LTR lfc H3K9me3-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-lfc-H3K9me3-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/LTR lfc H3K9me3-6.png" target="_blank">68a0095</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="raw-lfc-exploration" class="section level4">
+<h4>Raw LFC exploration</h4>
+<p>This will look at Raw LFC for all H3K27ac ROIs that overlap an
+LTR</p>
+<pre class="r"><code>LTR_overlap_df %&gt;% 
+  
+   left_join(., K27ac_lfctable, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+  group_by(cluster, group) %&gt;%
+  # summarise(median_LFC = median(LFC), na.rm = TRUE),
+  #           .groups = &quot;drop&quot;)%&gt;% 
+  dplyr::filter(cluster==&quot;Set_2&quot;) %&gt;% 
+   mutate(time=str_remove(group,&quot;H3K27ac&quot;))%&gt;% 
+  mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)))  %&gt;% 
+  ggplot(., aes(x=time, y = LFC, group=Peakid))+
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  theme_classic() +
+  labs(
+    x = &quot;Time point&quot;,
+    y = &quot;Log2 Fold Change&quot;,
+    title = &quot;H3K27ac LFC  for Set_2 LTR-overlapping regions&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR_overlap_df %&gt;% 
+   left_join(., K27ac_lfctable, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+  group_by(cluster, group) %&gt;%
+  # summarise(median_LFC = median(LFC), na.rm = TRUE),
+  #           .groups = &quot;drop&quot;)%&gt;% 
+  # dplyr::filter(cluster==&quot;Set_3&quot;) %&gt;% 
+   mutate(time=str_remove(group,&quot;H3K27ac&quot;))%&gt;% 
+  mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)))  %&gt;% 
+  ggplot(., aes(x=time, y = LFC, group=Peakid, color=case))+
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  theme_classic() +
+  facet_wrap(~cluster)+
+  labs(
+    x = &quot;Time point&quot;,
+    y = &quot;Log2 Fold Change&quot;,
+    title = &quot;H3K27ac LFC  for all LTR-overlapping regions&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Getting some number about how many, etc…</p>
+<pre class="r"><code>LTR_overlap_df %&gt;% 
+  dplyr::left_join(H3K27ac_lookup) %&gt;% 
+  group_by(TE_type,cluster) %&gt;% 
+  tally() %&gt;% 
+  pivot_wider(id_cols = TE_type, names_from = cluster, values_from = n) %&gt;% 
+  ungroup() %&gt;% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = &quot;caption-side: top; text-align: left;&quot;,
+      &quot;H3K27ac LTR specific overlap counts by TE familiy&quot;),
+    options = list(pageLength = 10,
+      autoWidth = TRUE,
+      dom = &quot;tip&quot;))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1aee943cb026952af47d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: left;\">H3K27ac LTR specific overlap counts by TE familiy<\/caption>","data":[["ERV1","ERVK","ERVL","ERVL-MaLR","Gypsy","LTR"],[6385,537,6318,10698,916,92],[107,4,91,197,24,4],[642,25,504,945,95,13],[1992,154,2173,3657,340,29]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>Set_1<\/th>\n      <th>Set_2<\/th>\n      <th>Set_3<\/th>\n      <th>NA<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"dom":"tip","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"name":"TE_type","targets":0},{"name":"Set_1","targets":1},{"name":"Set_2","targets":2},{"name":"Set_3","targets":3},{"name":"NA","targets":4}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>now breaking out by family</p>
+<pre class="r"><code>LTR_overlap_df %&gt;% 
+   left_join(., K27ac_lfctable, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+  group_by(cluster, group) %&gt;%
+  # summarise(median_LFC = median(LFC), na.rm = TRUE),
+  #           .groups = &quot;drop&quot;)%&gt;% 
+  dplyr::filter(cluster==&quot;Set_2&quot;) %&gt;% 
+   mutate(time=str_remove(group,&quot;H3K27ac&quot;))%&gt;% 
+  mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)))  %&gt;% 
+  ggplot(., aes(x=time, y = LFC, group=Peakid, color=case))+
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  theme_classic() +
+  facet_wrap(~TE_type)+
+  labs(
+    x = &quot;Time point&quot;,
+    y = &quot;Log2 Fold Change&quot;,
+    title = &quot;H3K27ac LFC  for Set_2 LTR-overlapping regions&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR_overlap_df %&gt;% 
+  left_join(., K27ac_lfctable, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+  group_by(cluster, group) %&gt;%
+  # summarise(median_LFC = median(LFC), na.rm = TRUE),
+  #           .groups = &quot;drop&quot;)%&gt;% 
+  dplyr::filter(cluster==&quot;Set_3&quot;) %&gt;% 
+   mutate(time=str_remove(group,&quot;H3K27ac&quot;))%&gt;% 
+  mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)))  %&gt;% 
+  ggplot(., aes(x=time, y = LFC, group=Peakid, color=case))+
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  theme_classic() +
+  facet_wrap(~TE_type)+
+  labs(
+    x = &quot;Time point&quot;,
+    y = &quot;Log2 Fold Change&quot;,
+    title = &quot;H3K27ac LFC  for Set_3 LTR-overlapping regions&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" />
+There appears to be a lot of variation on LFC. Direction is obscuring
+information. I am now attempting to create a list of ROIs by set where
+LFC across time is always &gt;0 (The up group), another set where LFC
+across time is always &lt;0 (The down group), and the catch all mixed
+group.</p>
+<pre class="r"><code>### already added to the K27ac_lfctable
+# LTR_overlap_df %&gt;% 
+#   dplyr::left_join(H3K27ac_lookup) %&gt;% 
+#    left_join(., K27ac_lfctable, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
+#    mutate(case= case_when(H3K27ac_24T &gt; 0 &amp; H3K27ac_24R &gt;0 &amp; H3K27ac_144R&gt;0~&quot;A&quot;,
+#                               H3K27ac_24T &lt; 0 &amp; H3K27ac_24R &lt;0 &amp; H3K27ac_144R&lt;0~&quot;B&quot;,
+#                               TRUE ~ &quot;C&quot;)) %&gt;% 
+#   mutate(set_case=paste0(cluster,&quot;_&quot;,case))
+median_df &lt;- K27ac_lfctable %&gt;% 
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+  mutate(
+    time = stringr::str_remove(group, &quot;H3K27ac&quot;),
+    time = factor(time, levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;))
+  ) %&gt;%
+  group_by(cluster, time) %&gt;% 
+  summarise(
+    median_LFC = median(LFC, na.rm = TRUE),
+    n_peaks = dplyr::n(),
+    .groups = &quot;drop&quot;)
+  
+K27ac_lfctable %&gt;% 
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+   mutate(time=str_remove(group,&quot;H3K27ac&quot;))%&gt;% 
+  mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)))  %&gt;% 
+  ggplot(., aes(x=time, y = LFC, group=genes, color=case))+
+  ggrastr::rasterise(geom_line(alpha = 0.15)) +
+  ggrastr::geom_point_rast(size = 1) +
+  geom_line(data=median_df, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
+  theme_classic() +
+  facet_wrap(~cluster)+
+  labs(
+    x = &quot;Time point&quot;,
+    y = &quot;Log2 Fold Change&quot;,
+    title = &quot;H3K27ac LFC  for all H3K27ac regions&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/split%20groups%20by%20LFC-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27ac_lfctable %&gt;% 
+  group_by(cluster,case) %&gt;% 
+  tally() %&gt;% pivot_wider(id_cols=case, names_from = cluster, values_from = n) %&gt;% 
+  mutate(type=case_when(case==&quot;A&quot;~&quot;All LFC &gt; 0&quot;,
+                        case==&quot;B&quot; ~ &quot;All LFC &lt; 0&quot;,
+                        case==&quot;C&quot;~&quot;Mixed up and down LFC&quot;)) %&gt;% 
+  DT::datatable(
+    rownames = FALSE,
+    caption = htmltools::tags$caption(
+      style = &quot;caption-side: top; text-align: left;&quot;,
+      &quot;H3K27ac ROI counts stratified by LFC case&quot;),
+    options = list(pageLength = 10,
+      autoWidth = TRUE,
+      dom = &quot;tip&quot;))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-15ac70e14e0faa7e6fac" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: left;\">H3K27ac ROI counts stratified by LFC case<\/caption>","data":[["A","B","C"],[16358,21273,72453],[769,286,330],[1723,2800,2100],[7758,8810,15411],["All LFC &gt; 0","All LFC &lt; 0","Mixed up and down LFC"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>case<\/th>\n      <th>Set_1<\/th>\n      <th>Set_2<\/th>\n      <th>Set_3<\/th>\n      <th>NA<\/th>\n      <th>type<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"dom":"tip","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"name":"case","targets":0},{"name":"Set_1","targets":1},{"name":"Set_2","targets":2},{"name":"Set_3","targets":3},{"name":"NA","targets":4},{"name":"type","targets":5}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1341,88 +2017,93 @@ loaded via a namespace (and not attached):
  [70] gridGraphics_0.5-1                     
  [71] seqPattern_1.38.0                      
  [72] colorspace_2.1-1                       
- [73] GO.db_3.20.0                           
- [74] gtools_3.9.5                           
- [75] dichromat_2.0-0.1                      
- [76] RSQLite_2.4.3                          
- [77] R.methodsS3_1.8.2                      
- [78] utf8_1.2.6                             
- [79] generics_0.1.4                         
- [80] data.table_1.17.8                      
- [81] httr_1.4.7                             
- [82] htmlwidgets_1.6.4                      
- [83] S4Arrays_1.6.0                         
- [84] whisker_0.4.1                          
- [85] pkgconfig_2.0.3                        
- [86] gtable_0.3.6                           
- [87] blob_1.2.4                             
- [88] impute_1.80.0                          
- [89] XVector_0.46.0                         
- [90] htmltools_0.5.8.1                      
- [91] carData_3.0-5                          
- [92] pwr_1.3-0                              
- [93] fgsea_1.32.4                           
- [94] scales_1.4.0                           
- [95] Biobase_2.66.0                         
- [96] png_0.1-8                              
- [97] ggfun_0.2.0                            
- [98] knitr_1.50                             
- [99] rstudioapi_0.17.1                      
-[100] tzdb_0.5.0                             
-[101] reshape2_1.4.4                         
-[102] rjson_0.2.23                           
-[103] checkmate_2.3.3                        
-[104] nlme_3.1-168                           
-[105] curl_7.0.0                             
-[106] zoo_1.8-14                             
-[107] cachem_1.1.0                           
-[108] KernSmooth_2.23-26                     
-[109] parallel_4.4.2                         
-[110] foreign_0.8-90                         
-[111] AnnotationDbi_1.68.0                   
-[112] restfulr_0.0.16                        
-[113] pillar_1.11.0                          
-[114] vctrs_0.6.5                            
-[115] gplots_3.2.0                           
-[116] ggpubr_0.6.1                           
-[117] promises_1.3.3                         
-[118] car_3.1-3                              
-[119] cluster_2.1.8.1                        
-[120] htmlTable_2.4.3                        
-[121] evaluate_1.0.5                         
-[122] GenomicFeatures_1.58.0                 
-[123] cli_3.6.5                              
-[124] compiler_4.4.2                         
-[125] Rsamtools_2.22.0                       
-[126] rlang_1.1.6                            
-[127] crayon_1.5.3                           
-[128] ggsignif_0.6.4                         
-[129] labeling_0.4.3                         
-[130] ps_1.9.1                               
-[131] getPass_0.2-4                          
-[132] plyr_1.8.9                             
-[133] fs_1.6.6                               
-[134] stringi_1.8.7                          
-[135] gridBase_0.4-7                         
-[136] BiocParallel_1.40.2                    
-[137] Biostrings_2.74.1                      
-[138] lazyeval_0.2.2                         
-[139] GOSemSim_2.32.0                        
-[140] Matrix_1.7-3                           
-[141] BSgenome_1.74.0                        
-[142] hms_1.1.3                              
-[143] patchwork_1.3.2                        
-[144] bit64_4.6.0-1                          
-[145] KEGGREST_1.46.0                        
-[146] SummarizedExperiment_1.36.0            
-[147] broom_1.0.9                            
-[148] igraph_2.1.4                           
-[149] memoise_2.0.1                          
-[150] bslib_0.9.0                            
-[151] ggtree_3.14.0                          
-[152] fastmatch_1.1-6                        
-[153] bit_4.6.0                              
-[154] ape_5.8-1                              </code></pre>
+ [73] Cairo_1.6-5                            
+ [74] GO.db_3.20.0                           
+ [75] gtools_3.9.5                           
+ [76] dichromat_2.0-0.1                      
+ [77] RSQLite_2.4.3                          
+ [78] R.methodsS3_1.8.2                      
+ [79] utf8_1.2.6                             
+ [80] generics_0.1.4                         
+ [81] data.table_1.17.8                      
+ [82] httr_1.4.7                             
+ [83] htmlwidgets_1.6.4                      
+ [84] S4Arrays_1.6.0                         
+ [85] whisker_0.4.1                          
+ [86] pkgconfig_2.0.3                        
+ [87] gtable_0.3.6                           
+ [88] blob_1.2.4                             
+ [89] impute_1.80.0                          
+ [90] XVector_0.46.0                         
+ [91] htmltools_0.5.8.1                      
+ [92] carData_3.0-5                          
+ [93] pwr_1.3-0                              
+ [94] fgsea_1.32.4                           
+ [95] scales_1.4.0                           
+ [96] Biobase_2.66.0                         
+ [97] png_0.1-8                              
+ [98] ggfun_0.2.0                            
+ [99] knitr_1.50                             
+[100] rstudioapi_0.17.1                      
+[101] tzdb_0.5.0                             
+[102] reshape2_1.4.4                         
+[103] rjson_0.2.23                           
+[104] checkmate_2.3.3                        
+[105] nlme_3.1-168                           
+[106] curl_7.0.0                             
+[107] zoo_1.8-14                             
+[108] cachem_1.1.0                           
+[109] KernSmooth_2.23-26                     
+[110] vipor_0.4.7                            
+[111] parallel_4.4.2                         
+[112] foreign_0.8-90                         
+[113] AnnotationDbi_1.68.0                   
+[114] ggrastr_1.0.2                          
+[115] restfulr_0.0.16                        
+[116] pillar_1.11.0                          
+[117] vctrs_0.6.5                            
+[118] gplots_3.2.0                           
+[119] ggpubr_0.6.1                           
+[120] promises_1.3.3                         
+[121] car_3.1-3                              
+[122] cluster_2.1.8.1                        
+[123] beeswarm_0.4.0                         
+[124] htmlTable_2.4.3                        
+[125] evaluate_1.0.5                         
+[126] GenomicFeatures_1.58.0                 
+[127] cli_3.6.5                              
+[128] compiler_4.4.2                         
+[129] Rsamtools_2.22.0                       
+[130] rlang_1.1.6                            
+[131] crayon_1.5.3                           
+[132] ggsignif_0.6.4                         
+[133] labeling_0.4.3                         
+[134] ps_1.9.1                               
+[135] ggbeeswarm_0.7.2                       
+[136] getPass_0.2-4                          
+[137] plyr_1.8.9                             
+[138] fs_1.6.6                               
+[139] stringi_1.8.7                          
+[140] gridBase_0.4-7                         
+[141] BiocParallel_1.40.2                    
+[142] Biostrings_2.74.1                      
+[143] lazyeval_0.2.2                         
+[144] GOSemSim_2.32.0                        
+[145] Matrix_1.7-3                           
+[146] BSgenome_1.74.0                        
+[147] hms_1.1.3                              
+[148] patchwork_1.3.2                        
+[149] bit64_4.6.0-1                          
+[150] KEGGREST_1.46.0                        
+[151] SummarizedExperiment_1.36.0            
+[152] broom_1.0.9                            
+[153] igraph_2.1.4                           
+[154] memoise_2.0.1                          
+[155] bslib_0.9.0                            
+[156] ggtree_3.14.0                          
+[157] fastmatch_1.1-6                        
+[158] bit_4.6.0                              
+[159] ape_5.8-1                              </code></pre>
 </div>
 </div>
 </div>
