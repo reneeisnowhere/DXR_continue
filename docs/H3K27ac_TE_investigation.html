@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-02-03" />
+<meta name="date" content="2026-02-04" />
 
 <title>H3K27ac and TE overlap</title>
 
@@ -370,7 +370,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">H3K27ac and TE overlap</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-02-03</h4>
+<h4 class="date">2026-02-04</h4>
 
 </div>
 
@@ -399,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-03
+<strong>Last updated:</strong> 2026-02-04
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5a8af7889146c606397c2d19de244d4876de9631targetblank5a8af78a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree19b0fd5b0e47621fbe7d103c7f8ec429e66cdba3targetblank19b0fd5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5a8af7889146c606397c2d19de244d4876de9631" target="_blank">5a8af78</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/19b0fd5b0e47621fbe7d103c7f8ec429e66cdba3" target="_blank">19b0fd5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5a8af7889146c606397c2d19de244d4876de9631targetblank5a8af78a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree19b0fd5b0e47621fbe7d103c7f8ec429e66cdba3targetblank19b0fd5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5a8af7889146c606397c2d19de244d4876de9631" target="_blank">5a8af78</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/19b0fd5b0e47621fbe7d103c7f8ec429e66cdba3" target="_blank">19b0fd5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -565,7 +565,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
@@ -591,6 +590,7 @@ Untracked files:
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/For_john.R
     Untracked:  other_analysis/
 
 Unstaged changes:
@@ -643,6 +643,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/19b0fd5b0e47621fbe7d103c7f8ec429e66cdba3/analysis/H3K27ac_TE_investigation.Rmd" target="_blank">19b0fd5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-04
+</td>
+<td>
+wflow_publish("analysis/H3K27ac_TE_investigation.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/3fa291dd05d819de95b37178a786ab4581e6518c/docs/H3K27ac_TE_investigation.html" target="_blank">3fa291d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -722,7 +756,8 @@ library(ggrepel)
 library(DT)
 library(ChIPseeker)
 library(ggVennDiagram)
-library(smplot2)</code></pre>
+library(smplot2)
+library(ggsignif)</code></pre>
 <p>First steps: breakdown repeatmasker into groups and pull out the ones
 by each class I am interested in.</p>
 <pre class="r"><code>repeatmasker &lt;- read_delim(&quot;data/Other_paper_data/repeatmasker_20250911.txt&quot;, 
@@ -842,6 +877,16 @@ K27ac_lfctable &lt;- H3K27ac_toptable_list %&gt;%
                               H3K27ac_24T &lt; 0 &amp; H3K27ac_24R &lt;0 &amp; H3K27ac_144R&lt;0~&quot;B&quot;,
                               TRUE ~ &quot;C&quot;)) %&gt;% 
   mutate(set_case=paste0(cluster,&quot;_&quot;,case))
+
+set_case_list_H3K27ac &lt;-  H3K27ac_toptable_list %&gt;% 
+  dplyr::select(group,genes, logFC) %&gt;% 
+  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %&gt;% 
+  dplyr::left_join(H3K27ac_lookup,by =c(&quot;genes&quot;=&quot;Peakid&quot;)) %&gt;% 
+  mutate(case= case_when(H3K27ac_24T &gt; 0 &amp; H3K27ac_24R &gt;0 &amp; H3K27ac_144R&gt;0~&quot;A&quot;,
+                              H3K27ac_24T &lt; 0 &amp; H3K27ac_24R &lt;0 &amp; H3K27ac_144R&lt;0~&quot;B&quot;,
+                              TRUE ~ &quot;C&quot;)) %&gt;% 
+  mutate(set_case=paste0(cluster,&quot;_&quot;,case)) %&gt;% 
+  dplyr::select(genes, cluster,case,set_case)
 
 cluster_colors &lt;- c(&quot;Set_1&quot; = &quot;#d93e40&quot;,&quot;Set_2&quot; = &quot;#1c9f50&quot;,&quot;Set_3&quot; = &quot;#3570b3&quot;,&quot;NA&quot;  =&quot;grey70&quot;)</code></pre>
 <pre class="r"><code># Generic pairwise Fisher test
@@ -1135,7 +1180,7 @@ LTR_overlap_df &lt;- tibble(
 LTR_overlap_df %&gt;% 
   dplyr::left_join(H3K27ac_lookup) %&gt;% 
   dplyr::filter(cluster %in% c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;Set_3&quot;)) %&gt;% 
-  ggplot(., aes(x = TE_type, y = milliDiv)) +
+  ggplot(., aes(x = cluster, y = milliDiv)) +
    geom_violin(trim = FALSE) +
    geom_boxplot(width = 0.15, outlier.shape = NA) +
    coord_flip() +
@@ -1144,7 +1189,7 @@ LTR_overlap_df %&gt;%
      x = &quot;TE family&quot;,
      title = &quot;Age distribution of LTR elements overlapping H3K27ac&quot;
    )+
-  facet_wrap(~cluster)</code></pre>
+  facet_wrap(~TE_type)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/LTR%20Overlapping-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-Overlapping-1">
@@ -1182,6 +1227,108 @@ reneeisnowhere
 </tbody>
 </table>
 </div>
+</div>
+<div id="age-tests" class="section level4">
+<h4>age tests</h4>
+<p>First test, within each TE family (ERVL, ERVK, etc…)do Set1,Set2 and
+Set3 differ?</p>
+<pre class="r"><code>age_kw &lt;- LTR_overlap_df %&gt;% 
+  left_join(H3K27ac_lookup) %&gt;% 
+  filter(cluster %in% c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;Set_3&quot;)) %&gt;% 
+  group_by(TE_type) %&gt;% 
+  summarise(
+    kw_p = kruskal.test(milliDiv ~ cluster)$p.value)
+
+age_kw</code></pre>
+<pre><code># A tibble: 6 × 2
+  TE_type     kw_p
+  &lt;chr&gt;      &lt;dbl&gt;
+1 ERV1      0.0681
+2 ERVK      0.945 
+3 ERVL      0.0290
+4 ERVL-MaLR 0.0223
+5 Gypsy     0.211 
+6 LTR       0.0482</code></pre>
+<p>The answer shows for ERVL, ERVL-MaLR, and LTR, yes age difference
+differ between sets. now to look at ERVL,ERVL-MaLR and LTR
+individually</p>
+<pre class="r"><code>test_TE_age_pairs &lt;- function(df,
+                              TE_type_query,
+                              sets = c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;)) {
+
+  sub_df &lt;- df %&gt;% 
+    dplyr::left_join(H3K27ac_lookup) %&gt;% 
+    dplyr::filter(
+      TE_type == TE_type_query,
+      cluster %in% sets,
+      !is.na(milliDiv)
+    )
+
+  # Medians first (ground truth)
+  med_df &lt;- sub_df %&gt;% 
+    dplyr::group_by(cluster) %&gt;% 
+    dplyr::summarise(
+      median_age = median(milliDiv, na.rm = TRUE),
+      n = dplyr::n(),
+      .groups = &quot;drop&quot;
+    )
+
+  # Pairwise Wilcoxon
+  pw &lt;- pairwise.wilcox.test(
+    x = sub_df$milliDiv,
+    g = sub_df$cluster,
+    p.adjust.method = &quot;BH&quot;
+  )
+
+  # Tidy + enforce symmetric pairs
+  pw_df &lt;- as.data.frame(as.table(pw$p.value)) %&gt;% 
+    dplyr::filter(!is.na(Freq)) %&gt;% 
+    dplyr::rename(
+      set_A = Var1,
+      set_B = Var2,
+      p_adj = Freq
+    )
+
+  # Join medians *by value*, not position
+  pw_df %&gt;% 
+    dplyr::left_join(med_df, by = c(&quot;set_A&quot; = &quot;cluster&quot;)) %&gt;% 
+    dplyr::rename(median_A = median_age, n_A = n) %&gt;% 
+    dplyr::left_join(med_df, by = c(&quot;set_B&quot; = &quot;cluster&quot;)) %&gt;% 
+    dplyr::rename(median_B = median_age, n_B = n) %&gt;% 
+    dplyr::mutate(
+      older_set = dplyr::case_when(
+        median_A &gt; median_B ~ set_A,
+        median_B &gt; median_A ~ set_B,
+        TRUE ~ &quot;equal&quot;
+      ),
+      TE_type = TE_type_query
+    )
+}</code></pre>
+<pre class="r"><code>test_TE_age_pairs(LTR_overlap_df, &quot;ERV1&quot;)</code></pre>
+<pre><code>  set_A set_B      p_adj median_A n_A median_B  n_B older_set TE_type
+1 Set_2 Set_1 0.09778575      165 107      157 6385     Set_2    ERV1
+2 Set_3 Set_1 0.33055165      160 642      157 6385     Set_3    ERV1
+3 Set_3 Set_2 0.14838385      160 642      165  107     Set_2    ERV1</code></pre>
+<pre class="r"><code>test_TE_age_pairs(LTR_overlap_df, &quot;ERVK&quot;)</code></pre>
+<pre><code>  set_A set_B p_adj median_A n_A median_B n_B older_set TE_type
+1 Set_2 Set_1     1       77   4       90 537     Set_1    ERVK
+2 Set_3 Set_1     1       93  25       90 537     Set_3    ERVK
+3 Set_3 Set_2     1       93  25       77   4     Set_3    ERVK</code></pre>
+<pre class="r"><code>test_TE_age_pairs(LTR_overlap_df, &quot;ERVL&quot;)</code></pre>
+<pre><code>  set_A set_B      p_adj median_A n_A median_B  n_B older_set TE_type
+1 Set_2 Set_1 0.42714314      251  91      242 6318     Set_2    ERVL
+2 Set_3 Set_1 0.04056578      250 504      242 6318     Set_3    ERVL
+3 Set_3 Set_2 0.99418468      250 504      251   91     Set_2    ERVL</code></pre>
+<pre class="r"><code>test_TE_age_pairs(LTR_overlap_df, &quot;ERVL-MaLR&quot;)</code></pre>
+<pre><code>  set_A set_B      p_adj median_A n_A median_B   n_B older_set   TE_type
+1 Set_2 Set_1 0.17332708      239 197      227 10698     Set_2 ERVL-MaLR
+2 Set_3 Set_1 0.06074938      235 945      227 10698     Set_3 ERVL-MaLR
+3 Set_3 Set_2 0.60549175      235 945      239   197     Set_2 ERVL-MaLR</code></pre>
+<pre class="r"><code>test_TE_age_pairs(LTR_overlap_df, &quot;LTR&quot;)</code></pre>
+<pre><code>  set_A set_B      p_adj median_A n_A median_B n_B older_set TE_type
+1 Set_2 Set_1 0.56351607    278.5   4    264.0  92     Set_2     LTR
+2 Set_3 Set_1 0.04873491    282.0  13    264.0  92     Set_3     LTR
+3 Set_3 Set_2 0.46137897    282.0  13    278.5   4     Set_3     LTR</code></pre>
 </div>
 </div>
 <div id="dna" class="section level3">
@@ -1447,44 +1594,7 @@ least one H3K9me3</p>
      title = &quot;Age distribution of LTR elements overlapping H3K27ac and H3K9me3&quot;
    )+
   facet_wrap(~cluster)</code></pre>
-<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
-Past versions of unnamed-chunk-5-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-5-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a00957e41aa12d9cfdcc8bd5a6d59d71241b44/docs/figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-5-1.png" target="_blank">68a0095</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-02-02
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>LTR_K9me3_H3K27ac_lfc &lt;- LTR_overlap_df %&gt;% 
    left_join(., K27ac_lfctable, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;%
    dplyr::filter(Peakid %in% K9me3_only_K27ac_peakids$Peakid)</code></pre>
@@ -1772,7 +1882,7 @@ LTR</p>
     x = &quot;Time point&quot;,
     y = &quot;Log2 Fold Change&quot;,
     title = &quot;H3K27ac LFC  for Set_2 LTR-overlapping regions&quot;)</code></pre>
-<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>LTR_overlap_df %&gt;% 
    left_join(., K27ac_lfctable, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
   pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
@@ -1791,7 +1901,7 @@ LTR</p>
     x = &quot;Time point&quot;,
     y = &quot;Log2 Fold Change&quot;,
     title = &quot;H3K27ac LFC  for all LTR-overlapping regions&quot;)</code></pre>
-<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Getting some number about how many, etc…</p>
 <pre class="r"><code>LTR_overlap_df %&gt;% 
   dplyr::left_join(H3K27ac_lookup) %&gt;% 
@@ -1828,7 +1938,7 @@ LTR</p>
     x = &quot;Time point&quot;,
     y = &quot;Log2 Fold Change&quot;,
     title = &quot;H3K27ac LFC  for Set_2 LTR-overlapping regions&quot;)</code></pre>
-<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>LTR_overlap_df %&gt;% 
   left_join(., K27ac_lfctable, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
   pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
@@ -1847,7 +1957,7 @@ LTR</p>
     x = &quot;Time point&quot;,
     y = &quot;Log2 Fold Change&quot;,
     title = &quot;H3K27ac LFC  for Set_3 LTR-overlapping regions&quot;)</code></pre>
-<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" />
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" />
 There appears to be a lot of variation on LFC. Direction is obscuring
 information. I am now attempting to create a list of ROIs by set where
 LFC across time is always &gt;0 (The up group), another set where LFC
@@ -1888,6 +1998,43 @@ K27ac_lfctable %&gt;%
     y = &quot;Log2 Fold Change&quot;,
     title = &quot;H3K27ac LFC  for all H3K27ac regions&quot;)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/split%20groups%20by%20LFC-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-split-groups-by-LFC-1">
+Past versions of "split groups by LFC-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-split-groups-by-LFC-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/3fa291dd05d819de95b37178a786ab4581e6518c/docs/figure/H3K27ac_TE_investigation.Rmd/split groups by LFC-1.png" target="_blank">3fa291d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>K27ac_lfctable %&gt;% 
   group_by(cluster,case) %&gt;% 
   tally() %&gt;% pivot_wider(id_cols=case, names_from = cluster, values_from = n) %&gt;% 
@@ -1904,6 +2051,555 @@ K27ac_lfctable %&gt;%
       dom = &quot;tip&quot;))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-15ac70e14e0faa7e6fac" style="width:100%;height:auto;"></div>
 <script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"none","vertical":false,"caption":"<caption style=\"caption-side: top; text-align: left;\">H3K27ac ROI counts stratified by LFC case<\/caption>","data":[["A","B","C"],[16358,21273,72453],[769,286,330],[1723,2800,2100],[7758,8810,15411],["All LFC &gt; 0","All LFC &lt; 0","Mixed up and down LFC"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>case<\/th>\n      <th>Set_1<\/th>\n      <th>Set_2<\/th>\n      <th>Set_3<\/th>\n      <th>NA<\/th>\n      <th>type<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"dom":"tip","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"name":"case","targets":0},{"name":"Set_1","targets":1},{"name":"Set_2","targets":2},{"name":"Set_3","targets":3},{"name":"NA","targets":4},{"name":"type","targets":5}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>H3K27ac_Sets &lt;- K27ac_lfctable %&gt;%
+  dplyr::rename(&quot;Peakid&quot;=genes)
+
+H3K27ac_set_case_lfc &lt;- split(H3K27ac_Sets, H3K27ac_Sets$set_case)
+
+saveRDS(H3K27ac_set_case_lfc, &quot;data/RDS_files/H3K27ac_set_case_lfc.RDS&quot;)
+unique(rpt_split$`LTR`$repFamily)</code></pre>
+<p>Zooming back in on summits,</p>
+<p>What do LFCs of ROIs whose summits cross LTRs?</p>
+<pre class="r"><code>toss &lt;- findOverlaps(H3K27ac_summit_gr, LTR_gr)
+# toss %&gt;% 
+#   as.data.frame() %&gt;% 
+#   distinct(Peakid)
+LTR_summits_overlap_df &lt;- tibble(
+  peak_row = queryHits(toss),
+  Peakid   = H3K27ac_summit_gr$Peakid[queryHits(toss)],
+  cluster  = H3K27ac_sets_gr$cluster[queryHits(toss)],
+  
+  repClass = LTR_gr$repClass[subjectHits(toss)],
+  repName  = LTR_gr$repName[subjectHits(toss)],
+  RM_id  = LTR_gr$RM_id[subjectHits(toss)],
+  TE_type  = ifelse(
+    LTR_gr$repFamily[subjectHits(toss)] == &quot;SVA&quot;,
+    LTR_gr$repName[subjectHits(toss)],
+    LTR_gr$repFamily[subjectHits(toss)]
+  ),
+  
+  milliDiv = LTR_gr$milliDiv[subjectHits(toss)],
+  milliDel = LTR_gr$milliDel[subjectHits(toss)],
+  milliIns = LTR_gr$milliIns[subjectHits(toss)]
+)
+summit_LTR_peakids &lt;- LTR_summits_overlap_df %&gt;% distinct(Peakid)
+
+split_summit_LTR_peakids &lt;- split(LTR_summits_overlap_df, LTR_summits_overlap_df$TE_type)</code></pre>
+<pre class="r"><code>med_LTR_LFC &lt;- K27ac_lfctable %&gt;% 
+  dplyr::filter(genes %in% summit_LTR_peakids$Peakid) %&gt;% 
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+   mutate(
+    time = stringr::str_remove(group, &quot;H3K27ac&quot;),
+    time = factor(time, levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;))
+  ) %&gt;%
+  group_by(cluster, time) %&gt;% 
+  summarise(
+    median_LFC = median(LFC, na.rm = TRUE),
+    n_peaks = dplyr::n(),
+    .groups = &quot;drop&quot;)
+
+
+K27ac_lfctable %&gt;% 
+  dplyr::filter(genes %in% summit_LTR_peakids$Peakid) %&gt;% 
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+   mutate(time=str_remove(group,&quot;H3K27ac&quot;))%&gt;% 
+  mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)))  %&gt;% 
+  ggplot(., aes(x=time, y = LFC, group=genes, color=case))+
+  ggrastr::rasterise(geom_line(alpha = 0.15)) +
+  ggrastr::geom_point_rast(size = 1) +
+  geom_line(data=med_LTR_LFC, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
+  theme_classic() +
+  facet_wrap(~cluster)+
+  labs(
+    x = &quot;Time point&quot;,
+    y = &quot;Log2 Fold Change&quot;,
+    title = &quot;H3K27ac LFC for all H3K27ac regions whose summits cross an LTR&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/All%20LTRs%20and%20summits-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>median_LFC_H3K27ac_group_plot &lt;- function(lfc_df,repFam){
+
+  pid_df &lt;- split_summit_LTR_peakids[[repFam]]
+
+  med_df &lt;- lfc_df %&gt;% 
+  dplyr::filter(genes %in% pid_df$Peakid) %&gt;%
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+  mutate(
+    time = stringr::str_remove(group, &quot;H3K27ac&quot;),
+    time = factor(time, levels = c(&quot;_24T&quot;, &quot;_24R&quot;, &quot;_144R&quot;))
+  ) %&gt;%
+  group_by(cluster, time) %&gt;% 
+  summarise(
+    median_LFC = median(LFC, na.rm = TRUE),
+    n_peaks = dplyr::n(),
+    .groups = &quot;drop&quot;)
+  
+  label_df &lt;- med_df %&gt;%
+  group_by(cluster) %&gt;%
+  summarise(n_peaks = unique(n_peaks),   # same for all times within a cluster
+    .groups = &quot;drop&quot;) %&gt;%
+  mutate(label = paste0(&quot;n = &quot;, n_peaks),
+    time = &quot;_144R&quot;,               # anchor text at first x position
+    y = Inf )  ##place at top of panel
+
+
+  lfc_df %&gt;% 
+  dplyr::filter(genes %in% pid_df$Peakid) %&gt;%
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+   mutate(time=str_remove(group,&quot;H3K27ac&quot;))%&gt;% 
+  mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)))  %&gt;% 
+  ggplot(., aes(x=time, y = LFC, group=genes, color=case))+
+  ggrastr::rasterise(geom_line(alpha = 0.15)) +
+  ggrastr::geom_point_rast(size = 1) +
+  geom_line(data=med_df, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
+    geom_text(data = label_df,  aes(x = time, y = y, label = label),  inherit.aes = FALSE,  vjust = 1.2,  hjust = .2,  size = 4)+
+  theme_classic() +
+  facet_wrap(~cluster)+
+  labs(
+    x = &quot;Time point&quot;,
+    y = &quot;Log2 Fold Change&quot;,
+    title = paste0(&quot;H3K27ac LFC, ROI summits cross an LTR:&quot;,repFam))
+  }</code></pre>
+<pre class="r"><code>median_LFC_H3K27ac_group_plot(K27ac_lfctable,&quot;ERVL-MaLR&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/All%20LTRs%20and%20summits%20ERV1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>median_LFC_H3K27ac_group_plot(K27ac_lfctable,&quot;ERV1&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/All%20LTRs%20and%20summits%20ERV1-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>median_LFC_H3K27ac_group_plot(K27ac_lfctable,&quot;ERVL&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/All%20LTRs%20and%20summits%20ERV1-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>median_LFC_H3K27ac_group_plot(K27ac_lfctable,&quot;ERVK&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/All%20LTRs%20and%20summits%20ERV1-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>median_LFC_H3K27ac_group_plot(K27ac_lfctable,&quot;Gypsy&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/All%20LTRs%20and%20summits%20ERV1-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>median_LFC_H3K27ac_group_plot(K27ac_lfctable,&quot;LTR&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/All%20LTRs%20and%20summits%20ERV1-6.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="age-questions" class="section level3">
+<h3>Age questions</h3>
+<p>I had a question about age and LTRs:</p>
+<pre class="r"><code>age_summit_kw &lt;- LTR_summits_overlap_df %&gt;% 
+  left_join(H3K27ac_lookup) %&gt;% 
+  filter(cluster %in% c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;Set_3&quot;)) %&gt;% 
+  group_by(TE_type) %&gt;% 
+  summarise(
+    kw_p = kruskal.test(milliDiv ~ cluster)$p.value)
+
+age_summit_kw</code></pre>
+<pre><code># A tibble: 6 × 2
+  TE_type     kw_p
+  &lt;chr&gt;      &lt;dbl&gt;
+1 ERV1      0.177 
+2 ERVK      0.681 
+3 ERVL      0.0257
+4 ERVL-MaLR 0.0299
+5 Gypsy     0.0835
+6 LTR       0.306 </code></pre>
+<pre class="r"><code>test_TE_age_pairs_summits &lt;- function(df,
+                              TE_type_query,
+                              sets = c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;)) {
+
+  pid_df &lt;- split_summit_LTR_peakids[[TE_type_query]]
+  
+  sub_df &lt;- pid_df %&gt;% 
+    dplyr::left_join(H3K27ac_lookup) %&gt;%
+   
+    dplyr::filter(
+      TE_type == TE_type_query,
+      cluster %in% sets,
+      !is.na(milliDiv)
+    )
+
+  # Medians first (ground truth)
+  med_df &lt;- sub_df %&gt;% 
+    dplyr::group_by(cluster) %&gt;% 
+    dplyr::summarise(
+      median_age = median(milliDiv, na.rm = TRUE),
+      n = dplyr::n(),
+      .groups = &quot;drop&quot;
+    )
+
+  # Pairwise Wilcoxon
+  pw &lt;- pairwise.wilcox.test(
+    x = sub_df$milliDiv,
+    g = sub_df$cluster,
+    p.adjust.method = &quot;BH&quot;
+  )
+
+  # Tidy + enforce symmetric pairs
+  pw_df &lt;- as.data.frame(as.table(pw$p.value)) %&gt;% 
+    dplyr::filter(!is.na(Freq)) %&gt;% 
+    dplyr::rename(
+      set_A = Var1,
+      set_B = Var2,
+      p_adj = Freq
+    )
+
+  # Join medians *by value*, not position
+  pw_df %&gt;% 
+    dplyr::left_join(med_df, by = c(&quot;set_A&quot; = &quot;cluster&quot;)) %&gt;% 
+    dplyr::rename(median_A = median_age, n_A = n) %&gt;% 
+    dplyr::left_join(med_df, by = c(&quot;set_B&quot; = &quot;cluster&quot;)) %&gt;% 
+    dplyr::rename(median_B = median_age, n_B = n) %&gt;% 
+    dplyr::mutate(
+      older_set = dplyr::case_when(
+        median_A &gt; median_B ~ set_A,
+        median_B &gt; median_A ~ set_B,
+        TRUE ~ &quot;equal&quot;
+      ),
+      TE_type = TE_type_query
+    )
+}</code></pre>
+<p>testing age pairs between ROI summits</p>
+<pre class="r"><code>test_TE_age_pairs_summits(LTR_summits_overlap_df, &quot;ERVL&quot;)</code></pre>
+<pre><code>  set_A set_B      p_adj median_A n_A median_B  n_B older_set TE_type
+1 Set_2 Set_1 0.55190415      254  33      244 2137     Set_2    ERVL
+2 Set_3 Set_1 0.02482948      256 136      244 2137     Set_3    ERVL
+3 Set_3 Set_2 0.55190415      256 136      254   33     Set_3    ERVL</code></pre>
+<pre class="r"><code>test_TE_age_pairs_summits(LTR_summits_overlap_df, &quot;ERV1&quot;)</code></pre>
+<pre><code>  set_A set_B     p_adj median_A n_A median_B  n_B older_set TE_type
+1 Set_2 Set_1 0.8642775      150  33      156 1837     Set_1    ERV1
+2 Set_3 Set_1 0.1945868      150 203      156 1837     Set_1    ERV1
+3 Set_3 Set_2 0.6037261      150 203      150   33     equal    ERV1</code></pre>
+<pre class="r"><code>compare_case_age &lt;- function(df,
+                             TE_family,
+                             set_case_1,
+                             set_case_2) {
+
+  sub_df &lt;- df %&gt;% 
+    dplyr::left_join(set_case_list_H3K27ac, by=c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
+    dplyr::filter(
+      TE_type == TE_family,
+      set_case %in% c(set_case_1, set_case_2),
+      !is.na(milliDiv)
+    )
+
+  med_df &lt;- sub_df %&gt;% 
+    dplyr::group_by(set_case) %&gt;% 
+    dplyr::summarise(
+      median_age = median(milliDiv),
+      n = dplyr::n(),
+      .groups = &quot;drop&quot;
+    )
+
+  test &lt;- wilcox.test(milliDiv ~ set_case, data = sub_df)
+
+  tibble::tibble(
+    TE_type = TE_family,
+    group_1 = set_case_1,
+    group_2 = set_case_2,
+    median_1 = med_df$median_age[med_df$set_case == set_case_1],
+    median_2 = med_df$median_age[med_df$set_case == set_case_2],
+    n_1 = med_df$n[med_df$set_case == set_case_1],
+    n_2 = med_df$n[med_df$set_case == set_case_2],
+    p_value = test$p.value,
+    older_group = dplyr::case_when(
+      median_1 &gt; median_2 ~ set_case_1,
+      median_2 &gt; median_1 ~ set_case_2,
+      TRUE ~ &quot;equal&quot;
+    )
+  )
+}</code></pre>
+<pre class="r"><code>LTR_summits_overlap_df %&gt;% 
+  dplyr::left_join(set_case_list_H3K27ac, by=c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;%
+  dplyr::filter(
+    TE_type == &quot;ERV1&quot;,
+    set_case %in% c(&quot;Set_1_A&quot;, &quot;Set_2_A&quot;)
+  ) %&gt;% 
+  ggplot(aes(x = set_case, y = milliDiv, fill = set_case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  theme_classic() +
+  labs(
+    y = &quot;Divergence from consensus (milliDiv)&quot;,
+    x = NULL,
+    title = &quot;ERV1 age comparison by set_case&quot;
+  )</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>compare_case_age(LTR_summits_overlap_df,&quot;ERV1&quot;,&quot;Set_1_A&quot;,&quot;Set_3_A&quot;)</code></pre>
+<pre><code># A tibble: 1 × 9
+  TE_type group_1 group_2 median_1 median_2   n_1   n_2 p_value older_group
+  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;      
+1 ERV1    Set_1_A Set_3_A     152.      150   292   115   0.308 Set_1_A    </code></pre>
+<pre class="r"><code>compare_case_age(LTR_summits_overlap_df,&quot;ERVL&quot;,&quot;Set_1_A&quot;,&quot;Set_3_A&quot;)</code></pre>
+<pre><code># A tibble: 1 × 9
+  TE_type group_1 group_2 median_1 median_2   n_1   n_2 p_value older_group
+  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;      
+1 ERVL    Set_1_A Set_3_A      242      221   339    33   0.311 Set_1_A    </code></pre>
+<pre class="r"><code>compare_case_age(LTR_summits_overlap_df,&quot;ERVK&quot;,&quot;Set_1_A&quot;,&quot;Set_3_A&quot;)</code></pre>
+<pre><code># A tibble: 1 × 9
+  TE_type group_1 group_2 median_1 median_2   n_1   n_2 p_value older_group
+  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;      
+1 ERVK    Set_1_A Set_3_A     87.5       82    60     2   0.780 Set_1_A    </code></pre>
+<pre class="r"><code>compare_case_age(LTR_summits_overlap_df,&quot;ERVL-MaLR&quot;,&quot;Set_1_A&quot;,&quot;Set_3_A&quot;)</code></pre>
+<pre><code># A tibble: 1 × 9
+  TE_type   group_1 group_2 median_1 median_2   n_1   n_2 p_value older_group
+  &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;      
+1 ERVL-MaLR Set_1_A Set_3_A      237      244   477    71   0.548 Set_3_A    </code></pre>
+<pre class="r"><code>compare_case_age(LTR_summits_overlap_df,&quot;ERV1&quot;,&quot;Set_1_A&quot;,&quot;Set_3_A&quot;)</code></pre>
+<pre><code># A tibble: 1 × 9
+  TE_type group_1 group_2 median_1 median_2   n_1   n_2 p_value older_group
+  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;      
+1 ERV1    Set_1_A Set_3_A     152.      150   292   115   0.308 Set_1_A    </code></pre>
+<pre class="r"><code>compare_case_age(LTR_summits_overlap_df,&quot;ERV1&quot;,&quot;Set_1_A&quot;,&quot;Set_3_A&quot;)</code></pre>
+<pre><code># A tibble: 1 × 9
+  TE_type group_1 group_2 median_1 median_2   n_1   n_2 p_value older_group
+  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;      
+1 ERV1    Set_1_A Set_3_A     152.      150   292   115   0.308 Set_1_A    </code></pre>
+<pre class="r"><code>ERV1_summit_df &lt;- split_summit_LTR_peakids$ERV1 %&gt;% 
+  left_join(., set_case_list_H3K27ac, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
+  dplyr::filter(cluster %in% c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;Set_3&quot;))  
+  
+
+cluster_pairs &lt;- list(c(&quot;Set_1&quot;,&quot;Set_2&quot;),
+                      c(&quot;Set_1&quot;, &quot;Set_3&quot;),
+                      c(&quot;Set_2&quot;,&quot;Set_3&quot;))
+
+
+ERV1_pval_df &lt;- ERV1_summit_df %&gt;%
+  group_by(case) %&gt;%
+  group_modify(~ {
+    map_dfr(cluster_pairs, function(pair) {
+      x &lt;- .x %&gt;% filter(cluster == pair[1]) %&gt;% pull(milliDiv)
+      y &lt;- .x %&gt;% filter(cluster == pair[2]) %&gt;% pull(milliDiv)
+      tibble(
+        cluster1 = pair[1],
+        cluster2 = pair[2],
+        p_value = wilcox.test(x, y)$p.value)
+    })
+  })
+
+
+ggplot(ERV1_summit_df, aes(x = cluster, y = milliDiv, fill = cluster)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~case) +
+  theme_classic() +
+  labs(
+    y = &quot;Divergence from consensus (milliDiv)&quot;,
+    x = &quot;Set&quot;,
+    title = &quot;ERV1 age comparisons across sets within each case&quot;
+  ) +
+  geom_signif(
+    comparisons = cluster_pairs,
+    test = &quot;wilcox.test&quot;,
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = 0.1
+  )</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/ERV1%20case%20summit-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ERVL_summit_df &lt;- split_summit_LTR_peakids$ERVL %&gt;% 
+  left_join(., set_case_list_H3K27ac, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
+  dplyr::filter(cluster %in% c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;Set_3&quot;))  
+  
+
+cluster_pairs &lt;- list(c(&quot;Set_1&quot;,&quot;Set_2&quot;),
+                      c(&quot;Set_1&quot;, &quot;Set_3&quot;),
+                      c(&quot;Set_2&quot;,&quot;Set_3&quot;))
+
+
+ERVL_pval_df &lt;- ERVL_summit_df %&gt;%
+  group_by(case) %&gt;%
+  group_modify(~ {
+    map_dfr(cluster_pairs, function(pair) {
+      x &lt;- .x %&gt;% filter(cluster == pair[1]) %&gt;% pull(milliDiv)
+      y &lt;- .x %&gt;% filter(cluster == pair[2]) %&gt;% pull(milliDiv)
+      tibble(
+        cluster1 = pair[1],
+        cluster2 = pair[2],
+        p_value = wilcox.test(x, y)$p.value)
+    })
+  })
+
+
+ggplot(ERVL_summit_df, aes(x = cluster, y = milliDiv, fill = cluster)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~case) +
+  theme_classic() +
+  labs(
+    y = &quot;Divergence from consensus (milliDiv)&quot;,
+    x = &quot;Set&quot;,
+    title = &quot;ERVL age comparisons across sets within each case&quot;
+  ) +
+  geom_signif(
+    comparisons = cluster_pairs,
+    test = &quot;wilcox.test&quot;,
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = 0.1
+  )</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/ERVL%20case%20summit-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>split_summit_LTR_peakids$ERV1 %&gt;% 
+  left_join(., set_case_list_H3K27ac, by = c(&quot;Peakid&quot;=&quot;genes&quot;)) %&gt;% 
+  dplyr::filter(cluster %in% c(&quot;Set_1&quot;,&quot;Set_2&quot;,&quot;Set_3&quot;)) %&gt;% 
+  ggplot(., aes(x = cluster, y = milliDiv)) +
+  geom_violin(trim = FALSE) +
+   geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~case)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ERV1_case_df &lt;- split_summit_LTR_peakids$ERV1 %&gt;% 
+  left_join(set_case_list_H3K27ac, by = c(&quot;Peakid&quot; = &quot;genes&quot;)) %&gt;% 
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;),
+         case %in% c(&quot;A&quot;, &quot;B&quot;))  # only compare A vs B
+
+
+ggplot(ERV1_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = &quot;Divergence from consensus (milliDiv)&quot;,
+    x = &quot;Case&quot;,
+    title = &quot;ERV1 age comparison: A vs B within each cluster&quot;
+  ) +
+  geom_signif(
+    comparisons = list(c(&quot;A&quot;, &quot;B&quot;)),
+    test = &quot;wilcox.test&quot;,
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/ERV1%20case%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ERVL_case_df &lt;- split_summit_LTR_peakids$ERVL %&gt;% 
+  left_join(set_case_list_H3K27ac, by = c(&quot;Peakid&quot; = &quot;genes&quot;)) %&gt;% 
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;),
+         case %in% c(&quot;A&quot;, &quot;B&quot;))  # only compare A vs B
+
+
+ggplot(ERVL_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = &quot;Divergence from consensus (milliDiv)&quot;,
+    x = &quot;Case&quot;,
+    title = &quot;ERVL age comparison: A vs B within each cluster&quot;
+  ) +
+  geom_signif(
+    comparisons = list(c(&quot;A&quot;, &quot;B&quot;)),
+    test = &quot;wilcox.test&quot;,
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/ERVL%20case%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ERVK_case_df &lt;- split_summit_LTR_peakids$ERVK %&gt;% 
+  left_join(set_case_list_H3K27ac, by = c(&quot;Peakid&quot; = &quot;genes&quot;)) %&gt;% 
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;),
+         case %in% c(&quot;A&quot;, &quot;B&quot;))  # only compare A vs B
+
+
+ggplot(ERVK_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = &quot;Divergence from consensus (milliDiv)&quot;,
+    x = &quot;Case&quot;,
+    title = &quot;ERVK age comparison: A vs B within each cluster&quot;
+  ) +
+  geom_signif(
+    comparisons = list(c(&quot;A&quot;, &quot;B&quot;)),
+    test = &quot;wilcox.test&quot;,
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/ERVK%20case%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ERVL_MaLR_case_df &lt;- split_summit_LTR_peakids$`ERVL-MaLR` %&gt;% 
+  left_join(set_case_list_H3K27ac, by = c(&quot;Peakid&quot; = &quot;genes&quot;)) %&gt;% 
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;),
+         case %in% c(&quot;A&quot;, &quot;B&quot;))  # only compare A vs B
+
+
+ggplot(ERVL_MaLR_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = &quot;Divergence from consensus (milliDiv)&quot;,
+    x = &quot;Case&quot;,
+    title = &quot;ERVL-MaLR age comparison: A vs B within each cluster&quot;
+  ) +
+  geom_signif(
+    comparisons = list(c(&quot;A&quot;, &quot;B&quot;)),
+    test = &quot;wilcox.test&quot;,
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/ERVL-MaLR%20case%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Gypsy_case_df &lt;- split_summit_LTR_peakids$Gypsy %&gt;% 
+  left_join(set_case_list_H3K27ac, by = c(&quot;Peakid&quot; = &quot;genes&quot;)) %&gt;% 
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;),
+         case %in% c(&quot;A&quot;, &quot;B&quot;))  # only compare A vs B
+
+
+ggplot(Gypsy_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = &quot;Divergence from consensus (milliDiv)&quot;,
+    x = &quot;Case&quot;,
+    title = &quot;Gypsy age comparison: A vs B within each cluster&quot;
+  ) +
+  geom_signif(
+    comparisons = list(c(&quot;A&quot;, &quot;B&quot;)),
+    test = &quot;wilcox.test&quot;,
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/Gypsy%20case%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR_case_df &lt;- split_summit_LTR_peakids$LTR %&gt;% 
+  left_join(set_case_list_H3K27ac, by = c(&quot;Peakid&quot; = &quot;genes&quot;)) %&gt;% 
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;, &quot;Set_3&quot;),
+         case %in% c(&quot;A&quot;, &quot;B&quot;))  # only compare A vs B
+
+
+ggplot(LTR_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = &quot;Divergence from consensus (milliDiv)&quot;,
+    x = &quot;Case&quot;,
+    title = &quot;LTR age comparison: A vs B within each cluster&quot;
+  ) +
+  geom_signif(
+    comparisons = list(c(&quot;A&quot;, &quot;B&quot;)),
+    test = &quot;wilcox.test&quot;,
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/LTR%20case%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>listit &lt;- data.frame(x=width(H3K9me3_sets_gr$all_H3K9me3_regions))
+ggplot(listit, aes(x=x))+
+  geom_density()</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>listit_k27ac &lt;- data.frame(x=width(H3K27ac_sets_gr$all_H3K27ac))
+
+ggplot(listit_k27ac, aes(x=x))+
+  geom_density()</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>listit %&gt;% 
+  summary()</code></pre>
+<pre><code>       x          
+ Min.   :   85.0  
+ 1st Qu.:  264.0  
+ Median :  394.0  
+ Mean   :  519.2  
+ 3rd Qu.:  634.0  
+ Max.   :41434.0  </code></pre>
+<pre class="r"><code>listit_k27ac %&gt;% 
+  summary()</code></pre>
+<pre><code>       x        
+ Min.   :   87  
+ 1st Qu.:  581  
+ Median :  869  
+ Mean   : 1299  
+ 3rd Qu.: 1469  
+ Max.   :97107  </code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1935,14 +2631,15 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] smplot2_0.2.5        ggVennDiagram_1.5.4  ChIPseeker_1.42.1   
- [4] DT_0.33              ggrepel_0.9.6        rtracklayer_1.66.0  
- [7] genomation_1.38.0    plyranges_1.26.0     GenomicRanges_1.58.0
-[10] GenomeInfoDb_1.42.3  IRanges_2.40.1       S4Vectors_0.44.0    
-[13] BiocGenerics_0.52.0  lubridate_1.9.4      forcats_1.0.0       
-[16] stringr_1.5.1        dplyr_1.1.4          purrr_1.1.0         
-[19] readr_2.1.5          tidyr_1.3.1          tibble_3.3.0        
-[22] ggplot2_3.5.2        tidyverse_2.0.0      workflowr_1.7.1     
+ [1] ggsignif_0.6.4       smplot2_0.2.5        ggVennDiagram_1.5.4 
+ [4] ChIPseeker_1.42.1    DT_0.33              ggrepel_0.9.6       
+ [7] rtracklayer_1.66.0   genomation_1.38.0    plyranges_1.26.0    
+[10] GenomicRanges_1.58.0 GenomeInfoDb_1.42.3  IRanges_2.40.1      
+[13] S4Vectors_0.44.0     BiocGenerics_0.52.0  lubridate_1.9.4     
+[16] forcats_1.0.0        stringr_1.5.1        dplyr_1.1.4         
+[19] purrr_1.1.0          readr_2.1.5          tidyr_1.3.1         
+[22] tibble_3.3.0         ggplot2_3.5.2        tidyverse_2.0.0     
+[25] workflowr_1.7.1     
 
 loaded via a namespace (and not attached):
   [1] splines_4.4.2                          
@@ -2076,35 +2773,33 @@ loaded via a namespace (and not attached):
 [129] Rsamtools_2.22.0                       
 [130] rlang_1.1.6                            
 [131] crayon_1.5.3                           
-[132] ggsignif_0.6.4                         
-[133] labeling_0.4.3                         
-[134] ps_1.9.1                               
-[135] ggbeeswarm_0.7.2                       
-[136] getPass_0.2-4                          
-[137] plyr_1.8.9                             
-[138] fs_1.6.6                               
-[139] stringi_1.8.7                          
-[140] gridBase_0.4-7                         
-[141] BiocParallel_1.40.2                    
-[142] Biostrings_2.74.1                      
-[143] lazyeval_0.2.2                         
-[144] GOSemSim_2.32.0                        
-[145] Matrix_1.7-3                           
-[146] BSgenome_1.74.0                        
-[147] hms_1.1.3                              
-[148] patchwork_1.3.2                        
-[149] bit64_4.6.0-1                          
-[150] KEGGREST_1.46.0                        
-[151] SummarizedExperiment_1.36.0            
-[152] broom_1.0.9                            
-[153] igraph_2.1.4                           
-[154] memoise_2.0.1                          
-[155] bslib_0.9.0                            
-[156] ggtree_3.14.0                          
-[157] fastmatch_1.1-6                        
-[158] bit_4.6.0                              
-[159] ape_5.8-1                              </code></pre>
-</div>
+[132] labeling_0.4.3                         
+[133] ps_1.9.1                               
+[134] ggbeeswarm_0.7.2                       
+[135] getPass_0.2-4                          
+[136] plyr_1.8.9                             
+[137] fs_1.6.6                               
+[138] stringi_1.8.7                          
+[139] gridBase_0.4-7                         
+[140] BiocParallel_1.40.2                    
+[141] Biostrings_2.74.1                      
+[142] lazyeval_0.2.2                         
+[143] GOSemSim_2.32.0                        
+[144] Matrix_1.7-3                           
+[145] BSgenome_1.74.0                        
+[146] hms_1.1.3                              
+[147] patchwork_1.3.2                        
+[148] bit64_4.6.0-1                          
+[149] KEGGREST_1.46.0                        
+[150] SummarizedExperiment_1.36.0            
+[151] broom_1.0.9                            
+[152] igraph_2.1.4                           
+[153] memoise_2.0.1                          
+[154] bslib_0.9.0                            
+[155] ggtree_3.14.0                          
+[156] fastmatch_1.1-6                        
+[157] bit_4.6.0                              
+[158] ape_5.8-1                              </code></pre>
 </div>
 </div>
 </div>
