@@ -37,6 +37,7 @@ library(DT)
 library(ChIPseeker)
 library(ggVennDiagram)
 library(smplot2)
+library(ggsignif)
 ```
 
 First steps: breakdown repeatmasker into groups and pull out the ones by each class I am interested in.  
@@ -168,6 +169,16 @@ K27ac_lfctable <- H3K27ac_toptable_list %>%
                               H3K27ac_24T < 0 & H3K27ac_24R <0 & H3K27ac_144R<0~"B",
                               TRUE ~ "C")) %>% 
   mutate(set_case=paste0(cluster,"_",case))
+
+set_case_list_H3K27ac <-  H3K27ac_toptable_list %>% 
+  dplyr::select(group,genes, logFC) %>% 
+  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %>% 
+  dplyr::left_join(H3K27ac_lookup,by =c("genes"="Peakid")) %>% 
+  mutate(case= case_when(H3K27ac_24T > 0 & H3K27ac_24R >0 & H3K27ac_144R>0~"A",
+                              H3K27ac_24T < 0 & H3K27ac_24R <0 & H3K27ac_144R<0~"B",
+                              TRUE ~ "C")) %>% 
+  mutate(set_case=paste0(cluster,"_",case)) %>% 
+  dplyr::select(genes, cluster,case,set_case)
 
 cluster_colors <- c("Set_1" = "#d93e40","Set_2" = "#1c9f50","Set_3" = "#3570b3","NA"  ="grey70")
 
@@ -367,7 +378,7 @@ LTR_overlap_df <- tibble(
 LTR_overlap_df %>% 
   dplyr::left_join(H3K27ac_lookup) %>% 
   dplyr::filter(cluster %in% c("Set_1","Set_2","Set_3")) %>% 
-  ggplot(., aes(x = TE_type, y = milliDiv)) +
+  ggplot(., aes(x = cluster, y = milliDiv)) +
    geom_violin(trim = FALSE) +
    geom_boxplot(width = 0.15, outlier.shape = NA) +
    coord_flip() +
@@ -376,9 +387,87 @@ LTR_overlap_df %>%
      x = "TE family",
      title = "Age distribution of LTR elements overlapping H3K27ac"
    )+
-  facet_wrap(~cluster)
+  facet_wrap(~TE_type)
+```
+#### age tests
+First test, within each TE family (ERVL, ERVK, etc...)do Set1,Set2 and Set3 differ?
+
+```{r}
+age_kw <- LTR_overlap_df %>% 
+  left_join(H3K27ac_lookup) %>% 
+  filter(cluster %in% c("Set_1","Set_2","Set_3")) %>% 
+  group_by(TE_type) %>% 
+  summarise(
+    kw_p = kruskal.test(milliDiv ~ cluster)$p.value)
+
+age_kw
 ```
 
+The answer shows for ERVL, ERVL-MaLR, and LTR, yes age difference differ between sets.  now to look at ERVL,ERVL-MaLR and LTR individually
+
+```{r}
+test_TE_age_pairs <- function(df,
+                              TE_type_query,
+                              sets = c("Set_1", "Set_2", "Set_3")) {
+
+  sub_df <- df %>% 
+    dplyr::left_join(H3K27ac_lookup) %>% 
+    dplyr::filter(
+      TE_type == TE_type_query,
+      cluster %in% sets,
+      !is.na(milliDiv)
+    )
+
+  # Medians first (ground truth)
+  med_df <- sub_df %>% 
+    dplyr::group_by(cluster) %>% 
+    dplyr::summarise(
+      median_age = median(milliDiv, na.rm = TRUE),
+      n = dplyr::n(),
+      .groups = "drop"
+    )
+
+  # Pairwise Wilcoxon
+  pw <- pairwise.wilcox.test(
+    x = sub_df$milliDiv,
+    g = sub_df$cluster,
+    p.adjust.method = "BH"
+  )
+
+  # Tidy + enforce symmetric pairs
+  pw_df <- as.data.frame(as.table(pw$p.value)) %>% 
+    dplyr::filter(!is.na(Freq)) %>% 
+    dplyr::rename(
+      set_A = Var1,
+      set_B = Var2,
+      p_adj = Freq
+    )
+
+  # Join medians *by value*, not position
+  pw_df %>% 
+    dplyr::left_join(med_df, by = c("set_A" = "cluster")) %>% 
+    dplyr::rename(median_A = median_age, n_A = n) %>% 
+    dplyr::left_join(med_df, by = c("set_B" = "cluster")) %>% 
+    dplyr::rename(median_B = median_age, n_B = n) %>% 
+    dplyr::mutate(
+      older_set = dplyr::case_when(
+        median_A > median_B ~ set_A,
+        median_B > median_A ~ set_B,
+        TRUE ~ "equal"
+      ),
+      TE_type = TE_type_query
+    )
+}
+
+```
+
+```{r}
+test_TE_age_pairs(LTR_overlap_df, "ERV1")
+test_TE_age_pairs(LTR_overlap_df, "ERVK")
+test_TE_age_pairs(LTR_overlap_df, "ERVL")
+test_TE_age_pairs(LTR_overlap_df, "ERVL-MaLR")
+test_TE_age_pairs(LTR_overlap_df, "LTR")
+```
 
 
 ### DNA
@@ -469,7 +558,7 @@ SVA_overlap_df %>%
 ### Looking for overlapping information: LTR specific  
 
 Here I am exploring H3K27ac ROIs which overlap LTRs and also overlap H3K9me3 ROIs, then exploring LFC of the H3K27ac ROI sets across families of LTRs.  First I wanted to know how many H3K27ac ROIs overlap LTRs, and how many of those are more than one LTR:
-```{r H3K9me3 overalapping regions}
+```{r H3K9me3 overlapping regions}
 
 LTR_overlap_df %>% 
   count(Peakid, name = "n_peaks") %>%
@@ -752,6 +841,590 @@ K27ac_lfctable %>%
 
 
 ```{r export set_case list, eval=FALSE}
+H3K27ac_Sets <- K27ac_lfctable %>%
+  dplyr::rename("Peakid"=genes)
+
+H3K27ac_set_case_lfc <- split(H3K27ac_Sets, H3K27ac_Sets$set_case)
+
+saveRDS(H3K27ac_set_case_lfc, "data/RDS_files/H3K27ac_set_case_lfc.RDS")
+unique(rpt_split$`LTR`$repFamily)
 
 ```
+Zooming back in on summits,
+
+What do LFCs of ROIs whose summits cross LTRs?
+
+```{r summit and LTR 1}
+
+toss <- findOverlaps(H3K27ac_summit_gr, LTR_gr)
+# toss %>% 
+#   as.data.frame() %>% 
+#   distinct(Peakid)
+LTR_summits_overlap_df <- tibble(
+  peak_row = queryHits(toss),
+  Peakid   = H3K27ac_summit_gr$Peakid[queryHits(toss)],
+  cluster  = H3K27ac_sets_gr$cluster[queryHits(toss)],
+  
+  repClass = LTR_gr$repClass[subjectHits(toss)],
+  repName  = LTR_gr$repName[subjectHits(toss)],
+  RM_id  = LTR_gr$RM_id[subjectHits(toss)],
+  TE_type  = ifelse(
+    LTR_gr$repFamily[subjectHits(toss)] == "SVA",
+    LTR_gr$repName[subjectHits(toss)],
+    LTR_gr$repFamily[subjectHits(toss)]
+  ),
+  
+  milliDiv = LTR_gr$milliDiv[subjectHits(toss)],
+  milliDel = LTR_gr$milliDel[subjectHits(toss)],
+  milliIns = LTR_gr$milliIns[subjectHits(toss)]
+)
+summit_LTR_peakids <- LTR_summits_overlap_df %>% distinct(Peakid)
+
+split_summit_LTR_peakids <- split(LTR_summits_overlap_df, LTR_summits_overlap_df$TE_type)
+```
+
+
+```{r All LTRs and summits}
+med_LTR_LFC <- K27ac_lfctable %>% 
+  dplyr::filter(genes %in% summit_LTR_peakids$Peakid) %>% 
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+   mutate(
+    time = stringr::str_remove(group, "H3K27ac"),
+    time = factor(time, levels = c("_24T", "_24R", "_144R"))
+  ) %>%
+  group_by(cluster, time) %>% 
+  summarise(
+    median_LFC = median(LFC, na.rm = TRUE),
+    n_peaks = dplyr::n(),
+    .groups = "drop")
+
+
+K27ac_lfctable %>% 
+  dplyr::filter(genes %in% summit_LTR_peakids$Peakid) %>% 
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+   mutate(time=str_remove(group,"H3K27ac"))%>% 
+  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))  %>% 
+  ggplot(., aes(x=time, y = LFC, group=genes, color=case))+
+  ggrastr::rasterise(geom_line(alpha = 0.15)) +
+  ggrastr::geom_point_rast(size = 1) +
+  geom_line(data=med_LTR_LFC, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
+  theme_classic() +
+  facet_wrap(~cluster)+
+  labs(
+    x = "Time point",
+    y = "Log2 Fold Change",
+    title = "H3K27ac LFC for all H3K27ac regions whose summits cross an LTR")
+```
+
+```{r function for split summit by LTR with median}
+median_LFC_H3K27ac_group_plot <- function(lfc_df,repFam){
+
+  pid_df <- split_summit_LTR_peakids[[repFam]]
+
+  med_df <- lfc_df %>% 
+  dplyr::filter(genes %in% pid_df$Peakid) %>%
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+  mutate(
+    time = stringr::str_remove(group, "H3K27ac"),
+    time = factor(time, levels = c("_24T", "_24R", "_144R"))
+  ) %>%
+  group_by(cluster, time) %>% 
+  summarise(
+    median_LFC = median(LFC, na.rm = TRUE),
+    n_peaks = dplyr::n(),
+    .groups = "drop")
+  
+  label_df <- med_df %>%
+  group_by(cluster) %>%
+  summarise(n_peaks = unique(n_peaks),   # same for all times within a cluster
+    .groups = "drop") %>%
+  mutate(label = paste0("n = ", n_peaks),
+    time = "_144R",               # anchor text at first x position
+    y = Inf )  ##place at top of panel
+
+
+  lfc_df %>% 
+  dplyr::filter(genes %in% pid_df$Peakid) %>%
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+   mutate(time=str_remove(group,"H3K27ac"))%>% 
+  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))  %>% 
+  ggplot(., aes(x=time, y = LFC, group=genes, color=case))+
+  ggrastr::rasterise(geom_line(alpha = 0.15)) +
+  ggrastr::geom_point_rast(size = 1) +
+  geom_line(data=med_df, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
+    geom_text(data = label_df,  aes(x = time, y = y, label = label),  inherit.aes = FALSE,  vjust = 1.2,  hjust = .2,  size = 4)+
+  theme_classic() +
+  facet_wrap(~cluster)+
+  labs(
+    x = "Time point",
+    y = "Log2 Fold Change",
+    title = paste0("H3K27ac LFC, ROI summits cross an LTR:",repFam))
+  }
+```
+
+```{r All LTRs and summits ERV1}
+median_LFC_H3K27ac_group_plot(K27ac_lfctable,"ERVL-MaLR")
+
+median_LFC_H3K27ac_group_plot(K27ac_lfctable,"ERV1")
+median_LFC_H3K27ac_group_plot(K27ac_lfctable,"ERVL")
+median_LFC_H3K27ac_group_plot(K27ac_lfctable,"ERVK")
+median_LFC_H3K27ac_group_plot(K27ac_lfctable,"Gypsy")
+median_LFC_H3K27ac_group_plot(K27ac_lfctable,"LTR")
+
+```
+
+
+### Age questions
+
+I had a question about age and LTRs:
+
+```{r}
+age_summit_kw <- LTR_summits_overlap_df %>% 
+  left_join(H3K27ac_lookup) %>% 
+  filter(cluster %in% c("Set_1","Set_2","Set_3")) %>% 
+  group_by(TE_type) %>% 
+  summarise(
+    kw_p = kruskal.test(milliDiv ~ cluster)$p.value)
+
+age_summit_kw
+test_TE_age_pairs_summits <- function(df,
+                              TE_type_query,
+                              sets = c("Set_1", "Set_2", "Set_3")) {
+
+  pid_df <- split_summit_LTR_peakids[[TE_type_query]]
+  
+  sub_df <- pid_df %>% 
+    dplyr::left_join(H3K27ac_lookup) %>%
+   
+    dplyr::filter(
+      TE_type == TE_type_query,
+      cluster %in% sets,
+      !is.na(milliDiv)
+    )
+
+  # Medians first (ground truth)
+  med_df <- sub_df %>% 
+    dplyr::group_by(cluster) %>% 
+    dplyr::summarise(
+      median_age = median(milliDiv, na.rm = TRUE),
+      n = dplyr::n(),
+      .groups = "drop"
+    )
+
+  # Pairwise Wilcoxon
+  pw <- pairwise.wilcox.test(
+    x = sub_df$milliDiv,
+    g = sub_df$cluster,
+    p.adjust.method = "BH"
+  )
+
+  # Tidy + enforce symmetric pairs
+  pw_df <- as.data.frame(as.table(pw$p.value)) %>% 
+    dplyr::filter(!is.na(Freq)) %>% 
+    dplyr::rename(
+      set_A = Var1,
+      set_B = Var2,
+      p_adj = Freq
+    )
+
+  # Join medians *by value*, not position
+  pw_df %>% 
+    dplyr::left_join(med_df, by = c("set_A" = "cluster")) %>% 
+    dplyr::rename(median_A = median_age, n_A = n) %>% 
+    dplyr::left_join(med_df, by = c("set_B" = "cluster")) %>% 
+    dplyr::rename(median_B = median_age, n_B = n) %>% 
+    dplyr::mutate(
+      older_set = dplyr::case_when(
+        median_A > median_B ~ set_A,
+        median_B > median_A ~ set_B,
+        TRUE ~ "equal"
+      ),
+      TE_type = TE_type_query
+    )
+}
+
+```
+
+
+testing age pairs between ROI summits 
+```{r}
+test_TE_age_pairs_summits(LTR_summits_overlap_df, "ERVL")
+
+test_TE_age_pairs_summits(LTR_summits_overlap_df, "ERV1")
+```
+
+```{r}
+compare_case_age <- function(df,
+                             TE_family,
+                             set_case_1,
+                             set_case_2) {
+
+  sub_df <- df %>% 
+    dplyr::left_join(set_case_list_H3K27ac, by=c("Peakid"="genes")) %>% 
+    dplyr::filter(
+      TE_type == TE_family,
+      set_case %in% c(set_case_1, set_case_2),
+      !is.na(milliDiv)
+    )
+
+  med_df <- sub_df %>% 
+    dplyr::group_by(set_case) %>% 
+    dplyr::summarise(
+      median_age = median(milliDiv),
+      n = dplyr::n(),
+      .groups = "drop"
+    )
+
+  test <- wilcox.test(milliDiv ~ set_case, data = sub_df)
+
+  tibble::tibble(
+    TE_type = TE_family,
+    group_1 = set_case_1,
+    group_2 = set_case_2,
+    median_1 = med_df$median_age[med_df$set_case == set_case_1],
+    median_2 = med_df$median_age[med_df$set_case == set_case_2],
+    n_1 = med_df$n[med_df$set_case == set_case_1],
+    n_2 = med_df$n[med_df$set_case == set_case_2],
+    p_value = test$p.value,
+    older_group = dplyr::case_when(
+      median_1 > median_2 ~ set_case_1,
+      median_2 > median_1 ~ set_case_2,
+      TRUE ~ "equal"
+    )
+  )
+}
+
+```
+
+
+```{r}
+LTR_summits_overlap_df %>% 
+  dplyr::left_join(set_case_list_H3K27ac, by=c("Peakid"="genes")) %>%
+  dplyr::filter(
+    TE_type == "ERV1",
+    set_case %in% c("Set_1_A", "Set_2_A")
+  ) %>% 
+  ggplot(aes(x = set_case, y = milliDiv, fill = set_case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  theme_classic() +
+  labs(
+    y = "Divergence from consensus (milliDiv)",
+    x = NULL,
+    title = "ERV1 age comparison by set_case"
+  )
+
+```
+
+
+```{r}
+compare_case_age(LTR_summits_overlap_df,"ERV1","Set_1_A","Set_3_A")
+compare_case_age(LTR_summits_overlap_df,"ERVL","Set_1_A","Set_3_A")
+compare_case_age(LTR_summits_overlap_df,"ERVK","Set_1_A","Set_3_A")
+compare_case_age(LTR_summits_overlap_df,"ERVL-MaLR","Set_1_A","Set_3_A")
+compare_case_age(LTR_summits_overlap_df,"ERV1","Set_1_A","Set_3_A")
+compare_case_age(LTR_summits_overlap_df,"ERV1","Set_1_A","Set_3_A")
+```
+
+```{r ERV1 case summit}
+
+ERV1_summit_df <- split_summit_LTR_peakids$ERV1 %>% 
+  left_join(., set_case_list_H3K27ac, by = c("Peakid"="genes")) %>% 
+  dplyr::filter(cluster %in% c("Set_1","Set_2","Set_3"))  
+  
+
+cluster_pairs <- list(c("Set_1","Set_2"),
+                      c("Set_1", "Set_3"),
+                      c("Set_2","Set_3"))
+
+
+ERV1_pval_df <- ERV1_summit_df %>%
+  group_by(case) %>%
+  group_modify(~ {
+    map_dfr(cluster_pairs, function(pair) {
+      x <- .x %>% filter(cluster == pair[1]) %>% pull(milliDiv)
+      y <- .x %>% filter(cluster == pair[2]) %>% pull(milliDiv)
+      tibble(
+        cluster1 = pair[1],
+        cluster2 = pair[2],
+        p_value = wilcox.test(x, y)$p.value)
+    })
+  })
+
+
+ggplot(ERV1_summit_df, aes(x = cluster, y = milliDiv, fill = cluster)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~case) +
+  theme_classic() +
+  labs(
+    y = "Divergence from consensus (milliDiv)",
+    x = "Set",
+    title = "ERV1 age comparisons across sets within each case"
+  ) +
+  geom_signif(
+    comparisons = cluster_pairs,
+    test = "wilcox.test",
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = 0.1
+  )
+
+```
+
+```{r ERVL case summit}
+
+ERVL_summit_df <- split_summit_LTR_peakids$ERVL %>% 
+  left_join(., set_case_list_H3K27ac, by = c("Peakid"="genes")) %>% 
+  dplyr::filter(cluster %in% c("Set_1","Set_2","Set_3"))  
+  
+
+cluster_pairs <- list(c("Set_1","Set_2"),
+                      c("Set_1", "Set_3"),
+                      c("Set_2","Set_3"))
+
+
+ERVL_pval_df <- ERVL_summit_df %>%
+  group_by(case) %>%
+  group_modify(~ {
+    map_dfr(cluster_pairs, function(pair) {
+      x <- .x %>% filter(cluster == pair[1]) %>% pull(milliDiv)
+      y <- .x %>% filter(cluster == pair[2]) %>% pull(milliDiv)
+      tibble(
+        cluster1 = pair[1],
+        cluster2 = pair[2],
+        p_value = wilcox.test(x, y)$p.value)
+    })
+  })
+
+
+ggplot(ERVL_summit_df, aes(x = cluster, y = milliDiv, fill = cluster)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~case) +
+  theme_classic() +
+  labs(
+    y = "Divergence from consensus (milliDiv)",
+    x = "Set",
+    title = "ERVL age comparisons across sets within each case"
+  ) +
+  geom_signif(
+    comparisons = cluster_pairs,
+    test = "wilcox.test",
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = 0.1
+  )
+
+```
+
+
+```{r}
+split_summit_LTR_peakids$ERV1 %>% 
+  left_join(., set_case_list_H3K27ac, by = c("Peakid"="genes")) %>% 
+  dplyr::filter(cluster %in% c("Set_1","Set_2","Set_3")) %>% 
+  ggplot(., aes(x = cluster, y = milliDiv)) +
+  geom_violin(trim = FALSE) +
+   geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~case)
+   
+```
+
+```{r ERV1 case plot}
+ERV1_case_df <- split_summit_LTR_peakids$ERV1 %>% 
+  left_join(set_case_list_H3K27ac, by = c("Peakid" = "genes")) %>% 
+  filter(cluster %in% c("Set_1", "Set_2", "Set_3"),
+         case %in% c("A", "B"))  # only compare A vs B
+
+
+ggplot(ERV1_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = "Divergence from consensus (milliDiv)",
+    x = "Case",
+    title = "ERV1 age comparison: A vs B within each cluster"
+  ) +
+  geom_signif(
+    comparisons = list(c("A", "B")),
+    test = "wilcox.test",
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)
+```
+
+
+```{r ERVL case plot}
+ERVL_case_df <- split_summit_LTR_peakids$ERVL %>% 
+  left_join(set_case_list_H3K27ac, by = c("Peakid" = "genes")) %>% 
+  filter(cluster %in% c("Set_1", "Set_2", "Set_3"),
+         case %in% c("A", "B"))  # only compare A vs B
+
+
+ggplot(ERVL_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = "Divergence from consensus (milliDiv)",
+    x = "Case",
+    title = "ERVL age comparison: A vs B within each cluster"
+  ) +
+  geom_signif(
+    comparisons = list(c("A", "B")),
+    test = "wilcox.test",
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)
+```
+
+```{r ERVK case plot}
+ERVK_case_df <- split_summit_LTR_peakids$ERVK %>% 
+  left_join(set_case_list_H3K27ac, by = c("Peakid" = "genes")) %>% 
+  filter(cluster %in% c("Set_1", "Set_2", "Set_3"),
+         case %in% c("A", "B"))  # only compare A vs B
+
+
+ggplot(ERVK_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = "Divergence from consensus (milliDiv)",
+    x = "Case",
+    title = "ERVK age comparison: A vs B within each cluster"
+  ) +
+  geom_signif(
+    comparisons = list(c("A", "B")),
+    test = "wilcox.test",
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)
+```
+
+```{r ERVL-MaLR case plot}
+ERVL_MaLR_case_df <- split_summit_LTR_peakids$`ERVL-MaLR` %>% 
+  left_join(set_case_list_H3K27ac, by = c("Peakid" = "genes")) %>% 
+  filter(cluster %in% c("Set_1", "Set_2", "Set_3"),
+         case %in% c("A", "B"))  # only compare A vs B
+
+
+ggplot(ERVL_MaLR_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = "Divergence from consensus (milliDiv)",
+    x = "Case",
+    title = "ERVL-MaLR age comparison: A vs B within each cluster"
+  ) +
+  geom_signif(
+    comparisons = list(c("A", "B")),
+    test = "wilcox.test",
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)
+```
+
+```{r Gypsy case plot}
+Gypsy_case_df <- split_summit_LTR_peakids$Gypsy %>% 
+  left_join(set_case_list_H3K27ac, by = c("Peakid" = "genes")) %>% 
+  filter(cluster %in% c("Set_1", "Set_2", "Set_3"),
+         case %in% c("A", "B"))  # only compare A vs B
+
+
+ggplot(Gypsy_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = "Divergence from consensus (milliDiv)",
+    x = "Case",
+    title = "Gypsy age comparison: A vs B within each cluster"
+  ) +
+  geom_signif(
+    comparisons = list(c("A", "B")),
+    test = "wilcox.test",
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)
+```
+
+```{r LTR case plot}
+LTR_case_df <- split_summit_LTR_peakids$LTR %>% 
+  left_join(set_case_list_H3K27ac, by = c("Peakid" = "genes")) %>% 
+  filter(cluster %in% c("Set_1", "Set_2", "Set_3"),
+         case %in% c("A", "B"))  # only compare A vs B
+
+
+ggplot(LTR_case_df, aes(x = case, y = milliDiv, fill = case)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.15, outlier.shape = NA) +
+  facet_wrap(~cluster) +
+  theme_classic() +
+  labs(
+    y = "Divergence from consensus (milliDiv)",
+    x = "Case",
+    title = "LTR age comparison: A vs B within each cluster"
+  ) +
+  geom_signif(
+    comparisons = list(c("A", "B")),
+    test = "wilcox.test",
+    map_signif_level = TRUE,
+    textsize = 3,
+    step_increase = .1)
+```
+
+
+
+```{r}
+
+listit <- data.frame(x=width(H3K9me3_sets_gr$all_H3K9me3_regions))
+ggplot(listit, aes(x=x))+
+  geom_density()
+
+listit_k27ac <- data.frame(x=width(H3K27ac_sets_gr$all_H3K27ac))
+
+ggplot(listit_k27ac, aes(x=x))+
+  geom_density()
+
+listit %>% 
+  summary()
+listit_k27ac %>% 
+  summary()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
