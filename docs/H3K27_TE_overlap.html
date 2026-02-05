@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreef3fb1ca3f34a371b2344b7f921ab6b4531427106targetblankf3fb1caa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreedbe48c56431582521d32372a0ece06ebc99629bdtargetblankdbe48c5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/f3fb1ca3f34a371b2344b7f921ab6b4531427106" target="_blank">f3fb1ca</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/dbe48c56431582521d32372a0ece06ebc99629bd" target="_blank">dbe48c5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreef3fb1ca3f34a371b2344b7f921ab6b4531427106targetblankf3fb1caa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreedbe48c56431582521d32372a0ece06ebc99629bdtargetblankdbe48c5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/f3fb1ca3f34a371b2344b7f921ab6b4531427106" target="_blank">f3fb1ca</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/dbe48c56431582521d32372a0ece06ebc99629bd" target="_blank">dbe48c5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -647,6 +647,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dbe48c56431582521d32372a0ece06ebc99629bd/analysis/H3K27_TE_overlap.Rmd" target="_blank">dbe48c5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-05
+</td>
+<td>
+adding in proportion plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/26f72a7b8fc0f0d08078838b41462f50d36bfd08/docs/H3K27_TE_overlap.html" target="_blank">26f72a7</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1120,6 +1154,65 @@ test_pair_TE_generic &lt;- function(df_long, te_name, cluster1, cluster2) {
     p_value     = ft$p.value
   )
 }</code></pre>
+<pre class="r"><code>test_pair_TE_repName &lt;- function(df_long, rep_name, cluster1, cluster2) {
+  
+  # Subset for the specific repName
+  sub_df &lt;- df_long %&gt;%
+    filter(repName == rep_name) %&gt;%
+    complete(
+      cluster = c(cluster1, cluster2),
+      status  = c(&quot;TE&quot;, &quot;not_TE&quot;),
+      fill = list(count = 0)
+    )
+  
+  # fixed order of statuses
+  status_levels &lt;- c(&quot;TE&quot;, &quot;not_TE&quot;)
+  
+  # make sure both statuses exist
+  statuses &lt;- unique(sub_df$status)
+  if(length(statuses) != 2) {
+    sub_df &lt;- sub_df %&gt;%
+      complete(cluster, status, fill = list(count = 0))
+    statuses &lt;- unique(sub_df$status)
+  }
+  
+  # counts for cluster1
+  c1_counts &lt;- sub_df %&gt;%
+    filter(cluster == cluster1) %&gt;%
+    arrange(factor(status, levels = status_levels)) %&gt;%
+    pull(count)
+  
+  # counts for cluster2
+  c2_counts &lt;- sub_df %&gt;%
+    filter(cluster == cluster2) %&gt;%
+    arrange(factor(status, levels = status_levels)) %&gt;%
+    pull(count)
+  
+  # 2x2 matrix for Fisher test
+  mat &lt;- matrix(
+    c(c2_counts, c1_counts),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      cluster = c(cluster2, cluster1),
+      category = status_levels
+    )
+  )
+  
+  ft &lt;- tryCatch(
+    fisher.test(mat, workspace = 2e8),
+    error = function(e) fisher.test(mat, simulate.p.value = TRUE, B = 1e5)
+  )
+  
+  tibble(
+    repName     = rep_name,
+    comparison  = paste(cluster2, &quot;vs&quot;, cluster1),
+    odds_ratio  = ft$estimate,
+    lower_CI    = ft$conf.int[1],
+    upper_CI    = ft$conf.int[2],
+    p_value     = ft$p.value
+  )
+}</code></pre>
 <div id="sine" class="section level3">
 <h3>SINE</h3>
 <p>Overlapping SINE family with summits to get a count</p>
@@ -1348,6 +1441,59 @@ class="section level4">
     TE_type = unique(te_counts$TE_type),
     status  = &quot;not_TE&quot;,
     count   = n_total_peaks - n_sine_peaks
+  )
+  
+  bind_rows(te_counts, not_te)
+}</code></pre>
+<pre class="r"><code>count_ERV1_repNames &lt;- function(peak_gr, TE_gr, cluster_name) {
+  
+  # find overlaps
+  hits &lt;- findOverlaps(peak_gr, TE_gr)
+  
+  if (length(hits) == 0) {
+    return(tibble(
+      cluster = cluster_name,
+      repName = character(),
+      status  = character(),
+      count   = integer()
+    ))
+  }
+  
+  # subset hits to only ERV1
+  is_ERV1 &lt;- mcols(TE_gr)$repFamily[subjectHits(hits)] == &quot;ERV1&quot;
+  hits &lt;- hits[is_ERV1]
+  
+  if (length(hits) == 0) {
+    return(tibble(
+      cluster = cluster_name,
+      repName = character(),
+      status  = character(),
+      count   = integer()
+    ))
+  }
+  
+  # make tibble of repNames
+  hit_df &lt;- tibble(
+    repName = mcols(TE_gr)$repName[subjectHits(hits)]
+  )
+  
+  # TE counts per repName
+  te_counts &lt;- hit_df %&gt;%
+    count(repName, name = &quot;count&quot;) %&gt;%
+    mutate(
+      cluster = cluster_name,
+      status  = &quot;TE&quot;
+    )
+  
+  # non-TE peaks
+  n_total_peaks &lt;- length(peak_gr)
+  n_TE_peaks    &lt;- length(unique(queryHits(hits)))
+  
+  not_te &lt;- tibble(
+    cluster = cluster_name,
+    repName = unique(te_counts$repName),
+    status  = &quot;not_TE&quot;,
+    count   = n_total_peaks - n_TE_peaks
   )
   
   bind_rows(te_counts, not_te)
@@ -1897,6 +2043,69 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>LTR_hits &lt;- findOverlaps(H3K27ac_summit_gr, LTR_gr, ignore.strand = TRUE)
+LTR_name_overlap_df &lt;- tibble(
+  summit_id = queryHits(LTR_hits),
+  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(LTR_hits)],
+  TE_type   = mcols(LTR_gr)$repFamily[subjectHits(LTR_hits)],
+  repName= mcols(LTR_gr)$repName[subjectHits(LTR_hits)])
+
+LTR_ERV1_counts &lt;-
+  LTR_name_overlap_df %&gt;%
+    dplyr::filter(TE_type==&quot;ERV1&quot;) %&gt;% 
+  count(cluster, repName, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_LTR_summits &lt;- tibble(
+  cluster = mcols(H3K27ac_summit_gr)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_LTR_ERV1_counts &lt;- LTR_ERV1_counts %&gt;%
+  left_join(total_LTR_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  select(cluster, repName, status, count)
+
+LTR_ERV1_df_long &lt;- bind_rows(LTR_ERV1_counts %&gt;%
+                            dplyr::select(cluster, repName, status, count),
+                          not_LTR_ERV1_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+ERV1_LTR_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       LTR_ERV1_df_long %&gt;%
+        distinct(repName) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            LTR_ERV1_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))</code></pre>
+<pre class="r"><code>ggplot(ERV1_LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(data = subset(ERV1_LTR_results, FDR &lt; 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;LTR Name (type) enrichment at ROI summits\nH3K27ac&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27_TE_overlap.Rmd/Plotting%20ERV1%20ltr%20data-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="overlapping-ltr-families-using-full-roi"
 class="section level4">
 <h4>Overlapping LTR families using Full ROI</h4>
@@ -1978,10 +2187,50 @@ reneeisnowhere
 </table>
 </div>
 </div>
-</div>
-</div>
-<div id="sva" class="section level3">
-<h3>SVA</h3>
+<pre class="r"><code>fullROI_long_LTR_ERV1 &lt;- purrr::imap_dfr(
+  H3K27ac_sets_gr,
+  ~count_ERV1_repNames(.x, LTR_gr, .y)
+)
+
+
+
+LTRERV1_results_full &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      fullROI_long_LTR_ERV1 %&gt;%
+        distinct(repName) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            LTR_ERV1_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))
+
+ggplot(LTRERV1_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   geom_text_repel(data = subset(LTRERV1_results_full, FDR &lt; 0.05),  # only significant points
+    size = 3,
+    max.overlaps = Inf
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+    geom_vline(xintercept = 1, linetype = 3) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;LTR:ERV1 type enrichment at full ROI\nH3K27ac&quot;
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27_TE_overlap.Rmd/Apply%20ROI%20LTR%20for%20EVR1%20only-1.png" width="672" style="display: block; margin: auto;" />
+### SVA</p>
 <p>Overlapping SVA family with summits to get a count</p>
 <pre class="r"><code>SVA_hits &lt;- findOverlaps(H3K27ac_summit_gr, SVA_gr, ignore.strand = TRUE)
 SVA_overlap_df &lt;- tibble(
@@ -2164,6 +2413,7 @@ reneeisnowhere
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 <div id="overlapping-sva-families-using-full-roi"
@@ -2604,6 +2854,43 @@ anno_H3K27ac %&gt;%
     strip.text = element_text(face = &quot;bold&quot;)
   )</code></pre>
 <p><img src="figure/H3K27_TE_overlap.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26f72a7b8fc0f0d08078838b41462f50d36bfd08/docs/figure/H3K27_TE_overlap.Rmd/unnamed-chunk-8-1.png" target="_blank">26f72a7</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># LTR_counts %&gt;% 
 #   group_by(cluster) %&gt;% 
 #   summarize(n_LTR = sum(count),
@@ -2641,12 +2928,49 @@ ggplot(pie_df, aes(x = &quot;&quot;, y = percent, fill = category)) +
     title = &quot;ROI overlap with transposable elements&quot;
   )</code></pre>
 <p><img src="figure/H3K27_TE_overlap.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26f72a7b8fc0f0d08078838b41462f50d36bfd08/docs/figure/H3K27_TE_overlap.Rmd/unnamed-chunk-9-1.png" target="_blank">26f72a7</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>of ROIs that overlap TEs, what is the distrubution across TE
 families?</p>
 <pre class="r"><code>H3K27ac_te_familiy_long &lt;- H3K27ac_te_summary %&gt;% 
   filter(!is.na(repClass), repClass != &quot;&quot;) %&gt;%   # TE-positive only
   separate_rows(repClass, sep = &quot;;&quot;) %&gt;% 
-  distinct(Peakid, repClass)
+  distinct(Peakid, repClass,cluster)
 
 
 fam_pie_df &lt;- H3K27ac_te_familiy_long %&gt;% 
@@ -2673,6 +2997,43 @@ ggplot(fam_pie_df, aes(x = &quot;&quot;, y = percent, fill = repClass)) +
     title = &quot;TE Class composition among TE-overlapping ROIs&quot;,
     fill = &quot;TE Class&quot;)</code></pre>
 <p><img src="figure/H3K27_TE_overlap.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26f72a7b8fc0f0d08078838b41462f50d36bfd08/docs/figure/H3K27_TE_overlap.Rmd/unnamed-chunk-10-1.png" target="_blank">26f72a7</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># unique(rpt_split_gr_list$LTR$repFamily)</code></pre>
 <pre class="r"><code>H3K27ac_long_repFamily &lt;- H3K27ac_te_summary %&gt;% 
   filter(!is.na(repFamily), repFamily != &quot;&quot;) %&gt;%   # TE-positive only
@@ -2699,6 +3060,128 @@ ggplot(H3K27ac_LTR_pie_df, aes(x = &quot;&quot;, y = percent, fill = repFamily))
     fill = &quot;TE family&quot;
   )</code></pre>
 <p><img src="figure/H3K27_TE_overlap.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/26f72a7b8fc0f0d08078838b41462f50d36bfd08/docs/figure/H3K27_TE_overlap.Rmd/unnamed-chunk-11-1.png" target="_blank">26f72a7</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>H3K27ac_te_family_clust &lt;- H3K27ac_te_familiy_long %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;%
+   distinct(Peakid, cluster, repClass) %&gt;%
+    count(cluster, repClass, name = &quot;n&quot;) %&gt;% 
+  group_by(cluster) %&gt;% 
+  mutate(percent = n / sum(n)*100) %&gt;% 
+  mutate(
+    repClass = if_else(percent &lt; 2, &quot;Other&quot;, repClass)
+  ) %&gt;% 
+  group_by(cluster,repClass) %&gt;% 
+  summarise(n = sum(n), .groups = &quot;drop&quot;) %&gt;% 
+  group_by(cluster) %&gt;% 
+  mutate(percent = n / sum(n) * 100)
+
+ggplot(H3K27ac_te_family_clust, aes(x = &quot;&quot;, y=percent, fill=repClass))+
+  geom_col(width =1, color=&quot;white&quot;)+
+  coord_polar(theta = &quot;y&quot;)+
+  geom_text(
+    aes(x= 1.5,label = sprintf(&quot;%s\n%.1f%%&quot;, repClass, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~cluster)+
+  theme_void()+
+  labs(
+    title = &quot;TE Class composition among TE-overlapping ROIs per set&quot;,
+    fill = &quot;TE family&quot;
+  )</code></pre>
+<p><img src="figure/H3K27_TE_overlap.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>H3K27ac_long_repFamily &lt;-
+H3K27ac_te_summary %&gt;% 
+   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;%
+  filter(!is.na(repFamily), repFamily != &quot;&quot;) %&gt;%   # TE-positive only
+  separate_rows(repFamily, sep = &quot;;&quot;) %&gt;% 
+  distinct(cluster,Peakid, repFamily) %&gt;% 
+  dplyr::filter(repFamily %in% c(&quot;ERV1&quot;, &quot;ERVK&quot;,&quot;ERVL&quot;, &quot;ERVL-MaLR&quot;,&quot;Gypsy&quot;,&quot;LTR&quot;)) %&gt;%
+  count(cluster,repFamily, name = &quot;n&quot;) %&gt;% 
+  group_by(cluster) %&gt;% 
+  mutate(percent = n / sum(n)*100) %&gt;% 
+  # mutate(
+  #   repFamily = if_else(percent &lt; 2, &quot;Other&quot;, repFamily)
+  # ) %&gt;% 
+  group_by(cluster,repFamily) %&gt;% 
+  summarise(n = sum(n), .groups = &quot;drop&quot;) %&gt;% 
+  group_by(cluster) %&gt;% 
+  mutate(percent = n / sum(n) * 100)
+
+
+ggplot(H3K27ac_long_repFamily, aes(x = &quot;&quot;, y=percent, fill=repFamily))+
+  geom_col(width =1, color=&quot;white&quot;)+
+  coord_polar(theta = &quot;y&quot;)+
+    geom_text_repel(
+    aes(label = sprintf(&quot;%s\n%.1f%%&quot;, repFamily, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3,
+    show.legend = FALSE
+  ) +
+  facet_wrap(~cluster)+
+  theme_void()+
+  labs(
+    title = &quot;TE family relative abundance among ROIs by set&quot;,
+    fill = &quot;TE family&quot;
+  )</code></pre>
+<p><img src="figure/H3K27_TE_overlap.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR_bar_df &lt;-H3K27ac_te_summary %&gt;%
+  filter(!is.na(repFamily), repFamily != &quot;&quot;)  %&gt;%   # TE-positive only
+  separate_rows(repFamily, sep = &quot;;&quot;) %&gt;% 
+  distinct(cluster,Peakid, repFamily) %&gt;% 
+  dplyr::filter(repFamily %in% c(&quot;ERV1&quot;, &quot;ERVK&quot;,&quot;ERVL&quot;, &quot;ERVL-MaLR&quot;,&quot;Gypsy&quot;,&quot;LTR&quot;)) %&gt;%
+  group_by(repFamily, cluster) %&gt;% 
+  summarise(n = dplyr::n(), .groups = &quot;drop&quot;) %&gt;% 
+  # optionally convert NA to a string
+  mutate(cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster))
+
+ggplot(LTR_bar_df, aes(x = repFamily, y = n, fill = cluster)) +
+  geom_col(position = &quot;fill&quot;) +
+  theme_classic() +
+  labs(
+    x = &quot;LTR Family&quot;,
+    y = &quot;Proportion of ROIs&quot;,
+    fill = &quot;Cluster&quot;,
+    title = &quot;Proportion of ROI clusters for each LTR family&quot;
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="figure/H3K27_TE_overlap.Rmd/LTR%20barplot-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
