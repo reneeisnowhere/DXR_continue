@@ -246,11 +246,11 @@ assign_best_summit_to_ROI_parallel <- function(consensus_gr, ROIs_gr, max_dist =
 
 ```
 
-```{r apply the function}
-options(future.globals.maxSize = 10 * 1024^3)
-workers <- parallel::detectCores() - 1
+```{r apply the function, eval=FALSE}
+# options(future.globals.maxSize = 10 * 1024^3)
+# workers <- parallel::detectCores() - 1
 ### Step 1
-temp_highest_per_group <- get_highest_per_group_parallel(all_H3K27ac_summits_gr,
+# temp_highest_per_group <- get_highest_per_group_parallel(all_H3K27ac_summits_gr,
                                                          group_col = "group",
                                                          score_col = "score",
                                                          min_gap_within = 100,
@@ -258,33 +258,34 @@ temp_highest_per_group <- get_highest_per_group_parallel(all_H3K27ac_summits_gr,
 # saveRDS(temp_highest_per_group,"data/RDS_files/H3K27ac_temp_highest_per_group.RDS")
 
 # Concatenate into one GRanges (Step 1.2)
-flat_highest_gr <- (c(temp_highest_per_group$DOX_144R, temp_highest_per_group$DOX_24R,temp_highest_per_group$DOX_24T,temp_highest_per_group$VEH_144R,temp_highest_per_group$VEH_24R,temp_highest_per_group$VEH_24T))
+# flat_highest_gr <- (c(temp_highest_per_group$DOX_144R, temp_highest_per_group$DOX_24R,temp_highest_per_group$DOX_24T,temp_highest_per_group$VEH_144R,temp_highest_per_group$VEH_24R,temp_highest_per_group$VEH_24T))
 
 ### STep 2
-consensus_summits <- get_consensus_summits_parallel(
-  flat_highest_gr,
-  score_col = "score",
-  min_gap_across = 400,
-  workers = workers
-)
+# consensus_summits <- get_consensus_summits_parallel(
+  # flat_highest_gr,
+#   score_col = "score",
+#   min_gap_across = 400,
+#   workers = workers
+# )
 
 ####Concatenate into one GRanges
-consensus_summits_gr <- (c(consensus_summits$chr1,consensus_summits$chr2,
-                           consensus_summits$chr3,consensus_summits$chr4,
-                           consensus_summits$chr5,consensus_summits$chr6,
-                           consensus_summits$chr7,consensus_summits$chr8,
-                           consensus_summits$chr9,consensus_summits$chr10,
-                           consensus_summits$chr11,consensus_summits$chr12,
-                           consensus_summits$chr13,consensus_summits$chr14,
-                           consensus_summits$chr15,consensus_summits$chr16,
-                           consensus_summits$chr17,consensus_summits$chr18,
-                           consensus_summits$chr19,consensus_summits$chr20,
-                           consensus_summits$chr21,consensus_summits$chr22))
+# consensus_summits_gr <- (c(consensus_summits$chr1,consensus_summits$chr2,
+#                            consensus_summits$chr3,consensus_summits$chr4,
+#                            consensus_summits$chr5,consensus_summits$chr6,
+#                            consensus_summits$chr7,consensus_summits$chr8,
+#                            consensus_summits$chr9,consensus_summits$chr10,
+#                            consensus_summits$chr11,consensus_summits$chr12,
+#                            consensus_summits$chr13,consensus_summits$chr14,
+#                            consensus_summits$chr15,consensus_summits$chr16,
+#                            consensus_summits$chr17,consensus_summits$chr18,
+#                            consensus_summits$chr19,consensus_summits$chr20,
+#                            consensus_summits$chr21,consensus_summits$chr22))
 # saveRDS(consensus_summits_gr,"data/RDS_files/H3K27ac_consensus_summits_gr.RDS")
 
-final_data <- assign_best_summit_to_ROI_parallel(consensus_summits_gr, ROIs,max_dist = 500,workers = workers)
+# final_data <- assign_best_summit_to_ROI_parallel(consensus_summits_gr, ROIs,max_dist = 500,workers = workers)
 # saveRDS(final_data,"data/RDS_files/H3K27ac_final_data.RDS")
 # data.frame with one row per ROI (assigned or NA)
+final_data <- readRDS("data/RDS_files/H3K27ac_final_data.RDS")
 final_df <- final_data$df
 
 # GRanges of ROIs that received an assigned summit (with metadata)
@@ -362,7 +363,7 @@ mcols(complete_summit_gr) <- complete_summit_df[, meta_cols, drop = FALSE]
 
 ```{r making set files, eval=FALSE}
 ### adding in cluster membership for export
-
+complete_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
 library(BSgenome.Hsapiens.UCSC.hg38)
 genome <- BSgenome.Hsapiens.UCSC.hg38
 seqlengths(complete_summit_gr) <- seqlengths(genome)[names(seqlengths(complete_summit_gr))]
@@ -440,3 +441,103 @@ for (nm in names(H3K27ac_sets_gr)) {
 }
 ```
 
+```{r making case set files, eval=FALSE}
+### adding in cluster membership for export
+complete_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+H3K27ac_set_case_lfc <- readRDS("data/RDS_files/H3K27ac_set_case_lfc.RDS")
+H3K27ac_set_case_lfc$Set_2_A
+
+library(BSgenome.Hsapiens.UCSC.hg38)
+genome <- BSgenome.Hsapiens.UCSC.hg38
+seqlengths(complete_summit_gr) <- seqlengths(genome)[names(seqlengths(complete_summit_gr))]
+
+
+resize_and_trim <- function(gr, flank = 300, genome = BSgenome.Hsapiens.UCSC.hg38) {
+  gr <- resize(gr, width = 1 + 2*flank, fix = "center")
+  seqlengths(gr) <- seqlengths(genome)[seqlevels(gr)]
+  gr <- trim(gr)
+  gr <- gr[width(gr) > 0]
+  return(gr)
+}
+
+SET_1_gr <-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_1"
+]
+
+
+# H3K27ac_set1_600 <- resize_and_trim(SET_1_gr,flank = 300)
+# H3K27ac_set1_400 <- resize_and_trim(SET_1_gr,flank = 200)
+# 
+# rtracklayer::export(SET_1_gr, "data/Bed_exports/H3K27ac_Set_1_summits.bed")
+# rtracklayer::export(H3K27ac_set1_600, "data/Bed_exports/H3K27ac_Set_1_600.bed")
+# rtracklayer::export(H3K27ac_set1_400, "data/Bed_exports/H3K27ac_Set_1_400.bed")
+
+SET_2_A_gr <-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_2"&
+    mcols(complete_summit_gr)$Peakid %in% H3K27ac_set_case_lfc$Set_2_A$Peakid
+]
+SET_2_B_gr <- complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_2"&
+    mcols(complete_summit_gr)$Peakid %in% H3K27ac_set_case_lfc$Set_2_B$Peakid
+]
+
+H3K27ac_set2_A_400 <- resize(SET_2_A_gr, width = 1 + 200*2, fix = "center")
+
+H3K27ac_set2_B_400 <- resize(SET_2_B_gr, width = 1 + 200*2, fix = "center")
+
+
+# rtracklayer::export(SET_2_gr, "data/Bed_exports/H3K27ac_Set_2_summits.bed")
+rtracklayer::export(H3K27ac_set2_A_400, "data/Bed_exports/H3K27ac_set2_A_400.bed")
+rtracklayer::export(H3K27ac_set2_B_400, "data/Bed_exports/H3K27ac_set2_B_400.bed")
+
+
+SET_3_gr <-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_3"
+]
+
+
+SET_3_A_gr <-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_3"&
+    mcols(complete_summit_gr)$Peakid %in% H3K27ac_set_case_lfc$Set_3_A$Peakid
+]
+SET_3_B_gr <- complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_3"&
+    mcols(complete_summit_gr)$Peakid %in% H3K27ac_set_case_lfc$Set_3_B$Peakid
+]
+
+H3K27ac_set3_A_400 <- resize(SET_3_A_gr, width = 1 + 200*2, fix = "center")
+
+H3K27ac_set3_B_400 <- resize(SET_3_B_gr, width = 1 + 200*2, fix = "center")
+
+
+rtracklayer::export(SET_3_gr, "data/Bed_exports/H3K27ac_Set_3_summits.bed")
+rtracklayer::export(H3K27ac_set3_A_400, "data/Bed_exports/H3K27ac_set3_A_400.bed")
+rtracklayer::export(H3K27ac_set3_B_400, "data/Bed_exports/H3K27ac_set3_B_400.bed")
+  
+
+# rtracklayer::export(complete_summit_gr, "data/Bed_exports/H3K27ac_complete_final_summits.bed")
+# 
+# outdir <- "data/Bed_exports/summit_groups/"
+# dir.create(outdir, showWarnings = FALSE)
+# 
+# group_gr_list <- names(H3K27ac_sets_gr)
+# 
+# ### code below is how I exported the full ROIs to bed files
+# outdir <- "data/Bed_exports/H3K27ac_sets/"
+# dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
+# 
+# for (nm in names(H3K27ac_sets_gr)) {
+#   gr <- H3K27ac_sets_gr[[nm]]
+# 
+#   if (length(gr) == 0) next   # skip empty sets safely
+# 
+#   outfile <- file.path(outdir, paste0(nm, "_H3K27ac_ROI.bed"))
+#   export(gr, outfile, format = "BED")
+# }
+```
