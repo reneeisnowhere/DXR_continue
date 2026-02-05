@@ -175,7 +175,69 @@ test_pair_TE_generic <- function(df_long, te_name, cluster1, cluster2) {
 }
 ```
 
+```{r Fisher test information for distinct families}
 
+test_pair_TE_repName <- function(df_long, rep_name, cluster1, cluster2) {
+  
+  # Subset for the specific repName
+  sub_df <- df_long %>%
+    filter(repName == rep_name) %>%
+    complete(
+      cluster = c(cluster1, cluster2),
+      status  = c("TE", "not_TE"),
+      fill = list(count = 0)
+    )
+  
+  # fixed order of statuses
+  status_levels <- c("TE", "not_TE")
+  
+  # make sure both statuses exist
+  statuses <- unique(sub_df$status)
+  if(length(statuses) != 2) {
+    sub_df <- sub_df %>%
+      complete(cluster, status, fill = list(count = 0))
+    statuses <- unique(sub_df$status)
+  }
+  
+  # counts for cluster1
+  c1_counts <- sub_df %>%
+    filter(cluster == cluster1) %>%
+    arrange(factor(status, levels = status_levels)) %>%
+    pull(count)
+  
+  # counts for cluster2
+  c2_counts <- sub_df %>%
+    filter(cluster == cluster2) %>%
+    arrange(factor(status, levels = status_levels)) %>%
+    pull(count)
+  
+  # 2x2 matrix for Fisher test
+  mat <- matrix(
+    c(c2_counts, c1_counts),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      cluster = c(cluster2, cluster1),
+      category = status_levels
+    )
+  )
+  
+  ft <- tryCatch(
+    fisher.test(mat, workspace = 2e8),
+    error = function(e) fisher.test(mat, simulate.p.value = TRUE, B = 1e5)
+  )
+  
+  tibble(
+    repName     = rep_name,
+    comparison  = paste(cluster2, "vs", cluster1),
+    odds_ratio  = ft$estimate,
+    lower_CI    = ft$conf.int[1],
+    upper_CI    = ft$conf.int[2],
+    p_value     = ft$p.value
+  )
+}
+
+```
 ### SINE
 Overlapping SINE family with summits to get a count
 
@@ -345,6 +407,61 @@ count_sine_families <- function(peak_gr, sine_gr, cluster_name) {
     TE_type = unique(te_counts$TE_type),
     status  = "not_TE",
     count   = n_total_peaks - n_sine_peaks
+  )
+  
+  bind_rows(te_counts, not_te)
+}
+```
+```{r Overlapping repNAMEfunction}
+count_ERV1_repNames <- function(peak_gr, TE_gr, cluster_name) {
+  
+  # find overlaps
+  hits <- findOverlaps(peak_gr, TE_gr)
+  
+  if (length(hits) == 0) {
+    return(tibble(
+      cluster = cluster_name,
+      repName = character(),
+      status  = character(),
+      count   = integer()
+    ))
+  }
+  
+  # subset hits to only ERV1
+  is_ERV1 <- mcols(TE_gr)$repFamily[subjectHits(hits)] == "ERV1"
+  hits <- hits[is_ERV1]
+  
+  if (length(hits) == 0) {
+    return(tibble(
+      cluster = cluster_name,
+      repName = character(),
+      status  = character(),
+      count   = integer()
+    ))
+  }
+  
+  # make tibble of repNames
+  hit_df <- tibble(
+    repName = mcols(TE_gr)$repName[subjectHits(hits)]
+  )
+  
+  # TE counts per repName
+  te_counts <- hit_df %>%
+    count(repName, name = "count") %>%
+    mutate(
+      cluster = cluster_name,
+      status  = "TE"
+    )
+  
+  # non-TE peaks
+  n_total_peaks <- length(peak_gr)
+  n_TE_peaks    <- length(unique(queryHits(hits)))
+  
+  not_te <- tibble(
+    cluster = cluster_name,
+    repName = unique(te_counts$repName),
+    status  = "not_TE",
+    count   = n_total_peaks - n_TE_peaks
   )
   
   bind_rows(te_counts, not_te)
@@ -697,6 +814,77 @@ ggplot(LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   facet_wrap(~comparison)
 ```
 
+```{r LTR overlapping by type}
+LTR_hits <- findOverlaps(H3K27ac_summit_gr, LTR_gr, ignore.strand = TRUE)
+LTR_name_overlap_df <- tibble(
+  summit_id = queryHits(LTR_hits),
+  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(LTR_hits)],
+  TE_type   = mcols(LTR_gr)$repFamily[subjectHits(LTR_hits)],
+  repName= mcols(LTR_gr)$repName[subjectHits(LTR_hits)])
+
+LTR_ERV1_counts <-
+  LTR_name_overlap_df %>%
+    dplyr::filter(TE_type=="ERV1") %>% 
+  count(cluster, repName, name = "count") %>%
+  mutate(status = "TE")
+
+total_LTR_summits <- tibble(
+  cluster = mcols(H3K27ac_summit_gr)$cluster
+) %>% count(cluster, name = "total")
+
+not_LTR_ERV1_counts <- LTR_ERV1_counts %>%
+  left_join(total_LTR_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  select(cluster, repName, status, count)
+
+LTR_ERV1_df_long <- bind_rows(LTR_ERV1_counts %>%
+                            dplyr::select(cluster, repName, status, count),
+                          not_LTR_ERV1_counts) %>% 
+  filter(!is.na(cluster))
+
+ERV1_LTR_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       LTR_ERV1_df_long %>%
+        distinct(repName) %>%
+        pull() %>%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            LTR_ERV1_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+```
+
+```{r Plotting ERV1 ltr data}
+
+ggplot(ERV1_LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(data = subset(ERV1_LTR_results, FDR < 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "LTR Name (type) enrichment at ROI summits\nH3K27ac"
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)
+```
+
+
 #### Overlapping LTR families using Full ROI
 ```{r Apply ROI LTR}
 fullROI_long_LTR <- purrr::imap_dfr(
@@ -736,6 +924,52 @@ ggplot(LTR_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type))
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
     title = "LTR family enrichment at full ROI\nH3K27ac"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
+
+```
+
+```{r Apply ROI LTR for EVR1 only}
+fullROI_long_LTR_ERV1 <- purrr::imap_dfr(
+  H3K27ac_sets_gr,
+  ~count_ERV1_repNames(.x, LTR_gr, .y)
+)
+
+
+
+LTRERV1_results_full <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      fullROI_long_LTR_ERV1 %>%
+        distinct(repName) %>%
+        pull() %>%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            LTR_ERV1_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(LTRERV1_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   geom_text_repel(data = subset(LTRERV1_results_full, FDR < 0.05),  # only significant points
+    size = 3,
+    max.overlaps = Inf
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+    geom_vline(xintercept = 1, linetype = 3) +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "LTR:ERV1 type enrichment at full ROI\nH3K27ac"
   ) +
   theme_classic() +
   facet_wrap(~comparison)
@@ -1208,7 +1442,7 @@ of  ROIs that overlap TEs, what is the distrubution across TE families?
 H3K27ac_te_familiy_long <- H3K27ac_te_summary %>% 
   filter(!is.na(repClass), repClass != "") %>%   # TE-positive only
   separate_rows(repClass, sep = ";") %>% 
-  distinct(Peakid, repClass)
+  distinct(Peakid, repClass,cluster)
 
 
 fam_pie_df <- H3K27ac_te_familiy_long %>% 
@@ -1262,5 +1496,99 @@ ggplot(H3K27ac_LTR_pie_df, aes(x = "", y = percent, fill = repFamily)) +
     fill = "TE family"
   )
   
+```
+```{r}
+H3K27ac_te_family_clust <- H3K27ac_te_familiy_long %>% 
+  dplyr::filter(cluster != "not_assigned") %>%
+   distinct(Peakid, cluster, repClass) %>%
+    count(cluster, repClass, name = "n") %>% 
+  group_by(cluster) %>% 
+  mutate(percent = n / sum(n)*100) %>% 
+  mutate(
+    repClass = if_else(percent < 2, "Other", repClass)
+  ) %>% 
+  group_by(cluster,repClass) %>% 
+  summarise(n = sum(n), .groups = "drop") %>% 
+  group_by(cluster) %>% 
+  mutate(percent = n / sum(n) * 100)
+
+ggplot(H3K27ac_te_family_clust, aes(x = "", y=percent, fill=repClass))+
+  geom_col(width =1, color="white")+
+  coord_polar(theta = "y")+
+  geom_text(
+    aes(x= 1.5,label = sprintf("%s\n%.1f%%", repClass, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~cluster)+
+  theme_void()+
+  labs(
+    title = "TE Class composition among TE-overlapping ROIs per set",
+    fill = "TE family"
+  )
+  
+```
+```{r}
+H3K27ac_long_repFamily <-
+H3K27ac_te_summary %>% 
+   dplyr::filter(cluster != "not_assigned") %>%
+  filter(!is.na(repFamily), repFamily != "") %>%   # TE-positive only
+  separate_rows(repFamily, sep = ";") %>% 
+  distinct(cluster,Peakid, repFamily) %>% 
+  dplyr::filter(repFamily %in% c("ERV1", "ERVK","ERVL", "ERVL-MaLR","Gypsy","LTR")) %>%
+  count(cluster,repFamily, name = "n") %>% 
+  group_by(cluster) %>% 
+  mutate(percent = n / sum(n)*100) %>% 
+  # mutate(
+  #   repFamily = if_else(percent < 2, "Other", repFamily)
+  # ) %>% 
+  group_by(cluster,repFamily) %>% 
+  summarise(n = sum(n), .groups = "drop") %>% 
+  group_by(cluster) %>% 
+  mutate(percent = n / sum(n) * 100)
+
+
+ggplot(H3K27ac_long_repFamily, aes(x = "", y=percent, fill=repFamily))+
+  geom_col(width =1, color="white")+
+  coord_polar(theta = "y")+
+    geom_text_repel(
+    aes(label = sprintf("%s\n%.1f%%", repFamily, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3,
+    show.legend = FALSE
+  ) +
+  facet_wrap(~cluster)+
+  theme_void()+
+  labs(
+    title = "TE family relative abundance among ROIs by set",
+    fill = "TE family"
+  )
+
+
+```
+
+```{r LTR barplot}
+
+LTR_bar_df <-H3K27ac_te_summary %>%
+  filter(!is.na(repFamily), repFamily != "")  %>%   # TE-positive only
+  separate_rows(repFamily, sep = ";") %>% 
+  distinct(cluster,Peakid, repFamily) %>% 
+  dplyr::filter(repFamily %in% c("ERV1", "ERVK","ERVL", "ERVL-MaLR","Gypsy","LTR")) %>%
+  group_by(repFamily, cluster) %>% 
+  summarise(n = dplyr::n(), .groups = "drop") %>% 
+  # optionally convert NA to a string
+  mutate(cluster = if_else(is.na(cluster), "NA", cluster))
+
+ggplot(LTR_bar_df, aes(x = repFamily, y = n, fill = cluster)) +
+  geom_col(position = "fill") +
+  theme_classic() +
+  labs(
+    x = "LTR Family",
+    y = "Proportion of ROIs",
+    fill = "Cluster",
+    title = "Proportion of ROI clusters for each LTR family"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 ```
 
