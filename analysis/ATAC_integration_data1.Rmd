@@ -1,0 +1,166 @@
+---
+title: "ATAC_seq_integration"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(readxl)
+```
+
+
+```{r loading data}
+ 
+DOX_24_ATAC <- readRDS("data/Other_paper_data/Matthews_2025_DOX_24h_ATAC.RDS")
+
+DOX_24_DAR_gr <- DOX_24_ATAC %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(peak) %>% 
+  separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %>% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand="*")
+DOX_24_CAR_gr <- DOX_24_ATAC %>% 
+  dplyr::filter(adj.P.Val>0.05) %>% 
+  dplyr::select(peak) %>% 
+  separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %>% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand="*")
+mcols(DOX_24_CAR_gr)$name <- mcols(DOX_24_CAR_gr)$peak
+mcols(DOX_24_DAR_gr)$name <- mcols(DOX_24_DAR_gr)$peak
+
+H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+
+
+peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+
+H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+
+H3K27ac_sets_gr <- lapply(peakAnnoList_H3K27ac, function(df) {
+  as_granges(df)
+})
+
+##assigning Peakid as name of summit region
+ mcols(H3K27ac_summit_gr)$name <- mcols(H3K27ac_summit_gr)$Peakid
+ 
+ H3K27ac_set_case_lfc <- readRDS("data/RDS_files/H3K27ac_set_case_lfc.RDS")
+
+
+```
+
+```{r export DARs and CARs bedlist, eval=FALSE}
+
+export(DOX_24_DAR_gr, "data/Bed_exports/ATAC_DOX_24h_DAR.bed", format = "BED")
+export(DOX_24_CAR_gr, "data/Bed_exports/ATAC_DOX_24h_CAR.bed", format = "BED")
+
+```
+
+```{r CAR hits}
+
+CAR_H3K27ac_hits <- findOverlaps(H3K27ac_sets_gr$all_H3K27ac, DOX_24_CAR_gr, ignore.strand = TRUE)
+H3K27ac_CAR_overlap <- tibble(
+  hit_id = queryHits(CAR_H3K27ac_hits),
+  ROI_ID=mcols(H3K27ac_sets_gr$all_H3K27ac)$Peakid[queryHits((CAR_H3K27ac_hits))],
+  cluster   = mcols(H3K27ac_sets_gr$all_H3K27ac)$cluster[queryHits(CAR_H3K27ac_hits)],
+  CAR_ROI   = mcols(DOX_24_CAR_gr)$peak[subjectHits(CAR_H3K27ac_hits)])
+
+H3K27ac_CAR_peakid <- H3K27ac_CAR_overlap %>% 
+  group_by(ROI_ID) %>% 
+  distinct(ROI_ID)
+
+
+```
+
+
+
+```{r DAR hits}
+
+DAR_H3K27ac_hits <- findOverlaps(H3K27ac_sets_gr$all_H3K27ac, DOX_24_DAR_gr, ignore.strand = TRUE)
+H3K27ac_DAR_overlap <- tibble(
+  hit_id = queryHits(DAR_H3K27ac_hits),
+  ROI_ID=mcols(H3K27ac_sets_gr$all_H3K27ac)$Peakid[queryHits((DAR_H3K27ac_hits))],
+  cluster   = mcols(H3K27ac_sets_gr$all_H3K27ac)$cluster[queryHits(DAR_H3K27ac_hits)],
+  DAR_ROI   = mcols(DOX_24_DAR_gr)$peak[subjectHits(DAR_H3K27ac_hits)])
+
+H3K27ac_DAR_peakid <- H3K27ac_DAR_overlap %>% 
+  group_by(ROI_ID) %>% 
+  distinct(ROI_ID) 
+
+```
+
+```{r}
+joint_H3K27ac <- intersect(H3K27ac_DAR_peakid$ROI_ID, H3K27ac_CAR_peakid$ROI_ID)
+
+prop_ATAC_df <- peakAnnoList_H3K27ac$all_H3K27ac %>%
+  as.data.frame() %>% 
+  dplyr::select(Peakid) %>% 
+  left_join(H3K27ac_lookup) %>% 
+  mutate(cluster = if_else(is.na(cluster), "NA", cluster)) %>% 
+  mutate(
+    ATAC_type = case_when(
+      Peakid %in% H3K27ac_CAR_peakid$ROI_ID ~ "CAR",
+      Peakid %in% H3K27ac_DAR_peakid$ROI_ID ~ "DAR",
+      Peakid %in% joint_H3K27ac             ~ "joint",
+      TRUE ~ "not_atac"
+    )
+  ) %>%
+  count(cluster, ATAC_type, name = "n") %>%
+  group_by(cluster) %>%
+  mutate(
+    percent = n / sum(n) * 100
+  ) %>%
+  ungroup()
+
+ggplot(prop_ATAC_df, aes(x = cluster, y = percent, fill = ATAC_type)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  geom_text(
+    aes(label = sprintf("%.1f%%", percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(y = "Proportion")+
+  theme_bw()+
+  ggtitle("Proportion of CARs and DARs in each H3K27ac set")
+  
+
+```
+
