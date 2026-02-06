@@ -557,7 +557,7 @@ SVA_overlap_df %>%
 
 ### Looking for overlapping information: LTR specific  
 
-Here I am exploring H3K27ac ROIs which overlap LTRs and also overlap H3K9me3 ROIs, then exploring LFC of the H3K27ac ROI sets across families of LTRs.  First I wanted to know how many H3K27ac ROIs overlap LTRs, and how many of those are more than one LTR:
+Here I am exploring H3K27ac ROIs which overlap LTRs and also overlap H3K9me3 ROIs, then exploring LFC of the H3K27ac ROI sets across families of LTRs.  First I wanted to know how many H3K27ac ROIs overlap LTRs, and how many of those LTRs overlap more than one ROI:
 ```{r H3K9me3 overlapping regions}
 
 LTR_overlap_df %>% 
@@ -567,7 +567,7 @@ LTR_overlap_df %>%
 LTR_only_K27ac_peakids <- LTR_overlap_df %>% distinct(Peakid)
 ```
 
-I then overlapped ROIs with H3K9me3 ROIs to see how many unique H3K27ac ROIs are involved.
+I then overlapped ROIs with H3K9me3 ROIs to see how many H3K9me3 ROIs overlap H3K27ac ROIs. (interpret with n_peaks being how many H3K27ac ROIs and n being number of H3K9me3 ROIS, So 33,567 K9me3 rOIs overlap 1 H3K27me3
 ```{r}
 
 K9me3_hits <- findOverlaps(H3K27ac_sets_gr$all_H3K27ac, H3K9me3_sets_gr$all_H3K9me3_regions, ignore.strand = TRUE)
@@ -1051,6 +1051,8 @@ testing age pairs between ROI summits
 test_TE_age_pairs_summits(LTR_summits_overlap_df, "ERVL")
 
 test_TE_age_pairs_summits(LTR_summits_overlap_df, "ERV1")
+
+test_TE_age_pairs_summits(LTR_summits_overlap_df, "ERVL-MaLR")
 ```
 
 ```{r}
@@ -1387,15 +1389,17 @@ ggplot(LTR_case_df, aes(x = case, y = milliDiv, fill = case)) +
 
 listit <- data.frame(x=width(H3K9me3_sets_gr$all_H3K9me3_regions))
 ggplot(listit, aes(x=x))+
-  geom_density()
+  geom_density()+ggtitle("H3K9me3 ROI widths")
 
 listit_k27ac <- data.frame(x=width(H3K27ac_sets_gr$all_H3K27ac))
 
-ggplot(listit_k27ac, aes(x=x))+
-  geom_density()
-
 listit %>% 
   summary()
+
+ggplot(listit_k27ac, aes(x=x))+
+  geom_density()+ggtitle("H3K27ac ROI widths")
+
+
 listit_k27ac %>% 
   summary()
 
