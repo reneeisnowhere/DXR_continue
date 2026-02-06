@@ -77,14 +77,34 @@ rpt_split_gr_list <- lapply(rpt_split, function(df) {
 
 ```{r subset rpt_split_gr_list}
 SINE_gr <- rpt_split_gr_list$SINE
+SINE_df <- SINE_gr %>% 
+  as.data.frame()
+
+SINE_split_df <- split(SINE_df, SINE_df$repFamily)
 
 LINE_gr <- rpt_split_gr_list$LINE
+LINE_df <- LINE_gr %>% 
+  as.data.frame()
+
+LINE_split_df <- split(LINE_df, LINE_df$repFamily)
 
 LTR_gr <- rpt_split_gr_list$LTR
+LTR_df <- LTR_gr %>% 
+  as.data.frame()
+
+LTR_split_df <- split(LTR_df, LTR_df$repFamily)
 
 SVA_gr <- rpt_split_gr_list$Retroposon
+SVA_df <- SVA_gr %>% 
+  as.data.frame()
+
+SVA_split_df <- split(SVA_df, SVA_df$repFamily)
 
 DNA_gr <- rpt_split_gr_list$DNA
+DNA_df <- DNA_gr %>% 
+  as.data.frame()
+
+DNA_split_df <- split(DNA_df, DNA_df$repFamily)
 ```
 
 ```{r loading H3K27ac data}
@@ -1439,13 +1459,13 @@ ggplot(pie_df, aes(x = "", y = percent, fill = category)) +
 
 of  ROIs that overlap TEs, what is the distrubution across TE families?
 ```{r}
-H3K27ac_te_familiy_long <- H3K27ac_te_summary %>% 
+H3K27ac_te_family_long <- H3K27ac_te_summary %>% 
   filter(!is.na(repClass), repClass != "") %>%   # TE-positive only
   separate_rows(repClass, sep = ";") %>% 
   distinct(Peakid, repClass,cluster)
 
 
-fam_pie_df <- H3K27ac_te_familiy_long %>% 
+fam_pie_df <- H3K27ac_te_family_long %>% 
   count(repClass, name = "n") %>% 
   mutate(percent = n / sum(n)*100) %>% 
   mutate(
@@ -1476,9 +1496,14 @@ H3K27ac_long_repFamily <- H3K27ac_te_summary %>%
   separate_rows(repFamily, sep = ";") %>% 
   distinct(Peakid, repFamily)
 
+human_genome_LTR <- LTR_df %>% 
+  dplyr::filter(repFamily %in% c("ERV1", "ERVK","ERVL", "ERVL-MaLR","Gypsy","LTR")) %>%
+  count(repFamily, name = "n") %>% 
+  mutate(percent= n/ sum(n) * 100)
+
 
 H3K27ac_LTR_pie_df <- H3K27ac_long_repFamily %>% 
-  dplyr::filter(repFamily %in% c("ERV1", "ERVK","ERVL", "EVRL-MaLR","Gypsy","LTR")) %>%
+  dplyr::filter(repFamily %in% c("ERV1", "ERVK","ERVL", "ERVL-MaLR","Gypsy","LTR")) %>%
   count(repFamily, name = "n") %>% 
   mutate(percent= n/ sum(n) * 100)
 
@@ -1496,9 +1521,35 @@ ggplot(H3K27ac_LTR_pie_df, aes(x = "", y = percent, fill = repFamily)) +
     fill = "TE family"
   )
   
+ggplot(human_genome_LTR, aes(x = "", y = percent, fill = repFamily)) +
+  geom_col(width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(
+    aes(label = sprintf("%s\n%.1f%%", repFamily, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(
+    title = "LTR family composition across human genome",
+    fill = "TE family"
+  )
 ```
 ```{r}
-H3K27ac_te_family_clust <- H3K27ac_te_familiy_long %>% 
+rpt_genome <- repeatmasker_clean %>% 
+ mutate(cluster = "hg38") %>% 
+  group_by(cluster, repClass) %>% 
+  summarise(n = n(), .groups = "drop") %>% 
+  mutate(percent = n / sum(n) * 100) %>% 
+  mutate(
+    repClass = if_else(percent < 1.2, "Other", repClass)
+  ) %>% 
+  group_by(repClass) %>% 
+  summarise(n = sum(n), .groups = "drop") %>% 
+  mutate(percent = n / sum(n) * 100)
+
+
+H3K27ac_te_family_clust <- H3K27ac_te_family_long %>% 
   dplyr::filter(cluster != "not_assigned") %>%
    distinct(Peakid, cluster, repClass) %>%
     count(cluster, repClass, name = "n") %>% 
@@ -1510,7 +1561,8 @@ H3K27ac_te_family_clust <- H3K27ac_te_familiy_long %>%
   group_by(cluster,repClass) %>% 
   summarise(n = sum(n), .groups = "drop") %>% 
   group_by(cluster) %>% 
-  mutate(percent = n / sum(n) * 100)
+  mutate(percent = n / sum(n) * 100) %>% 
+  rbind((rpt_genome %>% mutate(cluster="hg38")))
 
 ggplot(H3K27ac_te_family_clust, aes(x = "", y=percent, fill=repClass))+
   geom_col(width =1, color="white")+
@@ -1526,7 +1578,31 @@ ggplot(H3K27ac_te_family_clust, aes(x = "", y=percent, fill=repClass))+
     title = "TE Class composition among TE-overlapping ROIs per set",
     fill = "TE family"
   )
-  
+
+ggplot(H3K27ac_te_family_clust, aes(x = cluster, y=percent, fill=repClass))+
+   geom_col(width = 0.8, color = "white") +
+  geom_text(
+    aes(label = sprintf("%s\n%.1f%%", repClass, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  theme_bw() +
+  labs(
+    title = "TE Class composition among TE-overlapping ROIs per set",
+    fill = "TE family"
+  )
+  ggplot(H3K27ac_te_family_clust, aes(x = cluster, y=percent, fill=repClass))+
+   geom_col(width = 0.8, color = "white") +
+  # geom_text(
+  #   aes(label = sprintf("%s\n%.1f%%", repClass, percent)),
+  #   position = position_stack(vjust = 0.5),
+  #   size = 3
+  # ) +
+  theme_bw() +
+  labs(
+    title = "TE Class composition among TE-overlapping ROIs per set",
+    fill = "TE family"
+  )
 ```
 ```{r}
 H3K27ac_long_repFamily <-
