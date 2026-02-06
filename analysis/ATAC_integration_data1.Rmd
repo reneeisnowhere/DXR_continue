@@ -135,10 +135,9 @@ prop_ATAC_df <- peakAnnoList_H3K27ac$all_H3K27ac %>%
   left_join(H3K27ac_lookup) %>% 
   mutate(cluster = if_else(is.na(cluster), "NA", cluster)) %>% 
   mutate(
-    ATAC_type = case_when(
+    ATAC_type = case_when(Peakid %in% joint_H3K27ac ~ "joint",
       Peakid %in% H3K27ac_CAR_peakid$ROI_ID ~ "CAR",
       Peakid %in% H3K27ac_DAR_peakid$ROI_ID ~ "DAR",
-      Peakid %in% joint_H3K27ac             ~ "joint",
       TRUE ~ "not_atac"
     )
   ) %>%
@@ -162,5 +161,27 @@ ggplot(prop_ATAC_df, aes(x = cluster, y = percent, fill = ATAC_type)) +
   ggtitle("Proportion of CARs and DARs in each H3K27ac set")
   
 
+prop_ATAC_df %>% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = percent) %>% 
+   datatable(.,rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE)) %>% 
+  DT::formatRound(columns = c("CAR", "DAR", "joint", "not_atac"), # explicitly name the numeric columns
+    digits = 2)
+  
+
+prop_ATAC_df %>% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = n) %>%
+  rowwise() %>% 
+  mutate(total=sum(c_across(any_of(c("CAR", "DAR","joint","not_atac"))))) %>% 
+  datatable(.,rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE), caption = "counts of H3K27ac ROIs")
 ```
 
