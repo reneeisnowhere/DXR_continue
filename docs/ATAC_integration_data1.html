@@ -37,6 +37,19 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="site_libs/nouislider-7.0.10/jquery.nouislider.min.js"></script>
+<link href="site_libs/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="site_libs/selectize-0.12.0/selectize.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -521,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree2be9ae76c74a1a497afd38550e2b13e3aa8737cctargetblank2be9ae7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree35a2cb2b66e21b805b037a6027d5c706638639a9targetblank35a2cb2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/2be9ae76c74a1a497afd38550e2b13e3aa8737cc" target="_blank">2be9ae7</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/35a2cb2b66e21b805b037a6027d5c706638639a9" target="_blank">35a2cb2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree2be9ae76c74a1a497afd38550e2b13e3aa8737cctargetblank2be9ae7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree35a2cb2b66e21b805b037a6027d5c706638639a9targetblank35a2cb2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/2be9ae76c74a1a497afd38550e2b13e3aa8737cc" target="_blank">2be9ae7</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/35a2cb2b66e21b805b037a6027d5c706638639a9" target="_blank">35a2cb2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -589,7 +602,6 @@ Unstaged changes:
     Modified:   analysis/H3K27ac_summit_processing.Rmd
     Modified:   analysis/dual_histone_TE_investigation.Rmd
     Modified:   analysis/final_analysis.Rmd
-    Modified:   analysis/index.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
 </code></pre>
@@ -636,6 +648,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/35a2cb2b66e21b805b037a6027d5c706638639a9/analysis/ATAC_integration_data1.Rmd" target="_blank">35a2cb2</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-06
+</td>
+<td>
+wflow_publish("analysis/ATAC_integration_data1.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/d950fb258e14598011f4eb05ff1a379a98afe37e/docs/ATAC_integration_data1.html" target="_blank">d950fb2</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -752,10 +798,9 @@ prop_ATAC_df &lt;- peakAnnoList_H3K27ac$all_H3K27ac %&gt;%
   left_join(H3K27ac_lookup) %&gt;% 
   mutate(cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster)) %&gt;% 
   mutate(
-    ATAC_type = case_when(
+    ATAC_type = case_when(Peakid %in% joint_H3K27ac ~ &quot;joint&quot;,
       Peakid %in% H3K27ac_CAR_peakid$ROI_ID ~ &quot;CAR&quot;,
       Peakid %in% H3K27ac_DAR_peakid$ROI_ID ~ &quot;DAR&quot;,
-      Peakid %in% joint_H3K27ac             ~ &quot;joint&quot;,
       TRUE ~ &quot;not_atac&quot;
     )
   ) %&gt;%
@@ -778,6 +823,67 @@ ggplot(prop_ATAC_df, aes(x = cluster, y = percent, fill = ATAC_type)) +
   theme_bw()+
   ggtitle(&quot;Proportion of CARs and DARs in each H3K27ac set&quot;)</code></pre>
 <p><img src="figure/ATAC_integration_data1.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d950fb258e14598011f4eb05ff1a379a98afe37e/docs/figure/ATAC_integration_data1.Rmd/unnamed-chunk-2-1.png" target="_blank">d950fb2</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>prop_ATAC_df %&gt;% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = percent) %&gt;% 
+   datatable(.,rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE)) %&gt;% 
+  DT::formatRound(columns = c(&quot;CAR&quot;, &quot;DAR&quot;, &quot;joint&quot;, &quot;not_atac&quot;), # explicitly name the numeric columns
+    digits = 2)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-c7fc7fd0704f0fe11c1f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"19.6285671146006\" data-max=\"41.9252570764144\" data-scale=\"14\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"11.9463318920097\" data-max=\"59.8520308017515\" data-scale=\"14\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"2.74368231046931\" data-max=\"3.92571342292013\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"16.5936886607278\" data-max=\"43.367791868028\" data-scale=\"14\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["NA","Set_1","Set_2","Set_3"],[32.62140779886801,41.92525707641438,23.32129963898917,19.62856711460064],[31.43000093811564,11.94633189200974,56.02888086642599,59.85203080175148],[2.783076393883486,2.760619163547836,2.743682310469314,3.925713422920127],[33.16551486913287,43.36779186802805,17.90613718411552,16.59368866072777]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>CAR<\/th>\n      <th>DAR<\/th>\n      <th>joint<\/th>\n      <th>not_atac<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4]},{"name":"cluster","targets":0},{"name":"CAR","targets":1},{"name":"DAR","targets":2},{"name":"joint","targets":3},{"name":"not_atac","targets":4}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render"],"jsHooks":[]}</script>
+<pre class="r"><code>prop_ATAC_df %&gt;% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = n) %&gt;%
+  rowwise() %&gt;% 
+  mutate(total=sum(c_across(any_of(c(&quot;CAR&quot;, &quot;DAR&quot;,&quot;joint&quot;,&quot;not_atac&quot;))))) %&gt;% 
+  datatable(.,rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE), caption = &quot;counts of H3K27ac ROIs&quot;)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1aee943cb026952af47d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"323\" data-max=\"46153\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"776\" data-max=\"13151\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"38\" data-max=\"3039\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"248\" data-max=\"47741\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1385\" data-max=\"110084\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","caption":"<caption>counts of H3K27ac ROIs<\/caption>","data":[["NA","Set_1","Set_2","Set_3"],[10432,46153,323,1300],[10051,13151,776,3964],[890,3039,38,260],[10606,47741,248,1099],[31979,110084,1385,6623]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>CAR<\/th>\n      <th>DAR<\/th>\n      <th>joint<\/th>\n      <th>not_atac<\/th>\n      <th>total<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5]},{"name":"cluster","targets":0},{"name":"CAR","targets":1},{"name":"DAR","targets":2},{"name":"joint","targets":3},{"name":"not_atac","targets":4},{"name":"total","targets":5}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -868,90 +974,91 @@ loaded via a namespace (and not attached):
  [47] AnnotationDbi_1.68.0                   
  [48] ps_1.9.1                               
  [49] rprojroot_2.1.1                        
- [50] RSQLite_2.4.3                          
- [51] labeling_0.4.3                         
- [52] timechange_0.3.0                       
- [53] httr_1.4.7                             
- [54] abind_1.4-8                            
- [55] compiler_4.4.2                         
- [56] bit64_4.6.0-1                          
- [57] withr_3.0.2                            
- [58] BiocParallel_1.40.2                    
- [59] DBI_1.2.3                              
- [60] gplots_3.2.0                           
- [61] R.utils_2.13.0                         
- [62] rappdirs_0.3.3                         
- [63] DelayedArray_0.32.0                    
- [64] rjson_0.2.23                           
- [65] caTools_1.18.3                         
- [66] gtools_3.9.5                           
- [67] tools_4.4.2                            
- [68] ape_5.8-1                              
- [69] httpuv_1.6.16                          
- [70] R.oo_1.27.1                            
- [71] glue_1.8.0                             
- [72] restfulr_0.0.16                        
- [73] callr_3.7.6                            
- [74] nlme_3.1-168                           
- [75] GOSemSim_2.32.0                        
- [76] promises_1.3.3                         
- [77] getPass_0.2-4                          
- [78] gridBase_0.4-7                         
- [79] reshape2_1.4.4                         
- [80] fgsea_1.32.4                           
- [81] generics_0.1.4                         
- [82] gtable_0.3.6                           
- [83] BSgenome_1.74.0                        
- [84] tzdb_0.5.0                             
- [85] R.methodsS3_1.8.2                      
- [86] seqPattern_1.38.0                      
- [87] data.table_1.17.8                      
- [88] hms_1.1.3                              
- [89] XVector_0.46.0                         
- [90] pillar_1.11.0                          
- [91] yulab.utils_0.2.1                      
- [92] later_1.4.2                            
- [93] splines_4.4.2                          
- [94] treeio_1.30.0                          
- [95] lattice_0.22-7                         
- [96] bit_4.6.0                              
- [97] tidyselect_1.2.1                       
- [98] GO.db_3.20.0                           
- [99] Biostrings_2.74.1                      
-[100] knitr_1.50                             
-[101] git2r_0.36.2                           
-[102] SummarizedExperiment_1.36.0            
-[103] xfun_0.52                              
-[104] Biobase_2.66.0                         
-[105] matrixStats_1.5.0                      
-[106] stringi_1.8.7                          
-[107] UCSC.utils_1.2.0                       
-[108] lazyeval_0.2.2                         
-[109] boot_1.3-32                            
-[110] ggfun_0.2.0                            
-[111] yaml_2.3.10                            
-[112] evaluate_1.0.5                         
-[113] codetools_0.2-20                       
-[114] qvalue_2.38.0                          
-[115] ggplotify_0.1.2                        
-[116] cli_3.6.5                              
-[117] processx_3.8.6                         
-[118] jquerylib_0.1.4                        
-[119] dichromat_2.0-0.1                      
-[120] Rcpp_1.1.0                             
-[121] png_0.1-8                              
-[122] XML_3.99-0.18                          
-[123] parallel_4.4.2                         
-[124] blob_1.2.4                             
-[125] DOSE_4.0.1                             
-[126] bitops_1.0-9                           
-[127] tidytree_0.4.6                         
-[128] scales_1.4.0                           
-[129] crayon_1.5.3                           
-[130] rlang_1.1.6                            
-[131] fastmatch_1.1-6                        
-[132] cowplot_1.2.0                          
-[133] KEGGREST_1.46.0                        </code></pre>
+ [50] crosstalk_1.2.2                        
+ [51] RSQLite_2.4.3                          
+ [52] labeling_0.4.3                         
+ [53] timechange_0.3.0                       
+ [54] httr_1.4.7                             
+ [55] abind_1.4-8                            
+ [56] compiler_4.4.2                         
+ [57] bit64_4.6.0-1                          
+ [58] withr_3.0.2                            
+ [59] BiocParallel_1.40.2                    
+ [60] DBI_1.2.3                              
+ [61] gplots_3.2.0                           
+ [62] R.utils_2.13.0                         
+ [63] rappdirs_0.3.3                         
+ [64] DelayedArray_0.32.0                    
+ [65] rjson_0.2.23                           
+ [66] caTools_1.18.3                         
+ [67] gtools_3.9.5                           
+ [68] tools_4.4.2                            
+ [69] ape_5.8-1                              
+ [70] httpuv_1.6.16                          
+ [71] R.oo_1.27.1                            
+ [72] glue_1.8.0                             
+ [73] restfulr_0.0.16                        
+ [74] callr_3.7.6                            
+ [75] nlme_3.1-168                           
+ [76] GOSemSim_2.32.0                        
+ [77] promises_1.3.3                         
+ [78] getPass_0.2-4                          
+ [79] gridBase_0.4-7                         
+ [80] reshape2_1.4.4                         
+ [81] fgsea_1.32.4                           
+ [82] generics_0.1.4                         
+ [83] gtable_0.3.6                           
+ [84] BSgenome_1.74.0                        
+ [85] tzdb_0.5.0                             
+ [86] R.methodsS3_1.8.2                      
+ [87] seqPattern_1.38.0                      
+ [88] data.table_1.17.8                      
+ [89] hms_1.1.3                              
+ [90] XVector_0.46.0                         
+ [91] pillar_1.11.0                          
+ [92] yulab.utils_0.2.1                      
+ [93] later_1.4.2                            
+ [94] splines_4.4.2                          
+ [95] treeio_1.30.0                          
+ [96] lattice_0.22-7                         
+ [97] bit_4.6.0                              
+ [98] tidyselect_1.2.1                       
+ [99] GO.db_3.20.0                           
+[100] Biostrings_2.74.1                      
+[101] knitr_1.50                             
+[102] git2r_0.36.2                           
+[103] SummarizedExperiment_1.36.0            
+[104] xfun_0.52                              
+[105] Biobase_2.66.0                         
+[106] matrixStats_1.5.0                      
+[107] stringi_1.8.7                          
+[108] UCSC.utils_1.2.0                       
+[109] lazyeval_0.2.2                         
+[110] boot_1.3-32                            
+[111] ggfun_0.2.0                            
+[112] yaml_2.3.10                            
+[113] evaluate_1.0.5                         
+[114] codetools_0.2-20                       
+[115] qvalue_2.38.0                          
+[116] ggplotify_0.1.2                        
+[117] cli_3.6.5                              
+[118] processx_3.8.6                         
+[119] jquerylib_0.1.4                        
+[120] dichromat_2.0-0.1                      
+[121] Rcpp_1.1.0                             
+[122] png_0.1-8                              
+[123] XML_3.99-0.18                          
+[124] parallel_4.4.2                         
+[125] blob_1.2.4                             
+[126] DOSE_4.0.1                             
+[127] bitops_1.0-9                           
+[128] tidytree_0.4.6                         
+[129] scales_1.4.0                           
+[130] crayon_1.5.3                           
+[131] rlang_1.1.6                            
+[132] fastmatch_1.1-6                        
+[133] cowplot_1.2.0                          
+[134] KEGGREST_1.46.0                        </code></pre>
 </div>
 </div>
 </div>
