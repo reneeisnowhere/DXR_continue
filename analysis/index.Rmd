@@ -95,3 +95,6 @@ Looking at finalized assigned cluster sets and characteristics
 [ChromHMM states and other plots](https://reneeisnowhere.github.io/DXR_continue/chromHMM.html)
 
 
+### ATAC integration
+[First integration of ATAC data with H3K27ac](https://reneeisnowhere.github.io/DXR_continue/ATAC_integration_data1.html)
+
