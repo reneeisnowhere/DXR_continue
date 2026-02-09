@@ -35,17 +35,22 @@ library(stringr)
 library(ggrepel)
 library(DT)
 library(readxl)
+library(ChIPseeker)
+library(smplot2)
 ```
 
 adding in data files.
 
 The current analysis should be RNA DEGs and ROIs by set expression levels.
-more steps will include viewing the association of DEGs with enrichment/depeletion of ROIs containing TEs by class/familiy with a look at age.
+more steps will include viewing the association of DEGs with enrichment/depletion of ROIs containing TEs by class/familiy with a look at age.
+### Data loading  
+
 
 ```{r needed data files}
 ###Loading all ROIs, already out by Set and combined
 H3K27ac_anno_ROIs <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
-
+H3K27ac_toplist <- readRDS( "data/DER_data/H3K27ac_toplist.RDS")
+H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
 ## Loading single summit locations and adding in 
 H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
 
@@ -61,10 +66,13 @@ H3K27ac_lookup <- imap_dfr(H3K27ac_anno_ROIs[1:3], ~
 RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
 
 RNA_cluster_lookup<- readRDS( "data/Other_paper_data/RNA_cluster_lookup.RDS")
+LTR_summits_overlap_df <- readRDS("data/RDS_files/H3K27ac_summit_LTR_overlaps.RDS")
+
+H3K27ac_set_case_lfc <- readRDS( "data/RDS_files/H3K27ac_set_case_lfc.RDS")
 
 ```
 
-
+Below this code is how I combined the RNA files from Emma's paper for future reference.
 ```{r RNA data files, eval=FALSE}
 ##For my reference only
 ### Loading in RNA expression data
@@ -98,5 +106,512 @@ RNA_cluster_lookup <- RNA_acute_cluster %>%
     bind_rows(RNA_chronic_cluster)
 # saveRDS(RNA_cluster_lookup, "data/Other_paper_data/RNA_cluster_lookup.RDS")
 
+```
+
+Step 1: what Entrez_IDs are connected to each set?  Are there any shared entrez_ids between sets 2 and 3?
+
+```{r}
+
+
+Joined_clusters <- H3K27ac_anno_ROIs$all_H3K27ac %>% 
+  as.data.frame() %>% 
+  dplyr::select(Peakid,annotation, geneId) %>% 
+  left_join(., H3K27ac_lookup) %>% 
+  dplyr::rename("ROI_cluster"=cluster) %>% 
+  mutate(geneId=as.numeric(geneId)) %>% 
+  left_join(., RNA_cluster_lookup, by=c("geneId"="Entrez_ID")) 
+  
+
+  
+Joined_clusters %>%   
+  group_by(ROI_cluster, Cluster) %>% 
+  tally() %>% 
+datatable(.,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE))
+
+```
+I have associated the tables using Entrez_ID numbers.  Now I want to see if Set1, Set2, or Set3 are enriched in chronic vs acute RNA genes.
+I will do a Fisher's Exact test.  Note, I am treating each ROI individually, meaning genes can have multiple ROIs.
+
+I will first ask if Set2 is enriched in Acute or Chronic
+
+####  Acute or Chronic Set2  
+
+```{r  Set2 enrichment}
+tab_annotate <- Joined_clusters %>%
+  dplyr::filter(!is.na(ROI_cluster)) %>% 
+  mutate(
+    ROI_cluster= factor(ROI_cluster,levels=c("Set_1","Set_2","Set_3")),
+    Cluster=factor(Cluster,levels=c("Chronic", "Acute")))
+ 
+
+tab_21_acute <-  tab_annotate %>% 
+  filter(ROI_cluster %in% c("Set_1", "Set_2")) %>%
+  mutate(is_acute = Cluster=="Acute") %>% 
+  count(ROI_cluster, is_acute) %>%
+  tidyr::pivot_wider(
+    names_from = is_acute,
+    values_from = n,
+    values_fill = 0)
+
+tab_21_chronic <-  tab_annotate %>% 
+  filter(ROI_cluster %in% c("Set_1", "Set_2")) %>%
+  mutate(is_chronic=Cluster=="Chronic") %>% 
+  count(ROI_cluster, is_chronic) %>%
+  tidyr::pivot_wider(
+    names_from = is_chronic,
+    values_from = n,
+    values_fill = 0)
+ 
+
+mat_21_acute <- as.matrix(tab_21_acute[, c("TRUE", "FALSE")])
+mat_21_chronic <- as.matrix(tab_21_chronic[, c("TRUE", "FALSE")])
+
+fisher.test(mat_21_acute)
+fisher.test(mat_21_chronic)
+```
+
+
+```{r  Set3 enrichment}
+
+tab_31_acute <-  tab_annotate %>% 
+  filter(ROI_cluster %in% c("Set_1", "Set_3")) %>%
+  mutate(is_acute = Cluster=="Acute") %>% 
+  count(ROI_cluster, is_acute) %>%
+  tidyr::pivot_wider(
+    names_from = is_acute,
+    values_from = n,
+    values_fill = 0)
+
+tab_31_chronic <-  tab_annotate %>% 
+  filter(ROI_cluster %in% c("Set_1", "Set_3")) %>%
+  mutate(is_chronic=Cluster=="Chronic") %>% 
+  count(ROI_cluster, is_chronic) %>%
+  tidyr::pivot_wider(
+    names_from = is_chronic,
+    values_from = n,
+    values_fill = 0)
+ 
+
+mat_31_acute <- as.matrix(tab_31_acute[, c("TRUE", "FALSE")])
+mat_31_chronic <- as.matrix(tab_31_chronic[, c("TRUE", "FALSE")])
+
+fisher.test(mat_31_acute)
+fisher.test(mat_31_chronic)
+```
+
+```{r  Set2 verses set3 enrichment}
+
+
+tab_23_acute <-  tab_annotate %>% 
+  filter(ROI_cluster %in% c("Set_2", "Set_3")) %>%
+  mutate(is_acute = Cluster=="Acute") %>% 
+  count(ROI_cluster, is_acute) %>%
+  tidyr::pivot_wider(
+    names_from = is_acute,
+    values_from = n,
+    values_fill = 0)
+
+tab_23_chronic <-  tab_annotate %>% 
+  filter(ROI_cluster %in% c("Set_2", "Set_3")) %>%
+  mutate(is_chronic=Cluster=="Chronic") %>% 
+  count(ROI_cluster, is_chronic) %>%
+  tidyr::pivot_wider(
+    names_from = is_chronic,
+    values_from = n,
+    values_fill = 0)
+ 
+
+mat_23_acute <- as.matrix(tab_23_acute[, c("TRUE", "FALSE")])
+mat_23_chronic <- as.matrix(tab_23_chronic[, c("TRUE", "FALSE")])
+
+fisher.test(mat_23_acute)
+fisher.test(mat_23_chronic)
+```
+
+```{r}
+tab_annotate %>% 
+  # dplyr::filter(Cluster=="Chronic") %>% 
+  count(ROI_cluster,Cluster) %>% 
+  ggplot(., aes(x=ROI_cluster,y=n, fill=Cluster))+
+    geom_col(position = "fill")+
+    scale_y_continuous(labels=scales::percent_format())+
+  ggtitle("Proportion of Chronic and Actute ROIs by set using assigned gene")+
+   ylab("Proportion")+
+  xlab("Sets")
+ 
+  
+```
+Now to breakdown by geneIDs and not ROIs
+
+```{r}
+gene_df <- Joined_clusters %>% 
+  mutate(geneID=as.character(geneId)) %>% 
+  group_by(geneId, ROI_cluster) %>% 
+  summarize(ROI_ids=list(ROI_cluster),
+            n_ROIs=dplyr::n(),
+            cluster=paste0(unique(Cluster),collapse=","),
+            SYMBOL=paste0(unique(SYMBOL),collapse = ","),
+            .groups = "drop")
+
+gene_long <- gene_df %>% 
+  separate_rows(ROI_cluster,sep=",")
+gene_long <- gene_long %>%
+  mutate(
+    is_acute = as.numeric(cluster == "Acute"),
+    is_chronic = as.numeric(cluster == "Chronic")
+  )
+gene_long$ROI_cluster <- relevel(factor(gene_long$ROI_cluster), ref = "Set_1")
+
+fit_acute <- glm(
+  is_acute ~ ROI_cluster,
+  data = gene_long,
+  family = binomial
+)
+summary(fit_acute)
+exp(cbind(OR = coef(fit_acute), confint(fit_acute)))
+
+
+fit_chronic <- glm(is_chronic ~ ROI_cluster, data = gene_long, family = binomial)
+
+summary(fit_chronic)
+exp(cbind(OR = coef(fit_chronic), confint(fit_chronic)))
+```
+
+looking at expression levels of Chronic and Acute genes by set?
+### RNA expression in Chronic or Acute genes  
+
+
+```{r}
+Set_1_nAcute <- Joined_clusters %>% 
+  dplyr::filter(ROI_cluster=="Set_1") %>% 
+  # dplyr::filter(Cluster=="Acute") %>% 
+  distinct(geneId)
+
+Set_2_nAcute <- Joined_clusters %>% 
+  dplyr::filter(ROI_cluster=="Set_2") %>% 
+  # dplyr::filter(Cluster=="Acute") %>% 
+  distinct(geneId)
+
+Set_3_nAcute <- Joined_clusters %>% 
+  dplyr::filter(ROI_cluster=="Set_3") %>% 
+  # dplyr::filter(Cluster=="Acute") %>% 
+  distinct(geneId)
+
+RNA_full_toptable %>% 
+  dplyr::filter(Entrez_ID %in% Set_1_nAcute$geneId) %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  mutate(timepoint=factor(timepoint,levels=c("24T","24R","144R")))%>% 
+  left_join(., RNA_cluster_lookup) %>% 
+  ggplot(., aes(x=timepoint, y=logFC, group=Entrez_ID))+
+  geom_boxplot(aes(group=timepoint))+
+  # geom_line(alpha=0.3, aes(color=Cluster))+
+  ggtitle("LFC of genes in Set 1 ")
+
+
+RNA_full_toptable %>% 
+  dplyr::filter(Entrez_ID %in% Set_2_nAcute$geneId) %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  mutate(timepoint=factor(timepoint,levels=c("24T","24R","144R")))%>% 
+  left_join(., RNA_cluster_lookup) %>% 
+  ggplot(., aes(x=timepoint, y=logFC, group=Entrez_ID))+
+  geom_boxplot(aes(group=timepoint))+
+  # geom_line(alpha=0.3, aes(color=Cluster))+
+  ggtitle("LFC of genes in Set 2 ")
+
+RNA_full_toptable %>% 
+  dplyr::filter(Entrez_ID %in% Set_3_nAcute$geneId) %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  mutate(timepoint=factor(timepoint,levels=c("24T","24R","144R")))%>% 
+  left_join(., RNA_cluster_lookup) %>% 
+  ggplot(., aes(x=timepoint, y=logFC, group=Entrez_ID))+
+  geom_boxplot(aes(group=timepoint))+
+  # geom_line(alpha=0.3, aes(color=Cluster))+
+  ggtitle("LFC of genes in Set 3 ")
+
+```
+
+```{r}
+H3K27ac_anno_df <- H3K27ac_anno_ROIs$all_H3K27ac %>% as.data.frame()
+
+H3K27ac_toptable_list %>% 
+  left_join(., H3K27ac_lookup,by=c("genes"="Peakid"))
+
+
+summit_LTR_ROIs <- LTR_summits_overlap_df %>% 
+  left_join(H3K27ac_lookup, by=c("Peakid"="Peakid")) %>% 
+  left_join(H3K27ac_anno_df) %>% 
+  dplyr::select(Peakid:cluster,geneId,distanceToTSS)
+
+summit_LTR_ROIs %>% distinct(geneId)
+
+just_summit_LTR_ROI_peakids <- summit_LTR_ROIs %>% distinct(Peakid,.keep_all = TRUE) %>% dplyr::select(Peakid,geneId)
+
+```
+
+getting LFC of Peakids assigned to geneIds
+
+### LFC_looking
+
+```{r}
+
+long_H3K27ac_set_case_lfc <- dplyr::bind_rows(H3K27ac_set_case_lfc, .id = "set_case")
+RNA_lfc_entrez_id <- RNA_full_toptable %>% 
+  dplyr::select(Entrez_ID,logFC,timepoint) %>% 
+  pivot_wider(., names_from = timepoint, names_prefix = "RNA_LFC_", values_from = logFC)
+
+LFC_joined_peakid_geneid <- long_H3K27ac_set_case_lfc %>% 
+  dplyr::filter(Peakid %in% just_summit_LTR_ROI_peakids$Peakid) %>%
+  left_join(just_summit_LTR_ROI_peakids) %>% 
+   mutate(geneId=as.numeric(geneId)) %>%
+  left_join(RNA_lfc_entrez_id, by=c("geneId"="Entrez_ID"))
+
+
+
+
+
+```
+
+```{r time to time LFC}
+plot_LFC_scatter <- function(df,
+                             cluster_name,
+                             x_var = H3K27ac_24T,
+                             y_var = RNA_LFC_24T,
+                             timepoint = "24T") {
+
+  ggplot(
+    df %>% dplyr::filter(cluster == cluster_name),
+    aes(x = {{ x_var }}, y = {{ y_var }}, color = set_case)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = "black") +
+    sm_statCorr(corr_method = "spearman") +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+    labs(
+      x = paste(deparse(substitute(x_var)), "logFC"),
+      y = paste(deparse(substitute(y_var)), timepoint),
+      title = paste(
+        "LTR_summit",
+        deparse(substitute(x_var)),
+        "and RNA LFC at",
+        timepoint,
+        tolower(cluster_name)
+      )
+    ) +
+    theme_classic()
+}
+```
+
+
+```{r time to time LFC, Set1}
+
+plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_1",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")
+
+plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_1",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")
+
+plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_1",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")
+
+```
+
+```{r time to time LFC, Set2}
+
+plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_2",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")
+
+plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_2",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")
+
+plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_2",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")
+
+```
+
+```{r time to time LFC, Set3}
+
+plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_3",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")
+
+plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_3",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")
+
+plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_3",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")
+
+```
+
+
+maybe closer to TSS will be helpful?
+
+
+```{r 2kb set1}
+
+promotor_region_LTR_peakid <- summit_LTR_ROIs %>% 
+  dplyr::filter(distanceToTSS>-2000 & distanceToTSS <2000)
+
+H3K27ac_2kb_LTR <- LFC_joined_peakid_geneid %>% dplyr::filter(Peakid %in% promotor_region_LTR_peakid$Peakid)
+
+
+plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_1",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")+labs(caption="within 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_1",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")+labs(caption="within 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_1",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="within 2kb of TSS")
+
+
+```
+
+```{r 2kb set2}
+
+
+plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")+labs(caption="within 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")+labs(caption="within 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="within 2kb of TSS")
+
+
+```
+
+```{r 2kb set3}
+
+plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")+labs(caption="within 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")+labs(caption="within 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="within 2kb of TSS")
+
+
+```
+
+
+
+
+
+```{r}
+LFC_joined_peakid_geneid
+```
+
+
+
+now I want to see about the opposite, so regions > 2kb but less than 20KB?
+```{r 20kb to 2kb LTR set 3}
+ between20kb_2kb_summit_LTR_peakids <- summit_LTR_ROIs %>%
+  dplyr::mutate(abs_dist=abs(distanceToTSS)) %>% 
+  dplyr::filter(abs_dist>2000 & abs_dist <20000) %>% 
+  distinct(Peakid,geneId)
+
+H3K27ac_20kb_2kb_LTR <- LFC_joined_peakid_geneid %>% dplyr::filter(Peakid %in% between20kb_2kb_summit_LTR_peakids$Peakid)
+
+
+
+plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")+labs(caption="20kb>x> 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")+labs(caption="20kb>x> 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="20kb>x> 2kb of TSS")
+```
+
+
+
+```{r 20kb to 2kb LTR set 2}
+ plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")+labs(caption="20kb>x> 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")+labs(caption="20kb>x> 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="20kb>x> 2kb of TSS")
+```
+
+```{r 20kb to 2kb LTR set 1}
+
+plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_1",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")+labs(caption="20kb>x> 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_1",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")+labs(caption="20kb>x> 2kb of TSS")
+
+plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_1",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="20kb>x> 2kb of TSS")
+```
+```{r}
+summit_LTR_ROIs <- summit_LTR_ROIs %>% 
+  dplyr::mutate(
+    TSS_dir = ifelse(distanceToTSS < 0, "Upstream", "Downstream")
+  )
+
+# distance to TSspread(
+summit_LTR_ROIs %>% 
+  ggplot(., aes(x=distanceToTSS, color=cluster))+
+  geom_density(linewidth=3)+
+  coord_cartesian(xlim=c(-50000,50000))
+
+summit_LTR_ROIs %>% 
+  dplyr::mutate(
+    TSS_dir = ifelse(distanceToTSS < 0, "Upstream", "Downstream")
+  ) %>% 
+  ggplot(., aes(x=cluster,y=distanceToTSS, color=cluster))+
+  geom_violin(trim = FALSE, scale = "width", alpha = 0.7) +
+  geom_boxplot(
+    width = 0.1,
+    outlier.shape = NA,
+    alpha = 0.4
+  ) +
+    # coord_cartesian(ylim = c(-50000, 50000)) +
+  theme_classic()
+```
+
+```{r}
+GeomSplitViolin <- ggplot2::ggproto(
+  "GeomSplitViolin", ggplot2::GeomViolin,
+  draw_group = function(self, data, panel_scales, coord) {
+    data <- transform(data,
+      xminv = x - violinwidth * (x - xmin),
+      xmaxv = x + violinwidth * (xmax - x)
+    )
+
+    grp <- data[1, "group"]
+    newdata <- if (grp %% 2 == 1) {
+      transform(data, x = xminv)
+    } else {
+      transform(data, x = xmaxv)
+    }
+
+    ggplot2::GeomPolygon$draw_panel(newdata, panel_scales, coord)
+  }
+)
+
+geom_split_violin <- function(mapping = NULL, data = NULL, stat = "ydensity",
+                              position = "identity", ..., trim = TRUE,
+                              scale = "area", show.legend = NA,
+                              inherit.aes = TRUE) {
+  ggplot2::layer(
+    data = data,
+    mapping = mapping,
+    stat = stat,
+    geom = GeomSplitViolin,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      trim = trim,
+      scale = scale,
+      ...
+    )
+  )
+}
+```
+
+```{r}
+summit_LTR_ROIs %>% 
+  ggplot(aes(
+    x = cluster,
+    y = distanceToTSS,
+    fill = TSS_dir
+  )) +
+  geom_split_violin(trim = FALSE, scale = "width", alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  # coord_cartesian(ylim = c(-50000, 50000)) +
+  scale_fill_manual(
+    values = c("Upstream" = "#1f78b4", "Downstream" = "#e31a1c")
+  ) +
+  facet_wrap(~TE_type)+
+  theme_classic()+
+  ggtitle("getting an idea of TSS distribution")
 ```
 
