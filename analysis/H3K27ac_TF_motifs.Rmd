@@ -124,7 +124,7 @@ H3K27ac_Set2_data %>%
   ggtitle(paste("SET2 enrichment over SET1, Enrichment ratio >1.2"))
 
 H3K27ac_Set3_data %>% 
-  dplyr::filter(ENR_RATIO>1.1) %>%
+  dplyr::filter(ENR_RATIO>1.2) %>%
   group_by(CLUSTER) %>% 
   slice_min(EVALUE, with_ties = FALSE) %>% 
    mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
@@ -134,7 +134,7 @@ H3K27ac_Set3_data %>%
   scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1,name="Percent of peaks with motif"))+
   theme_classic()+
   ylab("Enriched TF motif")+
-  ggtitle(paste("SET3 enrichment over SET1, Enrichment ratio > 1.1"))
+  ggtitle(paste("SET3 enrichment over SET1, Enrichment ratio > 1.2"))
 
 ```
 
@@ -413,8 +413,303 @@ dplyr::filter(EVALUE<0.05) %>%
 
 
 ```
+### Case and Summit calls method 1, subset A and B
+
+This section looks at the enrichment of A and B cases of each Set.  
+Case A is defined as all ROIs with an LFC > 0 at each timepoint.
+Case B is defined as all ROIs with an LFC < 0 at each timepoint.
+Case C is defined as all other ROIs.
+The List of ROI summits was filtered for ROI that fit these cases, and enrichment was done using xstreme on TACC for each set-case compared to all of set1.
 
 
+Because I have so many sets, I am now creating a function to import/visualize each section:
+
+```{r import function}
+import_function <- function(set_description, base_dir = "C:/Users/renee/Other_projects_data/DXR_data/H3K27ac") {
+  
+  sea_disc_out <-read_delim(
+    file.path(base_dir, set_description, "sea_disc_out", "sea.tsv"),
+    delim = "\t", trim_ws = TRUE
+  ) %>%
+    mutate(source = "disc") %>%
+    slice(1:(dplyr::n() - 3))
+
+  sea_known <-read_delim(
+    file.path(base_dir, set_description, "sea_out", "sea.tsv"),
+    delim = "\t", trim_ws = TRUE
+  ) %>%
+    mutate(source = "known") %>%
+    slice(1:(dplyr::n() - 3))
+
+
+  xstreme <- read_delim(
+    file.path(base_dir, set_description, "xstreme.tsv"),
+    delim = "\t", trim_ws = TRUE
+  ) %>%
+    mutate(source = "all") %>%
+    slice(1:(dplyr::n() - 3))
+
+
+ #### adding in later fuctions
+  tomtom <- read_delim(
+    file.path(base_dir, set_description, "streme_tomtom_out", "tomtom.tsv"),
+    delim = "\t", trim_ws = TRUE
+  )
+### function to renormalize dataframes before the join
+  
+  clean_consensus <- function(x) {
+  stringr::str_remove(x, "^\\d+-")
+}
+bind_df <- bind_rows(sea_disc_out, sea_known) %>% 
+   mutate(CONSENSUS = clean_consensus(CONSENSUS)) %>%
+  dplyr::select(DB:ENR_RATIO) %>% 
+  distinct(ID, ALT_ID, ENR_RATIO, .keep_all = TRUE)
+
+
+
+set_data <- xstreme %>% 
+   mutate(CONSENSUS = clean_consensus(CONSENSUS)) %>%
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(bind_df,by = c("ALT_ID", 
+                           "ID","CONSENSUS")) %>% 
+  mutate(diff_per=`TP%` -`FP%`)
+
+return(list(
+  sea = bind_df,
+  xstreme = set_data))
+
+}
+
+```
+
+```{r looking at datatables}
+H3K27ac_set2_A<- import_function("H3K27ac_set2_A_400",base_dir = "C:/Users/renee/Other_projects_data/DXR_data/H3K27ac")
+
+H3K27ac_set2_B<- import_function("H3K27ac_set2_B_400",base_dir = "C:/Users/renee/Other_projects_data/DXR_data/H3K27ac")
+H3K27ac_set3_A<- import_function("H3K27ac_set3_A_400",base_dir = "C:/Users/renee/Other_projects_data/DXR_data/H3K27ac")
+H3K27ac_set3_B<- import_function("H3K27ac_set3_B_400",base_dir = "C:/Users/renee/Other_projects_data/DXR_data/H3K27ac")
+
+DT::datatable((H3K27ac_set2_A$xstreme %>% 
+  dplyr::select(RANK,CLUSTER,ID,ALT_ID,EVALUE, CONSENSUS)),
+  rownames = FALSE,
+  caption = htmltools::tags$caption(
+    style = "caption-side: top; text-align: left; font-weight: bold;",
+    "Method 1: Set 2A H3K27ac"
+  ),
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = FALSE,
+    scrollX = TRUE)) 
+
+###Code below for testing issues in the function.  this helped fix the consensus .x .y issue.
+# all(rest_test$xstreme$CONSENSUS.x == rest_test$xstreme$CONSENSUS.y, na.rm = TRUE)
+# 
+# rest_test$xstreme%>%
+#   summarise(
+#     n_total = dplyr::n(),
+#     n_match = sum(CONSENSUS.x == CONSENSUS.y, na.rm = TRUE),
+#     n_diff  = sum(CONSENSUS.x != CONSENSUS.y, na.rm = TRUE)
+#   )
+
+DT::datatable((H3K27ac_set2_B$xstreme %>% 
+  dplyr::select(RANK,CLUSTER,ID,ALT_ID,EVALUE, CONSENSUS)),
+  rownames = FALSE,
+  caption = htmltools::tags$caption(
+    style = "caption-side: top; text-align: left; font-weight: bold;",
+    "Method 1: Set 2B H3K27ac"
+  ),
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = FALSE,
+    scrollX = TRUE)) 
+
+DT::datatable((H3K27ac_set3_A$xstreme %>% 
+  dplyr::select(RANK,CLUSTER,ID,ALT_ID,EVALUE, CONSENSUS)),
+  rownames = FALSE,
+  caption = htmltools::tags$caption(
+    style = "caption-side: top; text-align: left; font-weight: bold;",
+    "Method 1: Set 3A H3K27ac"
+  ),
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = FALSE,
+    scrollX = TRUE)) 
+
+DT::datatable((H3K27ac_set3_B$xstreme %>% 
+  dplyr::select(RANK,CLUSTER,ID,ALT_ID,EVALUE, CONSENSUS)),
+  rownames = FALSE,
+  caption = htmltools::tags$caption(
+    style = "caption-side: top; text-align: left; font-weight: bold;",
+    "Method 1: Set 3B H3K27ac"
+  ),
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = FALSE,
+    scrollX = TRUE)) 
+
+```
+
+```{r visualization plots function}
+
+plot_ENR_RATIO <- function(df, title = NULL, signif.num = 0.05, page = 1){
+  
+  ### getting the name of the data frame for plotting
+ if (is.null(title)) {
+    title <- deparse(substitute(df))
+  }
+
+  ### Getting the data ready
+  plot_df <- df$xstreme %>%
+    dplyr::filter(EVALUE < signif.num) %>%
+    group_by(CLUSTER) %>%
+    slice_min(RANK, with_ties = FALSE) %>%
+    ungroup() %>%
+    mutate(log10Evalue = -log10(EVALUE)) %>%
+    arrange(desc(log10Evalue)) %>%
+    mutate(Facets = cut(
+      log10Evalue,
+      breaks = quantile(log10Evalue, probs = c(0, 0.33, 0.66, 1), na.rm = TRUE),
+      labels = c("Low", "Medium", "High"),
+      include.lowest = TRUE
+    )) %>% 
+    mutate(motif_name_wrapped = stringr::str_wrap(motif_name, width = 10)) %>% 
+     mutate(
+    enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted")
+  )
+  
+  scaler <- max(plot_df$log10Evalue) / max(plot_df$ENR_RATIO)
+  facet_levels <- levels(plot_df$Facets)
+if(page > length(facet_levels)) stop("page number exceeds available facets")
+facet_name <- facet_levels[page]
+  ##plotting the data
+   ggplot(plot_df, aes(y = tidytext::reorder_within(motif_name_wrapped, log10Evalue, Facets))) +
+    geom_col(aes(x = log10Evalue)) +
+    geom_point(aes(x = ENR_RATIO * scaler, color = ENR_RATIO, shape = enr_shape), size = 4)+
+    scale_x_continuous(
+      expand = c(0, .125),
+      sec.axis = sec_axis(~ . / scaler, name = "Enrichment Ratio")
+    ) +
+    scale_color_viridis_c(name = "Enrichment Ratio", option = "plasma") +
+    tidytext::scale_y_reordered() +
+    ggforce::facet_wrap_paginate(
+      ~Facets,
+      ncol = 1,
+      nrow = 1,
+      page = page,
+      scales = "free_y"
+    ) +
+     scale_shape_manual(values = c("Enriched" = 16, "Depleted" = 17))+
+    theme_classic() +
+    ylab("Enriched TF motif") +
+    ggtitle(paste(title, "-", facet_name))
+}
+
+# plot_ENR_filtering <- function(df,
+#                            title = NULL,
+#                            signif.num = 0.05,
+#                            top_n = NULL,       # optional: only show top N motifs per page
+#                            page = 1) {
+# 
+#   # 1️⃣ Capture dataframe name if title not provided
+#   if (is.null(title)) title <- deparse(substitute(df))
+# 
+#   # 2️⃣ Prepare data
+#   plot_df <- df$xstreme %>%
+#     filter(EVALUE < signif.num) %>%
+#     group_by(CLUSTER) %>%
+#     slice_min(RANK, with_ties = FALSE) %>%
+#     ungroup() %>%
+#     mutate(
+#       log10Evalue = -log10(EVALUE)
+#     ) %>%
+#     arrange(desc(log10Evalue)) %>%
+#     mutate(
+#       # dynamic facet grouping by quantiles
+#       Facets = cut(
+#         log10Evalue,
+#         breaks = quantile(log10Evalue, probs = c(0, 0.33, 0.66, 1), na.rm = TRUE),
+#         labels = c("Low", "Medium", "High"),
+#         include.lowest = TRUE
+#       )
+#     )
+# 
+#   # 3️⃣ Dynamic scaling for ENR_RATIO
+#   scaler <- max(plot_df$log10Evalue, na.rm = TRUE) / max(plot_df$ENR_RATIO, na.rm = TRUE)
+# 
+#   # 4️⃣ Determine facet for this page
+#   facet_levels <- levels(plot_df$Facets)
+#   if (page > length(facet_levels)) stop("page number exceeds available facets")
+#   facet_name <- facet_levels[page]
+# 
+#   # 5️⃣ Subset data for this page/facet
+#   page_df <- plot_df %>% filter(Facets == facet_name)
+# 
+#   # Optional: keep only top N motifs
+#   if (!is.null(top_n)) {
+#     page_df <- page_df %>% slice_max(log10Evalue, n = top_n)
+#   }
+# 
+#   # 6️⃣ Plot
+#   p <- ggplot(page_df, aes(y = tidytext::reorder_within(motif_name, log10Evalue, Facets))) +
+#     geom_col(aes(x = log10Evalue)) +
+#     geom_point(aes(x = ENR_RATIO * scaler, color = ENR_RATIO), size = 4) +
+#     scale_x_continuous(
+#       expand = c(0, 0.125),
+#       sec.axis = sec_axis(~ . / scaler, name = "Enrichment Ratio")
+#     ) +
+#     scale_color_viridis_c(
+#       name = "Enrichment Ratio",
+#       option = "plasma"
+#     ) +
+#     tidytext::scale_y_reordered() +
+#     ggforce::facet_wrap_paginate(
+#       ~Facets,
+#       ncol = 1,
+#       nrow = 1,
+#       page = page,
+#       scales = "free_y"
+#     ) +
+#     theme_classic() +
+#     ylab("Enriched TF motif") +
+#     ggtitle(paste(title, "-", facet_name))
+# 
+#   return(p)
+# }
+
+
+
+```
+
+```{r}
+plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.5, page = 3)
+plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.5, page = 2)
+plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.5, page = 1)
+
+plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.5, page = 3)
+plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.5, page = 2)
+plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.5, page = 1)
+```
+now for plotting Set 3 A and B
+
+```{r plotting set3}
+plot_ENR_RATIO(H3K27ac_set3_A, signif.num = 0.5, page = 3)
+plot_ENR_RATIO(H3K27ac_set3_A, signif.num = 0.5, page = 2)
+plot_ENR_RATIO(H3K27ac_set3_A, signif.num = 0.5, page = 1)
+
+plot_ENR_RATIO(H3K27ac_set3_B, signif.num = 0.5, page = 3)
+plot_ENR_RATIO(H3K27ac_set3_B, signif.num = 0.5, page = 2)
+plot_ENR_RATIO(H3K27ac_set3_B, signif.num = 0.5, page = 1)
+```
 
 
 ### Summit calls method 2  
