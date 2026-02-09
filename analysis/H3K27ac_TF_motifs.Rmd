@@ -701,26 +701,26 @@ facet_name <- facet_levels[page]
 ```
 
 ```{r}
-plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.5, page = 3)
-plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.5, page = 2)
-plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.5, page = 1)
+plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.05, page = 3)
+plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.05, page = 2)
+plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.05, page = 1)
 
-plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.5, page = 3)
-plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.5, page = 2)
-plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.5, page = 1)
+plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 3)
+plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 2)
+plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 1)
 
 # plot_ENR_filtering(H3K27ac_set2_A,page = 1)
 ```
 now for plotting Set 3 A and B
 
 ```{r plotting set3}
-plot_ENR_RATIO(H3K27ac_set3_A, signif.num = 0.5, page = 3)
-plot_ENR_RATIO(H3K27ac_set3_A, signif.num = 0.5, page = 2)
-plot_ENR_RATIO(H3K27ac_set3_A, signif.num = 0.5, page = 1)
+plot_ENR_RATIO(H3K27ac_set3_A, signif.num = 0.05, page = 3)
+plot_ENR_RATIO(H3K27ac_set3_A, signif.num = 0.05, page = 2)
+plot_ENR_RATIO(H3K27ac_set3_A, signif.num = 0.05, page = 1)
 
-plot_ENR_RATIO(H3K27ac_set3_B, signif.num = 0.5, page = 3)
-plot_ENR_RATIO(H3K27ac_set3_B, signif.num = 0.5, page = 2)
-plot_ENR_RATIO(H3K27ac_set3_B, signif.num = 0.5, page = 1)
+plot_ENR_RATIO(H3K27ac_set3_B, signif.num = 0.05, page = 3)
+plot_ENR_RATIO(H3K27ac_set3_B, signif.num = 0.05, page = 2)
+plot_ENR_RATIO(H3K27ac_set3_B, signif.num = 0.05, page = 1)
 ```
 
 
