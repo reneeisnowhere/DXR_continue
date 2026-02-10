@@ -42,7 +42,7 @@ library(smplot2)
 adding in data files.
 
 The current analysis should be RNA DEGs and ROIs by set expression levels.
-more steps will include viewing the association of DEGs with enrichment/depletion of ROIs containing TEs by class/familiy with a look at age.
+more steps will include viewing the association of DEGs with enrichment/depletion of ROIs containing TEs by class/family with a look at age.
 ### Data loading  
 
 
@@ -358,6 +358,7 @@ getting LFC of Peakids assigned to geneIds
 
 ### LFC_looking
 
+The first plot is all ROI-genes regardless of cluster status or TE relationship:
 ```{r}
 
 long_H3K27ac_set_case_lfc <- dplyr::bind_rows(H3K27ac_set_case_lfc, .id = "set_case")
@@ -372,6 +373,55 @@ LFC_joined_peakid_geneid <- long_H3K27ac_set_case_lfc %>%
   left_join(RNA_lfc_entrez_id, by=c("geneId"="Entrez_ID"))
 
 
+H3K27ac_full_Peakid_anno <- H3K27ac_anno_ROIs$all_H3K27ac %>% 
+  as.data.frame() %>% 
+  dplyr::select(Peakid, geneId, distanceToTSS) %>% 
+  left_join(., long_H3K27ac_set_case_lfc, by=c("Peakid" = "Peakid")) %>% 
+  mutate(geneId=as.numeric(geneId)) %>%
+  left_join(RNA_lfc_entrez_id, by=c("geneId"="Entrez_ID"))
+
+ggplot(H3K27ac_full_Peakid_anno,
+    aes(x = H3K27ac_24T, y = RNA_LFC_24T, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = "black") +
+    sm_statCorr(corr_method = "spearman") +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+    labs(
+      x = paste("H3K27ac_24T logFC"),
+      y = paste("RNA_LFC_24T logFC"),
+      title = paste("All ROI LFC with each RNA LFC 24T")) +
+    theme_classic()
+
+ggplot(H3K27ac_full_Peakid_anno,
+    aes(x = H3K27ac_24R, y = RNA_LFC_24R, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = "black") +
+    sm_statCorr(corr_method = "spearman") +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+    labs(
+      x = paste("H3K27ac_24T logFC"),
+      y = paste("RNA_LFC_24T logFC"),
+      title = paste("All ROI LFC with each RNA LFC 24R")) +
+    theme_classic()
+
+
+ggplot(H3K27ac_full_Peakid_anno,
+    aes(x = H3K27ac_144R, y = RNA_LFC_144R, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = "black") +
+    sm_statCorr(corr_method = "spearman") +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+    labs(
+      x = paste("H3K27ac_24T logFC"),
+      y = paste("RNA_LFC_24T logFC"),
+      title = paste("All ROI LFC with each RNA LFC 144R")) +
+    theme_classic()
 
 
 
@@ -406,9 +456,73 @@ plot_LFC_scatter <- function(df,
     ) +
     theme_classic()
 }
+
+
+plot_LFC_boxplot <- function(df,
+                             col_one = "H3K27ac_24T",
+                             col_two = "RNA_LFC_24T",
+                             cluster_filter = NULL,
+                             peakid_filter = NULL,
+                             lfc_cutoff = 1,
+                             title = NULL) {
+
+  plot_df <- df
+
+  # optional filters
+  if (!is.null(cluster_filter)) {
+    plot_df <- plot_df %>% dplyr::filter(cluster %in% cluster_filter)
+  }
+
+  if (!is.null(peakid_filter)) {
+    plot_df <- plot_df %>% dplyr::filter(Peakid %in% peakid_filter)
+  }
+
+  # bin based on dynamic column
+  plot_df <- plot_df %>%
+    dplyr::mutate(
+      LFC_bin = dplyr::case_when(
+        .data[[col_one]] <= -lfc_cutoff ~ "Loss",
+        .data[[col_one]] >=  lfc_cutoff ~ "Gain",
+        TRUE ~ "Neutral"
+      ),
+      LFC_bin = factor(LFC_bin, levels = c("Loss", "Neutral", "Gain"))
+    )
+
+  # default title
+  if (is.null(title)) {
+    title <- paste(
+      col_two, "by", col_one,
+      if (!is.null(cluster_filter)) paste("-", paste(cluster_filter, collapse = ", "))
+    )
+  }
+
+  ggplot(plot_df,
+         aes(x = LFC_bin,
+             y = .data[[col_two]],
+             fill = LFC_bin)) +
+
+    geom_boxplot(outlier.shape = NA, alpha = 0.8) +
+    geom_jitter(width = 0.15, alpha = 0.15, size = 0.7) +
+
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+
+    labs(
+      x = paste0(col_one, " (binned)"),
+      y = col_two,
+      title = title
+    ) +
+
+    ggpubr::stat_compare_means(
+      comparisons = list(c("Loss", "Gain")),
+      method = "wilcox.test"
+    ) +
+
+    theme_classic() +
+    theme(legend.position = "none")
+}
 ```
 
-
+  Now to look at LFC by summits that cross an LTR
 ```{r time to time LFC, Set1}
 
 plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_1",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")
@@ -416,6 +530,21 @@ plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_1",x_var = H3K27ac
 plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_1",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")
 
 plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_1",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")
+
+
+
+
+plot_LFC_boxplot(
+  LFC_joined_peakid_geneid,col_one = "H3K27ac_24T", col_two="RNA_LFC_24T",
+  cluster_filter = "Set_1")
+
+plot_LFC_boxplot(
+  LFC_joined_peakid_geneid,col_one = "H3K27ac_24R", col_two="RNA_LFC_24R",
+  cluster_filter = "Set_1")
+  
+  plot_LFC_boxplot(
+  LFC_joined_peakid_geneid,col_one = "H3K27ac_144R", col_two="RNA_LFC_144R",
+  cluster_filter = "Set_1")
 
 ```
 
@@ -442,13 +571,26 @@ plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = "Set_3",x_var = H3K27ac
 
 maybe closer to TSS will be helpful?
 
-
+filtering to only those within 2kb of a TSS for all ROIs, then by Set 1 ROIs only (whose summit crosses an LTR)
 ```{r 2kb set1}
 
 promotor_region_LTR_peakid <- summit_LTR_ROIs %>% 
   dplyr::filter(distanceToTSS>-2000 & distanceToTSS <2000)
 
 H3K27ac_2kb_LTR <- LFC_joined_peakid_geneid %>% dplyr::filter(Peakid %in% promotor_region_LTR_peakid$Peakid)
+
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_24T", col_two="RNA_LFC_24T"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_24R", col_two="RNA_LFC_24R"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_144R", col_two="RNA_LFC_144R"
+)
+
 
 
 plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_1",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")+labs(caption="within 2kb of TSS")
@@ -458,8 +600,24 @@ plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_1",x_var = H3K27ac_24R, y_v
 plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_1",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="within 2kb of TSS")
 
 
-```
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_24T", col_two="RNA_LFC_24T",
+  cluster_filter = "Set_1"
+)
 
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_24R", col_two="RNA_LFC_24R",
+  cluster_filter = "Set_1"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_144R", col_two="RNA_LFC_144R",
+  cluster_filter = "Set_1"
+)
+
+
+```
+now For set 2
 ```{r 2kb set2}
 
 
@@ -468,10 +626,24 @@ plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_24T, y_v
 plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")+labs(caption="within 2kb of TSS")
 
 plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="within 2kb of TSS")
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_24T", col_two="RNA_LFC_24T",
+  cluster_filter = "Set_2"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_24R", col_two="RNA_LFC_24R",
+  cluster_filter = "Set_2"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_144R", col_two="RNA_LFC_144R",
+  cluster_filter = "Set_2"
+)
 
 
 ```
-
+now for set 3.
 ```{r 2kb set3}
 
 plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")+labs(caption="within 2kb of TSS")
@@ -481,34 +653,111 @@ plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_24R, y_v
 plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="within 2kb of TSS")
 
 
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_24T", col_two="RNA_LFC_24T",
+  cluster_filter = "Set_3"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_24R", col_two="RNA_LFC_24R",
+  cluster_filter = "Set_3"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = "H3K27ac_144R", col_two="RNA_LFC_144R",
+  cluster_filter = "Set_3"
+)
+
+
 ```
 
 
 
 
 
-```{r}
-LFC_joined_peakid_geneid
-```
-
-
-
-now I want to see about the opposite, so regions > 2kb but less than 20KB?
-```{r 20kb to 2kb LTR set 3}
- between20kb_2kb_summit_LTR_peakids <- summit_LTR_ROIs %>%
+now I want to see about further away from TSS, so regions > 2kb but less than 20KB from the TSS of assigned gene. (Still summits crossing an LTR)
+```{r 20kb to 2kb LTR no set}
+between20kb_2kb_summit_LTR_peakids <- summit_LTR_ROIs %>%
   dplyr::mutate(abs_dist=abs(distanceToTSS)) %>% 
   dplyr::filter(abs_dist>2000 & abs_dist <20000) %>% 
   distinct(Peakid,geneId)
 
 H3K27ac_20kb_2kb_LTR <- LFC_joined_peakid_geneid %>% dplyr::filter(Peakid %in% between20kb_2kb_summit_LTR_peakids$Peakid)
 
+ggplot(H3K27ac_20kb_2kb_LTR,
+    aes(x = H3K27ac_24T, y = RNA_LFC_24T, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = "black") +
+    sm_statCorr(corr_method = "spearman") +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+    labs(
+      x = paste("H3K27ac_24T logFC"),
+      y = paste("RNA_LFC_24T logFC"),
+      title = paste("ROI_summits overlapping LTR with each RNA LFC 24T\n20kb>x> 2kb of TSS 24T")) +
+    theme_classic()
+
+ggplot(H3K27ac_20kb_2kb_LTR,
+    aes(x = H3K27ac_24R, y = RNA_LFC_24R, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = "black") +
+    sm_statCorr(corr_method = "spearman") +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+    labs(
+      x = paste("H3K27ac_24R logFC"),
+      y = paste("RNA_LFC_24R logFC"),
+     title = paste("ROI_summits overlapping LTR with each RNA LFC 24T\n20kb>x> 2kb of TSS 24R")) +
+    theme_classic()
 
 
+ggplot(H3K27ac_20kb_2kb_LTR,
+    aes(x = H3K27ac_144R, y = RNA_LFC_144R, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = "black") +
+    sm_statCorr(corr_method = "spearman") +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+    labs(
+      x = paste("H3K27ac_144R logFC"),
+      y = paste("RNA_LFC_144R logFC"),
+     title = paste("ROI_summits overlapping LTR with each RNA LFC 24T\n20kb>x> 2kb of TSS 144R")) +
+    theme_classic()
+
+
+
+
+
+```
+
+
+```{r 20kb to 2kb LTR set 3}
 plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = "24T")+labs(caption="20kb>x> 2kb of TSS")
 
 plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")+labs(caption="20kb>x> 2kb of TSS")
 
 plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="20kb>x> 2kb of TSS")
+
+
+
+plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = "H3K27ac_24T", col_two="RNA_LFC_24T",
+  cluster_filter = "Set_3"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = "H3K27ac_24R", col_two="RNA_LFC_24R",
+  cluster_filter = "Set_3"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = "H3K27ac_144R", col_two="RNA_LFC_144R",
+  cluster_filter = "Set_3"
+)
+
 ```
 
 
@@ -519,6 +768,23 @@ plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_3",x_var = H3K27ac_144
 plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = "24R")+labs(caption="20kb>x> 2kb of TSS")
 
 plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = "Set_2",x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = "144R")+labs(caption="20kb>x> 2kb of TSS")
+
+
+
+plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = "H3K27ac_24T", col_two="RNA_LFC_24T",
+  cluster_filter = "Set_2"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = "H3K27ac_24R", col_two="RNA_LFC_24R",
+  cluster_filter = "Set_2"
+)
+
+plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = "H3K27ac_144R", col_two="RNA_LFC_144R",
+  cluster_filter = "Set_2"
+)
 ```
 
 ```{r 20kb to 2kb LTR set 1}
