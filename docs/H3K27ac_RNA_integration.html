@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-02-09" />
+<meta name="date" content="2026-02-10" />
 
 <title>RNA and H3K27ac</title>
 
@@ -374,7 +374,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">RNA and H3K27ac</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-02-09</h4>
+<h4 class="date">2026-02-10</h4>
 
 </div>
 
@@ -403,7 +403,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-09
+<strong>Last updated:</strong> 2026-02-10
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree3024988f33dc89e8503edc96776ffd61b6f16c04targetblank3024988a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree8d84fe4f16539e457c754edca009045f78801959targetblank8d84fe4a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/3024988f33dc89e8503edc96776ffd61b6f16c04" target="_blank">3024988</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/8d84fe4f16539e457c754edca009045f78801959" target="_blank">8d84fe4</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree3024988f33dc89e8503edc96776ffd61b6f16c04targetblank3024988a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree8d84fe4f16539e457c754edca009045f78801959targetblank8d84fe4a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/3024988f33dc89e8503edc96776ffd61b6f16c04" target="_blank">3024988</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/8d84fe4f16539e457c754edca009045f78801959" target="_blank">8d84fe4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -652,6 +652,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8d84fe4f16539e457c754edca009045f78801959/analysis/H3K27ac_RNA_integration.Rmd" target="_blank">8d84fe4</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-10
+</td>
+<td>
+updates
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/H3K27ac_RNA_integration.html" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/3024988f33dc89e8503edc96776ffd61b6f16c04/analysis/H3K27ac_RNA_integration.Rmd" target="_blank">3024988</a>
 </td>
 <td>
@@ -730,7 +764,7 @@ library(smplot2)</code></pre>
 <p>adding in data files.</p>
 <p>The current analysis should be RNA DEGs and ROIs by set expression
 levels. more steps will include viewing the association of DEGs with
-enrichment/depletion of ROIs containing TEs by class/familiy with a look
+enrichment/depletion of ROIs containing TEs by class/family with a look
 at age. ### Data loading</p>
 <pre class="r"><code>###Loading all ROIs, already out by Set and combined
 H3K27ac_anno_ROIs &lt;- readRDS(&quot;data/motif_lists/H3K27ac_annotated_peaks.RDS&quot;)
@@ -972,8 +1006,45 @@ odds ratio
   ggtitle(&quot;Proportion of Chronic and Actute ROIs by set using assigned gene&quot;)+
    ylab(&quot;Proportion&quot;)+
   xlab(&quot;Sets&quot;)</code></pre>
-<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" />
-Now to breakdown by geneIDs and not ROIs</p>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-3-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Now to breakdown by geneIDs and not ROIs</p>
 <pre class="r"><code>gene_df &lt;- Joined_clusters %&gt;% 
   mutate(geneID=as.character(geneId)) %&gt;% 
   group_by(geneId, ROI_cluster) %&gt;% 
@@ -1078,6 +1149,43 @@ RNA_full_toptable %&gt;%
   # geom_line(alpha=0.3, aes(color=Cluster))+
   ggtitle(&quot;LFC of genes in Set 1 &quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-5-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>RNA_full_toptable %&gt;% 
   dplyr::filter(Entrez_ID %in% Set_2_nAcute$geneId) %&gt;% 
   dplyr::filter(adj.P.Val&lt;0.05) %&gt;% 
@@ -1088,6 +1196,43 @@ RNA_full_toptable %&gt;%
   # geom_line(alpha=0.3, aes(color=Cluster))+
   ggtitle(&quot;LFC of genes in Set 2 &quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
+Past versions of unnamed-chunk-5-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-5-2.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>RNA_full_toptable %&gt;% 
   dplyr::filter(Entrez_ID %in% Set_3_nAcute$geneId) %&gt;% 
   dplyr::filter(adj.P.Val&lt;0.05) %&gt;% 
@@ -1098,6 +1243,43 @@ RNA_full_toptable %&gt;%
   # geom_line(alpha=0.3, aes(color=Cluster))+
   ggtitle(&quot;LFC of genes in Set 3 &quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-3">
+Past versions of unnamed-chunk-5-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-5-3.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K27ac_anno_df &lt;- H3K27ac_anno_ROIs$all_H3K27ac %&gt;% as.data.frame()
 
 H3K27ac_toptable_list %&gt;% 
@@ -21128,6 +21310,8 @@ summit_LTR_ROIs %&gt;% distinct(geneId)</code></pre>
 </div>
 <div id="lfc_looking" class="section level3">
 <h3>LFC_looking</h3>
+<p>The first plot is all ROI-genes regardless of cluster status or TE
+relationship:</p>
 <pre class="r"><code>long_H3K27ac_set_case_lfc &lt;- dplyr::bind_rows(H3K27ac_set_case_lfc, .id = &quot;set_case&quot;)
 RNA_lfc_entrez_id &lt;- RNA_full_toptable %&gt;% 
   dplyr::select(Entrez_ID,logFC,timepoint) %&gt;% 
@@ -21137,7 +21321,58 @@ LFC_joined_peakid_geneid &lt;- long_H3K27ac_set_case_lfc %&gt;%
   dplyr::filter(Peakid %in% just_summit_LTR_ROI_peakids$Peakid) %&gt;%
   left_join(just_summit_LTR_ROI_peakids) %&gt;% 
    mutate(geneId=as.numeric(geneId)) %&gt;%
-  left_join(RNA_lfc_entrez_id, by=c(&quot;geneId&quot;=&quot;Entrez_ID&quot;))</code></pre>
+  left_join(RNA_lfc_entrez_id, by=c(&quot;geneId&quot;=&quot;Entrez_ID&quot;))
+
+
+H3K27ac_full_Peakid_anno &lt;- H3K27ac_anno_ROIs$all_H3K27ac %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::select(Peakid, geneId, distanceToTSS) %&gt;% 
+  left_join(., long_H3K27ac_set_case_lfc, by=c(&quot;Peakid&quot; = &quot;Peakid&quot;)) %&gt;% 
+  mutate(geneId=as.numeric(geneId)) %&gt;%
+  left_join(RNA_lfc_entrez_id, by=c(&quot;geneId&quot;=&quot;Entrez_ID&quot;))
+
+ggplot(H3K27ac_full_Peakid_anno,
+    aes(x = H3K27ac_24T, y = RNA_LFC_24T, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = &quot;black&quot;) +
+    sm_statCorr(corr_method = &quot;spearman&quot;) +
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    labs(
+      x = paste(&quot;H3K27ac_24T logFC&quot;),
+      y = paste(&quot;RNA_LFC_24T logFC&quot;),
+      title = paste(&quot;All ROI LFC with each RNA LFC 24T&quot;)) +
+    theme_classic()</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(H3K27ac_full_Peakid_anno,
+    aes(x = H3K27ac_24R, y = RNA_LFC_24R, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = &quot;black&quot;) +
+    sm_statCorr(corr_method = &quot;spearman&quot;) +
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    labs(
+      x = paste(&quot;H3K27ac_24T logFC&quot;),
+      y = paste(&quot;RNA_LFC_24T logFC&quot;),
+      title = paste(&quot;All ROI LFC with each RNA LFC 24R&quot;)) +
+    theme_classic()</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(H3K27ac_full_Peakid_anno,
+    aes(x = H3K27ac_144R, y = RNA_LFC_144R, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = &quot;black&quot;) +
+    sm_statCorr(corr_method = &quot;spearman&quot;) +
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    labs(
+      x = paste(&quot;H3K27ac_24T logFC&quot;),
+      y = paste(&quot;RNA_LFC_24T logFC&quot;),
+      title = paste(&quot;All ROI LFC with each RNA LFC 144R&quot;)) +
+    theme_classic()</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot_LFC_scatter &lt;- function(df,
                              cluster_name,
                              x_var = H3K27ac_24T,
@@ -21165,95 +21400,1286 @@ LFC_joined_peakid_geneid &lt;- long_H3K27ac_set_case_lfc %&gt;%
       )
     ) +
     theme_classic()
+}
+
+
+plot_LFC_boxplot &lt;- function(df,
+                             col_one = &quot;H3K27ac_24T&quot;,
+                             col_two = &quot;RNA_LFC_24T&quot;,
+                             cluster_filter = NULL,
+                             peakid_filter = NULL,
+                             lfc_cutoff = 1,
+                             title = NULL) {
+
+  plot_df &lt;- df
+
+  # optional filters
+  if (!is.null(cluster_filter)) {
+    plot_df &lt;- plot_df %&gt;% dplyr::filter(cluster %in% cluster_filter)
+  }
+
+  if (!is.null(peakid_filter)) {
+    plot_df &lt;- plot_df %&gt;% dplyr::filter(Peakid %in% peakid_filter)
+  }
+
+  # bin based on dynamic column
+  plot_df &lt;- plot_df %&gt;%
+    dplyr::mutate(
+      LFC_bin = dplyr::case_when(
+        .data[[col_one]] &lt;= -lfc_cutoff ~ &quot;Loss&quot;,
+        .data[[col_one]] &gt;=  lfc_cutoff ~ &quot;Gain&quot;,
+        TRUE ~ &quot;Neutral&quot;
+      ),
+      LFC_bin = factor(LFC_bin, levels = c(&quot;Loss&quot;, &quot;Neutral&quot;, &quot;Gain&quot;))
+    )
+
+  # default title
+  if (is.null(title)) {
+    title &lt;- paste(
+      col_two, &quot;by&quot;, col_one,
+      if (!is.null(cluster_filter)) paste(&quot;-&quot;, paste(cluster_filter, collapse = &quot;, &quot;))
+    )
+  }
+
+  ggplot(plot_df,
+         aes(x = LFC_bin,
+             y = .data[[col_two]],
+             fill = LFC_bin)) +
+
+    geom_boxplot(outlier.shape = NA, alpha = 0.8) +
+    geom_jitter(width = 0.15, alpha = 0.15, size = 0.7) +
+
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+
+    labs(
+      x = paste0(col_one, &quot; (binned)&quot;),
+      y = col_two,
+      title = title
+    ) +
+
+    ggpubr::stat_compare_means(
+      comparisons = list(c(&quot;Loss&quot;, &quot;Gain&quot;)),
+      method = &quot;wilcox.test&quot;
+    ) +
+
+    theme_classic() +
+    theme(legend.position = &quot;none&quot;)
 }</code></pre>
+<p>Now to look at LFC by summits that cross an LTR</p>
 <pre class="r"><code>plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-time-to-time-LFC,-Set1-1">
+Past versions of "time to time LFC, Set1-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-time-to-time-LFC,-Set1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/time to time LFC, Set1-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = &quot;24R&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set1-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-time-to-time-LFC,-Set1-2">
+Past versions of "time to time LFC, Set1-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-time-to-time-LFC,-Set1-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/time to time LFC, Set1-2.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = &quot;144R&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set1-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-time-to-time-LFC,-Set1-3">
+Past versions of "time to time LFC, Set1-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-time-to-time-LFC,-Set1-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/time to time LFC, Set1-3.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot_LFC_boxplot(
+  LFC_joined_peakid_geneid,col_one = &quot;H3K27ac_24T&quot;, col_two=&quot;RNA_LFC_24T&quot;,
+  cluster_filter = &quot;Set_1&quot;)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set1-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  LFC_joined_peakid_geneid,col_one = &quot;H3K27ac_24R&quot;, col_two=&quot;RNA_LFC_24R&quot;,
+  cluster_filter = &quot;Set_1&quot;)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set1-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>  plot_LFC_boxplot(
+  LFC_joined_peakid_geneid,col_one = &quot;H3K27ac_144R&quot;, col_two=&quot;RNA_LFC_144R&quot;,
+  cluster_filter = &quot;Set_1&quot;)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set1-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = &quot;Set_2&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-time-to-time-LFC,-Set2-1">
+Past versions of "time to time LFC, Set2-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-time-to-time-LFC,-Set2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/time to time LFC, Set2-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = &quot;Set_2&quot;,x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = &quot;24R&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-time-to-time-LFC,-Set2-2">
+Past versions of "time to time LFC, Set2-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-time-to-time-LFC,-Set2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/time to time LFC, Set2-2.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = &quot;Set_2&quot;,x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = &quot;144R&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set2-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-time-to-time-LFC,-Set2-3">
+Past versions of "time to time LFC, Set2-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-time-to-time-LFC,-Set2-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/time to time LFC, Set2-3.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = &quot;Set_3&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-time-to-time-LFC,-Set3-1">
+Past versions of "time to time LFC, Set3-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-time-to-time-LFC,-Set3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/time to time LFC, Set3-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = &quot;Set_3&quot;,x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = &quot;24R&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-time-to-time-LFC,-Set3-2">
+Past versions of "time to time LFC, Set3-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-time-to-time-LFC,-Set3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/time to time LFC, Set3-2.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(LFC_joined_peakid_geneid,cluster_name = &quot;Set_3&quot;,x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = &quot;144R&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/time%20to%20time%20LFC,%20Set3-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-time-to-time-LFC,-Set3-3">
+Past versions of "time to time LFC, Set3-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-time-to-time-LFC,-Set3-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/time to time LFC, Set3-3.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>maybe closer to TSS will be helpful?</p>
+<p>filtering to only those within 2kb of a TSS for all ROIs, then by Set
+1 ROIs only (whose summit crosses an LTR)</p>
 <pre class="r"><code>promotor_region_LTR_peakid &lt;- summit_LTR_ROIs %&gt;% 
   dplyr::filter(distanceToTSS&gt;-2000 &amp; distanceToTSS &lt;2000)
 
 H3K27ac_2kb_LTR &lt;- LFC_joined_peakid_geneid %&gt;% dplyr::filter(Peakid %in% promotor_region_LTR_peakid$Peakid)
 
-
-plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
+plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_24T&quot;, col_two=&quot;RNA_LFC_24T&quot;
+)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set1-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = &quot;24R&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-2kb-set1-1">
+Past versions of "2kb set1-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-2kb-set1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/2kb set1-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_24R&quot;, col_two=&quot;RNA_LFC_24R&quot;
+)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set1-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = &quot;144R&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-2kb-set1-2">
+Past versions of "2kb set1-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-2kb-set1-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/2kb set1-2.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_144R&quot;, col_two=&quot;RNA_LFC_144R&quot;
+)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set1-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-2kb-set1-3">
+Past versions of "2kb set1-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-2kb-set1-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/2kb set1-3.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set1-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = &quot;24R&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set1-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = &quot;144R&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set1-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_24T&quot;, col_two=&quot;RNA_LFC_24T&quot;,
+  cluster_filter = &quot;Set_1&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set1-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_24R&quot;, col_two=&quot;RNA_LFC_24R&quot;,
+  cluster_filter = &quot;Set_1&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set1-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_144R&quot;, col_two=&quot;RNA_LFC_144R&quot;,
+  cluster_filter = &quot;Set_1&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set1-9.png" width="672" style="display: block; margin: auto;" />
+now For set 2</p>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_2&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-2kb-set2-1">
+Past versions of "2kb set2-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-2kb-set2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/2kb set2-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_2&quot;,x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = &quot;24R&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-2kb-set2-2">
+Past versions of "2kb set2-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-2kb-set2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/2kb set2-2.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_2&quot;,x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = &quot;144R&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set2-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-2kb-set2-3">
+Past versions of "2kb set2-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-2kb-set2-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/2kb set2-3.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_24T&quot;, col_two=&quot;RNA_LFC_24T&quot;,
+  cluster_filter = &quot;Set_2&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set2-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_24R&quot;, col_two=&quot;RNA_LFC_24R&quot;,
+  cluster_filter = &quot;Set_2&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set2-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_144R&quot;, col_two=&quot;RNA_LFC_144R&quot;,
+  cluster_filter = &quot;Set_2&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set2-6.png" width="672" style="display: block; margin: auto;" />
+now for set 3.</p>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_3&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-2kb-set3-1">
+Past versions of "2kb set3-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-2kb-set3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/2kb set3-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_3&quot;,x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = &quot;24R&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-2kb-set3-2">
+Past versions of "2kb set3-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-2kb-set3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/2kb set3-2.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_2kb_LTR,cluster_name = &quot;Set_3&quot;,x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = &quot;144R&quot;)+labs(caption=&quot;within 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set3-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>LFC_joined_peakid_geneid</code></pre>
-<pre><code># A tibble: 10,287 × 11
-   Peakid     H3K27ac_24T H3K27ac_24R H3K27ac_144R cluster case  set_case geneId
-   &lt;chr&gt;            &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;
- 1 chr10:982…        2.91       2.20         1.29  &lt;NA&gt;    A     NA_A     1.05e8
- 2 chr6:7136…        2.99       2.59         1.03  &lt;NA&gt;    A     NA_A     4.07e5
- 3 chr18:335…        2.12       2.01         1.04  &lt;NA&gt;    A     NA_A     8.08e4
- 4 chr14:457…        4.76       3.14         2.21  &lt;NA&gt;    A     NA_A     1.05e8
- 5 chr18:772…        3.42       1.80         1.01  &lt;NA&gt;    A     NA_A     1.25e8
- 6 chr7:3328…        4.74       3.17         2.33  &lt;NA&gt;    A     NA_A     2.72e4
- 7 chr3:7504…        4.60       2.33         2.26  &lt;NA&gt;    A     NA_A     1.01e8
- 8 chr13:839…        3.89       2.67         2.06  &lt;NA&gt;    A     NA_A     1.15e5
- 9 chr17:575…        1.40       0.748        0.441 &lt;NA&gt;    A     NA_A     1.02e8
-10 chr9:8202…        4.45       3.67         2.45  &lt;NA&gt;    A     NA_A     3.90e5
-# ℹ 10,277 more rows
-# ℹ 3 more variables: RNA_LFC_24T &lt;dbl&gt;, RNA_LFC_24R &lt;dbl&gt;, RNA_LFC_144R &lt;dbl&gt;</code></pre>
-<p>now I want to see about the opposite, so regions &gt; 2kb but less
-than 20KB?</p>
-<pre class="r"><code> between20kb_2kb_summit_LTR_peakids &lt;- summit_LTR_ROIs %&gt;%
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-2kb-set3-3">
+Past versions of "2kb set3-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-2kb-set3-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/2kb set3-3.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_24T&quot;, col_two=&quot;RNA_LFC_24T&quot;,
+  cluster_filter = &quot;Set_3&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set3-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_24R&quot;, col_two=&quot;RNA_LFC_24R&quot;,
+  cluster_filter = &quot;Set_3&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set3-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_2kb_LTR,col_one = &quot;H3K27ac_144R&quot;, col_two=&quot;RNA_LFC_144R&quot;,
+  cluster_filter = &quot;Set_3&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/2kb%20set3-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>now I want to see about further away from TSS, so regions &gt; 2kb
+but less than 20KB from the TSS of assigned gene. (Still summits
+crossing an LTR)</p>
+<pre class="r"><code>between20kb_2kb_summit_LTR_peakids &lt;- summit_LTR_ROIs %&gt;%
   dplyr::mutate(abs_dist=abs(distanceToTSS)) %&gt;% 
   dplyr::filter(abs_dist&gt;2000 &amp; abs_dist &lt;20000) %&gt;% 
   distinct(Peakid,geneId)
 
 H3K27ac_20kb_2kb_LTR &lt;- LFC_joined_peakid_geneid %&gt;% dplyr::filter(Peakid %in% between20kb_2kb_summit_LTR_peakids$Peakid)
 
-
-
-plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = &quot;Set_3&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)+labs(caption=&quot;20kb&gt;x&gt; 2kb of TSS&quot;)</code></pre>
+ggplot(H3K27ac_20kb_2kb_LTR,
+    aes(x = H3K27ac_24T, y = RNA_LFC_24T, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = &quot;black&quot;) +
+    sm_statCorr(corr_method = &quot;spearman&quot;) +
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    labs(
+      x = paste(&quot;H3K27ac_24T logFC&quot;),
+      y = paste(&quot;RNA_LFC_24T logFC&quot;),
+      title = paste(&quot;ROI_summits overlapping LTR with each RNA LFC 24T\n20kb&gt;x&gt; 2kb of TSS 24T&quot;)) +
+    theme_classic()</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20no%20set-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(H3K27ac_20kb_2kb_LTR,
+    aes(x = H3K27ac_24R, y = RNA_LFC_24R, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = &quot;black&quot;) +
+    sm_statCorr(corr_method = &quot;spearman&quot;) +
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    labs(
+      x = paste(&quot;H3K27ac_24R logFC&quot;),
+      y = paste(&quot;RNA_LFC_24R logFC&quot;),
+     title = paste(&quot;ROI_summits overlapping LTR with each RNA LFC 24T\n20kb&gt;x&gt; 2kb of TSS 24R&quot;)) +
+    theme_classic()</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20no%20set-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(H3K27ac_20kb_2kb_LTR,
+    aes(x = H3K27ac_144R, y = RNA_LFC_144R, color = cluster)
+  ) +
+    geom_point(alpha = 0.2, size = 1) +
+    geom_density_2d(color = &quot;black&quot;) +
+    sm_statCorr(corr_method = &quot;spearman&quot;) +
+    geom_hline(yintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    geom_vline(xintercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+    labs(
+      x = paste(&quot;H3K27ac_144R logFC&quot;),
+      y = paste(&quot;RNA_LFC_144R logFC&quot;),
+     title = paste(&quot;ROI_summits overlapping LTR with each RNA LFC 24T\n20kb&gt;x&gt; 2kb of TSS 144R&quot;)) +
+    theme_classic()</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20no%20set-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = &quot;Set_3&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)+labs(caption=&quot;20kb&gt;x&gt; 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%203-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-20kb-to-2kb-LTR-set-3-1">
+Past versions of "20kb to 2kb LTR set 3-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-20kb-to-2kb-LTR-set-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/20kb to 2kb LTR set 3-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = &quot;Set_3&quot;,x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = &quot;24R&quot;)+labs(caption=&quot;20kb&gt;x&gt; 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%203-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-20kb-to-2kb-LTR-set-3-2">
+Past versions of "20kb to 2kb LTR set 3-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-20kb-to-2kb-LTR-set-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/20kb to 2kb LTR set 3-2.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = &quot;Set_3&quot;,x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = &quot;144R&quot;)+labs(caption=&quot;20kb&gt;x&gt; 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%203-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-20kb-to-2kb-LTR-set-3-3">
+Past versions of "20kb to 2kb LTR set 3-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-20kb-to-2kb-LTR-set-3-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/20kb to 2kb LTR set 3-3.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = &quot;H3K27ac_24T&quot;, col_two=&quot;RNA_LFC_24T&quot;,
+  cluster_filter = &quot;Set_3&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%203-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = &quot;H3K27ac_24R&quot;, col_two=&quot;RNA_LFC_24R&quot;,
+  cluster_filter = &quot;Set_3&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%203-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = &quot;H3K27ac_144R&quot;, col_two=&quot;RNA_LFC_144R&quot;,
+  cluster_filter = &quot;Set_3&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%203-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code> plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = &quot;Set_2&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)+labs(caption=&quot;20kb&gt;x&gt; 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%202-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-20kb-to-2kb-LTR-set-2-1">
+Past versions of "20kb to 2kb LTR set 2-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-20kb-to-2kb-LTR-set-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/20kb to 2kb LTR set 2-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = &quot;Set_2&quot;,x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = &quot;24R&quot;)+labs(caption=&quot;20kb&gt;x&gt; 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%202-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-20kb-to-2kb-LTR-set-2-2">
+Past versions of "20kb to 2kb LTR set 2-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-20kb-to-2kb-LTR-set-2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/20kb to 2kb LTR set 2-2.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = &quot;Set_2&quot;,x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = &quot;144R&quot;)+labs(caption=&quot;20kb&gt;x&gt; 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%202-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-20kb-to-2kb-LTR-set-2-3">
+Past versions of "20kb to 2kb LTR set 2-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-20kb-to-2kb-LTR-set-2-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/20kb to 2kb LTR set 2-3.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = &quot;H3K27ac_24T&quot;, col_two=&quot;RNA_LFC_24T&quot;,
+  cluster_filter = &quot;Set_2&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%202-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = &quot;H3K27ac_24R&quot;, col_two=&quot;RNA_LFC_24R&quot;,
+  cluster_filter = &quot;Set_2&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%202-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_LFC_boxplot(
+  H3K27ac_20kb_2kb_LTR,col_one = &quot;H3K27ac_144R&quot;, col_two=&quot;RNA_LFC_144R&quot;,
+  cluster_filter = &quot;Set_2&quot;
+)</code></pre>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%202-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_24T, y_var = RNA_LFC_24T, timepoint = &quot;24T&quot;)+labs(caption=&quot;20kb&gt;x&gt; 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%201-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-20kb-to-2kb-LTR-set-1-1">
+Past versions of "20kb to 2kb LTR set 1-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-20kb-to-2kb-LTR-set-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/20kb to 2kb LTR set 1-1.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_24R, y_var = RNA_LFC_24R, timepoint = &quot;24R&quot;)+labs(caption=&quot;20kb&gt;x&gt; 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%201-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-20kb-to-2kb-LTR-set-1-2">
+Past versions of "20kb to 2kb LTR set 1-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-20kb-to-2kb-LTR-set-1-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/20kb to 2kb LTR set 1-2.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_LFC_scatter(H3K27ac_20kb_2kb_LTR,cluster_name = &quot;Set_1&quot;,x_var = H3K27ac_144R, y_var = RNA_LFC_144R, timepoint = &quot;144R&quot;)+labs(caption=&quot;20kb&gt;x&gt; 2kb of TSS&quot;)</code></pre>
 <p><img src="figure/H3K27ac_RNA_integration.Rmd/20kb%20to%202kb%20LTR%20set%201-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-20kb-to-2kb-LTR-set-1-3">
+Past versions of "20kb to 2kb LTR set 1-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-20kb-to-2kb-LTR-set-1-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0ae6cfc4f9c7e88deed4dd754eab9d4dc54efc08/docs/figure/H3K27ac_RNA_integration.Rmd/20kb to 2kb LTR set 1-3.png" target="_blank">0ae6cfc</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summit_LTR_ROIs &lt;- summit_LTR_ROIs %&gt;% 
   dplyr::mutate(
     TSS_dir = ifelse(distanceToTSS &lt; 0, &quot;Upstream&quot;, &quot;Downstream&quot;)
@@ -21264,7 +22690,7 @@ summit_LTR_ROIs %&gt;%
   ggplot(., aes(x=distanceToTSS, color=cluster))+
   geom_density(linewidth=3)+
   coord_cartesian(xlim=c(-50000,50000))</code></pre>
-<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>summit_LTR_ROIs %&gt;% 
   dplyr::mutate(
     TSS_dir = ifelse(distanceToTSS &lt; 0, &quot;Upstream&quot;, &quot;Downstream&quot;)
@@ -21278,7 +22704,7 @@ summit_LTR_ROIs %&gt;%
   ) +
     # coord_cartesian(ylim = c(-50000, 50000)) +
   theme_classic()</code></pre>
-<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>GeomSplitViolin &lt;- ggplot2::ggproto(
   &quot;GeomSplitViolin&quot;, ggplot2::GeomViolin,
   draw_group = function(self, data, panel_scales, coord) {
@@ -21332,7 +22758,7 @@ geom_split_violin &lt;- function(mapping = NULL, data = NULL, stat = &quot;ydens
   facet_wrap(~TE_type)+
   theme_classic()+
   ggtitle(&quot;getting an idea of TSS distribution&quot;)</code></pre>
-<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27ac_RNA_integration.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
