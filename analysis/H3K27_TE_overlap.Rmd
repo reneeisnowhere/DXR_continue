@@ -1917,23 +1917,31 @@ ggplot(H3K27ac_long_repFamily, aes(x = "", y=percent, fill=repFamily))+
 ```
 
 ```{r rel abundance summit LTR families}
+LTR_genome <-
+repeatmasker_clean %>% 
+ mutate(cluster = "hg38") %>% 
+  dplyr::filter(repFamily %in% c("ERV1", "ERVK","ERVL", "ERVL-MaLR","Gypsy","LTR"))%>%
+  group_by(repFamily) %>% 
+  summarise(n = dplyr::n(), .groups = "drop") %>% 
+  mutate(percent = n / sum(n) * 100) 
+ 
+
 H3K27ac_long_repFamily_summits <-
 H3K27ac_te_summary_summits %>% 
    dplyr::filter(cluster != "not_assigned") %>%
   filter(!is.na(repFamily), repFamily != "") %>%   # TE-positive only
   separate_rows(repFamily, sep = ";") %>% 
   distinct(cluster,Peakid, repFamily) %>% 
+  
   dplyr::filter(repFamily %in% c("ERV1", "ERVK","ERVL", "ERVL-MaLR","Gypsy","LTR")) %>%
   count(cluster,repFamily, name = "n") %>% 
   group_by(cluster) %>% 
   mutate(percent = n / sum(n)*100) %>% 
-  # mutate(
-  #   repFamily = if_else(percent < 2, "Other", repFamily)
-  # ) %>% 
   group_by(cluster,repFamily) %>% 
   summarise(n = sum(n), .groups = "drop") %>% 
   group_by(cluster) %>% 
-  mutate(percent = n / sum(n) * 100)
+  mutate(percent = n / sum(n) * 100) %>% 
+  rbind((LTR_genome %>% mutate(cluster="hg38")))
 
 
 ggplot(H3K27ac_long_repFamily_summits, aes(x = "", y=percent, fill=repFamily))+
