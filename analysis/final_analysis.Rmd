@@ -222,11 +222,12 @@ all_peak_final %>%
 
 ```{r peak ct grouptime 1e3_narrow}
 all_peak_final %>% 
-  ggplot(., aes (x=Timepoint, y = Count, fill = Histone_Mark))+
+   mutate(Timepoint=factor(Timepoint, levels= c("24T","24R","144R"))) %>% 
+  ggplot(., aes (x=Treatment, y = Count, fill = Histone_Mark))+
   geom_boxplot()+
    ylab("Count")+
    theme_classic()+
-  # facet_wrap(~histone)+
+  facet_wrap(~Timepoint)+
   ggtitle("Peak count across histones")
 ```
 
@@ -234,6 +235,19 @@ all_peak_final %>%
 ```{r frip tag}
 questionable_frip = all_peak_final[(all_peak_final$FRiP < 0.2),]
 questionable_frip
+```
+```{r FRip plots}
+
+
+  all_peak_final %>% 
+  mutate(Timepoint=factor(Timepoint, levels= c("24T","24R","144R"))) %>% 
+  ggplot(., aes (x=Treatment, y = FRiP, fill = Histone_Mark))+
+  geom_boxplot()+
+   ylab("Count")+
+   theme_classic()+
+  facet_wrap(~Timepoint)+
+  ggtitle("FRIP by histone")
+
 ```
 
 ### Feature Counts
@@ -286,7 +300,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K27ac_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K27ac with Standard Merging")
+        column_title="Filtered log2cpm H3K27ac")
 ```
 
 ### H3K27me3 Count Analysis
@@ -312,7 +326,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K27me3_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K27me3 with Standard Merging")
+        column_title="Filtered log2cpm H3K27me3")
 ```
 
 ### H3K36me3 Count Analysis
@@ -338,7 +352,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K36me3_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K36me3 with Standard Merging")
+        column_title="Filtered log2cpm H3K36me3")
 ```
 
 ### H3K9me3 Count Analysis
@@ -364,7 +378,7 @@ heatmap_first <- ComplexHeatmap::HeatmapAnnotation(df = annomat)
 
 Heatmap(H3K9me3_merged_cor, 
         top_annotation = heatmap_first,
-        column_title="Unfiltered log2cpm H3K9me3 with Standard Merging")
+        column_title="Filtered log2cpm H3K9me3")
 ```
 
 ### Fragment Analysis
@@ -676,7 +690,8 @@ pca_plot(
   shape_var = "tx",
   text_var = "ind",   # <-- string, not vector
   title = "H3K27ac filtered lcpm PCA"
-)        
+)        +
+  theme_bw()
 ```
 ```{r H3K27ac HeatMap 2, fig.width=14,fig.height=14}
 
@@ -714,7 +729,8 @@ pca_plot(
   shape_var = "tx",
   text_var = "ind",   # <-- string, not vector
   title = "H3K27me3 filtered lcpm PCA"
-)        
+)        +
+  theme_bw()
 ```
 ```{r H3K27me3 HeatMap 2, fig.width=14,fig.height=14}
 
@@ -752,7 +768,8 @@ pca_plot(
   shape_var = "tx",
   text_var = "ind",   # <-- string, not vector
   title = "H3K36me3 filtered lcpm PCA"
-)        
+)        +
+  theme_bw()
 ```
 ```{r H3K36me3 HeatMap 2, fig.width=14,fig.height=14}
 
@@ -790,7 +807,8 @@ pca_plot(
   shape_var = "tx",
   text_var = "ind",   # <-- string, not vector
   title = "H3K9me3 filtered lcpm PCA"
-)        
+)        +
+  theme_bw()
 ```
 
 ```{r H3K9me3 HeatMap 2, fig.width=14,fig.height=14}
