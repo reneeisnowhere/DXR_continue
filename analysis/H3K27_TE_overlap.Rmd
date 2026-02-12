@@ -345,6 +345,77 @@ annotated_H3K27ac_summits <- All_H3K27ac %>%
 ```
 
 
+```{r enrichment across TEs summit version}
+te_cols <- c("TE_status","SINE_status","LINE_status","DNA_status","LTR_status","SVA_status")
+H3K27ac_counts_summits <- map(te_cols, ~ {
+  annotated_H3K27ac_summits %>%
+    group_by(cluster, !!sym(.x)) %>%  # dynamically use column
+    tally() %>%
+    pivot_wider(
+      id_cols = cluster,
+      names_from = !!sym(.x),
+      values_from = n
+    )
+}) %>% set_names(te_cols)
+
+cluster_pairs_3 <- list(
+  c("Set_2","Set_1"),
+  c("Set_3","Set_1")
+  # add more pairs if needed or
+)
+# cluster_pairs_2 <- list(
+#   c("Set_2","Set_1"))
+
+H3K27ac_counts_summits_long <- map2_dfr(
+  H3K27ac_counts_summits,      # the named list of wide tables
+  names(H3K27ac_counts_summits), # names of TE columns
+  ~ .x %>%
+    pivot_longer(
+      cols = -cluster,       # everything except 'cluster'
+      names_to = "status",   # new column for TE status (e.g., TE / wnot_TE)
+      values_to = "count"
+    ) %>%
+    mutate(TE_type = .y)      # add TE_type column based on list element name
+)
+H3K27ac_counts_summits_long <-
+  H3K27ac_counts_summits_long %>% 
+group_by(TE_type) %>%
+  tidyr::complete(cluster, status, fill = list(count = 0)) %>%
+  ungroup()
+H3K27ac_count_summits_long_fixed <- 
+H3K27ac_counts_summits_long %>% 
+  mutate(status=case_when(str_detect(status,"^wnot_")~"not_TE",
+                          TRUE~"TE"))
+```
+
+
+```{r enrichment across TEs summit version plot}
+TE_types <- te_cols
+
+
+H3K27ac_summit_results_1bp <- map_dfr(TE_types, function(te){
+  map_dfr(cluster_pairs_3, function(pair){
+    test_pair_TE_generic(H3K27ac_count_summits_long_fixed, te, cluster1 = pair[2], cluster2 = pair[1])
+  })
+})
+H3K27ac_summit_results_1bp%>% 
+  mutate(TE_label=str_remove(TE_type,"_status$")) %>% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(p_value),label = TE_label)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE class enrichment at ROIs\nH3K27ac summits only"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
+```
+
+
+
 
 
 
