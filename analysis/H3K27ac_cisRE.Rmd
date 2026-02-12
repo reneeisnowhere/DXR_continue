@@ -160,10 +160,13 @@ H3K27ac_cre_anno <- H3K27ac_anno_ROIs$all_H3K27ac %>% as.data.frame() %>%
          cCRE_ID=if_else(is.na(cCRE_ID),"NA",cCRE_ID),
          cCRE_class=if_else(is.na(cCRE_class),"NA",cCRE_class))
 
-H3K27ac_cre_counts <- H3K27ac_cre_anno %>% 
+H3K27ac_cre_anno_full<- H3K27ac_cre_anno %>% rbind(H3K27ac_cre_anno %>% mutate(cluster="all_ROIs"))
+
+H3K27ac_cre_counts <- H3K27ac_cre_anno_full %>% 
   count(cluster, cCRE_class) %>% 
   group_by(cluster) %>% 
-  mutate(percent= n/sum(n))
+  mutate(percent= n/sum(n)) %>% 
+  dplyr::filter(cluster != "not_assigned")
 
  ggplot(H3K27ac_cre_counts, aes(x = cluster, y = percent, fill = cCRE_class)) +
   geom_col() +
@@ -173,8 +176,8 @@ H3K27ac_cre_counts <- H3K27ac_cre_anno %>%
     x = "Set",
     fill = "cCRE class"
   ) +
-  theme_classic()+
-     ggtitle("Hg38 all cCREs")+scale_fill_cCREs()
+  theme_bw()+
+     ggtitle("H3K27ac ROI summits crossing :hg38 all cCREs ")+scale_fill_cCREs()
    
 ```
 
