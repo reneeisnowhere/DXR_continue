@@ -413,6 +413,64 @@ dplyr::filter(EVALUE<0.05) %>%
 
 
 ```
+```{r}
+plot_topnum_ratio_full <- function(df, title = NULL, signif.num = 0.05,top_num=20){
+  
+  ### getting the name of the data frame for plotting
+ if (is.null(title)) {
+    title <- deparse(substitute(df))
+  }
+
+  ### Getting the data ready
+  plot_df <- df %>%
+    dplyr::filter(EVALUE < signif.num) %>%
+    group_by(CLUSTER) %>%
+    slice_min(RANK, with_ties = FALSE) %>%
+    ungroup() %>%
+    mutate(log10Evalue = -log10(EVALUE)) %>%
+    arrange(desc(log10Evalue)) %>%
+    mutate(motif_name_wrapped = stringr::str_wrap(motif_name, width = 10)) %>% 
+     mutate(
+    enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted")) %>% 
+    slice_head(., n=top_num)
+#   
+  scaler <- max(plot_df$log10Evalue) / max(plot_df$ENR_RATIO)
+
+  ##plotting the data
+   ggplot(plot_df, aes(y = reorder(motif_name_wrapped, log10Evalue))) +
+    geom_col(aes(x = log10Evalue)) +
+    geom_point(aes(x = ENR_RATIO* scaler, color = ENR_RATIO, shape = enr_shape), size = 4)+
+    scale_x_continuous(
+      expand = c(0, .125),
+      sec.axis = sec_axis(~ . / scaler, name = "Enrichment Ratio")
+    ) +
+    scale_color_viridis_c(name = "Enrichment Ratio", option = "plasma") +
+    scale_y_discrete(labels = function(x) stringr::str_wrap(gsub("__.*$", "", x), width = 10)) +
+     scale_shape_manual(values = c("Enriched" = 16, "Depleted" = 17))+
+    theme_classic() +
+    ylab("Enriched TF motif") +
+    ggtitle(paste(title, "-", top_num))
+}
+
+```
+
+```{r functional full plot, fig.width=15}
+plot_A <- plot_topnum_ratio_full(H3K27ac_Set3_data,signif.num = 0.05, top_num = 10)
+
+plot_B <- plot_topnum_ratio_full(H3K27ac_Set2_data,signif.num = 0.05, top_num = 10)
+
+aligned_plots <- cowplot::align_plots(plot_A, plot_B, align = "v", axis = "l")
+
+cowplot::plot_grid(aligned_plots[[1]],
+          aligned_plots[[2]],
+          ncol = 2)
+```
+
+
+
+
+
+
 ### Case and Summit calls method 1, subset A and B
 
 This section looks at the enrichment of A and B cases of each Set.  
@@ -613,89 +671,44 @@ facet_name <- facet_levels[page]
     ylab("Enriched TF motif") +
     ggtitle(paste(title, "-", facet_name))
 }
+########################################################
+plot_topnum_RATIO <- function(df, title = NULL, signif.num = 0.05,top_num=20){
+  
+  ### getting the name of the data frame for plotting
+ if (is.null(title)) {
+    title <- deparse(substitute(df))
+  }
 
-# plot_ENR_filtering <- function(df,
-#                            title = NULL,
-#                            signif.num = 0.05,
-#                            top_n = NULL,       # optional: show only top N motifs per page
-#                            page = 1,
-#                            wrap_width = 10) { # number of characters before wrapping
-# 
-#   # 1️⃣ Capture dataframe name if title not provided
-#   if (is.null(title)) title <- deparse(substitute(df))
-# 
-#   # 2️⃣ Prepare data
-#   plot_df <- df$xstreme %>%
-#     filter(EVALUE < signif.num) %>%
-#     group_by(CLUSTER) %>%
-#     slice_min(RANK, with_ties = FALSE) %>%
-#     ungroup() %>%
-#     mutate(
-#       log10Evalue = -log10(EVALUE),
-#       enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted")
-#     ) %>%
-#     arrange(desc(log10Evalue)) %>%
-#     mutate(
-#       # dynamic facet grouping by quantiles
-#       Facets = cut(
-#         log10Evalue,
-#         breaks = quantile(log10Evalue, probs = c(0, 0.33, 0.66, 1), na.rm = TRUE),
-#         labels = c("Low", "Medium", "High"),
-#         include.lowest = TRUE
-#       )
-#     )
-# 
-#   # 3️⃣ Dynamic scaling for ENR_RATIO
-#   scaler <- max(plot_df$log10Evalue, na.rm = TRUE) / max(plot_df$ENR_RATIO, na.rm = TRUE)
-# 
-#   # 4️⃣ Determine facet for this page
-#   facet_levels <- levels(plot_df$Facets)
-#   if (page > length(facet_levels) || page < 1) {
-#     stop(paste("Invalid page number:", page, 
-#                "Valid pages are 1 to", length(facet_levels)))
-#   }
-#   facet_name <- facet_levels[page]
-# 
-#   # 5️⃣ Subset data for this page/facet
-#   page_df <- plot_df %>% filter(Facets == facet_name)
-# 
-#   # Optional: keep only top N motifs
-#   if (!is.null(top_n)) {
-#     page_df <- page_df %>% slice_max(log10Evalue, n = top_n)
-#   }
-# 
-#   # 6️⃣ Wrap motif names for y-axis
-#   page_df <- page_df %>% 
-#     mutate(motif_name_wrapped = stringr::str_wrap(motif_name, width = wrap_width))
-# 
-#   # 7️⃣ Plot
-#   p <- ggplot(page_df, aes(
-#       y = tidytext::reorder_within(motif_name_wrapped, log10Evalue, Facets)
-#     )) +
-#     geom_col(aes(x = log10Evalue)) +
-#     geom_point(aes(x = ENR_RATIO * scaler, color = ENR_RATIO, shape = enr_shape), size = 4) +
-#     scale_x_continuous(
-#       expand = c(0, 0.125),
-#       sec.axis = sec_axis(~ . / scaler, name = "Enrichment Ratio")
-#     ) +
-#     scale_color_viridis_c(name = "Enrichment Ratio", option = "plasma") +
-#     scale_shape_manual(values = c("Enriched" = 16, "Depleted" = 17)) +
-#     # Use scale_y_discrete to actually show wrapped names
-#     tidytext::scale_y_reordered(labels = function(x) x) +
-#     ggforce::facet_wrap_paginate(
-#       ~Facets,
-#       ncol = 1,
-#       nrow = 1,
-#       page = page,
-#       scales = "free_y"
-#     ) +
-#     theme_classic() +
-#     ylab("Enriched TF motif") +
-#     ggtitle(paste(title, "-", facet_name))
-# 
-#   return(p)
-# }
+  ### Getting the data ready
+  plot_df <- df$xstreme %>%
+    dplyr::filter(EVALUE < signif.num) %>%
+    group_by(CLUSTER) %>%
+    slice_min(RANK, with_ties = FALSE) %>%
+    ungroup() %>%
+    mutate(log10Evalue = -log10(EVALUE)) %>%
+    arrange(desc(log10Evalue)) %>%
+    mutate(motif_name_wrapped = stringr::str_wrap(motif_name, width = 10)) %>% 
+     mutate(
+    enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted")) %>% 
+    slice_head(., n=top_num)
+#   
+  scaler <- max(plot_df$log10Evalue) / max(plot_df$ENR_RATIO)
 
+  ##plotting the data
+   ggplot(plot_df, aes(y = reorder(motif_name, log10Evalue))) +
+    geom_col(aes(x = log10Evalue)) +
+    geom_point(aes(x = ENR_RATIO* scaler, color = ENR_RATIO, shape = enr_shape), size = 4)+
+    scale_x_continuous(
+      expand = c(0, .125),
+      sec.axis = sec_axis(~ . / scaler, name = "Enrichment Ratio")
+    ) +
+    scale_color_viridis_c(name = "Enrichment Ratio", option = "plasma") +
+    scale_y_discrete(labels = function(x) stringr::str_wrap(gsub("__.*$", "", x), width = 10)) +
+     scale_shape_manual(values = c("Enriched" = 16, "Depleted" = 17))+
+    theme_classic() +
+    ylab("Enriched TF motif") +
+    ggtitle(paste(title, "-", top_num))
+}
 
 
 ```
@@ -709,7 +722,9 @@ plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 3)
 plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 2)
 plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 1)
 
-# plot_ENR_filtering(H3K27ac_set2_A,page = 1)
+# plot_topnum_RATIO(H3K27ac_set2_A, signif.num = 0.05, top_num = 10)
+# 
+# plot_topnum_RATIO(H3K27ac_Set3_data,signif.num = 0.05, top_num = 10)
 ```
 now for plotting Set 3 A and B
 
