@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-02-09" />
+<meta name="date" content="2026-02-12" />
 
 <title>H3K27ac TF enrichment</title>
 
@@ -374,7 +374,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">H3K27ac TF enrichment</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-02-09</h4>
+<h4 class="date">2026-02-12</h4>
 
 </div>
 
@@ -403,7 +403,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-09
+<strong>Last updated:</strong> 2026-02-12
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree17e4ca3461fb430f2e48aebcdfcbe9cf5364a5a4targetblank17e4ca3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree861a8a2e3cf0af6a45cb708521774b419e2e39c3targetblank861a8a2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/17e4ca3461fb430f2e48aebcdfcbe9cf5364a5a4" target="_blank">17e4ca3</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/861a8a2e3cf0af6a45cb708521774b419e2e39c3" target="_blank">861a8a2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree17e4ca3461fb430f2e48aebcdfcbe9cf5364a5a4targetblank17e4ca3a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree861a8a2e3cf0af6a45cb708521774b419e2e39c3targetblank861a8a2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/17e4ca3461fb430f2e48aebcdfcbe9cf5364a5a4" target="_blank">17e4ca3</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/861a8a2e3cf0af6a45cb708521774b419e2e39c3" target="_blank">861a8a2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -569,6 +569,7 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
@@ -587,7 +588,6 @@ Untracked files:
     Untracked:  H3K27ac_consensus_clusters_test.bed
     Untracked:  analysis/GREAT_H3K27ac.Rmd
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
-    Untracked:  analysis/H3K27ac_cisRE.Rmd
     Untracked:  analysis/H3K27me3_TE_investigation.Rmd
     Untracked:  analysis/H3K36me3_TE_investigation.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
@@ -597,10 +597,9 @@ Untracked files:
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27ac_RNA_integration.Rmd
+    Modified:   analysis/H3K27ac_TE_investigation.Rmd
     Modified:   analysis/H3K27ac_summit_processing.Rmd
     Modified:   analysis/dual_histone_TE_investigation.Rmd
-    Modified:   analysis/final_analysis.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
 </code></pre>
@@ -646,6 +645,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/861a8a2e3cf0af6a45cb708521774b419e2e39c3/analysis/H3K27ac_TF_motifs.Rmd" target="_blank">861a8a2</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+<td>
+wflow_publish("analysis/H3K27ac_TF_motifs.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/4392e80f732f37ced5c8210022f2a00820d67af4/docs/H3K27ac_TF_motifs.html" target="_blank">4392e80</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1745,6 +1778,53 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>plot_topnum_ratio_full &lt;- function(df, title = NULL, signif.num = 0.05,top_num=20){
+  
+  ### getting the name of the data frame for plotting
+ if (is.null(title)) {
+    title &lt;- deparse(substitute(df))
+  }
+
+  ### Getting the data ready
+  plot_df &lt;- df %&gt;%
+    dplyr::filter(EVALUE &lt; signif.num) %&gt;%
+    group_by(CLUSTER) %&gt;%
+    slice_min(RANK, with_ties = FALSE) %&gt;%
+    ungroup() %&gt;%
+    mutate(log10Evalue = -log10(EVALUE)) %&gt;%
+    arrange(desc(log10Evalue)) %&gt;%
+    mutate(motif_name_wrapped = stringr::str_wrap(motif_name, width = 10)) %&gt;% 
+     mutate(
+    enr_shape = ifelse(ENR_RATIO &gt; 1, &quot;Enriched&quot;, &quot;Depleted&quot;)) %&gt;% 
+    slice_head(., n=top_num)
+#   
+  scaler &lt;- max(plot_df$log10Evalue) / max(plot_df$ENR_RATIO)
+
+  ##plotting the data
+   ggplot(plot_df, aes(y = reorder(motif_name_wrapped, log10Evalue))) +
+    geom_col(aes(x = log10Evalue)) +
+    geom_point(aes(x = ENR_RATIO* scaler, color = ENR_RATIO, shape = enr_shape), size = 4)+
+    scale_x_continuous(
+      expand = c(0, .125),
+      sec.axis = sec_axis(~ . / scaler, name = &quot;Enrichment Ratio&quot;)
+    ) +
+    scale_color_viridis_c(name = &quot;Enrichment Ratio&quot;, option = &quot;plasma&quot;) +
+    scale_y_discrete(labels = function(x) stringr::str_wrap(gsub(&quot;__.*$&quot;, &quot;&quot;, x), width = 10)) +
+     scale_shape_manual(values = c(&quot;Enriched&quot; = 16, &quot;Depleted&quot; = 17))+
+    theme_classic() +
+    ylab(&quot;Enriched TF motif&quot;) +
+    ggtitle(paste(title, &quot;-&quot;, top_num))
+}</code></pre>
+<pre class="r"><code>plot_A &lt;- plot_topnum_ratio_full(H3K27ac_Set3_data,signif.num = 0.05, top_num = 10)
+
+plot_B &lt;- plot_topnum_ratio_full(H3K27ac_Set2_data,signif.num = 0.05, top_num = 10)
+
+aligned_plots &lt;- cowplot::align_plots(plot_A, plot_B, align = &quot;v&quot;, axis = &quot;l&quot;)
+
+cowplot::plot_grid(aligned_plots[[1]],
+          aligned_plots[[2]],
+          ncol = 2)</code></pre>
+<p><img src="figure/H3K27ac_TF_motifs.Rmd/functional%20full%20plot-1.png" width="1440" style="display: block; margin: auto;" /></p>
 </div>
 <div id="case-and-summit-calls-method-1-subset-a-and-b"
 class="section level3">
@@ -1942,96 +2022,52 @@ facet_name &lt;- facet_levels[page]
     ylab(&quot;Enriched TF motif&quot;) +
     ggtitle(paste(title, &quot;-&quot;, facet_name))
 }
+########################################################
+plot_topnum_RATIO &lt;- function(df, title = NULL, signif.num = 0.05,top_num=20){
+  
+  ### getting the name of the data frame for plotting
+ if (is.null(title)) {
+    title &lt;- deparse(substitute(df))
+  }
 
-# plot_ENR_filtering &lt;- function(df,
-#                            title = NULL,
-#                            signif.num = 0.05,
-#                            top_n = NULL,       # optional: show only top N motifs per page
-#                            page = 1,
-#                            wrap_width = 10) { # number of characters before wrapping
-# 
-#   # 1️⃣ Capture dataframe name if title not provided
-#   if (is.null(title)) title &lt;- deparse(substitute(df))
-# 
-#   # 2️⃣ Prepare data
-#   plot_df &lt;- df$xstreme %&gt;%
-#     filter(EVALUE &lt; signif.num) %&gt;%
-#     group_by(CLUSTER) %&gt;%
-#     slice_min(RANK, with_ties = FALSE) %&gt;%
-#     ungroup() %&gt;%
-#     mutate(
-#       log10Evalue = -log10(EVALUE),
-#       enr_shape = ifelse(ENR_RATIO &gt; 1, &quot;Enriched&quot;, &quot;Depleted&quot;)
-#     ) %&gt;%
-#     arrange(desc(log10Evalue)) %&gt;%
-#     mutate(
-#       # dynamic facet grouping by quantiles
-#       Facets = cut(
-#         log10Evalue,
-#         breaks = quantile(log10Evalue, probs = c(0, 0.33, 0.66, 1), na.rm = TRUE),
-#         labels = c(&quot;Low&quot;, &quot;Medium&quot;, &quot;High&quot;),
-#         include.lowest = TRUE
-#       )
-#     )
-# 
-#   # 3️⃣ Dynamic scaling for ENR_RATIO
-#   scaler &lt;- max(plot_df$log10Evalue, na.rm = TRUE) / max(plot_df$ENR_RATIO, na.rm = TRUE)
-# 
-#   # 4️⃣ Determine facet for this page
-#   facet_levels &lt;- levels(plot_df$Facets)
-#   if (page &gt; length(facet_levels) || page &lt; 1) {
-#     stop(paste(&quot;Invalid page number:&quot;, page, 
-#                &quot;Valid pages are 1 to&quot;, length(facet_levels)))
-#   }
-#   facet_name &lt;- facet_levels[page]
-# 
-#   # 5️⃣ Subset data for this page/facet
-#   page_df &lt;- plot_df %&gt;% filter(Facets == facet_name)
-# 
-#   # Optional: keep only top N motifs
-#   if (!is.null(top_n)) {
-#     page_df &lt;- page_df %&gt;% slice_max(log10Evalue, n = top_n)
-#   }
-# 
-#   # 6️⃣ Wrap motif names for y-axis
-#   page_df &lt;- page_df %&gt;% 
-#     mutate(motif_name_wrapped = stringr::str_wrap(motif_name, width = wrap_width))
-# 
-#   # 7️⃣ Plot
-#   p &lt;- ggplot(page_df, aes(
-#       y = tidytext::reorder_within(motif_name_wrapped, log10Evalue, Facets)
-#     )) +
-#     geom_col(aes(x = log10Evalue)) +
-#     geom_point(aes(x = ENR_RATIO * scaler, color = ENR_RATIO, shape = enr_shape), size = 4) +
-#     scale_x_continuous(
-#       expand = c(0, 0.125),
-#       sec.axis = sec_axis(~ . / scaler, name = &quot;Enrichment Ratio&quot;)
-#     ) +
-#     scale_color_viridis_c(name = &quot;Enrichment Ratio&quot;, option = &quot;plasma&quot;) +
-#     scale_shape_manual(values = c(&quot;Enriched&quot; = 16, &quot;Depleted&quot; = 17)) +
-#     # Use scale_y_discrete to actually show wrapped names
-#     tidytext::scale_y_reordered(labels = function(x) x) +
-#     ggforce::facet_wrap_paginate(
-#       ~Facets,
-#       ncol = 1,
-#       nrow = 1,
-#       page = page,
-#       scales = &quot;free_y&quot;
-#     ) +
-#     theme_classic() +
-#     ylab(&quot;Enriched TF motif&quot;) +
-#     ggtitle(paste(title, &quot;-&quot;, facet_name))
-# 
-#   return(p)
-# }</code></pre>
+  ### Getting the data ready
+  plot_df &lt;- df$xstreme %&gt;%
+    dplyr::filter(EVALUE &lt; signif.num) %&gt;%
+    group_by(CLUSTER) %&gt;%
+    slice_min(RANK, with_ties = FALSE) %&gt;%
+    ungroup() %&gt;%
+    mutate(log10Evalue = -log10(EVALUE)) %&gt;%
+    arrange(desc(log10Evalue)) %&gt;%
+    mutate(motif_name_wrapped = stringr::str_wrap(motif_name, width = 10)) %&gt;% 
+     mutate(
+    enr_shape = ifelse(ENR_RATIO &gt; 1, &quot;Enriched&quot;, &quot;Depleted&quot;)) %&gt;% 
+    slice_head(., n=top_num)
+#   
+  scaler &lt;- max(plot_df$log10Evalue) / max(plot_df$ENR_RATIO)
+
+  ##plotting the data
+   ggplot(plot_df, aes(y = reorder(motif_name, log10Evalue))) +
+    geom_col(aes(x = log10Evalue)) +
+    geom_point(aes(x = ENR_RATIO* scaler, color = ENR_RATIO, shape = enr_shape), size = 4)+
+    scale_x_continuous(
+      expand = c(0, .125),
+      sec.axis = sec_axis(~ . / scaler, name = &quot;Enrichment Ratio&quot;)
+    ) +
+    scale_color_viridis_c(name = &quot;Enrichment Ratio&quot;, option = &quot;plasma&quot;) +
+    scale_y_discrete(labels = function(x) stringr::str_wrap(gsub(&quot;__.*$&quot;, &quot;&quot;, x), width = 10)) +
+     scale_shape_manual(values = c(&quot;Enriched&quot; = 16, &quot;Depleted&quot; = 17))+
+    theme_classic() +
+    ylab(&quot;Enriched TF motif&quot;) +
+    ggtitle(paste(title, &quot;-&quot;, top_num))
+}</code></pre>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.05, page = 3)</code></pre>
-<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
-Past versions of unnamed-chunk-4-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div id="fig-unnamed-chunk-5-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2050,24 +2086,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-1.png" target="_blank">78269d9</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-1.png" target="_blank">78269d9</a>
 </td>
 <td>
 reneeisnowhere
 </td>
 <td>
 2026-02-09
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/3f3d9a4683e54692914f65c2b3b1f4403e47abaa/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-1.png" target="_blank">3f3d9a4</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-02-02
 </td>
 </tr>
 </tbody>
@@ -2075,13 +2100,13 @@ reneeisnowhere
 </div>
 </div>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.05, page = 2)</code></pre>
-<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
-Past versions of unnamed-chunk-4-2.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
+Past versions of unnamed-chunk-5-2.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-4-2" class="collapse">
+<div id="fig-unnamed-chunk-5-2" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2100,24 +2125,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-2.png" target="_blank">78269d9</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-2.png" target="_blank">78269d9</a>
 </td>
 <td>
 reneeisnowhere
 </td>
 <td>
 2026-02-09
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/3f3d9a4683e54692914f65c2b3b1f4403e47abaa/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-2.png" target="_blank">3f3d9a4</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-02-02
 </td>
 </tr>
 </tbody>
@@ -2125,162 +2139,16 @@ reneeisnowhere
 </div>
 </div>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.05, page = 1)</code></pre>
-<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-3">
-Past versions of unnamed-chunk-4-3.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-3.png" target="_blank">78269d9</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-02-09
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 3)</code></pre>
-<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-4">
-Past versions of unnamed-chunk-4-4.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-4.png" target="_blank">78269d9</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-02-09
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 2)</code></pre>
-<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-5">
-Past versions of unnamed-chunk-4-5.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-5.png" target="_blank">78269d9</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-02-09
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-5.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 1)</code></pre>
-<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-6.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-6">
-Past versions of unnamed-chunk-4-6.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-6" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-4-6.png" target="_blank">78269d9</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-02-09
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code># plot_ENR_filtering(H3K27ac_set2_A,page = 1)</code></pre>
+<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># plot_topnum_RATIO(H3K27ac_set2_A, signif.num = 0.05, top_num = 10)
+# 
+# plot_topnum_RATIO(H3K27ac_Set3_data,signif.num = 0.05, top_num = 10)</code></pre>
 <p>now for plotting Set 3 A and B</p>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set3_A, signif.num = 0.05, page = 3)</code></pre>
 <p><img src="figure/H3K27ac_TF_motifs.Rmd/plotting%20set3-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -2306,6 +2174,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4392e80f732f37ced5c8210022f2a00820d67af4/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-1.png" target="_blank">4392e80</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-1.png" target="_blank">78269d9</a>
@@ -2347,6 +2226,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4392e80f732f37ced5c8210022f2a00820d67af4/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-2.png" target="_blank">4392e80</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-2.png" target="_blank">78269d9</a>
 </td>
 <td>
@@ -2384,6 +2274,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4392e80f732f37ced5c8210022f2a00820d67af4/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-3.png" target="_blank">4392e80</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-3.png" target="_blank">78269d9</a>
@@ -2425,6 +2326,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4392e80f732f37ced5c8210022f2a00820d67af4/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-4.png" target="_blank">4392e80</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-4.png" target="_blank">78269d9</a>
 </td>
 <td>
@@ -2464,6 +2376,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4392e80f732f37ced5c8210022f2a00820d67af4/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-5.png" target="_blank">4392e80</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-5.png" target="_blank">78269d9</a>
 </td>
 <td>
@@ -2501,6 +2424,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4392e80f732f37ced5c8210022f2a00820d67af4/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-6.png" target="_blank">4392e80</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/plotting set3-6.png" target="_blank">78269d9</a>
@@ -2694,87 +2628,13 @@ ggVennDiagram::ggVennDiagram(toplist_direct_set2)+scale_fill_gradient(
     low = &quot;white&quot;,
     high = &quot;blue&quot;
   )</code></pre>
-<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
-Past versions of unnamed-chunk-5-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-5-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-1.png" target="_blank">78269d9</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-02-09
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code> Shared_motifs_set3 &lt;- Reduce(intersect, toplist_direct_set3)
 ggVennDiagram::ggVennDiagram(toplist_direct_set3)+scale_fill_gradient(
     low = &quot;white&quot;,
     high = &quot;red&quot;
   )</code></pre>
-<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
-Past versions of unnamed-chunk-5-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-5-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-2.png" target="_blank">78269d9</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-02-09
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2856,17 +2716,18 @@ loaded via a namespace (and not attached):
  [77] tokenizers_0.3.0            data.table_1.17.8          
  [79] BSgenome_1.74.0             GenomicAlignments_1.42.0   
  [81] fs_1.6.6                    XML_3.99-0.18              
- [83] impute_1.80.0               plotrix_3.8-4              
- [85] crosstalk_1.2.2             colorspace_2.1-1           
- [87] GenomeInfoDbData_1.2.13     ggforce_0.5.0              
- [89] restfulr_0.0.16             cli_3.6.5                  
- [91] viridisLite_0.4.2           S4Arrays_1.6.0             
- [93] gtable_0.3.6                sass_0.4.10                
- [95] digest_0.6.37               SparseArray_1.6.2          
- [97] htmlwidgets_1.6.4           rjson_0.2.23               
- [99] farver_2.1.2                htmltools_0.5.8.1          
-[101] lifecycle_1.0.4             httr_1.4.7                 
-[103] MASS_7.3-65                 bit64_4.6.0-1              </code></pre>
+ [83] cowplot_1.2.0               impute_1.80.0              
+ [85] plotrix_3.8-4               crosstalk_1.2.2            
+ [87] colorspace_2.1-1            GenomeInfoDbData_1.2.13    
+ [89] ggforce_0.5.0               restfulr_0.0.16            
+ [91] cli_3.6.5                   viridisLite_0.4.2          
+ [93] S4Arrays_1.6.0              gtable_0.3.6               
+ [95] sass_0.4.10                 digest_0.6.37              
+ [97] SparseArray_1.6.2           htmlwidgets_1.6.4          
+ [99] rjson_0.2.23                farver_2.1.2               
+[101] htmltools_0.5.8.1           lifecycle_1.0.4            
+[103] httr_1.4.7                  MASS_7.3-65                
+[105] bit64_4.6.0-1              </code></pre>
 </div>
 </div>
 </div>
