@@ -117,12 +117,12 @@ H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
 H3K27ac_lookup <- imap_dfr(H3K27ac_anno_ROIs[1:3], ~
   tibble(Peakid = .x@anno$Peakid, cluster = .y)
 )
-# cRE_color_palette <- c("#E64B35FF", "#4DBBD5FF", "#00A087FF" ,"#3C5488FF", "#F39B7FFF", "#8491B4FF", "#91D1C2FF", "#DC0000FF", "#7E6148FF", "#B09C85FF" )
+cRE_color_palette <- c("#E64B35FF", "#4DBBD5FF", "#00A087FF" ,"#3C5488FF", "#F39B7FFF", "#8491B4FF", "#91D1C2FF", "#DC0000FF", "#7E6148FF", "#B09C85FF" )
 # 
 # 
-# cCRE_discrete_colors <- paletteer_d("ggsci::default_aaas")
+cCRE_discrete_colors <- paletteer::paletteer_d("ggsci::default_aaas")
 
-
+cCRE_discrete_colors
 ```
 
 
@@ -144,7 +144,7 @@ H3K27ac_cre_df <- tibble(
 scale_fill_cCREs <-  function(...){
   ggplot2:::manual_scale(
     'fill', 
-    values = setNames(c( "#E64B35FF", "#4DBBD5FF", "#00A087FF" ,"#3C5488FF", "#F39B7FFF", "#8491B4FF", "#91D1C2FF", "#DC0000FF", "#7E6148FF", "#B09C85FF" ), c(unique(H3K27ac_cre_df$cCRE_class),"NA")), 
+    values = setNames(c( "#E64B35FF", "#4DBBD5FF", "#00A087FF" ,"#3C5488FF", "#F39B7FFF", "#8491B4FF", "#91D1C2FF", "#DC0000FF", "#7E6148FF", "#B09C85FF","#008B45FF", "#631879FF",  "#5F559BFF", "#A20056FF", "#808180FF", "#1B1919FF"), c(unique(H3K27ac_cre_df$cCRE_class),"NA","CA-only","Low-DNase")), 
     ...
   )
 }
@@ -198,8 +198,8 @@ H3K27ac_heart_cre_hits <- findOverlaps(H3K27ac_summit_gr, SCREEN_heart_hg38_cCRE
 H3K27ac_heart_cre_df <- tibble(
   Peakid=mcols(H3K27ac_summit_gr)$Peakid[queryHits(H3K27ac_heart_cre_hits)],
   cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(H3K27ac_heart_cre_hits)],
-  cCRE_ID   = mcols(SCREEN_hg38_cCREs)$cCRE_ID[subjectHits(H3K27ac_heart_cre_hits)],
-  cCRE_class= mcols(SCREEN_hg38_cCREs)$cCRE_class[subjectHits(H3K27ac_heart_cre_hits)])
+  cCRE_ID   = mcols(SCREEN_heart_hg38_cCREs)$cCRE_ID[subjectHits(H3K27ac_heart_cre_hits)],
+  cCRE_class= mcols(SCREEN_heart_hg38_cCREs)$cCRE_class[subjectHits(H3K27ac_heart_cre_hits)])
 
 H3K27ac_heart_cre_anno <- H3K27ac_anno_ROIs$all_H3K27ac %>% as.data.frame() %>% 
   left_join(.,H3K27ac_heart_cre_df ) %>% 
@@ -212,11 +212,11 @@ H3K27ac_heart_cre_anno <- H3K27ac_anno_ROIs$all_H3K27ac %>% as.data.frame() %>%
 
 ```{r heart cre plot}
 H3K27ac_heart_cre_counts <- H3K27ac_heart_cre_anno %>% 
-  count(cluster, cCRE_class) %>% 
+  count(cluster, cCRE_ID) %>% 
   group_by(cluster) %>% 
   mutate(percent= n/sum(n))
 
- ggplot(H3K27ac_heart_cre_counts, aes(x = cluster, y = percent, fill = cCRE_class)) +
+ ggplot(H3K27ac_heart_cre_counts, aes(x = cluster, y = percent, fill = cCRE_ID)) +
   geom_col() +
   scale_y_continuous(labels = scales::percent) +
   labs(
@@ -225,7 +225,8 @@ H3K27ac_heart_cre_counts <- H3K27ac_heart_cre_anno %>%
     fill = "cCRE class"
   ) +
   theme_classic()+
-     ggtitle("Heart-left ventricle cCREs")+scale_fill_cCREs()
+ #     
+ ggtitle("Heart-left ventricle cCREs")+scale_fill_cCREs()
    
    
 ```
@@ -237,6 +238,8 @@ H3K27ac_heart_cre_counts <- H3K27ac_heart_cre_anno %>%
 #   dplyr::arrange(SCREEN_hg38_cCREs, across(everything()))
 # )
 # 
-# dplyr::left_join((SCREEN_heart_hg38_cCREs %>% as.data.frame()),(SCREEN_hg38_cCREs %>% as.data.frame())                 )
+# dplyr::left_join((SCREEN_heart_hg38_cCREs %>% as.data.frame()),(SCREEN_hg38_cCREs %>% as.data.frame()) 
+
+H3K27ac_heart_cre_counts %>% ungroup %>% distinct (cCRE_ID)
 ```
 
