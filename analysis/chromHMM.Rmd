@@ -617,10 +617,10 @@ States_anno <- data.frame("State"=c(paste0("E",1:16)),
  "Bivalent_Enhancer",
 "Bivalent_Poised_TSS1",
 "Bivalent_Poised_TSS2",
- "Weak_Distal_Genic_Enhancer",
- "Active_Genic_Enhancer1",
+ "Weak_Genic_Enhancer",
+ "Strong_Genic_Enhancer1",
  "Active_Proximal_Enhancer",
-  "Active_Genic_Enhancer2",
+  "Strong_Genic_Enhancer2",
  "Active_TSS",
  "Very_Weak_Transcription",
  "Genic_Strong_Transcription",
@@ -664,6 +664,122 @@ long_file %>%
   ggtitle("Transposable elements across states")+
   coord_fixed()
 ```
+#### Looking at Delta TEs  
+
+Now using the delta of DOX-VEH (the log2 FE of each) and plotting the states
+
+```{r fig.height=10}
+delta_TE_df <- long_file %>% 
+  dplyr::filter(stringr::str_detect(Identity, "_rptmasker")) %>% 
+  mutate(rpt=case_when(Identity=="LINE_rptmasker"~"LINE",
+                       Identity=="SINE_rptmasker"~"SINE",
+                       Identity=="LTR_rptmasker"~"LTR",
+                       Identity=="DNA_rptmasker"~"DNA",
+                       Identity=="Retroposon_rptmasker"~"SVA",
+                       TRUE~"Other")) %>% 
+  mutate(log2_FE = log2(Fold_enrichment + 1e-6)) %>% 
+  separate(group, into = c("trt","time"), remove = FALSE) %>% 
+  dplyr::filter(rpt != "Other") %>% 
+  group_by(time,  rpt, `State (Emission order)`) %>%
+  summarise(
+    delta_log2FE =
+      log2_FE[trt == "DOX"] -
+      log2_FE[trt == "VEH"],
+    .groups = "drop") %>% 
+  mutate(time=factor(time, levels=c("24T","24R","144R")))
+
+
+
+ggplot(delta_TE_df ,
+       aes(x = time,
+           y = `State (Emission order)`,
+           fill = delta_log2FE)) +
+  geom_tile(color = "grey20", linewidth = 0.2) +
+  
+  scale_fill_gradient2(
+    low = "#B2182B",   # Decrease
+    mid = "white",     # No change
+    high = "#2166AC",  # Increase
+    midpoint = 0,
+    limits = c(-2.5, 2.5),
+    name = "Δ log2(FE)\n(DOX - VEH)"
+  ) +
+  
+  labs(
+    x = "Timepoint",
+    y = "ChromHMM State",
+    title = "TE Enrichment Changes After DNA Damage"
+  ) +
+  
+  facet_wrap(~rpt, ncol = 5) +  # one facet per TE type
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(face = "bold"),
+    strip.text = element_text(face = "bold"),
+    plot.title = element_text(face = "bold", hjust = 0.5)
+  ) +
+  coord_fixed(ratio = 1.2)
+
+
+
+```
+
+
+```{r scaled TE}
+TE_delta_df <- delta_TE_df %>%
+  filter(rpt %in% c("LTR","LINE","SINE","DNA","SVA")) %>%
+  mutate(
+    `State (Emission order)` = forcats::fct_rev(`State (Emission order)`),
+    time = factor(time, levels = c("24T","24R","144R"))
+  ) %>%
+  group_by(rpt) %>%
+  mutate(
+    # scale relative to max abs value per TE
+    delta_log2FE_scaled = delta_log2FE / max(abs(delta_log2FE), na.rm = TRUE),
+    # ensure no value goes outside -1..1
+    delta_log2FE_scaled = pmax(pmin(delta_log2FE_scaled, 1), -1)
+  ) %>%
+  ungroup()
+# Scale across the entire dataset
+# max_abs_delta <- max(abs(TE_delta_df$delta_log2FE_scaled), na.rm = TRUE)
+
+# TE_delta_df <- TE_delta_df %>%
+#   mutate(delta_log2FE_scaled = delta_log2FE / max_abs_delta)
+
+ggplot(TE_delta_df,
+       aes(x = time,
+           y = `State (Emission order)`,
+           fill = delta_log2FE_scaled)) +
+  geom_tile(color = "grey20", linewidth = 0.2) +
+  
+  scale_fill_gradient2(
+  low = "#B2182B",
+  mid = "white",
+  high = "#2166AC",
+  midpoint = 0,
+  name = "Δ log2(FE)\nscaled"
+)+
+  
+  facet_wrap(~rpt, ncol = 5) +  # one TE type per facet
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold"),
+    plot.title = element_text(face = "bold", hjust = 0.5)
+  ) +
+  labs(
+    x = "Timepoint",
+    y = "ChromHMM State",
+    title = "Scaled Δ log2(FE) per TE type after DNA damage"
+  ) +
+  coord_fixed(ratio = 1.2)
+```
+
+
+
+
+
 ### ATAC and cardiac enhancer enrichment
 
 ```{r cardiac enchacers plot, fig.height=8}
