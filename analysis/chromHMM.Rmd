@@ -468,6 +468,50 @@ ggplot(geom_mean_df,
   coord_fixed()
 ```
 
+Now I want to look at the change of log2 Foldenrichment of DOX -VEH at each timepoint
+
+
+```{r delta lfe}
+
+df_1 <- all_genes_states_long %>%
+  mutate(log2_FE = log2(Fold_enrichment + 1e-6)) %>% 
+  separate(group, into = c("trt","time"), remove = FALSE)
+
+delta_df_1 <- df_1 %>%
+  group_by(time, Identity, Identity_label, `State (Emission order)`) %>%
+  summarise(
+    delta_log2FE =
+      log2_FE[trt == "DOX"] -
+      log2_FE[trt == "VEH"],
+    .groups = "drop") %>% 
+  mutate(time=factor(time, levels=c("24T","24R","144R")))
+
+ggplot(delta_df_1,
+       aes(x = Identity_label,
+           y = `State (Emission order)`,
+           fill = delta_log2FE)) +
+
+  geom_tile(color = "grey9", linewidth = 0.1) +
+
+  scale_fill_gradient2(
+    low = "#67001F",
+    mid = "white",
+    high = "#053061",
+    midpoint = 0,
+    name = "log2(DOX / VEH)"
+  ) +
+
+  facet_wrap(~time, nrow = 1) +
+
+  scale_y_discrete(limits = rev) +
+
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  ggtitle("Delta of log2(DOX/VEH) at each timepoint")
+
+```
+
+
 #### Enhancer plot  
 
 ```{r enchacers plot, fig.height=8}
