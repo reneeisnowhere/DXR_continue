@@ -408,6 +408,65 @@ all_genes_states_long %>%
 
 
 ```
+The genic enrichment across states plots shows the exact enrichment across each condtion, however, for summary purposes, I wish to know the general enrichment from all conditions.  I will take the geometric mean  across  DOX and VEH conditions (and all conditions) at each timepoint for each state and identity ( in this case for the CpGIslands, Exons, genes, TESs and TSS etc..).  This treats the fold-change enrichment and depletion symmetrically about 1 because enrichment behaves multiplicatively because it is already a ratio.  I am only using this to determine which states are constitutively TSS-enriched, with are CPG-biased, which are ZFP biased etc...
+```{r geometric mean, all conditions}
+geom_mean_df <- all_genes_states_long %>% 
+  group_by(Identity, Identity_label, `State (Emission order)`) %>% 
+  summarize(geom_FE = exp(mean(log(Fold_enrichment + 1e-6), na.rm = TRUE)),
+    .groups = "drop") %>% 
+  group_by(Identity) %>% 
+             mutate(
+    FE_min = min(geom_FE, na.rm = TRUE),
+    FE_max = max(geom_FE, na.rm = TRUE),
+    chromhmm_scaled = (geom_FE - FE_min) / (FE_max - FE_min)) 
+  
+  ggplot(geom_mean_df,aes(x=Identity_label,y=`State (Emission order)`, fill=chromhmm_scaled))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "transformed scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  
+    scale_y_discrete(limits=rev)+
+  ggtitle("Genic region relative enrichment pattern across conditions\n (geometric mean)")+
+  coord_fixed()
+
+```
+```{r geom_mean unscaled log2}
+geom_mean_df <- geom_mean_df %>%  mutate(log2_FE = log2(geom_FE))
+
+ggplot(geom_mean_df,
+       aes(x = Identity_label,
+           y = `State (Emission order)`,
+           fill = log2_FE)) +
+
+  geom_tile(color = "grey9", linewidth = 0.1) +
+
+  scale_fill_gradient2(
+    low = "darkgreen",
+    mid = "white",
+    high = "#08306B",
+    midpoint = 0,
+    name = "log2(Fold Enrichment)"
+  ) +
+
+  scale_y_discrete(limits = rev) +
+
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+
+  ggtitle("Geometric Mean ChromHMM Enrichment Across Conditions")+
+  coord_fixed()
+```
 
 #### Enhancer plot  
 
