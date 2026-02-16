@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-02-02" />
+<meta name="date" content="2026-02-16" />
 
 <title>ChromHMM</title>
 
@@ -361,7 +361,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">ChromHMM</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-02-02</h4>
+<h4 class="date">2026-02-16</h4>
 
 </div>
 
@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-02
+<strong>Last updated:</strong> 2026-02-16
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec291e10087499baa1cda60a827a20324211f03b3targetblankc291e10a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee5975d2567da1bd62ee373c9abf5847eff460b9ftargetblanke5975d2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c291e10087499baa1cda60a827a20324211f03b3" target="_blank">c291e10</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e5975d2567da1bd62ee373c9abf5847eff460b9f" target="_blank">e5975d2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec291e10087499baa1cda60a827a20324211f03b3targetblankc291e10a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee5975d2567da1bd62ee373c9abf5847eff460b9ftargetblanke5975d2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c291e10087499baa1cda60a827a20324211f03b3" target="_blank">c291e10</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e5975d2567da1bd62ee373c9abf5847eff460b9f" target="_blank">e5975d2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -572,24 +572,20 @@ Ignored files:
 Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
     Untracked:  H3K27ac_consensus_clusters_test.bed
-    Untracked:  analysis/ATAC_integration_data1.Rmd
     Untracked:  analysis/GREAT_H3K27ac.Rmd
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
-    Untracked:  analysis/H3K27ac_TE_investigation.Rmd
-    Untracked:  analysis/H3K27ac_cisRE.Rmd
     Untracked:  analysis/H3K27me3_TE_investigation.Rmd
     Untracked:  analysis/H3K36me3_TE_investigation.Rmd
-    Untracked:  analysis/H3K9me3_TE_investigation.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/For_john.R
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27ac_RNA_integration.Rmd
-    Modified:   analysis/H3K27ac_TF_motifs.Rmd
+    Modified:   analysis/H3K27ac_TE_investigation.Rmd
+    Modified:   analysis/H3K27ac_summit_processing.Rmd
     Modified:   analysis/dual_histone_TE_investigation.Rmd
-    Modified:   analysis/final_analysis.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
 </code></pre>
@@ -635,6 +631,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/e5975d2567da1bd62ee373c9abf5847eff460b9f/analysis/chromHMM.Rmd" target="_blank">e5975d2</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-16
+</td>
+<td>
+adding geometric mean plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/3facb4be80e698a8622bc91709a31f19468c526f/docs/chromHMM.html" target="_blank">3facb4b</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1241,6 +1271,71 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<p>The genic enrichment across states plots shows the exact enrichment
+across each condtion, however, for summary purposes, I wish to know the
+general enrichment from all conditions. I will take the geometric mean
+across DOX and VEH conditions (and all conditions) at each timepoint for
+each state and identity ( in this case for the CpGIslands, Exons, genes,
+TESs and TSS etc..). This treats the fold-change enrichment and
+depletion symmetrically about 1 because enrichment behaves
+multiplicatively because it is already a ratio. I am only using this to
+determine which states are constitutively TSS-enriched, with are
+CPG-biased, which are ZFP biased etc…</p>
+<pre class="r"><code>geom_mean_df &lt;- all_genes_states_long %&gt;% 
+  group_by(Identity, Identity_label, `State (Emission order)`) %&gt;% 
+  summarize(geom_FE = exp(mean(log(Fold_enrichment + 1e-6), na.rm = TRUE)),
+    .groups = &quot;drop&quot;) %&gt;% 
+  group_by(Identity) %&gt;% 
+             mutate(
+    FE_min = min(geom_FE, na.rm = TRUE),
+    FE_max = max(geom_FE, na.rm = TRUE),
+    chromhmm_scaled = (geom_FE - FE_min) / (FE_max - FE_min)) 
+  
+  ggplot(geom_mean_df,aes(x=Identity_label,y=`State (Emission order)`, fill=chromhmm_scaled))+
+  geom_tile(color = &quot;grey9&quot;,
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = &quot;white&quot;,
+  high = &quot;#08306B&quot;,
+  limits = c(0, 1),   # &lt;- KEY
+  oob = scales::squish,
+   na.value = &quot;white&quot;,   # &lt;- this sets NAs to white
+  name = &quot;transformed scale&quot;
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  
+    scale_y_discrete(limits=rev)+
+  ggtitle(&quot;Genic region relative enrichment pattern across conditions\n (geometric mean)&quot;)+
+  coord_fixed()</code></pre>
+<p><img src="figure/chromHMM.Rmd/geometric%20mean,%20all%20conditions-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>geom_mean_df &lt;- geom_mean_df %&gt;%  mutate(log2_FE = log2(geom_FE))
+
+ggplot(geom_mean_df,
+       aes(x = Identity_label,
+           y = `State (Emission order)`,
+           fill = log2_FE)) +
+
+  geom_tile(color = &quot;grey9&quot;, linewidth = 0.1) +
+
+  scale_fill_gradient2(
+    low = &quot;darkgreen&quot;,
+    mid = &quot;white&quot;,
+    high = &quot;#08306B&quot;,
+    midpoint = 0,
+    name = &quot;log2(Fold Enrichment)&quot;
+  ) +
+
+  scale_y_discrete(limits = rev) +
+
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+
+  ggtitle(&quot;Geometric Mean ChromHMM Enrichment Across Conditions&quot;)+
+  coord_fixed()</code></pre>
+<p><img src="figure/chromHMM.Rmd/geom_mean%20unscaled%20log2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="enhancer-plot" class="section level4">
 <h4>Enhancer plot</h4>
 <pre class="r"><code>long_file %&gt;% 
@@ -1291,6 +1386,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/3facb4be80e698a8622bc91709a31f19468c526f/docs/figure/chromHMM.Rmd/enchacers plot-1.png" target="_blank">3facb4b</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/184a74108694603da42e0818504aad468bbc7a21/docs/figure/chromHMM.Rmd/enchacers plot-1.png" target="_blank">184a741</a>
@@ -1542,6 +1648,43 @@ ATAC_long_file %&gt;%
   ggtitle(&quot;CAR/DAR and cardiac Enhancer types enrichment across states&quot;)+
   coord_fixed()</code></pre>
 <p><img src="figure/chromHMM.Rmd/cardiac%20enchacers%20plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-cardiac-enchacers-plot-1">
+Past versions of "cardiac enchacers plot-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-cardiac-enchacers-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/3facb4be80e698a8622bc91709a31f19468c526f/docs/figure/chromHMM.Rmd/cardiac enchacers plot-1.png" target="_blank">3facb4b</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Looking at SINE elements that overlap H3K27ac ROI elements</p>
 </div>
 <div id="soi-data" class="section level3">
