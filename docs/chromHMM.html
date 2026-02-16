@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreefa53545d305b22a6621950bca29650c23d2baf54targetblankfa53545a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeba84b52cecf5b7e4360ded7bed4b9f142fcb0e90targetblankba84b52a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/fa53545d305b22a6621950bca29650c23d2baf54" target="_blank">fa53545</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/ba84b52cecf5b7e4360ded7bed4b9f142fcb0e90" target="_blank">ba84b52</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreefa53545d305b22a6621950bca29650c23d2baf54targetblankfa53545a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeba84b52cecf5b7e4360ded7bed4b9f142fcb0e90targetblankba84b52a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/fa53545d305b22a6621950bca29650c23d2baf54" target="_blank">fa53545</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/ba84b52cecf5b7e4360ded7bed4b9f142fcb0e90" target="_blank">ba84b52</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -585,6 +585,8 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/H3K27ac_TE_investigation.Rmd
     Modified:   analysis/H3K27ac_summit_processing.Rmd
+    Modified:   analysis/H3K9me3_TE_investigation.Rmd
+    Modified:   analysis/H3K9me3_TE_overlap.Rmd
     Modified:   analysis/dual_histone_TE_investigation.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
@@ -631,6 +633,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba84b52cecf5b7e4360ded7bed4b9f142fcb0e90/analysis/chromHMM.Rmd" target="_blank">ba84b52</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-16
+</td>
+<td>
+updated to TE
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/67b9d8a57dd77f9ab96167d753de383b83cbf5c8/docs/chromHMM.html" target="_blank">67b9d8a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1483,6 +1519,43 @@ ggplot(delta_df_1,
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   ggtitle(&quot;Delta of log2(DOX/VEH) at each timepoint&quot;)</code></pre>
 <p><img src="figure/chromHMM.Rmd/delta%20lfe-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-delta-lfe-1">
+Past versions of "delta lfe-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-delta-lfe-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/67b9d8a57dd77f9ab96167d753de383b83cbf5c8/docs/figure/chromHMM.Rmd/delta lfe-1.png" target="_blank">67b9d8a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div id="enhancer-plot" class="section level4">
 <h4>Enhancer plot</h4>
 <pre class="r"><code>long_file %&gt;% 
@@ -1679,10 +1752,10 @@ reneeisnowhere
  &quot;Bivalent_Enhancer&quot;,
 &quot;Bivalent_Poised_TSS1&quot;,
 &quot;Bivalent_Poised_TSS2&quot;,
- &quot;Weak_Distal_Genic_Enhancer&quot;,
- &quot;Active_Genic_Enhancer1&quot;,
+ &quot;Weak_Genic_Enhancer&quot;,
+ &quot;Strong_Genic_Enhancer1&quot;,
  &quot;Active_Proximal_Enhancer&quot;,
-  &quot;Active_Genic_Enhancer2&quot;,
+  &quot;Strong_Genic_Enhancer2&quot;,
  &quot;Active_TSS&quot;,
  &quot;Very_Weak_Transcription&quot;,
  &quot;Genic_Strong_Transcription&quot;,
@@ -1758,6 +1831,111 @@ reneeisnowhere
 </tbody>
 </table>
 </div>
+</div>
+<div id="looking-at-delta-tes" class="section level4">
+<h4>Looking at Delta TEs</h4>
+<p>Now using the delta of DOX-VEH (the log2 FE of each) and plotting the
+states</p>
+<pre class="r"><code>delta_TE_df &lt;- long_file %&gt;% 
+  dplyr::filter(stringr::str_detect(Identity, &quot;_rptmasker&quot;)) %&gt;% 
+  mutate(rpt=case_when(Identity==&quot;LINE_rptmasker&quot;~&quot;LINE&quot;,
+                       Identity==&quot;SINE_rptmasker&quot;~&quot;SINE&quot;,
+                       Identity==&quot;LTR_rptmasker&quot;~&quot;LTR&quot;,
+                       Identity==&quot;DNA_rptmasker&quot;~&quot;DNA&quot;,
+                       Identity==&quot;Retroposon_rptmasker&quot;~&quot;SVA&quot;,
+                       TRUE~&quot;Other&quot;)) %&gt;% 
+  mutate(log2_FE = log2(Fold_enrichment + 1e-6)) %&gt;% 
+  separate(group, into = c(&quot;trt&quot;,&quot;time&quot;), remove = FALSE) %&gt;% 
+  dplyr::filter(rpt != &quot;Other&quot;) %&gt;% 
+  group_by(time,  rpt, `State (Emission order)`) %&gt;%
+  summarise(
+    delta_log2FE =
+      log2_FE[trt == &quot;DOX&quot;] -
+      log2_FE[trt == &quot;VEH&quot;],
+    .groups = &quot;drop&quot;) %&gt;% 
+  mutate(time=factor(time, levels=c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;)))
+
+
+
+ggplot(delta_TE_df ,
+       aes(x = time,
+           y = `State (Emission order)`,
+           fill = delta_log2FE)) +
+  geom_tile(color = &quot;grey20&quot;, linewidth = 0.2) +
+  
+  scale_fill_gradient2(
+    low = &quot;#B2182B&quot;,   # Decrease
+    mid = &quot;white&quot;,     # No change
+    high = &quot;#2166AC&quot;,  # Increase
+    midpoint = 0,
+    limits = c(-2.5, 2.5),
+    name = &quot;Δ log2(FE)\n(DOX - VEH)&quot;
+  ) +
+  
+  labs(
+    x = &quot;Timepoint&quot;,
+    y = &quot;ChromHMM State&quot;,
+    title = &quot;TE Enrichment Changes After DNA Damage&quot;
+  ) +
+  
+  facet_wrap(~rpt, ncol = 5) +  # one facet per TE type
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(face = &quot;bold&quot;),
+    strip.text = element_text(face = &quot;bold&quot;),
+    plot.title = element_text(face = &quot;bold&quot;, hjust = 0.5)
+  ) +
+  coord_fixed(ratio = 1.2)</code></pre>
+<p><img src="figure/chromHMM.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>TE_delta_df &lt;- delta_TE_df %&gt;%
+  filter(rpt %in% c(&quot;LTR&quot;,&quot;LINE&quot;,&quot;SINE&quot;,&quot;DNA&quot;,&quot;SVA&quot;)) %&gt;%
+  mutate(
+    `State (Emission order)` = forcats::fct_rev(`State (Emission order)`),
+    time = factor(time, levels = c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;))
+  ) %&gt;%
+  group_by(rpt) %&gt;%
+  mutate(
+    # scale relative to max abs value per TE
+    delta_log2FE_scaled = delta_log2FE / max(abs(delta_log2FE), na.rm = TRUE),
+    # ensure no value goes outside -1..1
+    delta_log2FE_scaled = pmax(pmin(delta_log2FE_scaled, 1), -1)
+  ) %&gt;%
+  ungroup()
+# Scale across the entire dataset
+# max_abs_delta &lt;- max(abs(TE_delta_df$delta_log2FE_scaled), na.rm = TRUE)
+
+# TE_delta_df &lt;- TE_delta_df %&gt;%
+#   mutate(delta_log2FE_scaled = delta_log2FE / max_abs_delta)
+
+ggplot(TE_delta_df,
+       aes(x = time,
+           y = `State (Emission order)`,
+           fill = delta_log2FE_scaled)) +
+  geom_tile(color = &quot;grey20&quot;, linewidth = 0.2) +
+  
+  scale_fill_gradient2(
+  low = &quot;#B2182B&quot;,
+  mid = &quot;white&quot;,
+  high = &quot;#2166AC&quot;,
+  midpoint = 0,
+  name = &quot;Δ log2(FE)\nscaled&quot;
+)+
+  
+  facet_wrap(~rpt, ncol = 5) +  # one TE type per facet
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = &quot;bold&quot;),
+    plot.title = element_text(face = &quot;bold&quot;, hjust = 0.5)
+  ) +
+  labs(
+    x = &quot;Timepoint&quot;,
+    y = &quot;ChromHMM State&quot;,
+    title = &quot;Scaled Δ log2(FE) per TE type after DNA damage&quot;
+  ) +
+  coord_fixed(ratio = 1.2)</code></pre>
+<p><img src="figure/chromHMM.Rmd/scaled%20TE-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="atac-and-cardiac-enhancer-enrichment" class="section level3">
