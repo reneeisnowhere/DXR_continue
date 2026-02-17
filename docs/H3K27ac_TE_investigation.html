@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-02-06" />
+<meta name="date" content="2026-02-17" />
 
 <title>H3K27ac and TE overlap</title>
 
@@ -370,7 +370,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">H3K27ac and TE overlap</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-02-06</h4>
+<h4 class="date">2026-02-17</h4>
 
 </div>
 
@@ -399,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-06
+<strong>Last updated:</strong> 2026-02-17
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree658bc77ce1cec0576a84d1e55389949130d1ad66targetblank658bc77a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee518d21c0dfc28d5b1831fa7cefadc31232c5fcetargetblanke518d21a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/658bc77ce1cec0576a84d1e55389949130d1ad66" target="_blank">658bc77</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e518d21c0dfc28d5b1831fa7cefadc31232c5fce" target="_blank">e518d21</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree658bc77ce1cec0576a84d1e55389949130d1ad66targetblank658bc77a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee518d21c0dfc28d5b1831fa7cefadc31232c5fcetargetblanke518d21a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/658bc77ce1cec0576a84d1e55389949130d1ad66" target="_blank">658bc77</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e518d21c0dfc28d5b1831fa7cefadc31232c5fce" target="_blank">e518d21</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -581,10 +581,8 @@ Ignored files:
 Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
     Untracked:  H3K27ac_consensus_clusters_test.bed
-    Untracked:  analysis/ATAC_integration_data1.Rmd
     Untracked:  analysis/GREAT_H3K27ac.Rmd
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
-    Untracked:  analysis/H3K27ac_cisRE.Rmd
     Untracked:  analysis/H3K27me3_TE_investigation.Rmd
     Untracked:  analysis/H3K36me3_TE_investigation.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
@@ -594,12 +592,10 @@ Untracked files:
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27_TE_overlap.Rmd
-    Modified:   analysis/H3K27ac_RNA_integration.Rmd
-    Modified:   analysis/H3K27ac_TF_motifs.Rmd
     Modified:   analysis/H3K27ac_summit_processing.Rmd
+    Modified:   analysis/H3K9me3_TE_investigation.Rmd
+    Modified:   analysis/H3K9me3_TE_overlap.Rmd
     Modified:   analysis/dual_histone_TE_investigation.Rmd
-    Modified:   analysis/final_analysis.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
 </code></pre>
@@ -646,6 +642,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/e518d21c0dfc28d5b1831fa7cefadc31232c5fce/analysis/H3K27ac_TE_investigation.Rmd" target="_blank">e518d21</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+add no color
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/3a5cba8375025e40a06b77f1eb5bdbd442cce81c/docs/H3K27ac_TE_investigation.html" target="_blank">3a5cba8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1276,6 +1306,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code># saveRDS(LTR_overlap_df,&quot;data/RDS_files/H3K27ac_Full_ROI_overlap_LTRs.RDS&quot;)</code></pre>
 <div id="age-tests" class="section level4">
 <h4>age tests</h4>
 <p>First test, within each TE family (ERVL, ERVK, etc…)do Set1,Set2 and
@@ -2271,6 +2302,21 @@ reneeisnowhere
 </div>
 </div>
 <pre class="r"><code>K27ac_lfctable %&gt;% 
+  pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
+   mutate(time=str_remove(group,&quot;H3K27ac&quot;))%&gt;% 
+  mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)))  %&gt;% 
+  ggplot(., aes(x=time, y = LFC, group=genes))+
+  ggrastr::rasterise(geom_line(alpha = 0.15)) +
+  ggrastr::geom_point_rast(size = 1) +
+  geom_line(data=median_df, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
+  theme_classic() +
+  facet_wrap(~cluster)+
+  labs(
+    x = &quot;Time point&quot;,
+    y = &quot;Log2 Fold Change&quot;,
+    title = &quot;H3K27ac LFC  for all H3K27ac regions&quot;)</code></pre>
+<p><img src="figure/H3K27ac_TE_investigation.Rmd/split%20groups%20by%20LFC-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>K27ac_lfctable %&gt;% 
   group_by(cluster,case) %&gt;% 
   tally() %&gt;% pivot_wider(id_cols=case, names_from = cluster, values_from = n) %&gt;% 
   mutate(type=case_when(case==&quot;A&quot;~&quot;All LFC &gt; 0&quot;,
@@ -2291,7 +2337,7 @@ reneeisnowhere
 
 H3K27ac_set_case_lfc &lt;- split(H3K27ac_Sets, H3K27ac_Sets$set_case)
 
-saveRDS(H3K27ac_set_case_lfc, &quot;data/RDS_files/H3K27ac_set_case_lfc.RDS&quot;)
+# saveRDS(H3K27ac_set_case_lfc, &quot;data/RDS_files/H3K27ac_set_case_lfc.RDS&quot;)
 unique(rpt_split$`LTR`$repFamily)</code></pre>
 <p>Zooming back in on summits,</p>
 <p>What do LFCs of ROIs whose summits cross LTRs?</p>
@@ -2319,7 +2365,9 @@ LTR_summits_overlap_df &lt;- tibble(
 )
 summit_LTR_peakids &lt;- LTR_summits_overlap_df %&gt;% distinct(Peakid)
 
-split_summit_LTR_peakids &lt;- split(LTR_summits_overlap_df, LTR_summits_overlap_df$TE_type)</code></pre>
+split_summit_LTR_peakids &lt;- split(LTR_summits_overlap_df, LTR_summits_overlap_df$TE_type)
+
+saveRDS(LTR_summits_overlap_df,&quot;data/RDS_files/H3K27ac_summit_LTR_overlaps.RDS&quot;)</code></pre>
 <pre class="r"><code>med_LTR_LFC &lt;- K27ac_lfctable %&gt;% 
   dplyr::filter(genes %in% summit_LTR_peakids$Peakid) %&gt;% 
   pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
@@ -3470,6 +3518,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/3a5cba8375025e40a06b77f1eb5bdbd442cce81c/docs/figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-20-1.png" target="_blank">3a5cba8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/81af285f5f1c24e2d77a08c3fc95a0e9b022538d/docs/figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-20-1.png" target="_blank">81af285</a>
 </td>
 <td>
@@ -3519,6 +3578,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/3a5cba8375025e40a06b77f1eb5bdbd442cce81c/docs/figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-20-2.png" target="_blank">3a5cba8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/81af285f5f1c24e2d77a08c3fc95a0e9b022538d/docs/figure/H3K27ac_TE_investigation.Rmd/unnamed-chunk-20-2.png" target="_blank">81af285</a>
