@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee518d21c0dfc28d5b1831fa7cefadc31232c5fcetargetblanke518d21a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeb5563e89af582f0be3f1f0d5e9ca42560f35513dtargetblankb5563e8a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e518d21c0dfc28d5b1831fa7cefadc31232c5fce" target="_blank">e518d21</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/b5563e89af582f0be3f1f0d5e9ca42560f35513d" target="_blank">b5563e8</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee518d21c0dfc28d5b1831fa7cefadc31232c5fcetargetblanke518d21a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeb5563e89af582f0be3f1f0d5e9ca42560f35513dtargetblankb5563e8a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e518d21c0dfc28d5b1831fa7cefadc31232c5fce" target="_blank">e518d21</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/b5563e89af582f0be3f1f0d5e9ca42560f35513d" target="_blank">b5563e8</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -565,6 +565,7 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
@@ -642,6 +643,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b5563e89af582f0be3f1f0d5e9ca42560f35513d/analysis/H3K27ac_TE_investigation.Rmd" target="_blank">b5563e8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+wflow_publish("analysis/H3K27ac_TE_investigation.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/1a85f135a5a3fb877ee0fe2a1f1c91f6f203364e/docs/H3K27ac_TE_investigation.html" target="_blank">1a85f13</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2305,7 +2340,7 @@ reneeisnowhere
   pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
    mutate(time=str_remove(group,&quot;H3K27ac&quot;))%&gt;% 
   mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)))  %&gt;% 
-  ggplot(., aes(x=time, y = LFC, group=genes))+
+  ggplot(., aes(x=time, y = LFC, group=genes, color=&quot;darkgray&quot;))+
   ggrastr::rasterise(geom_line(alpha = 0.15)) +
   ggrastr::geom_point_rast(size = 1) +
   geom_line(data=median_df, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
@@ -2316,6 +2351,43 @@ reneeisnowhere
     y = &quot;Log2 Fold Change&quot;,
     title = &quot;H3K27ac LFC  for all H3K27ac regions&quot;)</code></pre>
 <p><img src="figure/H3K27ac_TE_investigation.Rmd/split%20groups%20by%20LFC-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-split-groups-by-LFC-2">
+Past versions of "split groups by LFC-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-split-groups-by-LFC-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1a85f135a5a3fb877ee0fe2a1f1c91f6f203364e/docs/figure/H3K27ac_TE_investigation.Rmd/split groups by LFC-2.png" target="_blank">1a85f13</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>K27ac_lfctable %&gt;% 
   group_by(cluster,case) %&gt;% 
   tally() %&gt;% pivot_wider(id_cols=case, names_from = cluster, values_from = n) %&gt;% 
