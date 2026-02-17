@@ -388,6 +388,8 @@ LTR_overlap_df %>%
      title = "Age distribution of LTR elements overlapping H3K27ac"
    )+
   facet_wrap(~TE_type)
+
+# saveRDS(LTR_overlap_df,"data/RDS_files/H3K27ac_Full_ROI_overlap_LTRs.RDS")
 ```
 #### age tests
 First test, within each TE family (ERVL, ERVK, etc...)do Set1,Set2 and Set3 differ?
@@ -821,6 +823,21 @@ K27ac_lfctable %>%
     x = "Time point",
     y = "Log2 Fold Change",
     title = "H3K27ac LFC  for all H3K27ac regions")
+
+K27ac_lfctable %>% 
+  pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
+   mutate(time=str_remove(group,"H3K27ac"))%>% 
+  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))  %>% 
+  ggplot(., aes(x=time, y = LFC, group=genes))+
+  ggrastr::rasterise(geom_line(alpha = 0.15)) +
+  ggrastr::geom_point_rast(size = 1) +
+  geom_line(data=median_df, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
+  theme_classic() +
+  facet_wrap(~cluster)+
+  labs(
+    x = "Time point",
+    y = "Log2 Fold Change",
+    title = "H3K27ac LFC  for all H3K27ac regions")
 ```
 ```{r}
 K27ac_lfctable %>% 
@@ -846,7 +863,7 @@ H3K27ac_Sets <- K27ac_lfctable %>%
 
 H3K27ac_set_case_lfc <- split(H3K27ac_Sets, H3K27ac_Sets$set_case)
 
-saveRDS(H3K27ac_set_case_lfc, "data/RDS_files/H3K27ac_set_case_lfc.RDS")
+# saveRDS(H3K27ac_set_case_lfc, "data/RDS_files/H3K27ac_set_case_lfc.RDS")
 unique(rpt_split$`LTR`$repFamily)
 
 ```
@@ -881,6 +898,8 @@ LTR_summits_overlap_df <- tibble(
 summit_LTR_peakids <- LTR_summits_overlap_df %>% distinct(Peakid)
 
 split_summit_LTR_peakids <- split(LTR_summits_overlap_df, LTR_summits_overlap_df$TE_type)
+
+saveRDS(LTR_summits_overlap_df,"data/RDS_files/H3K27ac_summit_LTR_overlaps.RDS")
 ```
 
 
