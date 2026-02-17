@@ -828,8 +828,8 @@ K27ac_lfctable %>%
   pivot_longer(.,cols=c(starts_with("H3K27ac")), names_to="group", values_to = "LFC") %>% 
    mutate(time=str_remove(group,"H3K27ac"))%>% 
   mutate(time=factor(time, levels=c("_24T","_24R","_144R")))  %>% 
-  ggplot(., aes(x=time, y = LFC, group=genes, color="darkgray"))+
-  ggrastr::rasterise(geom_line(alpha = 0.15)) +
+  ggplot(., aes(x=time, y = LFC, group=genes))+
+  ggrastr::rasterise(geom_line(alpha = 0.15,color="darkgray")) +
   ggrastr::geom_point_rast(size = 1) +
   geom_line(data=median_df, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
   theme_classic() +
