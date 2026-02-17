@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeb5563e89af582f0be3f1f0d5e9ca42560f35513dtargetblankb5563e8a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree3485bd70bd3c9d54b7601503ec5de1e3d21a884ctargetblank3485bd7a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/b5563e89af582f0be3f1f0d5e9ca42560f35513d" target="_blank">b5563e8</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/3485bd70bd3c9d54b7601503ec5de1e3d21a884c" target="_blank">3485bd7</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeb5563e89af582f0be3f1f0d5e9ca42560f35513dtargetblankb5563e8a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree3485bd70bd3c9d54b7601503ec5de1e3d21a884ctargetblank3485bd7a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/b5563e89af582f0be3f1f0d5e9ca42560f35513d" target="_blank">b5563e8</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/3485bd70bd3c9d54b7601503ec5de1e3d21a884c" target="_blank">3485bd7</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -565,7 +565,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
@@ -643,6 +642,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/3485bd70bd3c9d54b7601503ec5de1e3d21a884c/analysis/H3K27ac_TE_investigation.Rmd" target="_blank">3485bd7</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+wflow_publish("analysis/H3K27ac_TE_investigation.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/9a1e513b16d19df5f87bf0ff07f985f37c718030/docs/H3K27ac_TE_investigation.html" target="_blank">9a1e513</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2340,8 +2373,8 @@ reneeisnowhere
   pivot_longer(.,cols=c(starts_with(&quot;H3K27ac&quot;)), names_to=&quot;group&quot;, values_to = &quot;LFC&quot;) %&gt;% 
    mutate(time=str_remove(group,&quot;H3K27ac&quot;))%&gt;% 
   mutate(time=factor(time, levels=c(&quot;_24T&quot;,&quot;_24R&quot;,&quot;_144R&quot;)))  %&gt;% 
-  ggplot(., aes(x=time, y = LFC, group=genes, color=&quot;darkgray&quot;))+
-  ggrastr::rasterise(geom_line(alpha = 0.15)) +
+  ggplot(., aes(x=time, y = LFC, group=genes))+
+  ggrastr::rasterise(geom_line(alpha = 0.15,color=&quot;darkgray&quot;)) +
   ggrastr::geom_point_rast(size = 1) +
   geom_line(data=median_df, aes(x=time, y=median_LFC, group = cluster),inherit.aes = FALSE, linewidth =2)+
   theme_classic() +
@@ -2373,6 +2406,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/9a1e513b16d19df5f87bf0ff07f985f37c718030/docs/figure/H3K27ac_TE_investigation.Rmd/split groups by LFC-2.png" target="_blank">9a1e513</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-17
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1a85f135a5a3fb877ee0fe2a1f1c91f6f203364e/docs/figure/H3K27ac_TE_investigation.Rmd/split groups by LFC-2.png" target="_blank">1a85f13</a>
