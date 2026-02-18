@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-02-12" />
+<meta name="date" content="2026-02-18" />
 
 <title>H3K27ac TF enrichment</title>
 
@@ -374,7 +374,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">H3K27ac TF enrichment</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-02-12</h4>
+<h4 class="date">2026-02-18</h4>
 
 </div>
 
@@ -403,7 +403,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-12
+<strong>Last updated:</strong> 2026-02-18
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree861a8a2e3cf0af6a45cb708521774b419e2e39c3targetblank861a8a2a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreedbe389b89c36f67cf5f533b9f303fd43445c7a48targetblankdbe389ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/861a8a2e3cf0af6a45cb708521774b419e2e39c3" target="_blank">861a8a2</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/dbe389b89c36f67cf5f533b9f303fd43445c7a48" target="_blank">dbe389b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree861a8a2e3cf0af6a45cb708521774b419e2e39c3targetblank861a8a2a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreedbe389b89c36f67cf5f533b9f303fd43445c7a48targetblankdbe389ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/861a8a2e3cf0af6a45cb708521774b419e2e39c3" target="_blank">861a8a2</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/dbe389b89c36f67cf5f533b9f303fd43445c7a48" target="_blank">dbe389b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -569,7 +569,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
@@ -597,8 +596,10 @@ Untracked files:
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27ac_TE_investigation.Rmd
+    Modified:   analysis/H3K27ac_cisRE.Rmd
     Modified:   analysis/H3K27ac_summit_processing.Rmd
+    Modified:   analysis/H3K9me3_TE_investigation.Rmd
+    Modified:   analysis/H3K9me3_TE_overlap.Rmd
     Modified:   analysis/dual_histone_TE_investigation.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
@@ -645,6 +646,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dbe389b89c36f67cf5f533b9f303fd43445c7a48/analysis/H3K27ac_TF_motifs.Rmd" target="_blank">dbe389b</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-18
+</td>
+<td>
+wflow_publish("analysis/H3K27ac_TF_motifs.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/7840a6d6d410439a044a83c7f028088e7a0d34e8/docs/H3K27ac_TF_motifs.html" target="_blank">7840a6d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1778,12 +1813,14 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>plot_topnum_ratio_full &lt;- function(df, title = NULL, signif.num = 0.05,top_num=20){
+<pre class="r"><code>plot_topnum_ratio_full &lt;- function(df, title = NULL, signif.num = 0.05,top_num=20, color_limits = NULL){
   
   ### getting the name of the data frame for plotting
  if (is.null(title)) {
     title &lt;- deparse(substitute(df))
-  }
+ }
+  
+   
 
   ### Getting the data ready
   plot_df &lt;- df %&gt;%
@@ -1808,7 +1845,12 @@ reneeisnowhere
       expand = c(0, .125),
       sec.axis = sec_axis(~ . / scaler, name = &quot;Enrichment Ratio&quot;)
     ) +
-    scale_color_viridis_c(name = &quot;Enrichment Ratio&quot;, option = &quot;plasma&quot;) +
+   scale_color_viridis_c(
+  name = &quot;Enrichment Ratio&quot;,
+  option = &quot;plasma&quot;,
+  limits = color_limits,
+  oob = scales::squish
+)+
     scale_y_discrete(labels = function(x) stringr::str_wrap(gsub(&quot;__.*$&quot;, &quot;&quot;, x), width = 10)) +
      scale_shape_manual(values = c(&quot;Enriched&quot; = 16, &quot;Depleted&quot; = 17))+
     theme_classic() +
@@ -1825,6 +1867,72 @@ cowplot::plot_grid(aligned_plots[[1]],
           aligned_plots[[2]],
           ncol = 2)</code></pre>
 <p><img src="figure/H3K27ac_TF_motifs.Rmd/functional%20full%20plot-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-functional-full-plot-1">
+Past versions of "functional full plot-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-functional-full-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/7840a6d6d410439a044a83c7f028088e7a0d34e8/docs/figure/H3K27ac_TF_motifs.Rmd/functional full plot-1.png" target="_blank">7840a6d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="rna-filtering" class="section level3">
+<h3>RNA filtering</h3>
+<pre class="r"><code>RNA_full_toptable &lt;-  readRDS(&quot;data/Other_paper_data/RNA_full_toptable.RDS&quot;)
+
+RNA_expressed &lt;- RNA_full_toptable %&gt;% 
+  dplyr::select(Entrez_ID, SYMBOL)
+
+filtered_H3K27ac_Set3_data&lt;- H3K27ac_Set3_data%&gt;% 
+  dplyr::filter(str_to_upper(motif_name) %in% str_to_upper(RNA_expressed$SYMBOL)) 
+
+
+filtered_H3K27ac_Set2_data&lt;- H3K27ac_Set2_data%&gt;% 
+  dplyr::filter(str_to_upper(motif_name) %in% str_to_upper(RNA_expressed$SYMBOL))
+
+global_combo &lt;- bind_rows(filtered_H3K27ac_Set2_data, filtered_H3K27ac_Set3_data)
+
+global_limits &lt;-  quantile(global_combo$ENR_RATIO, probs = c(0.05, 0.95), na.rm = TRUE)
+
+  filt_A &lt;- plot_topnum_ratio_full(filtered_H3K27ac_Set3_data,signif.num = 0.05, top_num = 10,color_limits = global_limits)
+  
+  filt_B &lt;- plot_topnum_ratio_full(filtered_H3K27ac_Set2_data,signif.num = 0.05, top_num = 10,color_limits = global_limits)
+  
+  aligned_filt_plots &lt;- cowplot::align_plots(filt_A, filt_B, align = &quot;v&quot;, axis = &quot;l&quot;)
+
+cowplot::plot_grid(aligned_filt_plots[[1]],
+          aligned_filt_plots[[2]],
+          ncol = 2)</code></pre>
+<p><img src="figure/H3K27ac_TF_motifs.Rmd/RNA%20filtering-1.png" width="1152" style="display: block; margin: auto;" /></p>
 </div>
 <div id="case-and-summit-calls-method-1-subset-a-and-b"
 class="section level3">
@@ -2086,6 +2194,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/7840a6d6d410439a044a83c7f028088e7a0d34e8/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-1.png" target="_blank">7840a6d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-1.png" target="_blank">78269d9</a>
 </td>
 <td>
@@ -2125,6 +2244,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/7840a6d6d410439a044a83c7f028088e7a0d34e8/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-2.png" target="_blank">7840a6d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/78269d973bb4bb4b056a8d1d02540d8081aa9c3f/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-2.png" target="_blank">78269d9</a>
 </td>
 <td>
@@ -2140,12 +2270,160 @@ reneeisnowhere
 </div>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set2_A, signif.num = 0.05, page = 1)</code></pre>
 <p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-3">
+Past versions of unnamed-chunk-5-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/7840a6d6d410439a044a83c7f028088e7a0d34e8/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-3.png" target="_blank">7840a6d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 3)</code></pre>
 <p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-4">
+Past versions of unnamed-chunk-5-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/7840a6d6d410439a044a83c7f028088e7a0d34e8/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-4.png" target="_blank">7840a6d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 2)</code></pre>
 <p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-5">
+Past versions of unnamed-chunk-5-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/7840a6d6d410439a044a83c7f028088e7a0d34e8/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-5.png" target="_blank">7840a6d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_ENR_RATIO(H3K27ac_set2_B, signif.num = 0.05, page = 1)</code></pre>
 <p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-6">
+Past versions of unnamed-chunk-5-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/7840a6d6d410439a044a83c7f028088e7a0d34e8/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-5-6.png" target="_blank">7840a6d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># plot_topnum_RATIO(H3K27ac_set2_A, signif.num = 0.05, top_num = 10)
 # 
 # plot_topnum_RATIO(H3K27ac_Set3_data,signif.num = 0.05, top_num = 10)</code></pre>
@@ -2629,12 +2907,86 @@ ggVennDiagram::ggVennDiagram(toplist_direct_set2)+scale_fill_gradient(
     high = &quot;blue&quot;
   )</code></pre>
 <p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/7840a6d6d410439a044a83c7f028088e7a0d34e8/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-6-1.png" target="_blank">7840a6d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code> Shared_motifs_set3 &lt;- Reduce(intersect, toplist_direct_set3)
 ggVennDiagram::ggVennDiagram(toplist_direct_set3)+scale_fill_gradient(
     low = &quot;white&quot;,
     high = &quot;red&quot;
   )</code></pre>
 <p><img src="figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/7840a6d6d410439a044a83c7f028088e7a0d34e8/docs/figure/H3K27ac_TF_motifs.Rmd/unnamed-chunk-6-2.png" target="_blank">7840a6d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
