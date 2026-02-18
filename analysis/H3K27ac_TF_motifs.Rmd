@@ -414,12 +414,14 @@ dplyr::filter(EVALUE<0.05) %>%
 
 ```
 ```{r}
-plot_topnum_ratio_full <- function(df, title = NULL, signif.num = 0.05,top_num=20){
+plot_topnum_ratio_full <- function(df, title = NULL, signif.num = 0.05,top_num=20, color_limits = NULL){
   
   ### getting the name of the data frame for plotting
  if (is.null(title)) {
     title <- deparse(substitute(df))
-  }
+ }
+  
+   
 
   ### Getting the data ready
   plot_df <- df %>%
@@ -444,7 +446,12 @@ plot_topnum_ratio_full <- function(df, title = NULL, signif.num = 0.05,top_num=2
       expand = c(0, .125),
       sec.axis = sec_axis(~ . / scaler, name = "Enrichment Ratio")
     ) +
-    scale_color_viridis_c(name = "Enrichment Ratio", option = "plasma") +
+   scale_color_viridis_c(
+  name = "Enrichment Ratio",
+  option = "plasma",
+  limits = color_limits,
+  oob = scales::squish
+)+
     scale_y_discrete(labels = function(x) stringr::str_wrap(gsub("__.*$", "", x), width = 10)) +
      scale_shape_manual(values = c("Enriched" = 16, "Depleted" = 17))+
     theme_classic() +
@@ -467,6 +474,36 @@ cowplot::plot_grid(aligned_plots[[1]],
 ```
 
 
+### RNA filtering  
+
+```{r RNA filtering, fig.width=12}
+RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
+
+RNA_expressed <- RNA_full_toptable %>% 
+  dplyr::select(Entrez_ID, SYMBOL)
+
+filtered_H3K27ac_Set3_data<- H3K27ac_Set3_data%>% 
+  dplyr::filter(str_to_upper(motif_name) %in% str_to_upper(RNA_expressed$SYMBOL)) 
+
+
+filtered_H3K27ac_Set2_data<- H3K27ac_Set2_data%>% 
+  dplyr::filter(str_to_upper(motif_name) %in% str_to_upper(RNA_expressed$SYMBOL))
+
+global_combo <- bind_rows(filtered_H3K27ac_Set2_data, filtered_H3K27ac_Set3_data)
+
+global_limits <-  quantile(global_combo$ENR_RATIO, probs = c(0.05, 0.95), na.rm = TRUE)
+
+  filt_A <- plot_topnum_ratio_full(filtered_H3K27ac_Set3_data,signif.num = 0.05, top_num = 10,color_limits = global_limits)
+  
+  filt_B <- plot_topnum_ratio_full(filtered_H3K27ac_Set2_data,signif.num = 0.05, top_num = 10,color_limits = global_limits)
+  
+  aligned_filt_plots <- cowplot::align_plots(filt_A, filt_B, align = "v", axis = "l")
+
+cowplot::plot_grid(aligned_filt_plots[[1]],
+          aligned_filt_plots[[2]],
+          ncol = 2)
+
+```
 
 
 
