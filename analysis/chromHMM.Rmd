@@ -158,6 +158,40 @@ States_anno <- data.frame("State"=c(paste0("E",1:16)),
 # States_anno
 
 ```
+#### reordering of the states emission:
+
+```{r state reorder}
+
+emission_16state %>% 
+  
+  mutate(`State (Emission order)`=paste0("E",`State (Emission order)`)) %>% 
+left_join(.,States_anno, by = c(`State (Emission order)`="State")) %>%
+   mutate(Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %>% 
+  
+  pivot_longer(.,  !c(`State (Emission order)`,Name,recode), names_to = "Histone",values_to = "emission") %>% 
+  mutate(Histone=factor(Histone,levels=c("H3K27ac","H3K36me3","H3K27me3","H3K9me3"))) %>% 
+  ggplot(., aes(x=Histone, y=Name, fill=emission))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_x_discrete(expand = c(0, 0)) +
+scale_y_discrete(expand = c(0, 0), limits = rev)+
+  coord_fixed()+
+    theme_classic()+
+  ggtitle("Emission Parameters")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
 
 ### Enrichment across the states:
 looking at enrichment of Features across the states by each group.  This helps with the classification and interpretation of what each state represents.
