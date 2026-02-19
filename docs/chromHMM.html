@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree0141b72284e0b216a8863fbbfb138e9c98d1c177targetblank0141b72a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree93024560c7d110c163072c06d8df81e09cd005detargetblank9302456a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/0141b72284e0b216a8863fbbfb138e9c98d1c177" target="_blank">0141b72</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/93024560c7d110c163072c06d8df81e09cd005de" target="_blank">9302456</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree0141b72284e0b216a8863fbbfb138e9c98d1c177targetblank0141b72a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree93024560c7d110c163072c06d8df81e09cd005detargetblank9302456a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/0141b72284e0b216a8863fbbfb138e9c98d1c177" target="_blank">0141b72</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/93024560c7d110c163072c06d8df81e09cd005de" target="_blank">9302456</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -556,7 +556,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
@@ -635,6 +634,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/93024560c7d110c163072c06d8df81e09cd005de/analysis/chromHMM.Rmd" target="_blank">9302456</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+<td>
+wflow_publish("analysis/chromHMM.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/d380d45c41c2e5eeb514c27c5f7a080d281ad0d0/docs/chromHMM.html" target="_blank">d380d45</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1098,6 +1131,38 @@ reneeisnowhere
 # SOIs &lt;- c(&quot;E4&quot;,&quot;E10&quot;,&quot;E11&quot;,&quot;E12&quot;,&quot;E13&quot;)
 
 # States_anno</code></pre>
+<div id="reordering-of-the-states-emission" class="section level4">
+<h4>reordering of the states emission:</h4>
+<pre class="r"><code>emission_16state %&gt;% 
+  
+  mutate(`State (Emission order)`=paste0(&quot;E&quot;,`State (Emission order)`)) %&gt;% 
+left_join(.,States_anno, by = c(`State (Emission order)`=&quot;State&quot;)) %&gt;%
+   mutate(Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %&gt;% 
+  
+  pivot_longer(.,  !c(`State (Emission order)`,Name,recode), names_to = &quot;Histone&quot;,values_to = &quot;emission&quot;) %&gt;% 
+  mutate(Histone=factor(Histone,levels=c(&quot;H3K27ac&quot;,&quot;H3K36me3&quot;,&quot;H3K27me3&quot;,&quot;H3K9me3&quot;))) %&gt;% 
+  ggplot(., aes(x=Histone, y=Name, fill=emission))+
+  geom_tile(color = &quot;grey9&quot;,
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = &quot;white&quot;,
+  high = &quot;#08306B&quot;,
+  limits = c(0, 1),   # &lt;- KEY
+  oob = scales::squish,
+   na.value = &quot;white&quot;,   # &lt;- this sets NAs to white
+  name = &quot;scale&quot;
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_x_discrete(expand = c(0, 0)) +
+scale_y_discrete(expand = c(0, 0), limits = rev)+
+  coord_fixed()+
+    theme_classic()+
+  ggtitle(&quot;Emission Parameters&quot;)+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<p><img src="figure/chromHMM.Rmd/state%20reorder-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="enrichment-across-the-states" class="section level3">
 <h3>Enrichment across the states:</h3>
@@ -1398,6 +1463,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d380d45c41c2e5eeb514c27c5f7a080d281ad0d0/docs/figure/chromHMM.Rmd/plot all genes states-1.png" target="_blank">d380d45</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/184a74108694603da42e0818504aad468bbc7a21/docs/figure/chromHMM.Rmd/plot all genes states-1.png" target="_blank">184a741</a>
 </td>
 <td>
@@ -1605,6 +1681,43 @@ ggplot(geom_df_reorderd,aes(x=Identity_label,y=Name, fill=chromhmm_scaled))+
   ggtitle(&quot;Genic region relative enrichment pattern across conditions\n (geometric mean)&quot;)+
   coord_fixed()</code></pre>
 <p><img src="figure/chromHMM.Rmd/poster%20plot%20data%20frame-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-poster-plot-data-frame-1">
+Past versions of "poster plot data frame-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-poster-plot-data-frame-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d380d45c41c2e5eeb514c27c5f7a080d281ad0d0/docs/figure/chromHMM.Rmd/poster plot data frame-1.png" target="_blank">d380d45</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>geom_df_reorderd &lt;- geom_df_reorderd %&gt;%  mutate(log2_FE = log2(geom_FE))
 
 ggplot(geom_df_reorderd,
@@ -1632,6 +1745,43 @@ ggplot(geom_df_reorderd,
   ggtitle(&quot;Geometric Mean ChromHMM Enrichment Across Conditions&quot;)+
   coord_fixed()</code></pre>
 <p><img src="figure/chromHMM.Rmd/suppdata%20for%20poster-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-suppdata-for-poster-1">
+Past versions of "suppdata for poster-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-suppdata-for-poster-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d380d45c41c2e5eeb514c27c5f7a080d281ad0d0/docs/figure/chromHMM.Rmd/suppdata for poster-1.png" target="_blank">d380d45</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now I want to look at the change of log2 Foldenrichment of DOX -VEH
 at each timepoint</p>
 <pre class="r"><code>df_1 &lt;- all_genes_states_long %&gt;%
@@ -1694,6 +1844,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d380d45c41c2e5eeb514c27c5f7a080d281ad0d0/docs/figure/chromHMM.Rmd/delta lfe-1.png" target="_blank">d380d45</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/67b9d8a57dd77f9ab96167d753de383b83cbf5c8/docs/figure/chromHMM.Rmd/delta lfe-1.png" target="_blank">67b9d8a</a>
@@ -1761,6 +1922,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d380d45c41c2e5eeb514c27c5f7a080d281ad0d0/docs/figure/chromHMM.Rmd/enchacers plot-1.png" target="_blank">d380d45</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/3facb4be80e698a8622bc91709a31f19468c526f/docs/figure/chromHMM.Rmd/enchacers plot-1.png" target="_blank">3facb4b</a>
@@ -1876,6 +2048,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d380d45c41c2e5eeb514c27c5f7a080d281ad0d0/docs/figure/chromHMM.Rmd/unnamed-chunk-3-1.png" target="_blank">d380d45</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c900eabee3d26ee2c9bf9645010521710be5ebf/docs/figure/chromHMM.Rmd/unnamed-chunk-3-1.png" target="_blank">8c900ea</a>
 </td>
 <td>
@@ -1956,6 +2139,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d380d45c41c2e5eeb514c27c5f7a080d281ad0d0/docs/figure/chromHMM.Rmd/repeatplot-1.png" target="_blank">d380d45</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8c900eabee3d26ee2c9bf9645010521710be5ebf/docs/figure/chromHMM.Rmd/repeatplot-1.png" target="_blank">8c900ea</a>
@@ -2053,6 +2247,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d380d45c41c2e5eeb514c27c5f7a080d281ad0d0/docs/figure/chromHMM.Rmd/unnamed-chunk-4-1.png" target="_blank">d380d45</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/4a907cb841426f741bc815a84f55ece79216ba94/docs/figure/chromHMM.Rmd/unnamed-chunk-4-1.png" target="_blank">4a907cb</a>
 </td>
 <td>
@@ -2140,6 +2345,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d380d45c41c2e5eeb514c27c5f7a080d281ad0d0/docs/figure/chromHMM.Rmd/scaled TE-1.png" target="_blank">d380d45</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/4a907cb841426f741bc815a84f55ece79216ba94/docs/figure/chromHMM.Rmd/scaled TE-1.png" target="_blank">4a907cb</a>
