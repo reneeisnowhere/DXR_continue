@@ -39,7 +39,7 @@ library(DT)
 library(readxl)
 library(ChIPseeker)
 library(regioneR)
-
+library(patchwork)
 library(GenomeInfoDb)
 ```
 
@@ -129,6 +129,36 @@ scale_y_discrete(expand = c(0, 0), limits = rev)+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ```
+
+### Adding annotation to states
+
+```{r annotation}
+
+States_anno <- data.frame("State"=c(paste0("E",1:16)),
+"Name"=c("Heterochromatin_1",
+"Quiescent_Low_Coverage",
+"Repressed_Heterochromatin",
+"Repressed_ZFP_regions",
+"Strong_Polycomb_Repressed",
+ "Bivalent_Enhancer",
+"Heterochromatin_2",
+"Bivalent_Poised_TSS2",
+ "Weak_Genic_Enhancer",
+ "Strong_Genic_Enhancer1",
+ "Active_Proximal_Enhancer",
+  "Strong_Genic_Enhancer2",
+ "Active_TSS",
+ "Very_Weak_Transcription",
+ "Genic_Strong_Transcription",
+ "Genic_Weak_Transcription"), "recode"=c("N","P","M","L","K","J","O","I","H","F","E","G","A","D","B","C")) %>% 
+  mutate(recode=factor(recode,levels=c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P")))
+
+# SOIs <- c("E4","E10","E11","E12","E13")
+
+# States_anno
+
+```
+
 ### Enrichment across the states:
 looking at enrichment of Features across the states by each group.  This helps with the classification and interpretation of what each state represents.
 
@@ -266,7 +296,8 @@ VEH_144R_ATAC <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap
    bind_rows(DOX_24R_ATAC) %>% 
    bind_rows(VEH_24R_ATAC) %>% 
    bind_rows(DOX_24T_ATAC) %>% 
-   bind_rows(VEH_24T_ATAC) 
+   bind_rows(VEH_24T_ATAC) %>% 
+   left_join(.,States_anno, by = c(`State (Emission order)`="State"))
  
 ```
 
@@ -278,7 +309,8 @@ all_files_states <-
    bind_rows(DOX_24R_full) %>% 
    bind_rows(VEH_24R_full) %>% 
    bind_rows(DOX_24T_full) %>% 
-   bind_rows(VEH_24T_full) 
+   bind_rows(VEH_24T_full) %>% 
+  left_join(.,States_anno, by = c(`State (Emission order)`="State"))
 
 long_file <- all_files_states %>% 
   dplyr::select(`State (Emission order)`,
@@ -298,10 +330,10 @@ long_file <- all_files_states %>%
                 Satellite_rptmasker.bed,
                 Simple_repeat_rptmasker.bed,
                 Unknown_rptmasker.bed, 
-                rRNA_rptmasker.bed:group) %>% 
+                rRNA_rptmasker.bed:group,Name,recode) %>% 
   mutate(`State (Emission order)`=factor(`State (Emission order)`, levels = c(paste0("E", 1:16),"Base"))) %>%
   dplyr::filter(`State (Emission order)` != "Base") %>% 
-  pivot_longer(., cols=!c(`State (Emission order)`,group), names_to = "Identity",values_to = "Fold_enrichment") %>% 
+  pivot_longer(., cols=!c(`State (Emission order)`,group,Name,recode), names_to = "Identity",values_to = "Fold_enrichment") %>% 
   mutate(Identity=str_remove(Identity,".bed")) %>% 
   mutate(Identity=factor(Identity, 
                          levels=c("Genome %",
@@ -334,19 +366,20 @@ long_file <- all_files_states %>%
                                   "snRNA_rptmasker",
                                   "srpRNA_rptmasker",
                                   "tRNA_rptmasker"))) %>% 
-   mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R")))
+   mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R"))) 
 
 ```
 
 ```{r plot dataframe for genes}
 
 # columns to pivot (exclude ID columns)
-id_cols <- c("State (Emission order)", "group")
+id_cols <- c("State (Emission order)", "group","Name","recode")
 
 all_genes_states_long <-
 all_genes_states %>%
   mutate(`State (Emission order)`=paste0("E",`State (Emission order)`)) %>% 
   left_join(just_ZFP) %>% 
+  left_join(.,States_anno, by = c(`State (Emission order)`="State")) %>% 
   
   mutate(`State (Emission order)` = factor(`State (Emission order)`,
                                            levels = c(paste0("E",1:16),"EBase"))) %>%
@@ -387,8 +420,14 @@ all_genes_states_long %>%
     FE_min = min(Fold_enrichment, na.rm = TRUE),
     FE_max = max(Fold_enrichment, na.rm = TRUE),
     chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
-  ) %>% 
-    ggplot(.,aes(x=Identity_label,y=`State (Emission order)`, fill=chromhmm_scaled))+
+  ) %>%
+  arrange(recode) %>%
+  mutate(
+    Name = factor(Name,
+                  levels = unique(Name[order(recode)])) ) %>% 
+ 
+    # ggplot(.,aes(x=Identity_label,y=`State (Emission order)`, fill=chromhmm_scaled))+
+  ggplot(.,aes(x=Identity_label,y=Name, fill=chromhmm_scaled))+
   geom_tile(color = "grey9",
             lwd = .1,
             linetype = 1)+
@@ -408,7 +447,7 @@ all_genes_states_long %>%
 
 
 ```
-The genic enrichment across states plots shows the exact enrichment across each condtion, however, for summary purposes, I wish to know the general enrichment from all conditions.  I will take the geometric mean  across  DOX and VEH conditions (and all conditions) at each timepoint for each state and identity ( in this case for the CpGIslands, Exons, genes, TESs and TSS etc..).  This treats the fold-change enrichment and depletion symmetrically about 1 because enrichment behaves multiplicatively because it is already a ratio.  I am only using this to determine which states are constitutively TSS-enriched, with are CPG-biased, which are ZFP biased etc...
+The genic enrichment across states plots shows the exact enrichment across each condition, however, for summary purposes, I wish to know the general enrichment from all conditions.  I will take the geometric mean  across  DOX and VEH conditions (and all conditions) at each timepoint for each state and identity ( in this case for the CpGIslands, Exons, genes, TESs and TSS etc..).  This treats the fold-change enrichment and depletion symmetrically about 1 because enrichment behaves multiplicatively since it is already a ratio.  I am only using this to determine which states are constitutively TSS-enriched, with are CPG-biased, which are ZFP enriched etc...
 ```{r geometric mean, all conditions}
 geom_mean_df <- all_genes_states_long %>% 
   group_by(Identity, Identity_label, `State (Emission order)`) %>% 
@@ -468,17 +507,108 @@ ggplot(geom_mean_df,
   coord_fixed()
 ```
 
+
+#### Poster future plots
+
+```{r poster plot data frame}
+full_states_data_long <- bind_rows(all_genes_states_long,long_file)
+
+Identity_label_order <- c("Genome %", "CpGIsland","RefSeqGene","RefSeqTSS2kb","RefSeqTSS","RefSeqExon","RefSeqTES",   
+      "ZFP_proteins","PLS","pELS","dELS")
+
+geom_df_reorderd <-
+full_states_data_long %>% 
+  mutate(Identity_label = case_when(
+      str_detect(Identity, "\\.hg38\\.bed\\.gz$") ~ str_remove(Identity, "\\.hg38\\.bed\\.gz$"),
+      str_detect(Identity, "\\.bed$") ~ str_remove(Identity, "\\.bed$"),
+      str_detect(Identity,"^SCREEN_hg38_")~ str_remove(Identity,"^SCREEN_hg38_"),
+       str_detect(Identity,"_rptmasker")~ str_remove(Identity,"_rptmasker"),
+      Identity =="all_H3K27ac_H3K27ac_ROI"~ "all_H3K27ac_regions",
+      TRUE ~ Identity   # keep everything else unchanged
+    ),
+    group = factor(group,
+                        levels = c("VEH_24T","VEH_24R","VEH_144R",
+                                   "DOX_24T","DOX_24R","DOX_144R"))) %>% 
+  dplyr::filter(Identity_label %in% Identity_label_order) %>% 
+  arrange(recode) %>%
+  mutate(
+    Name = factor(Name,
+                  levels = unique(Name[order(recode)])),
+    Identity_label=factor(Identity_label,levels=Identity_label_order)) %>% 
+   group_by(Identity, Identity_label, Name) %>% 
+  summarize(geom_FE = exp(mean(log(Fold_enrichment + 1e-6), na.rm = TRUE)),
+    .groups = "drop") %>% 
+  group_by(Identity) %>% 
+             mutate(
+    FE_min = min(geom_FE, na.rm = TRUE),
+    FE_max = max(geom_FE, na.rm = TRUE),
+    chromhmm_scaled = (geom_FE - FE_min) / (FE_max - FE_min)) 
+
+
+ggplot(geom_df_reorderd,aes(x=Identity_label,y=Name, fill=chromhmm_scaled))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "transformed scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  
+    scale_y_discrete(limits=rev)+
+  ggtitle("Genic region relative enrichment pattern across conditions\n (geometric mean)")+
+  coord_fixed()
+
+  
+```
+
+```{r suppdata for poster}
+geom_df_reorderd <- geom_df_reorderd %>%  mutate(log2_FE = log2(geom_FE))
+
+ggplot(geom_df_reorderd,
+       aes(x = Identity_label,
+           y = Name,
+           fill = log2_FE)) +
+
+  geom_tile(color = "grey9", linewidth = 0.1) +
+
+  scale_fill_gradient2(
+    low = "darkgreen",
+    mid = "white",
+    high = "#08306B",
+    midpoint = 0,
+    name = "log2(Fold Enrichment)"
+  ) +
+
+  scale_y_discrete(limits = rev) +
+
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+
+  ggtitle("Geometric Mean ChromHMM Enrichment Across Conditions")+
+  coord_fixed()
+```
+
+
 Now I want to look at the change of log2 Foldenrichment of DOX -VEH at each timepoint
 
 
 ```{r delta lfe}
 
 df_1 <- all_genes_states_long %>%
-  mutate(log2_FE = log2(Fold_enrichment + 1e-6)) %>% 
+  mutate(log2_FE = log2(Fold_enrichment + 1e-6),
+  Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %>% 
   separate(group, into = c("trt","time"), remove = FALSE)
 
 delta_df_1 <- df_1 %>%
-  group_by(time, Identity, Identity_label, `State (Emission order)`) %>%
+  group_by(time, Identity, Identity_label,Name) %>%
   summarise(
     delta_log2FE =
       log2_FE[trt == "DOX"] -
@@ -488,15 +618,15 @@ delta_df_1 <- df_1 %>%
 
 ggplot(delta_df_1,
        aes(x = Identity_label,
-           y = `State (Emission order)`,
+           y = Name,
            fill = delta_log2FE)) +
 
   geom_tile(color = "grey9", linewidth = 0.1) +
 
   scale_fill_gradient2(
-    low = "#67001F",
+    low = "#053061",
     mid = "white",
-    high = "#053061",
+    high = "#67001F",
     midpoint = 0,
     name = "log2(DOX / VEH)"
   ) +
@@ -521,9 +651,10 @@ long_file %>%
   mutate(
     FE_min = min(Fold_enrichment, na.rm = TRUE),
     FE_max = max(Fold_enrichment, na.rm = TRUE),
-    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
-  ) %>% 
-    ggplot(.,aes(x=Identity,y=`State (Emission order)`, fill=chromhmm_scaled))+
+    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min),
+    Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %>% 
+     ggplot(.,aes(x=Identity,y=Name, fill=chromhmm_scaled))+
   geom_tile(color = "grey9",
             lwd = .1,
             linetype = 1)+
@@ -573,9 +704,14 @@ all_ZFPs_states %>%
   mutate(`State (Emission order)` = factor(`State (Emission order)`,
                                            levels = c(paste0("E",1:16), "Base"))) %>%
   filter(`State (Emission order)` != "Base") %>% 
-  pivot_longer(., -c(`State (Emission order)`,group), names_to = "Identity", values_to="Fold_enrichment") %>% 
+   left_join(.,States_anno, by = c(`State (Emission order)`="State")) %>% 
+  mutate(Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %>% 
+ 
+  pivot_longer(., -c(`State (Emission order)`,group, recode, Name), names_to = "Identity", values_to="Fold_enrichment") %>% 
    mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R"))) %>% 
-  mutate(Identity=factor(Identity, levels=order)) %>% 
+  mutate(Identity=factor(Identity, levels=order),
+         ) %>% 
   dplyr::filter(Identity!="ZFP_proteins.bed") %>% 
   group_by(Identity) %>%   # i.e. per annotation column
   mutate(
@@ -583,7 +719,7 @@ all_ZFPs_states %>%
     FE_max = max(Fold_enrichment, na.rm = TRUE),
     chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
   ) %>% 
-    ggplot(.,aes(x=Identity,y=`State (Emission order)`, fill=chromhmm_scaled))+
+    ggplot(.,aes(x=Identity,y=Name, fill=chromhmm_scaled))+
   geom_tile(color = "grey9",
             lwd = .1,
             linetype = 1)+
@@ -604,31 +740,6 @@ all_ZFPs_states %>%
   
   
 ```
-### Adding annotation to states
-
-```{r annotation}
-
-States_anno <- data.frame("State"=c(paste0("E",1:16)),
-"Name"=c("Heterochromatin",
-"Quiescent_Low_Coverage",
-"Repressed_Heterochromatin",
-"Repressed_ZNF_regions",
-"Strong_Polycomb_Repressed",
- "Bivalent_Enhancer",
-"Bivalent_Poised_TSS1",
-"Bivalent_Poised_TSS2",
- "Weak_Genic_Enhancer",
- "Strong_Genic_Enhancer1",
- "Active_Proximal_Enhancer",
-  "Strong_Genic_Enhancer2",
- "Active_TSS",
- "Very_Weak_Transcription",
- "Genic_Strong_Transcription",
- "Genic_Weak_Transcription"))
-
-# SOIs <- c("E4","E10","E11","E12","E13")
-
-```
 
 ```{r repeatplot, fig.width=10}
 long_file %>% 
@@ -644,9 +755,10 @@ long_file %>%
   mutate(
     FE_min = min(Fold_enrichment, na.rm = TRUE),
     FE_max = max(Fold_enrichment, na.rm = TRUE),
-    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
-  ) %>% 
-    ggplot(.,aes(x=rpt,y=`State (Emission order)`, fill=chromhmm_scaled))+
+    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min),
+    Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %>%  
+    ggplot(.,aes(x=rpt,y=Name, fill=chromhmm_scaled))+
   geom_tile(color = "grey9",
             lwd = .1,
             linetype = 1)+
@@ -676,11 +788,13 @@ delta_TE_df <- long_file %>%
                        Identity=="LTR_rptmasker"~"LTR",
                        Identity=="DNA_rptmasker"~"DNA",
                        Identity=="Retroposon_rptmasker"~"SVA",
-                       TRUE~"Other")) %>% 
+                       TRUE~"Other"),
+         Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %>%  
   mutate(log2_FE = log2(Fold_enrichment + 1e-6)) %>% 
   separate(group, into = c("trt","time"), remove = FALSE) %>% 
   dplyr::filter(rpt != "Other") %>% 
-  group_by(time,  rpt, `State (Emission order)`) %>%
+  group_by(time,  rpt,Name) %>%
   summarise(
     delta_log2FE =
       log2_FE[trt == "DOX"] -
@@ -692,7 +806,7 @@ delta_TE_df <- long_file %>%
 
 ggplot(delta_TE_df ,
        aes(x = time,
-           y = `State (Emission order)`,
+           y = Name,
            fill = delta_log2FE)) +
   geom_tile(color = "grey20", linewidth = 0.2) +
   
@@ -701,7 +815,7 @@ ggplot(delta_TE_df ,
     mid = "white",     # No change
     high = "#2166AC",  # Increase
     midpoint = 0,
-    limits = c(-2.5, 2.5),
+    limits = c(-4.5, 4.5),
     name = "Δ log2(FE)\n(DOX - VEH)"
   ) +
   
@@ -728,9 +842,10 @@ ggplot(delta_TE_df ,
 
 ```{r scaled TE}
 TE_delta_df <- delta_TE_df %>%
-  filter(rpt %in% c("LTR","LINE","SINE","DNA","SVA")) %>%
+  # filter(rpt %in% c("LTR","LINE","SINE","DNA","SVA")) %>%
+  filter(rpt %in% c("LTR")) %>% 
   mutate(
-    `State (Emission order)` = forcats::fct_rev(`State (Emission order)`),
+    # `State (Emission order)` = forcats::fct_rev(`State (Emission order)`),
     time = factor(time, levels = c("24T","24R","144R"))
   ) %>%
   group_by(rpt) %>%
@@ -738,7 +853,7 @@ TE_delta_df <- delta_TE_df %>%
     # scale relative to max abs value per TE
     delta_log2FE_scaled = delta_log2FE / max(abs(delta_log2FE), na.rm = TRUE),
     # ensure no value goes outside -1..1
-    delta_log2FE_scaled = pmax(pmin(delta_log2FE_scaled, 1), -1)
+    delta_log2FE_scaled = pmax(pmin(delta_log2FE_scaled, .5), -.5)
   ) %>%
   ungroup()
 # Scale across the entire dataset
@@ -749,16 +864,18 @@ TE_delta_df <- delta_TE_df %>%
 
 ggplot(TE_delta_df,
        aes(x = time,
-           y = `State (Emission order)`,
-           fill = delta_log2FE_scaled)) +
+           y = Name,
+           fill = delta_log2FE)) +
   geom_tile(color = "grey20", linewidth = 0.2) +
   
   scale_fill_gradient2(
-  low = "#B2182B",
+  low = "#2166AC",
   mid = "white",
-  high = "#2166AC",
+  high = "#B2182B",
   midpoint = 0,
-  name = "Δ log2(FE)\nscaled"
+  limits = c(-.5, .5),
+  oob = scales::squish,
+  name = "Δ log2(FE)\n"
 )+
   
   facet_wrap(~rpt, ncol = 5) +  # one TE type per facet
@@ -773,6 +890,7 @@ ggplot(TE_delta_df,
     y = "ChromHMM State",
     title = "Scaled Δ log2(FE) per TE type after DNA damage"
   ) +
+   scale_y_discrete(limits=rev)+
   coord_fixed(ratio = 1.2)
 ```
 
@@ -786,7 +904,7 @@ ggplot(TE_delta_df,
 
 ATAC_long_file <- all_ATAC_states %>% 
   filter(`State (Emission order)` != "Base") %>% 
-  pivot_longer(., -c(`State (Emission order)`,group), names_to = "Identity", values_to="Fold_enrichment") %>% 
+  pivot_longer(., -c(`State (Emission order)`,group, recode, Name), names_to = "Identity", values_to="Fold_enrichment") %>% 
    mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R")),
           `State (Emission order)`=factor(`State (Emission order)`, levels = paste0("E",1:16)))
 
