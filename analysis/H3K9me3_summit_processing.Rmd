@@ -202,27 +202,34 @@ assign_best_summit_to_ROI_parallel <- function(consensus_gr,
     # -----------------------------
     # 2) Nearest fallback
     # -----------------------------
-    unassigned_peaks <- setdiff(roi_meta$Peakid, assigned_df$Peakid)
-
-    if (length(unassigned_peaks) > 0 && length(cons_chr) > 0) {
-
-      roi_unassigned <- rois_chr[rois_chr$Peakid %in% unassigned_peaks]
-
-      dn <- distanceToNearest(roi_unassigned, cons_chr)
-
-      dn_df <- tibble(
-        Peakid = roi_unassigned$Peakid[queryHits(dn)],
-        summit_pos = start(cons_chr)[subjectHits(dn)],
-        summit_score = mcols(cons_chr)$score[subjectHits(dn)],
-        distance = mcols(dn)$distance
-      ) %>%
-        filter(distance <= max_dist) %>%
-        group_by(Peakid) %>%
-        slice_max(summit_score, with_ties = FALSE) %>%
-        ungroup()
-
-      assigned_df <- bind_rows(assigned_df, dn_df)
-    }
+#     unassigned_peaks <- setdiff(roi_meta$Peakid, assigned_df$Peakid)
+# 
+#     if (length(unassigned_peaks) > 0 && length(cons_chr) > 0) {
+# 
+#       roi_unassigned <- rois_chr[rois_chr$Peakid %in% unassigned_peaks]
+# 
+#   # Expand each ROI symmetrically by max_dist
+#   roi_expanded <- roi_unassigned
+# start(roi_expanded) <- start(roi_expanded) - max_dist
+# end(roi_expanded)   <- end(roi_expanded) + max_dist
+# 
+#   ov2 <- findOverlaps(roi_expanded, cons_chr)
+# 
+#   dn_df <- if (length(ov2) > 0) {
+#     tibble(
+#       Peakid = roi_unassigned$Peakid[queryHits(ov2)],
+#       summit_pos = start(cons_chr)[subjectHits(ov2)],
+#       summit_score = mcols(cons_chr)$score[subjectHits(ov2)]
+#     ) %>%
+#       group_by(Peakid) %>%
+#       slice_max(summit_score, with_ties = FALSE) %>%
+#       ungroup()
+#   } else {
+#     tibble()
+#   }
+# 
+#   assigned_df <- bind_rows(assigned_df, dn_df)
+# }
 
     # -----------------------------
     # 3) Merge + derived metrics
@@ -575,42 +582,47 @@ ggplot(heatmap_avg, aes(x = factor(min_gap_within),
 options(future.globals.maxSize = 10 * 1024^3)
 workers <- parallel::detectCores() - 1
 ### Step 1
-temp_highest_per_group <- get_highest_per_group_parallel(all_H3K9me3_summits_gr,
-                                                         group_col = "group",
-                                                         score_col = "score",
-                                                         min_gap_within = 100,
-                                                         workers = workers)
+# temp_highest_per_group <- get_highest_per_group_parallel(all_H3K9me3_summits_gr,
+#                                                          group_col = "group",
+#                                                          score_col = "score",
+#                                                          min_gap_within = 100,
+#                                                          workers = workers)
 
 # saveRDS(temp_highest_per_group,"data/RDS_files/H3K9me3_temp_highest_per_group.RDS")
+temp_highest_per_group <- readRDS("data/RDS_files/H3K9me3_temp_highest_per_group.RDS")
+
 # Concatenate into one GRanges (Step 1.2)
 flat_highest_gr <- (c(temp_highest_per_group$DOX_144R, temp_highest_per_group$DOX_24R,temp_highest_per_group$DOX_24T,temp_highest_per_group$VEH_144R,temp_highest_per_group$VEH_24R,temp_highest_per_group$VEH_24T))
 
 ### STep 2
-consensus_summits <- get_consensus_summits_parallel(
-  flat_highest_gr,
-  score_col = "score",
-  min_gap_across = 400,
-  workers = workers
-)
+# consensus_summits <- get_consensus_summits_parallel(
+#   flat_highest_gr,
+#   score_col = "score",
+#   min_gap_across = 400,
+#   workers = workers
+# )
 
 ####Concatenate into one GRanges
-consensus_summits_gr <- (c(consensus_summits$chr1,consensus_summits$chr2,
-                           consensus_summits$chr3,consensus_summits$chr4,
-                           consensus_summits$chr5,consensus_summits$chr6,
-                           consensus_summits$chr7,consensus_summits$chr8,
-                           consensus_summits$chr9,consensus_summits$chr10,
-                           consensus_summits$chr11,consensus_summits$chr12,
-                           consensus_summits$chr13,consensus_summits$chr14,
-                           consensus_summits$chr15,consensus_summits$chr16,
-                           consensus_summits$chr17,consensus_summits$chr18,
-                           consensus_summits$chr19,consensus_summits$chr20,
-                           consensus_summits$chr21,consensus_summits$chr22))
+# consensus_summits_gr <- (c(consensus_summits$chr1,consensus_summits$chr2,
+#                            consensus_summits$chr3,consensus_summits$chr4,
+#                            consensus_summits$chr5,consensus_summits$chr6,
+#                            consensus_summits$chr7,consensus_summits$chr8,
+#                            consensus_summits$chr9,consensus_summits$chr10,
+#                            consensus_summits$chr11,consensus_summits$chr12,
+#                            consensus_summits$chr13,consensus_summits$chr14,
+#                            consensus_summits$chr15,consensus_summits$chr16,
+#                            consensus_summits$chr17,consensus_summits$chr18,
+#                            consensus_summits$chr19,consensus_summits$chr20,
+#                            consensus_summits$chr21,consensus_summits$chr22))
 
 # saveRDS(consensus_summits_gr,"data/RDS_files/H3K9me3_consensus_summits_gr.RDS")
+consensus_summits_gr<- readRDS("data/RDS_files/H3K9me3_consensus_summits_gr.RDS")
 
-final_data <- assign_best_summit_to_ROI_parallel(consensus_summits_gr, ROIs,max_dist = 500,workers = workers)
+# final_data <- assign_best_summit_to_ROI_parallel(consensus_summits_gr, ROIs,max_dist = 100,workers = workers)
 
 # saveRDS(final_data,"data/RDS_files/H3K9me3_final_data.RDS")
+
+final_data <- readRDS("data/RDS_files/H3K9me3_final_data.RDS")
 # data.frame with one row per ROI (assigned or NA)
 final_df <- final_data$df
 
@@ -623,6 +635,19 @@ n_missing <- sum(is.na(final_df$summit_pos))
 cat("ROIs lacking any summit within max_dist:", n_missing, "\n")
 ```
 
+```{r, eval=FALSE}
+final_df$inside_roi <- with(final_df, summit_pos >=roi_start & summit_pos <= roi_end)
+
+table(final_df$inside_roi, useNA= "ifany")
+
+final_df$fallback_assigned <- with(final_df,
+                             !is.na(summit_pos) &
+                             !(summit_pos >= roi_start &
+                               summit_pos <= roi_end))
+table(final_df$fallback_assigned, useNA = "ifany")
+```
+
+
 ```{r assigning missing}
 na_rois <- final_df %>% filter(is.na(summit_pos)) 
 
@@ -631,6 +656,8 @@ na_rois_gr <- GRanges(
   ranges = IRanges(start = na_rois$roi_start, end = na_rois$roi_end),
   Peakid = na_rois$Peakid
 )
+
+seqinfo(na_rois_gr) <- seqinfo(Hsapiens)
 ov <- findOverlaps(na_rois_gr, flat_highest_gr)
 
 overlap_df <- tibble(
@@ -660,7 +687,7 @@ assigned_df_calc <- assigned_df %>% mutate(
               )
 
 complete_summit_df <- final_df %>% 
-  dplyr::select(!distance) %>% 
+  # dplyr::select(!distance) %>% 
    dplyr::filter(!is.na(summit_pos)) %>% 
   bind_rows(.,assigned_df_calc) %>% 
   left_join(., H3K9me3_lookup, by = "Peakid") %>% 
@@ -710,54 +737,54 @@ resize_and_trim <- function(gr, flank = 300, genome = BSgenome.Hsapiens.UCSC.hg3
   return(gr)
 }
 
-H3K9me3_set1_600 <- resize_and_trim(SET_1_gr,flank=300)
+# H3K9me3_set1_600 <- resize_and_trim(SET_1_gr,flank=300)
 H3K9me3_set1_400 <- resize_and_trim(SET_1_gr,flank=200)
-H3K9me3_set1_600<- trim(H3K9me3_set1_600)
-H3K9me3_set1_600 <- H3K9me3_set1_600[width(H3K9me3_set1_600) > 0]
+# H3K9me3_set1_600<- trim(H3K9me3_set1_600)
+# H3K9me3_set1_600 <- H3K9me3_set1_600[width(H3K9me3_set1_600) > 0]
 
 H3K9me3_set1_400 <- resize(SET_1_gr, width = 1 + 200*2, fix = "center")
 H3K9me3_set1_400<- trim(H3K9me3_set1_400)
 H3K9me3_set1_400 <- H3K9me3_set1_400[width(H3K9me3_set1_400) > 0]
 
 rtracklayer::export(SET_1_gr, "data/Bed_exports/H3K9me3_Set_1_summits.bed")
-rtracklayer::export(H3K9me3_set1_600, "data/Bed_exports/H3K9me3_Set_1_600.bed")
+# rtracklayer::export(H3K9me3_set1_600, "data/Bed_exports/H3K9me3_Set_1_600.bed")
 rtracklayer::export(H3K9me3_set1_400, "data/Bed_exports/H3K9me3_Set_1_400.bed")
 
 SET_2_gr <- complete_summit_gr[
   !is.na(mcols(complete_summit_gr)$cluster) &
   mcols(complete_summit_gr)$cluster == "Set_2"]
 
-H3K9me3_set2_600 <- resize_and_trim(SET_2_gr,flank=300)
+# H3K9me3_set2_600 <- resize_and_trim(SET_2_gr,flank=300)
 H3K9me3_set2_400 <- resize_and_trim(SET_2_gr,flank=400)
 
-H3K9me3_set2_600 <- resize(SET_2_gr, width = 1 + 300*2, fix = "center")
-H3K9me3_set2_600 <- trim(H3K9me3_set2_600)
-H3K9me3_set2_600 <- H3K9me3_set2_600[width(H3K9me3_set2_600) > 0]
+# H3K9me3_set2_600 <- resize(SET_2_gr, width = 1 + 300*2, fix = "center")
+# H3K9me3_set2_600 <- trim(H3K9me3_set2_600)
+# H3K9me3_set2_600 <- H3K9me3_set2_600[width(H3K9me3_set2_600) > 0]
 
 H3K9me3_set2_400 <- resize(SET_2_gr, width = 1 + 200*2, fix = "center")
 H3K9me3_set2_400 <- trim(H3K9me3_set2_400)
 H3K9me3_set2_400 <- H3K9me3_set2_400[width(H3K9me3_set2_400) > 0]
 rtracklayer::export(SET_2_gr, "data/Bed_exports/H3K9me3_Set_2_summits.bed")
-rtracklayer::export(H3K9me3_set2_600, "data/Bed_exports/H3K9me3_Set_2_600.bed")
+# rtracklayer::export(H3K9me3_set2_600, "data/Bed_exports/H3K9me3_Set_2_600.bed")
 rtracklayer::export(H3K9me3_set2_400, "data/Bed_exports/H3K9me3_Set_2_400.bed")
 
 SET_3_gr <- complete_summit_gr[
   !is.na(mcols(complete_summit_gr)$cluster) &
   mcols(complete_summit_gr)$cluster == "Set_3"]
 
-H3K9me3_set3_600 <- resize_and_trim(SET_3_gr,flank=300)
+# H3K9me3_set3_600 <- resize_and_trim(SET_3_gr,flank=300)
 H3K9me3_set3_400 <- resize_and_trim(SET_3_gr,flank=200)
 
-H3K9me3_set3_600 <- resize(SET_3_gr, width = 1 + 300*2, fix = "center")
-H3K9me3_set3_600 <- trim(H3K9me3_set3_600)
-H3K9me3_set3_600 <- H3K9me3_set3_600[width(H3K9me3_set3_600) > 0]
+# H3K9me3_set3_600 <- resize(SET_3_gr, width = 1 + 300*2, fix = "center")
+# H3K9me3_set3_600 <- trim(H3K9me3_set3_600)
+# H3K9me3_set3_600 <- H3K9me3_set3_600[width(H3K9me3_set3_600) > 0]
 
 H3K9me3_set3_400 <- resize(SET_3_gr, width = 1 + 200*2, fix = "center")
 H3K9me3_set3_400 <- trim(H3K9me3_set3_400)
 H3K9me3_set3_400 <- H3K9me3_set3_400[width(H3K9me3_set3_400) > 0]
 
 rtracklayer::export(SET_3_gr, "data/Bed_exports/H3K9me3_Set_3_summits.bed")
-rtracklayer::export(H3K9me3_set3_600, "data/Bed_exports/H3K9me3_Set_3_600.bed")
+# rtracklayer::export(H3K9me3_set3_600, "data/Bed_exports/H3K9me3_Set_3_600.bed")
 rtracklayer::export(H3K9me3_set3_400, "data/Bed_exports/H3K9me3_Set_3_400.bed")
   
 
