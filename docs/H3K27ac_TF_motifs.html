@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-02-18" />
+<meta name="date" content="2026-02-23" />
 
 <title>H3K27ac TF enrichment</title>
 
@@ -374,7 +374,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">H3K27ac TF enrichment</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-02-18</h4>
+<h4 class="date">2026-02-23</h4>
 
 </div>
 
@@ -403,7 +403,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-18
+<strong>Last updated:</strong> 2026-02-23
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreedbe389b89c36f67cf5f533b9f303fd43445c7a48targetblankdbe389ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree7ca10d191a71237156056fbce804d6ee60436728targetblank7ca10d1a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/dbe389b89c36f67cf5f533b9f303fd43445c7a48" target="_blank">dbe389b</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/7ca10d191a71237156056fbce804d6ee60436728" target="_blank">7ca10d1</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreedbe389b89c36f67cf5f533b9f303fd43445c7a48targetblankdbe389ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree7ca10d191a71237156056fbce804d6ee60436728targetblank7ca10d1a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/dbe389b89c36f67cf5f533b9f303fd43445c7a48" target="_blank">dbe389b</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/7ca10d191a71237156056fbce804d6ee60436728" target="_blank">7ca10d1</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -596,6 +596,7 @@ Untracked files:
     Untracked:  other_analysis/
 
 Unstaged changes:
+    Modified:   analysis/H3K27_TE_overlap.Rmd
     Modified:   analysis/H3K27ac_cisRE.Rmd
     Modified:   analysis/H3K27ac_summit_processing.Rmd
     Modified:   analysis/H3K9me3_TE_investigation.Rmd
@@ -646,6 +647,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/7ca10d191a71237156056fbce804d6ee60436728/analysis/H3K27ac_TF_motifs.Rmd" target="_blank">7ca10d1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-23
+</td>
+<td>
+filter updated
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/e7a3fffc099e445bce5eb324a1a76fd5fe981245/docs/H3K27ac_TF_motifs.html" target="_blank">e7a3fff</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -963,6 +998,8 @@ library(stringr)
 library(DT)</code></pre>
 <div id="summit-calls-method-1" class="section level3">
 <h3>Summit calls method 1</h3>
+<p>This is actually summit +/- 200 bp (and 300bp for initial
+investigation)</p>
 <pre class="r"><code>H3K27ac_Set2_sea_disc_out &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400/sea_disc_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;disc&quot;) %&gt;% slice_head(n = length(.$ID)-3)
 
 H3K27ac_Set2_sea_known &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/H3K27ac/H3K27ac_set2_400/sea_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;known&quot;) %&gt;% slice_head(n = length(.$ID)-3)
@@ -1912,27 +1949,75 @@ reneeisnowhere
 RNA_expressed &lt;- RNA_full_toptable %&gt;% 
   dplyr::select(Entrez_ID, SYMBOL)
 
-filtered_H3K27ac_Set3_data&lt;- H3K27ac_Set3_data%&gt;% 
-  dplyr::filter(str_to_upper(motif_name) %in% str_to_upper(RNA_expressed$SYMBOL)) 
+### had to add in a special filter to account for the :: in the names of the motifs
+symbols &lt;- str_to_upper(RNA_expressed$SYMBOL)
+
+filtered_H3K27ac_Set3_data &lt;- H3K27ac_Set3_data %&gt;%
+  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), &quot;::&quot;)) %&gt;%
+  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %&gt;%
+  select(-motif_tokens)
 
 
-filtered_H3K27ac_Set2_data&lt;- H3K27ac_Set2_data%&gt;% 
-  dplyr::filter(str_to_upper(motif_name) %in% str_to_upper(RNA_expressed$SYMBOL))
+filtered_H3K27ac_Set2_data &lt;- H3K27ac_Set2_data %&gt;%
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), &quot;::&quot;)) %&gt;%
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %&gt;%
+  select(-motif_tokens)
 
+
+## binding both together to get them to set a global limit on the secondary axis using quantiles so color range is identical
 global_combo &lt;- bind_rows(filtered_H3K27ac_Set2_data, filtered_H3K27ac_Set3_data)
 
 global_limits &lt;-  quantile(global_combo$ENR_RATIO, probs = c(0.05, 0.95), na.rm = TRUE)
-
+### plot seperately
   filt_A &lt;- plot_topnum_ratio_full(filtered_H3K27ac_Set3_data,signif.num = 0.05, top_num = 10,color_limits = global_limits)
   
   filt_B &lt;- plot_topnum_ratio_full(filtered_H3K27ac_Set2_data,signif.num = 0.05, top_num = 10,color_limits = global_limits)
-  
+ ## Good ole cowplot to align plots vertically 
   aligned_filt_plots &lt;- cowplot::align_plots(filt_A, filt_B, align = &quot;v&quot;, axis = &quot;l&quot;)
 
 cowplot::plot_grid(aligned_filt_plots[[1]],
           aligned_filt_plots[[2]],
           ncol = 2)</code></pre>
 <p><img src="figure/H3K27ac_TF_motifs.Rmd/RNA%20filtering-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RNA-filtering-1">
+Past versions of "RNA filtering-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-RNA-filtering-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/e7a3fffc099e445bce5eb324a1a76fd5fe981245/docs/figure/H3K27ac_TF_motifs.Rmd/RNA filtering-1.png" target="_blank">e7a3fff</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="case-and-summit-calls-method-1-subset-a-and-b"
 class="section level3">
