@@ -38,7 +38,7 @@ library(DT)
 ```
 
 ### Summit calls method 1  
-
+This is actually summit +/- 200 bp (and 300bp for initial investigation)
 
 ```{r loading motif data Set2}
 
@@ -482,21 +482,32 @@ RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
 RNA_expressed <- RNA_full_toptable %>% 
   dplyr::select(Entrez_ID, SYMBOL)
 
-filtered_H3K27ac_Set3_data<- H3K27ac_Set3_data%>% 
-  dplyr::filter(str_to_upper(motif_name) %in% str_to_upper(RNA_expressed$SYMBOL)) 
+### had to add in a special filter to account for the :: in the names of the motifs
+symbols <- str_to_upper(RNA_expressed$SYMBOL)
+
+filtered_H3K27ac_Set3_data <- H3K27ac_Set3_data %>%
+  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
+  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
+  select(-motif_tokens)
 
 
-filtered_H3K27ac_Set2_data<- H3K27ac_Set2_data%>% 
-  dplyr::filter(str_to_upper(motif_name) %in% str_to_upper(RNA_expressed$SYMBOL))
+filtered_H3K27ac_Set2_data <- H3K27ac_Set2_data %>%
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
+  select(-motif_tokens)
 
+
+## binding both together to get them to set a global limit on the secondary axis using quantiles so color range is identical
 global_combo <- bind_rows(filtered_H3K27ac_Set2_data, filtered_H3K27ac_Set3_data)
 
 global_limits <-  quantile(global_combo$ENR_RATIO, probs = c(0.05, 0.95), na.rm = TRUE)
-
+### plot seperately
   filt_A <- plot_topnum_ratio_full(filtered_H3K27ac_Set3_data,signif.num = 0.05, top_num = 10,color_limits = global_limits)
   
   filt_B <- plot_topnum_ratio_full(filtered_H3K27ac_Set2_data,signif.num = 0.05, top_num = 10,color_limits = global_limits)
-  
+ ## Good ole cowplot to align plots vertically 
   aligned_filt_plots <- cowplot::align_plots(filt_A, filt_B, align = "v", axis = "l")
 
 cowplot::plot_grid(aligned_filt_plots[[1]],
