@@ -476,7 +476,7 @@ cowplot::plot_grid(aligned_plots[[1]],
 
 ### RNA filtering  
 
-```{r RNA filtering, fig.width=12}
+```{r RNA filtering, fig.width=15}
 RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
 
 RNA_expressed <- RNA_full_toptable %>% 
@@ -508,7 +508,7 @@ global_limits <-  quantile(global_combo$ENR_RATIO, probs = c(0.05, 0.95), na.rm 
   
   filt_B <- plot_topnum_ratio_full(filtered_H3K27ac_Set2_data,signif.num = 0.05, top_num = 10,color_limits = global_limits)
  ## Good ole cowplot to align plots vertically 
-  aligned_filt_plots <- cowplot::align_plots(filt_A, filt_B, align = "v", axis = "l")
+  aligned_filt_plots <- cowplot::align_plots(filt_B, filt_A, align = "v", axis = "l")
 
 cowplot::plot_grid(aligned_filt_plots[[1]],
           aligned_filt_plots[[2]],
@@ -516,6 +516,12 @@ cowplot::plot_grid(aligned_filt_plots[[1]],
 
 ```
 
+```{r}
+# filtered_H3K27ac_Set3_data %>% group_by(CLUSTER) %>% tally()# %>% dplyr::filter(n>1)
+# 
+# filter(motif_name=="ZNF384")
+# H3K27ac_Set2_data %>% distinct(motif_name)
+```
 
 
 
