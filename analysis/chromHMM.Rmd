@@ -39,11 +39,11 @@ library(DT)
 library(readxl)
 library(ChIPseeker)
 library(regioneR)
-library(patchwork)
+library(cowplot)
 library(GenomeInfoDb)
 ```
 
-This is the AIC/BIC plots genrated to figure out how many states we wanted to use for our modeling of our data:
+This is the AIC/BIC plots generated to figure out how many states we wanted to use for our modeling of our data:
 ```{r TACC generated}
 aic_bic_table_TACC <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TACC_models/model_selection_summary.tsv", 
     delim = "\t", escape_double = FALSE, 
@@ -138,19 +138,19 @@ States_anno <- data.frame("State"=c(paste0("E",1:16)),
 "Name"=c("Heterochromatin_1",
 "Quiescent_Low_Coverage",
 "Repressed_Heterochromatin",
-"Repressed_ZFP_regions",
+"Repressed_ZFP_genes",
 "Strong_Polycomb_Repressed",
  "Bivalent_Enhancer",
 "Heterochromatin_2",
-"Bivalent_Poised_TSS2",
+"Polycomb_Repressed",
  "Weak_Genic_Enhancer",
- "Strong_Genic_Enhancer1",
- "Active_Proximal_Enhancer",
-  "Strong_Genic_Enhancer2",
+ "Bivalent_Poised_TSS",
+ "Active_Enhancer",
+  "Strong_Genic_Enhancer",
  "Active_TSS",
  "Very_Weak_Transcription",
  "Genic_Strong_Transcription",
- "Genic_Weak_Transcription"), "recode"=c("N","P","M","L","K","J","O","I","H","F","E","G","A","D","B","C")) %>% 
+ "Genic_Weak_Transcription"), "recode"=c("N","P","M","L","J","I","O","K","G","H","E","F","A","D","B","C")) %>% 
   mutate(recode=factor(recode,levels=c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P")))
 
 # SOIs <- c("E4","E10","E11","E12","E13")
@@ -548,7 +548,7 @@ ggplot(geom_mean_df,
 full_states_data_long <- bind_rows(all_genes_states_long,long_file)
 
 Identity_label_order <- c("Genome %", "CpGIsland","RefSeqGene","RefSeqTSS2kb","RefSeqTSS","RefSeqExon","RefSeqTES",   
-      "ZFP_proteins","PLS","pELS","dELS")
+      "ZFP_proteins","PLS","pELS","dELS", "SINE", "LINE","LTR","DNA","Retroposon")
 
 geom_df_reorderd <-
 full_states_data_long %>% 
