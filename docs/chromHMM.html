@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-02-19" />
+<meta name="date" content="2026-02-25" />
 
 <title>ChromHMM</title>
 
@@ -361,7 +361,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">ChromHMM</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-02-19</h4>
+<h4 class="date">2026-02-25</h4>
 
 </div>
 
@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-19
+<strong>Last updated:</strong> 2026-02-25
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree93024560c7d110c163072c06d8df81e09cd005detargetblank9302456a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree4ab30c8e6573ce4fb4d884eb1b8a6639d1a80090targetblank4ab30c8a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/93024560c7d110c163072c06d8df81e09cd005de" target="_blank">9302456</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/4ab30c8e6573ce4fb4d884eb1b8a6639d1a80090" target="_blank">4ab30c8</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree93024560c7d110c163072c06d8df81e09cd005detargetblank9302456a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree4ab30c8e6573ce4fb4d884eb1b8a6639d1a80090targetblank4ab30c8a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/93024560c7d110c163072c06d8df81e09cd005de" target="_blank">9302456</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/4ab30c8e6573ce4fb4d884eb1b8a6639d1a80090" target="_blank">4ab30c8</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -587,7 +587,6 @@ Unstaged changes:
     Modified:   analysis/H3K27ac_cisRE.Rmd
     Modified:   analysis/H3K27ac_summit_processing.Rmd
     Modified:   analysis/H3K9me3_TE_investigation.Rmd
-    Modified:   analysis/H3K9me3_TE_overlap.Rmd
     Modified:   analysis/dual_histone_TE_investigation.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
@@ -634,6 +633,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4ab30c8e6573ce4fb4d884eb1b8a6639d1a80090/analysis/chromHMM.Rmd" target="_blank">4ab30c8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-25
+</td>
+<td>
+update to order
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/56c3a28386225a8369928bbaed3a72fae6509f0d/docs/chromHMM.html" target="_blank">56c3a28</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -918,9 +951,9 @@ library(DT)
 library(readxl)
 library(ChIPseeker)
 library(regioneR)
-library(patchwork)
+library(cowplot)
 library(GenomeInfoDb)</code></pre>
-<p>This is the AIC/BIC plots genrated to figure out how many states we
+<p>This is the AIC/BIC plots generated to figure out how many states we
 wanted to use for our modeling of our data:</p>
 <pre class="r"><code>aic_bic_table_TACC &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TACC_models/model_selection_summary.tsv&quot;, 
     delim = &quot;\t&quot;, escape_double = FALSE, 
@@ -1113,19 +1146,19 @@ reneeisnowhere
 &quot;Name&quot;=c(&quot;Heterochromatin_1&quot;,
 &quot;Quiescent_Low_Coverage&quot;,
 &quot;Repressed_Heterochromatin&quot;,
-&quot;Repressed_ZFP_regions&quot;,
+&quot;Repressed_ZFP_genes&quot;,
 &quot;Strong_Polycomb_Repressed&quot;,
  &quot;Bivalent_Enhancer&quot;,
 &quot;Heterochromatin_2&quot;,
-&quot;Bivalent_Poised_TSS2&quot;,
+&quot;Polycomb_Repressed&quot;,
  &quot;Weak_Genic_Enhancer&quot;,
- &quot;Strong_Genic_Enhancer1&quot;,
- &quot;Active_Proximal_Enhancer&quot;,
-  &quot;Strong_Genic_Enhancer2&quot;,
+ &quot;Bivalent_Poised_TSS&quot;,
+ &quot;Active_Enhancer&quot;,
+  &quot;Strong_Genic_Enhancer&quot;,
  &quot;Active_TSS&quot;,
  &quot;Very_Weak_Transcription&quot;,
  &quot;Genic_Strong_Transcription&quot;,
- &quot;Genic_Weak_Transcription&quot;), &quot;recode&quot;=c(&quot;N&quot;,&quot;P&quot;,&quot;M&quot;,&quot;L&quot;,&quot;K&quot;,&quot;J&quot;,&quot;O&quot;,&quot;I&quot;,&quot;H&quot;,&quot;F&quot;,&quot;E&quot;,&quot;G&quot;,&quot;A&quot;,&quot;D&quot;,&quot;B&quot;,&quot;C&quot;)) %&gt;% 
+ &quot;Genic_Weak_Transcription&quot;), &quot;recode&quot;=c(&quot;N&quot;,&quot;P&quot;,&quot;M&quot;,&quot;L&quot;,&quot;J&quot;,&quot;I&quot;,&quot;O&quot;,&quot;K&quot;,&quot;G&quot;,&quot;H&quot;,&quot;E&quot;,&quot;F&quot;,&quot;A&quot;,&quot;D&quot;,&quot;B&quot;,&quot;C&quot;)) %&gt;% 
   mutate(recode=factor(recode,levels=c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;,&quot;H&quot;,&quot;I&quot;,&quot;J&quot;,&quot;K&quot;,&quot;L&quot;,&quot;M&quot;,&quot;N&quot;,&quot;O&quot;,&quot;P&quot;)))
 
 # SOIs &lt;- c(&quot;E4&quot;,&quot;E10&quot;,&quot;E11&quot;,&quot;E12&quot;,&quot;E13&quot;)
@@ -1162,6 +1195,43 @@ scale_y_discrete(expand = c(0, 0), limits = rev)+
   ggtitle(&quot;Emission Parameters&quot;)+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <p><img src="figure/chromHMM.Rmd/state%20reorder-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-state-reorder-1">
+Past versions of "state reorder-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-state-reorder-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/56c3a28386225a8369928bbaed3a72fae6509f0d/docs/figure/chromHMM.Rmd/state reorder-1.png" target="_blank">56c3a28</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="enrichment-across-the-states" class="section level3">
@@ -1632,7 +1702,7 @@ reneeisnowhere
 <pre class="r"><code>full_states_data_long &lt;- bind_rows(all_genes_states_long,long_file)
 
 Identity_label_order &lt;- c(&quot;Genome %&quot;, &quot;CpGIsland&quot;,&quot;RefSeqGene&quot;,&quot;RefSeqTSS2kb&quot;,&quot;RefSeqTSS&quot;,&quot;RefSeqExon&quot;,&quot;RefSeqTES&quot;,   
-      &quot;ZFP_proteins&quot;,&quot;PLS&quot;,&quot;pELS&quot;,&quot;dELS&quot;)
+      &quot;ZFP_proteins&quot;,&quot;PLS&quot;,&quot;pELS&quot;,&quot;dELS&quot;, &quot;SINE&quot;, &quot;LINE&quot;,&quot;LTR&quot;,&quot;DNA&quot;,&quot;Retroposon&quot;)
 
 geom_df_reorderd &lt;-
 full_states_data_long %&gt;% 
@@ -2807,7 +2877,7 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] patchwork_1.3.2      regioneR_1.38.0      ChIPseeker_1.42.1   
+ [1] cowplot_1.2.0        regioneR_1.38.0      ChIPseeker_1.42.1   
  [4] readxl_1.4.5         DT_0.33              ggrepel_0.9.6       
  [7] rtracklayer_1.66.0   genomation_1.38.0    plyranges_1.26.0    
 [10] GenomicRanges_1.58.0 GenomeInfoDb_1.42.3  IRanges_2.40.1      
@@ -2863,94 +2933,94 @@ loaded via a namespace (and not attached):
  [43] digest_0.6.37                          
  [44] aplot_0.2.8                            
  [45] colorspace_2.1-1                       
- [46] AnnotationDbi_1.68.0                   
- [47] ps_1.9.1                               
- [48] rprojroot_2.1.1                        
- [49] RSQLite_2.4.3                          
- [50] labeling_0.4.3                         
- [51] timechange_0.3.0                       
- [52] httr_1.4.7                             
- [53] abind_1.4-8                            
- [54] compiler_4.4.2                         
- [55] bit64_4.6.0-1                          
- [56] withr_3.0.2                            
- [57] BiocParallel_1.40.2                    
- [58] DBI_1.2.3                              
- [59] gplots_3.2.0                           
- [60] R.utils_2.13.0                         
- [61] rappdirs_0.3.3                         
- [62] DelayedArray_0.32.0                    
- [63] rjson_0.2.23                           
- [64] caTools_1.18.3                         
- [65] gtools_3.9.5                           
- [66] tools_4.4.2                            
- [67] ape_5.8-1                              
- [68] httpuv_1.6.16                          
- [69] R.oo_1.27.1                            
- [70] glue_1.8.0                             
- [71] restfulr_0.0.16                        
- [72] callr_3.7.6                            
- [73] nlme_3.1-168                           
- [74] GOSemSim_2.32.0                        
- [75] promises_1.3.3                         
- [76] getPass_0.2-4                          
- [77] gridBase_0.4-7                         
- [78] reshape2_1.4.4                         
- [79] fgsea_1.32.4                           
- [80] generics_0.1.4                         
- [81] gtable_0.3.6                           
- [82] BSgenome_1.74.0                        
- [83] tzdb_0.5.0                             
- [84] R.methodsS3_1.8.2                      
- [85] seqPattern_1.38.0                      
- [86] data.table_1.17.8                      
- [87] hms_1.1.3                              
- [88] utf8_1.2.6                             
- [89] XVector_0.46.0                         
- [90] pillar_1.11.0                          
- [91] vroom_1.6.5                            
- [92] yulab.utils_0.2.1                      
- [93] later_1.4.2                            
- [94] splines_4.4.2                          
- [95] treeio_1.30.0                          
- [96] lattice_0.22-7                         
- [97] bit_4.6.0                              
- [98] tidyselect_1.2.1                       
- [99] GO.db_3.20.0                           
-[100] Biostrings_2.74.1                      
-[101] knitr_1.50                             
-[102] git2r_0.36.2                           
-[103] SummarizedExperiment_1.36.0            
-[104] xfun_0.52                              
-[105] Biobase_2.66.0                         
-[106] matrixStats_1.5.0                      
-[107] stringi_1.8.7                          
-[108] UCSC.utils_1.2.0                       
-[109] lazyeval_0.2.2                         
-[110] boot_1.3-32                            
-[111] ggfun_0.2.0                            
-[112] yaml_2.3.10                            
-[113] evaluate_1.0.5                         
-[114] codetools_0.2-20                       
-[115] qvalue_2.38.0                          
-[116] ggplotify_0.1.2                        
-[117] cli_3.6.5                              
-[118] processx_3.8.6                         
-[119] jquerylib_0.1.4                        
-[120] dichromat_2.0-0.1                      
-[121] Rcpp_1.1.0                             
-[122] png_0.1-8                              
-[123] XML_3.99-0.18                          
-[124] parallel_4.4.2                         
-[125] blob_1.2.4                             
-[126] DOSE_4.0.1                             
-[127] bitops_1.0-9                           
-[128] tidytree_0.4.6                         
-[129] scales_1.4.0                           
-[130] crayon_1.5.3                           
-[131] rlang_1.1.6                            
-[132] fastmatch_1.1-6                        
-[133] cowplot_1.2.0                          
+ [46] patchwork_1.3.2                        
+ [47] AnnotationDbi_1.68.0                   
+ [48] ps_1.9.1                               
+ [49] rprojroot_2.1.1                        
+ [50] RSQLite_2.4.3                          
+ [51] labeling_0.4.3                         
+ [52] timechange_0.3.0                       
+ [53] httr_1.4.7                             
+ [54] abind_1.4-8                            
+ [55] compiler_4.4.2                         
+ [56] bit64_4.6.0-1                          
+ [57] withr_3.0.2                            
+ [58] BiocParallel_1.40.2                    
+ [59] DBI_1.2.3                              
+ [60] gplots_3.2.0                           
+ [61] R.utils_2.13.0                         
+ [62] rappdirs_0.3.3                         
+ [63] DelayedArray_0.32.0                    
+ [64] rjson_0.2.23                           
+ [65] caTools_1.18.3                         
+ [66] gtools_3.9.5                           
+ [67] tools_4.4.2                            
+ [68] ape_5.8-1                              
+ [69] httpuv_1.6.16                          
+ [70] R.oo_1.27.1                            
+ [71] glue_1.8.0                             
+ [72] restfulr_0.0.16                        
+ [73] callr_3.7.6                            
+ [74] nlme_3.1-168                           
+ [75] GOSemSim_2.32.0                        
+ [76] promises_1.3.3                         
+ [77] getPass_0.2-4                          
+ [78] gridBase_0.4-7                         
+ [79] reshape2_1.4.4                         
+ [80] fgsea_1.32.4                           
+ [81] generics_0.1.4                         
+ [82] gtable_0.3.6                           
+ [83] BSgenome_1.74.0                        
+ [84] tzdb_0.5.0                             
+ [85] R.methodsS3_1.8.2                      
+ [86] seqPattern_1.38.0                      
+ [87] data.table_1.17.8                      
+ [88] hms_1.1.3                              
+ [89] utf8_1.2.6                             
+ [90] XVector_0.46.0                         
+ [91] pillar_1.11.0                          
+ [92] vroom_1.6.5                            
+ [93] yulab.utils_0.2.1                      
+ [94] later_1.4.2                            
+ [95] splines_4.4.2                          
+ [96] treeio_1.30.0                          
+ [97] lattice_0.22-7                         
+ [98] bit_4.6.0                              
+ [99] tidyselect_1.2.1                       
+[100] GO.db_3.20.0                           
+[101] Biostrings_2.74.1                      
+[102] knitr_1.50                             
+[103] git2r_0.36.2                           
+[104] SummarizedExperiment_1.36.0            
+[105] xfun_0.52                              
+[106] Biobase_2.66.0                         
+[107] matrixStats_1.5.0                      
+[108] stringi_1.8.7                          
+[109] UCSC.utils_1.2.0                       
+[110] lazyeval_0.2.2                         
+[111] boot_1.3-32                            
+[112] ggfun_0.2.0                            
+[113] yaml_2.3.10                            
+[114] evaluate_1.0.5                         
+[115] codetools_0.2-20                       
+[116] qvalue_2.38.0                          
+[117] ggplotify_0.1.2                        
+[118] cli_3.6.5                              
+[119] processx_3.8.6                         
+[120] jquerylib_0.1.4                        
+[121] dichromat_2.0-0.1                      
+[122] Rcpp_1.1.0                             
+[123] png_0.1-8                              
+[124] XML_3.99-0.18                          
+[125] parallel_4.4.2                         
+[126] blob_1.2.4                             
+[127] DOSE_4.0.1                             
+[128] bitops_1.0-9                           
+[129] tidytree_0.4.6                         
+[130] scales_1.4.0                           
+[131] crayon_1.5.3                           
+[132] rlang_1.1.6                            
+[133] fastmatch_1.1-6                        
 [134] KEGGREST_1.46.0                        </code></pre>
 </div>
 </div>
