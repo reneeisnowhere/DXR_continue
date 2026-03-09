@@ -335,6 +335,42 @@ VEH_144R_ATAC <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap
  
 ```
 
+```{r loading LTR features enrichment}
+DOX_24T_LTR <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTRfamily_run/24t_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24T")
+
+DOX_24R_LTR <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTRfamily_run/24R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24R")
+
+DOX_144R_LTR <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTRfamily_run/144R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>% mutate(group="DOX_144R")
+
+
+VEH_24T_LTR <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTRfamily_run/24t_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24T")
+
+VEH_24R_LTR <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTRfamily_run/24R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24R")
+
+VEH_144R_LTR <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTRfamily_run/144R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_144R") 
+
+all_LTR_states <- 
+  VEH_144R_LTR %>% 
+  bind_rows(DOX_144R_LTR) %>% 
+   bind_rows(DOX_24R_LTR) %>% 
+   bind_rows(VEH_24R_LTR) %>% 
+   bind_rows(DOX_24T_LTR) %>% 
+   bind_rows(VEH_24T_LTR) %>% 
+   left_join(.,States_anno, by = c(`State (Emission order)`="State"))
+ 
+```
 
 ```{r making the large plotting dataframe}
 all_files_states <- 
@@ -630,7 +666,7 @@ ggplot(geom_df_reorderd,
 ```
 
 
-Now I want to look at the change of log2 Foldenrichment of DOX -VEH at each timepoint
+Now I want to look at the change of log2 Fold enrichment of DOX -VEH at each timepoint
 
 
 ```{r delta lfe}
@@ -771,9 +807,75 @@ all_ZFPs_states %>%
   ggtitle("Cormotif across states")+
   coord_fixed()
 
-  
+
   
 ```
+
+```{r delta lFE regions, fig.width=12}
+plots_ZFP_long <- all_ZFPs_states %>%
+  mutate(
+    `State (Emission order)` = as.character(`State (Emission order)`),
+    `State (Emission order)` = case_when(
+      `State (Emission order)` %in% as.character(1:16) ~ paste0("E", `State (Emission order)`),
+      TRUE ~ `State (Emission order)`)) %>% 
+  mutate(`State (Emission order)` = factor(`State (Emission order)`,
+                                           levels = c(paste0("E",1:16), "Base"))) %>%
+  filter(`State (Emission order)` != "Base") %>% 
+   left_join(.,States_anno, by = c(`State (Emission order)`="State")) %>% 
+  mutate(Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %>% 
+  pivot_longer(., -c(`State (Emission order)`,group, recode, Name), names_to = "Identity", values_to="Fold_enrichment") %>% 
+   mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R"))) %>% 
+  mutate(Identity=factor(Identity, levels=order),
+          ID = sub("^(.*?H3K[0-9]+[a-zA-Z0-9]*)\\.?.*$", "\\1", Identity),### grabs everything up to the final H3* and removes the last bit
+         ID = factor(ID,
+                  levels = unique(ID[order(Identity)]))) %>%
+  
+  
+  group_by(ID) %>%   # i.e. per annotation column
+  mutate(
+    FE_min = min(Fold_enrichment, na.rm = TRUE),
+    FE_max = max(Fold_enrichment, na.rm = TRUE),
+    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
+  ) %>% 
+mutate(log2_FE = log2(Fold_enrichment + 1e-6)) %>% 
+  separate(group, into = c("trt","time"), remove = FALSE) %>% 
+  group_by(time, ID  ,Name) %>%
+  summarise(
+    delta_log2FE =
+      log2_FE[trt == "DOX"] -
+      log2_FE[trt == "VEH"],
+    .groups = "drop") %>% 
+  mutate(time=factor(time, levels=c("24T","24R","144R"))) %>% 
+  dplyr::filter(!(ID %in% list("Genome %","ZFP_proteins.bed")))
+  
+
+ggplot(plots_ZFP_long,aes(x = ID,
+           y = Name,
+           fill = delta_log2FE)) +
+  
+  geom_tile(color = "grey9", linewidth = 0.1) +
+
+  scale_fill_gradient2(
+    low = "#053061",
+    mid = "white",
+    high = "#67001F",
+    midpoint = 0,
+    name = "log2(DOX / VEH)"
+  ) +
+
+  facet_wrap(~time, nrow = 1) +
+
+  scale_y_discrete(limits = rev) +
+
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  ggtitle("Delta of log2(DOX/VEH) at each timepoint")
+
+  
+
+```
+
 
 ```{r repeatplot, fig.width=10}
 long_file %>% 
@@ -845,11 +947,11 @@ ggplot(delta_TE_df ,
   geom_tile(color = "grey20", linewidth = 0.2) +
   
   scale_fill_gradient2(
-    low = "#B2182B",   # Decrease
+    low =  "#2166AC", # Decrease
     mid = "white",     # No change
-    high = "#2166AC",  # Increase
+    high = "#B2182B",   # Increase
     midpoint = 0,
-    limits = c(-4.5, 4.5),
+    # limits = c(-4.5, 4.5),
     name = "Δ log2(FE)\n(DOX - VEH)"
   ) +
   
@@ -928,7 +1030,67 @@ ggplot(TE_delta_df,
   coord_fixed(ratio = 1.2)
 ```
 
+#### An LTR look
 
+
+```{r LTR familiy}
+
+
+order_LTR <- c("All_LTRs","ERV1","ERVL","ERVK","ERVL-MaLR","Gypsy","LTR")
+
+plots_LTR_long <-all_LTR_states %>% 
+  mutate(`State (Emission order)` = as.character(`State (Emission order)`),
+         `State (Emission order)` = case_when(
+           `State (Emission order)` %in% as.character(1:16) ~ paste0("E", `State (Emission order)`),
+      TRUE ~ `State (Emission order)`)) %>% 
+  mutate(`State (Emission order)` = factor(`State (Emission order)`,levels = c(paste0("E",1:16), "Base"))) %>%
+  filter(`State (Emission order)` != "Base")%>% 
+     mutate(Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %>% 
+  pivot_longer(., -c(`State (Emission order)`,group, recode, Name), names_to = "Identity", values_to="Fold_enrichment") %>% 
+   mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R"))) %>% 
+  mutate(ID = case_when(
+      Identity == "LTR_rptmasker.bed" ~ paste("All_LTRs"),
+      str_detect(Identity, "_rptmasker") ~ str_remove(Identity, "_rptmasker.*$"),
+      TRUE ~ Identity))%>%
+  dplyr::filter(!(ID %in% list("Genome %","ZFP_proteins.bed"))) %>%
+  mutate(ID = factor(ID,
+                  levels = order_LTR))%>%
+  group_by(ID) %>%   # i.e. per annotation column
+  mutate(log2_FE = log2(Fold_enrichment + 1e-8)) %>% 
+  separate(group, into = c("trt","time"), remove = FALSE) %>% 
+  group_by(time, ID  ,Name) %>%
+  summarise(
+    delta_log2FE =
+    mean(log2_FE[trt == "DOX"], na.rm = TRUE) -
+    mean(log2_FE[trt == "VEH"], na.rm = TRUE),
+    .groups = "drop") %>% 
+  mutate(time=factor(time, levels=c("24T","24R","144R")))
+  
+
+ggplot(plots_LTR_long,aes(x = ID,
+           y = Name,
+           fill = delta_log2FE)) +
+  
+  geom_tile(color = "grey9", linewidth = 0.1) +
+
+  scale_fill_gradient2(
+    low = "#053061",
+    mid = "white",
+    high = "#67001F",
+    midpoint = 0,
+    name = "log2(DOX / VEH)"
+  ) +
+
+  facet_wrap(~time, nrow = 1) +
+
+  scale_y_discrete(limits = rev) +
+
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  ggtitle("Delta of log2(DOX/VEH) at each timepoint")
+
+```
 
 
 
