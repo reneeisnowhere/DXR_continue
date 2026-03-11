@@ -48,11 +48,12 @@ autosomes <- paste0("chr", 1:22)
 repeatmasker_clean <- repeatmasker %>% mutate(
     strand = ifelse(strand == "C", "-", "+")
   ) %>% 
-   mutate(
+  mutate(
     start = genoStart + 1,
     end   = genoEnd)%>% 
   mutate(repFamily= str_remove(repFamily, "\\?$")) %>% 
-  dplyr::filter(genoName %in% autosomes)
+  dplyr::filter(genoName %in% autosomes) %>% 
+  mutate(RM_id=paste0(genoName,":",start,"-",end,":",id))
 
 
 rpt_split <- split(repeatmasker_clean, repeatmasker_clean$repClass)
@@ -67,7 +68,9 @@ rpt_split_gr_list <- lapply(rpt_split, function(df) {
     repFamily = df$repFamily,
     swScore   = df$swScore,
     milliDiv  = df$milliDiv,
-    id        = df$id
+    milliDel  = df$milliDel,
+    milliIns  = df$milliIns,
+    RM_id        = df$RM_id
   )
 })
 
@@ -85,7 +88,7 @@ rmskr_std_gr <- GRanges(
   milliDiv  = repeatmasker_clean$milliDiv,
   milliDel  = repeatmasker_clean$milliDel,
   milliIns  = repeatmasker_clean$milliIns,
-  id        = repeatmasker_clean$id
+  id        = repeatmasker_clean$RM_id
 )
 
 ```
@@ -301,7 +304,8 @@ dataf <- H3K27ac_summit_gr
     repClass  = rmskr_std_gr$repClass[subjectHits(hits)],
     milliDiv  = rmskr_std_gr$milliDiv[subjectHits(hits)],
     milliDel  = rmskr_std_gr$milliDel[subjectHits(hits)],
-    milliIns  = rmskr_std_gr$milliIns[subjectHits(hits)]
+    milliIns  = rmskr_std_gr$milliIns[subjectHits(hits)],
+    ID  = rmskr_std_gr$id[subjectHits(hits)]
   )
 }
 # rmskr_nonoverlapping_H3K27ac_gr <- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K27ac_sets_gr[[4]]) == 0]
@@ -309,19 +313,27 @@ dataf <- H3K27ac_summit_gr
 H3K27ac_summit_Peakids <- H3K27ac_summit_ols %>% 
     distinct(Peakid)
   # saveRDS(H3K27ac_summit_ols,"data/RDS_files/H3K27ac_summit_ROI_TE_overlaps.RDS")
+
+
 ```
 making summit TE overlap annotation dataframe
 ```{r}
+all_summits_df <- 
+dataf %>% as.data.frame() %>% 
+  mutate(summit_id=paste0(seqnames,":",start)) %>% 
+  dplyr::select(summit_id, Peakid:cluster)
+
 
 All_H3K27ac <- H3K27ac_sets_gr$all_H3K27ac %>% as.data.frame()
-annotated_H3K27ac_summits <- All_H3K27ac %>% 
-  left_join(., (H3K27ac_summit_ols %>% 
+annotated_H3K27ac_summits <- All_H3K27ac %>%
+    left_join(., (H3K27ac_summit_ols %>% 
                   as.data.frame() %>% 
                   group_by(Peakid) %>% 
                   summarize(., 
                             repClass=paste0(unique(repClass), collapse=";"),
                             repFamily=paste0(unique(repFamily),collapse=";"),
-                            repName=paste0(unique(repName),collapse=";"))))%>%
+                            repName=paste0(unique(repName),collapse=";"),
+                            summit_pos=paste0(unique(summit_pos),collapse = ";"))))%>%
               mutate(TE_status = if_else(is.na(repClass),   "wnot_TE","TE")) %>%
               mutate(SINE_status = case_when(is.na(repClass)~ "wnot_SINE",
                                              str_detect(repClass, "SINE") ~ "SINE",
@@ -339,7 +351,7 @@ annotated_H3K27ac_summits <- All_H3K27ac %>%
                                         str_detect(repClass, "Retroposon") ~ "SVA",
                                         TRUE ~"wnot_SVA")) %>% 
   left_join(H3K27ac_lookup, by = "Peakid") %>%
-  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster))
+  mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster)) %>% left_join(all_summits_df,by =c("Peakid"="Peakid","cluster"="cluster")) 
 
 # saveRDS(annotated_H3K27ac_summits,"data/TE_annotation/H3K27ac_annotated_summit_TE_overlaps.RDS")
 ```
@@ -1460,7 +1472,34 @@ ggplot(DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   facet_wrap(~comparison)
 ```
 
-```{r}
+```{r making bed file subsets of LTRs, eval=FALSE}
+out_dir <- "data/Bed_exports/repeatmasker_sets"
+set_list <- unique(LTR_gr$repFamily)
+split_LTR_gr <- split_LTR_gr <- split(LTR_gr, mcols(LTR_gr)$repFamily)
+
+
+for (group_name in set_list) {
+  
+ gr <- split_LTR_gr[[group_name]]
+ 
+  
+  # Set BED name column
+  mcols(gr)$name <- mcols(gr)$RM_id
+  
+  # Optional: if you want a score column
+  if(!"score" %in% colnames(mcols(gr))) {
+    mcols(gr)$score <- 0
+  }
+  
+  # Export to BED
+ bed_file <- file.path(out_dir, paste0(group_name, "_rptmasker_LTR.bed"))
+  
+  # Export
+  export(gr, bed_file, format = "BED")
+  
+  cat("Exported:", bed_file, "\n")
+}
+
 
 ```
 
