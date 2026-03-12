@@ -41,6 +41,7 @@ library(ChIPseeker)
 library(regioneR)
 library(cowplot)
 library(GenomeInfoDb)
+library(ggforce)
 ```
 
 This is the AIC/BIC plots generated to figure out how many states we wanted to use for our modeling of our data:
@@ -223,6 +224,8 @@ VEH_144R_full <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap
     trim_ws = TRUE)%>% mutate(group="VEH_144R") 
  
 ```
+
+
 ```{r loading gene enrichment}
 DOX_24T_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-internal-enrichment/24t_DOX_16.txt", 
     delim = "\t", escape_double = FALSE, 
@@ -368,6 +371,43 @@ all_LTR_states <-
    bind_rows(VEH_24R_LTR) %>% 
    bind_rows(DOX_24T_LTR) %>% 
    bind_rows(VEH_24T_LTR) %>% 
+   left_join(.,States_anno, by = c(`State (Emission order)`="State"))
+ 
+```
+
+```{r loading LTRERV1 features enrichment}
+DOX_24T_LTR_ERV1 <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTR_ERV1_family_run/24t_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24T")
+
+DOX_24R_LTR_ERV1 <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTR_ERV1_family_run/24R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24R")
+
+DOX_144R_LTR_ERV1 <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTR_ERV1_family_run/144R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>% mutate(group="DOX_144R")
+
+
+VEH_24T_LTR_ERV1 <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTR_ERV1_family_run/24t_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24T")
+
+VEH_24R_LTR_ERV1 <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTR_ERV1_family_run/24R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24R")
+
+VEH_144R_LTR_ERV1 <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/LTR_ERV1_family_run/144R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_144R") 
+
+all_LTR_ERV1_states <- 
+  VEH_144R_LTR_ERV1 %>% 
+  bind_rows(DOX_144R_LTR_ERV1) %>% 
+   bind_rows(DOX_24R_LTR_ERV1) %>% 
+   bind_rows(VEH_24R_LTR_ERV1) %>% 
+   bind_rows(DOX_24T_LTR_ERV1) %>% 
+   bind_rows(VEH_24T_LTR_ERV1) %>% 
    left_join(.,States_anno, by = c(`State (Emission order)`="State"))
  
 ```
@@ -1093,6 +1133,114 @@ ggplot(plots_LTR_long,aes(x = ID,
 ```
 
 
+```{r LTR:ERV1 familiy, fig.width=13}
+
+count_ERV1_file <- read_table("data/Bed_exports/repeatmasker_sets/ERV1/count_ERV1_file.txt", 
+    col_names = FALSE) %>% dplyr::rename("count"=X1, "name"=X2) %>% 
+  mutate(break_list = factor(paste0("Group", ceiling(row_number() / 20)))) %>% 
+  mutate(name= str_remove(name, ".bed*$")) %>% 
+  slice_head(n = length(.$name)-1)
+
+# order_LTR_ERV1 <- c("All_LTRs","ERV1","ERVL","ERVK","ERVL-MaLR","Gypsy","LTR")
+
+plots_LTR_ERV1_long <-all_LTR_ERV1_states %>% 
+  mutate(`State (Emission order)` = as.character(`State (Emission order)`),
+         `State (Emission order)` = case_when(
+           `State (Emission order)` %in% as.character(1:16) ~ paste0("E", `State (Emission order)`),
+      TRUE ~ `State (Emission order)`)) %>% 
+  mutate(`State (Emission order)` = factor(`State (Emission order)`,levels = c(paste0("E",1:16), "Base"))) %>%
+  filter(`State (Emission order)` != "Base")%>% 
+     mutate(Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %>% 
+  pivot_longer(., -c(`State (Emission order)`,group, recode, Name), names_to = "Identity", values_to="Fold_enrichment") %>% 
+   mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R"))) %>% 
+  mutate(ID = case_when(
+      Identity == "LTR_rptmasker.bed" ~ paste("All_LTRs"),
+      str_detect(Identity, ".bed") ~ str_remove(Identity, ".bed*$"),
+      TRUE ~ Identity))%>%
+  dplyr::filter(!(ID %in% list("Genome %","ZFP_proteins.bed"))) %>%
+  # mutate(ID = factor(ID,
+  #                 levels = order_LTR))%>%
+  group_by(ID) %>%   # i.e. per annotation column
+  mutate(log2_FE = log2(Fold_enrichment + 1e-8)) %>% 
+  separate(group, into = c("trt","time"), remove = FALSE) %>% 
+  group_by(time, ID  ,Name) %>%
+  summarise(
+    delta_log2FE =
+    mean(log2_FE[trt == "DOX"], na.rm = TRUE) -
+    mean(log2_FE[trt == "VEH"], na.rm = TRUE),
+    .groups = "drop") %>% 
+  mutate(time=factor(time, levels=c("24T","24R","144R"))) %>% 
+  left_join(count_ERV1_file,by=c("ID"="name")) %>% 
+  na.omit()
+  
+  
+
+groups <- (unique(plots_LTR_ERV1_long$break_list)) %>% as.character()
+
+for (g in groups) {
+  p <- ggplot(
+    plots_LTR_ERV1_long %>% dplyr::filter(break_list == g),
+    aes(x = ID, y = Name, fill = delta_log2FE)
+  ) +
+    geom_tile(color = "grey9", linewidth = 0.1) +
+    scale_fill_gradient2(
+      low = "#053061",
+      mid = "white",
+      high = "#67001F",
+      midpoint = 0,
+      name = "log2(DOX / VEH)"
+    ) +
+    facet_wrap(~time, nrow = 1) +
+    scale_y_discrete(limits = rev) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggtitle(paste("Delta log2(DOX/VEH) — Group", g))
+
+  print(p)
+}
+ 
+
+enriched_LTRs <- c("")
+
+```
+
+
+This is too many, so now I will filter by only those that are found in H3K27ac data.
+
+```{r, fig.width=13}
+anno_H3K27ac_summits <- readRDS("data/TE_annotation/H3K27ac_annotated_summit_TE_overlaps.RDS")
+
+filtered_ac_ERV1s <- anno_H3K27ac_summits %>% 
+  dplyr::filter(repFamily=="ERV1") %>% 
+  distinct(repName)
+filtered_plots <- plots_LTR_ERV1_long %>% 
+  mutate(ID=str_remove(ID,"_ERV1_LTR*$")) %>% 
+  dplyr::filter(ID %in% filtered_ac_ERV1s$repName) 
+
+for (g in groups) {
+  p <- ggplot(
+    plots_LTR_ERV1_long %>% dplyr::filter(break_list == g),
+    aes(x = ID, y = Name, fill = delta_log2FE)
+  ) +
+    geom_tile(color = "grey9", linewidth = 0.1) +
+    scale_fill_gradient2(
+      low = "#053061",
+      mid = "white",
+      high = "#67001F",
+      midpoint = 0,
+      name = "log2(DOX / VEH)"
+    ) +
+    facet_wrap(~time, nrow = 1) +
+    scale_y_discrete(limits = rev) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggtitle(paste("Delta log2(DOX/VEH) —", g,"\nFamilies found in H3K27ac summits"))
+
+  print(p)
+}
+```
+
 
 ### ATAC and cardiac enhancer enrichment
 
@@ -1130,6 +1278,8 @@ ATAC_long_file %>%
     scale_y_discrete(limits=rev)+
   ggtitle("CAR/DAR and cardiac Enhancer types enrichment across states")+
   coord_fixed()
+
+
 ```
 
 Looking at SINE elements that overlap H3K27ac ROI elements
