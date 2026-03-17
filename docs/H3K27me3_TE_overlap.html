@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-01-27" />
+<meta name="date" content="2026-03-17" />
 
 <title>H3K27me3 and TE overlap</title>
 
@@ -374,7 +374,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">H3K27me3 and TE overlap</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-01-27</h4>
+<h4 class="date">2026-03-17</h4>
 
 </div>
 
@@ -403,7 +403,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-01-27
+<strong>Last updated:</strong> 2026-03-17
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreefbfe34d4f977a3c835e3aeda19699632a09d22f1targetblankfbfe34da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreed22c09b582dda70c3e3037dca855a321641345actargetblankd22c09ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/fbfe34d4f977a3c835e3aeda19699632a09d22f1" target="_blank">fbfe34d</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/d22c09b582dda70c3e3037dca855a321641345ac" target="_blank">d22c09b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreefbfe34d4f977a3c835e3aeda19699632a09d22f1targetblankfbfe34da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreed22c09b582dda70c3e3037dca855a321641345actargetblankd22c09ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/fbfe34d4f977a3c835e3aeda19699632a09d22f1" target="_blank">fbfe34d</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/d22c09b582dda70c3e3037dca855a321641345ac" target="_blank">d22c09b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -587,17 +587,24 @@ Untracked files:
     Untracked:  H3K27ac_consensus_clusters_test.bed
     Untracked:  analysis/GREAT_H3K27ac.Rmd
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
-    Untracked:  analysis/H3K27ac_cisRE.Rmd
+    Untracked:  analysis/H3K27me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K36me3_TE_investigation.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
+    Untracked:  analysis/computeMatrixplots.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/For_john.R
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27ac_RNA_integration.Rmd
-    Modified:   analysis/H3K27ac_TF_motifs.Rmd
+    Modified:   analysis/H3K27_TE_overlap.Rmd
+    Modified:   analysis/H3K27ac_cisRE.Rmd
+    Modified:   analysis/H3K27ac_summit_processing.Rmd
+    Modified:   analysis/H3K27me3_summit_processing.Rmd
+    Modified:   analysis/H3K36me3_summit_processing.Rmd
+    Modified:   analysis/H3K9me3_TE_investigation.Rmd
     Modified:   analysis/chromHMM.Rmd
-    Modified:   analysis/final_analysis.Rmd
+    Modified:   analysis/dual_histone_TE_investigation.Rmd
     Modified:   analysis/summit_files_processing.Rmd
 
 </code></pre>
@@ -643,6 +650,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d22c09b582dda70c3e3037dca855a321641345ac/analysis/H3K27me3_TE_overlap.Rmd" target="_blank">d22c09b</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-17
+</td>
+<td>
+adding in LTR examination
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/H3K27me3_TE_overlap.html" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -756,22 +797,23 @@ library(ggrepel)
 library(DT)</code></pre>
 <p>First steps: breakdown repeatmasker into groups and pull out the ones
 by each class I am interested in.</p>
-<pre class="r"><code>repeatmasker &lt;- read_delim(&quot;data/Other_paper_data/repeatmasker_20250911.txt&quot;, 
+<pre class="r"><code>autosomes &lt;- paste0(&quot;chr&quot;, 1:22)
+repeatmasker &lt;- read_delim(&quot;data/Other_paper_data/repeatmasker_20250911.txt&quot;, 
     delim = &quot;\t&quot;, escape_double = FALSE, 
     trim_ws = TRUE)
 colnames(repeatmasker)</code></pre>
 <pre><code> [1] &quot;#bin&quot;      &quot;swScore&quot;   &quot;milliDiv&quot;  &quot;milliDel&quot;  &quot;milliIns&quot;  &quot;genoName&quot; 
  [7] &quot;genoStart&quot; &quot;genoEnd&quot;   &quot;genoLeft&quot;  &quot;strand&quot;    &quot;repName&quot;   &quot;repClass&quot; 
 [13] &quot;repFamily&quot; &quot;repStart&quot;  &quot;repEnd&quot;    &quot;repLeft&quot;   &quot;id&quot;       </code></pre>
-<pre class="r"><code>autosomes &lt;- paste0(&quot;chr&quot;, 1:22)
-repeatmasker_clean &lt;- repeatmasker %&gt;% mutate(
+<pre class="r"><code>repeatmasker_clean &lt;- repeatmasker %&gt;% mutate(
     strand = ifelse(strand == &quot;C&quot;, &quot;-&quot;, &quot;+&quot;)
   ) %&gt;% 
    mutate(
     start = genoStart + 1,
     end   = genoEnd)%&gt;% 
   mutate(repFamily= str_remove(repFamily, &quot;\\?$&quot;)) %&gt;% 
-  dplyr::filter(genoName %in% autosomes)
+  dplyr::filter(genoName %in% autosomes) %&gt;% 
+  mutate(RM_id=paste0(genoName,&quot;:&quot;,start,&quot;-&quot;,end,&quot;:&quot;,id))
 
 
 rpt_split &lt;- split(repeatmasker_clean, repeatmasker_clean$repClass)
@@ -786,18 +828,57 @@ rpt_split_gr_list &lt;- lapply(rpt_split, function(df) {
     repFamily = df$repFamily,
     swScore   = df$swScore,
     milliDiv  = df$milliDiv,
-    id        = df$id
+    milliDel  = df$milliDel,
+    milliIns  = df$milliIns,
+    RM_id        = df$RM_id
   )
-})</code></pre>
+})
+
+rmskr_std_gr &lt;- GRanges(
+  seqnames = repeatmasker_clean$genoName,
+  ranges   = IRanges(
+    start = repeatmasker_clean$start,
+    end   = repeatmasker_clean$end
+  ),
+  strand   = repeatmasker_clean$strand,
+  repName   = repeatmasker_clean$repName,
+  repClass  = repeatmasker_clean$repClass,
+  repFamily = repeatmasker_clean$repFamily,
+  swScore   = repeatmasker_clean$swScore,
+  milliDiv  = repeatmasker_clean$milliDiv,
+  milliDel  = repeatmasker_clean$milliDel,
+  milliIns  = repeatmasker_clean$milliIns,
+  id        = repeatmasker_clean$RM_id
+)</code></pre>
 <pre class="r"><code>SINE_gr &lt;- rpt_split_gr_list$SINE
+SINE_df &lt;- SINE_gr %&gt;% 
+  as.data.frame()
+
+SINE_split_df &lt;- split(SINE_df, SINE_df$repFamily)
 
 LINE_gr &lt;- rpt_split_gr_list$LINE
+LINE_df &lt;- LINE_gr %&gt;% 
+  as.data.frame()
+
+LINE_split_df &lt;- split(LINE_df, LINE_df$repFamily)
 
 LTR_gr &lt;- rpt_split_gr_list$LTR
+LTR_df &lt;- LTR_gr %&gt;% 
+  as.data.frame()
+
+LTR_split_df &lt;- split(LTR_df, LTR_df$repFamily)
 
 SVA_gr &lt;- rpt_split_gr_list$Retroposon
+SVA_df &lt;- SVA_gr %&gt;% 
+  as.data.frame()
 
-DNA_gr &lt;- rpt_split_gr_list$DNA</code></pre>
+SVA_split_df &lt;- split(SVA_df, SVA_df$repFamily)
+
+DNA_gr &lt;- rpt_split_gr_list$DNA
+DNA_df &lt;- DNA_gr %&gt;% 
+  as.data.frame()
+
+DNA_split_df &lt;- split(DNA_df, DNA_df$repFamily)</code></pre>
 <pre class="r"><code>H3K27me3_summit_gr &lt;- readRDS(&quot;data/RDS_files/H3K27me3_complete_summit_gr.RDS&quot;)
 
 
@@ -877,6 +958,141 @@ test_pair_TE_generic &lt;- function(df_long, te_name, cluster1, cluster2) {
     p_value     = ft$p.value
   )
 }</code></pre>
+<pre class="r"><code>test_pair_TE_repName &lt;- function(df_long, rep_name, cluster1, cluster2) {
+  
+  # Subset for the specific repName
+  sub_df &lt;- df_long %&gt;%
+    filter(repName == rep_name) %&gt;%
+    complete(
+      cluster = c(cluster1, cluster2),
+      status  = c(&quot;TE&quot;, &quot;not_TE&quot;),
+      fill = list(count = 0)
+    )
+  
+  # fixed order of statuses
+  status_levels &lt;- c(&quot;TE&quot;, &quot;not_TE&quot;)
+  
+  # make sure both statuses exist
+  statuses &lt;- unique(sub_df$status)
+  if(length(statuses) != 2) {
+    sub_df &lt;- sub_df %&gt;%
+      complete(cluster, status, fill = list(count = 0))
+    statuses &lt;- unique(sub_df$status)
+  }
+  
+  # counts for cluster1
+  c1_counts &lt;- sub_df %&gt;%
+    filter(cluster == cluster1) %&gt;%
+    arrange(factor(status, levels = status_levels)) %&gt;%
+    pull(count)
+  
+  # counts for cluster2
+  c2_counts &lt;- sub_df %&gt;%
+    filter(cluster == cluster2) %&gt;%
+    arrange(factor(status, levels = status_levels)) %&gt;%
+    pull(count)
+  
+  # 2x2 matrix for Fisher test
+  mat &lt;- matrix(
+    c(c2_counts, c1_counts),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      cluster = c(cluster2, cluster1),
+      category = status_levels
+    )
+  )
+  
+  ft &lt;- tryCatch(
+    fisher.test(mat, workspace = 2e8),
+    error = function(e) fisher.test(mat, simulate.p.value = TRUE, B = 1e5)
+  )
+  
+  tibble(
+    repName     = rep_name,
+    comparison  = paste(cluster2, &quot;vs&quot;, cluster1),
+    odds_ratio  = ft$estimate,
+    lower_CI    = ft$conf.int[1],
+    upper_CI    = ft$conf.int[2],
+    p_value     = ft$p.value
+  )
+}</code></pre>
+<div id="all-h3k27me3-rois-overlapping-a-te-at-summits"
+class="section level3">
+<h3>All H3K27me3 ROIs overlapping a TE at summits</h3>
+<p>overlapping summits and all TEs dataframe making:</p>
+<pre class="r"><code>dataf &lt;- H3K27me3_summit_gr
+# H3K27me3_summit_ols &lt;-
+  
+   # 1️⃣ find overlaps
+  hits &lt;- findOverlaps(dataf, rmskr_std_gr)
+  
+  if (length(hits) == 0) {
+  H3K27me3_summit_ols &lt;- tibble()
+} else {
+
+  H3K27me3_summit_ols &lt;- tibble(
+    Peakid     = dataf$Peakid[queryHits(hits)],
+    cluster    = dataf$cluster[queryHits(hits)],
+    seqnames   = as.character(seqnames(dataf))[queryHits(hits)],
+    summit_pos = start(dataf)[queryHits(hits)],
+
+    repName   = rmskr_std_gr$repName[subjectHits(hits)],
+    repFamily = rmskr_std_gr$repFamily[subjectHits(hits)],
+    repClass  = rmskr_std_gr$repClass[subjectHits(hits)],
+    milliDiv  = rmskr_std_gr$milliDiv[subjectHits(hits)],
+    milliDel  = rmskr_std_gr$milliDel[subjectHits(hits)],
+    milliIns  = rmskr_std_gr$milliIns[subjectHits(hits)],
+    ID  = rmskr_std_gr$id[subjectHits(hits)]
+  )
+}
+# rmskr_nonoverlapping_H3K27me3_gr &lt;- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K27me3_sets_gr[[4]]) == 0]
+  
+H3K27me3_summit_Peakids &lt;- H3K27me3_summit_ols %&gt;% 
+    distinct(Peakid)
+  # saveRDS(H3K27me3_summit_ols,&quot;data/RDS_files/H3K27me3_summit_ROI_TE_overlaps.RDS&quot;)
+
+H3K27me3_summit_df &lt;- readRDS(&quot;data/RDS_files/H3K27me3_complete_summit_df.RDS&quot;)</code></pre>
+<p>making summit TE overlap annotation dataframe</p>
+<pre class="r"><code>all_summits_df &lt;- 
+H3K27me3_summit_df %&gt;% 
+  mutate(summit_id=paste0(roi_seqname,&quot;:&quot;,summit_pos)) %&gt;% 
+  dplyr::select(summit_id, Peakid:cluster)
+
+
+All_H3K27me3 &lt;- H3K27me3_sets_gr$all_H3K27me3 %&gt;% as.data.frame()
+
+annotated_H3K27me3_summits &lt;- All_H3K27me3 %&gt;%
+  left_join(., all_summits_df) %&gt;% 
+    left_join(., (H3K27me3_summit_ols %&gt;% 
+                  as.data.frame() %&gt;% 
+                  group_by(Peakid) %&gt;% 
+                  summarize(., 
+                            repClass=paste0(unique(repClass), collapse=&quot;;&quot;),
+                            repFamily=paste0(unique(repFamily),collapse=&quot;;&quot;),
+                            repName=paste0(unique(repName),collapse=&quot;;&quot;),
+              ID=paste0(unique(ID),collapse = &quot;;&quot;))))%&gt;%
+              mutate(TE_status = if_else(is.na(repClass),   &quot;wnot_TE&quot;,&quot;TE&quot;)) %&gt;%
+              mutate(SINE_status = case_when(is.na(repClass)~ &quot;wnot_SINE&quot;,
+                                             str_detect(repClass, &quot;SINE&quot;) ~ &quot;SINE&quot;,
+                                             TRUE ~&quot;wnot_SINE&quot;)) %&gt;% 
+              mutate(LINE_status = case_when(is.na(repClass)~ &quot;wnot_LINE&quot;,
+                                             str_detect(repClass, &quot;LINE&quot;) ~ &quot;LINE&quot;,
+                                             TRUE ~&quot;wnot_LINE&quot;)) %&gt;%
+              mutate(LTR_status = case_when(is.na(repClass)~ &quot;wnot_LTR&quot;,
+                                            str_detect(repClass, &quot;LTR&quot;) ~ &quot;LTR&quot;,
+                                            TRUE ~&quot;wnot_LTR&quot;)) %&gt;%
+               mutate(DNA_status = case_when(is.na(repClass)~ &quot;wnot_DNA&quot;,
+                                 str_detect(repClass, &quot;DNA&quot;) ~ &quot;DNA&quot;,
+                                 TRUE ~&quot;wnot_DNA&quot;)) %&gt;% 
+          mutate(SVA_status = case_when(is.na(repClass)~ &quot;wnot_SVA&quot;,
+                                        str_detect(repClass, &quot;Retroposon&quot;) ~ &quot;SVA&quot;,
+                                        TRUE ~&quot;wnot_SVA&quot;)) %&gt;% 
+  left_join(H3K27me3_lookup, by = c(&quot;Peakid&quot;,&quot;cluster&quot;)) %&gt;%
+  mutate(cluster = if_else(is.na(cluster), &quot;not_assigned&quot;, cluster)) 
+
+# saveRDS(annotated_H3K27me3_summits,&quot;data/TE_annotation/H3K27me3_annotated_summit_TE_overlaps.RDS&quot;)</code></pre>
+</div>
 <div id="sine" class="section level3">
 <h3>SINE</h3>
 <p>Overlapping SINE family with summits to get a count</p>
@@ -932,7 +1148,7 @@ SINE_results &lt;- comparisons %&gt;%
     autoWidth = TRUE,
     scrollX = TRUE))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-c7fc7fd0704f0fe11c1f" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"5472\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["5S-Deu-L2","Alu","MIR","tRNA","tRNA-Deu","tRNA-RTE","Alu","MIR","5S-Deu-L2","Alu","MIR","tRNA","tRNA-Deu","tRNA-RTE"],[30,5435,4984,30,8,51,1,10,30,5472,5034,30,8,53],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"2\" data-max=\"5751\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["5S-Deu-L2","Alu","MIR","tRNA","tRNA-Deu","tRNA-RTE","Alu","MIR","5S-Deu-L2","Alu","MIR","tRNA","tRNA-Deu","tRNA-RTE"],[30,5714,4702,30,8,53,2,9,30,5751,4747,30,8,54],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code># ---- Prepare the table ----
 SINE_counts_display &lt;- SINE_results %&gt;%
   # 1. Split comparison
@@ -982,7 +1198,7 @@ datatable(
   # Round numeric columns for readability
   formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-1aee943cb026952af47d" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1.28345364338999\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.606755380274198\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.002703814082762\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.016222884496572\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Alu","5S-Deu-L2","tRNA","tRNA-Deu","tRNA-RTE","MIR"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.1128324124943379,0,0,0,0,1.283453643389988],[0.00284736062371631,0,0,0,0,0.6067553802741971],[0.635026078676838,null,null,null,null,2.406457932894491],[0.002703814082762071,1,1,1,1,0.4633929271924241],[0.01622288449657243,1,1,1,1,1],[-3.147746535769309,null,null,null,null,0.3600311886603966],["depleted","depleted","depleted","depleted","depleted","enriched"],[true,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1.22134807561261\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.551005174594923\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.009990195960184\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.059941175761105\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Alu","5S-Deu-L2","tRNA","tRNA-Deu","tRNA-RTE","MIR"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.2151132116241593,0,0,0,0,1.221348075612606],[0.02588204169597964,0,0,0,0,0.5510051745949222],[0.7862109447915576,null,null,null,null,2.362126035775268],[0.009990195960184302,1,1,1,1,0.5715241546424492],[0.05994117576110582,1,1,1,1,1],[-2.216831961296405,null,null,null,null,0.2884744168661327],["depleted","depleted","depleted","depleted","depleted","enriched"],[false,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 <pre class="r"><code>ggplot(SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
    # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
@@ -1018,6 +1234,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/figure/H3K27me3_TE_overlap.Rmd/Plot SINE-1.png" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/figure/H3K27me3_TE_overlap.Rmd/Plot SINE-1.png" target="_blank">177cb71</a>
@@ -1119,6 +1346,43 @@ ggplot(SINE_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)
   theme_classic() +
   facet_wrap(~comparison)</code></pre>
 <p><img src="figure/H3K27me3_TE_overlap.Rmd/Apply%20ROI%20SINE-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Apply-ROI-SINE-1">
+Past versions of "Apply ROI SINE-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Apply-ROI-SINE-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/figure/H3K27me3_TE_overlap.Rmd/Apply ROI SINE-1.png" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="line" class="section level3">
@@ -1176,14 +1440,14 @@ LINE_results &lt;- comparisons %&gt;%
     autoWidth = TRUE,
     scrollX = TRUE))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-15ac70e14e0faa7e6fac" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"7985\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["CR1","Dong-R4","L1","L2","Penelope","RTE-BovB","RTE-X","L1","L2","CR1","Dong-R4","L1","L2","Penelope","RTE-BovB","RTE-X"],[661,1,6263,7919,4,99,101,2,11,663,1,6302,7985,4,101,103],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"7539\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["CR1","Dong-R4","L1","L2","Penelope","RTE-BovB","RTE-X","L1","L2","CR1","Dong-R4","L1","L2","Penelope","RTE-BovB","RTE-X"],[643,1,7262,7475,5,97,100,2,11,645,1,7305,7539,5,99,102],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>total_LINE_summits</code></pre>
 <pre><code># A tibble: 3 × 2
   cluster               total
   &lt;chr&gt;                 &lt;int&gt;
-1 Set_1                148911
+1 Set_1                148910
 2 Set_2                   235
-3 all_H3K27me3_regions 150464</code></pre>
+3 all_H3K27me3_regions 150463</code></pre>
 <pre class="r"><code># ---- Prepare the table ----
 LINE_counts_display &lt;- LINE_results %&gt;%
   # 1. Split comparison
@@ -1233,7 +1497,7 @@ datatable(
   # Round numeric columns for readability
   formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-686cfa6b0ab6d13cf646" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-686cfa6b0ab6d13cf646">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.874315527140372\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.43006229958836\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.00504149409978\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.035290458698463\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["L2","L1","CR1","Dong-R4","Penelope","RTE-BovB","RTE-X"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.8743155271403714,0.1955058590712013,0,0,0,0,0],[0.4300622995883597,0.02350443929320002,0,0,0,0,0],[1.595651785242291,0.7144899038120008,null,null,null,null,null],[0.7717331295598058,0.00504149409978045,1,1,1,1,1],[1,0.03529045869846315,1,1,1,1,1],[-0.1937740745531083,-2.354716250903051,null,null,null,null,null],["depleted","depleted","depleted","depleted","depleted","depleted","depleted"],[false,true,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-686cfa6b0ab6d13cf646">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.929159554867447\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.457026795861713\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.001231041477385\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.008617290341698\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["L2","L1","CR1","Dong-R4","Penelope","RTE-BovB","RTE-X"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.9291595548674469,0.1674290475216549,0,0,0,0,0],[0.4570267958617122,0.02015705699439199,0,0,0,0,0],[1.695716355695237,0.6118563821447512,null,null,null,null,null],[1,0.001231041477385488,1,1,1,1,1],[1,0.008617290341698414,1,1,1,1,1],[-0.1060017380524093,-2.578378249914271,null,null,null,null,null],["depleted","depleted","depleted","depleted","depleted","depleted","depleted"],[false,true,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 <pre class="r"><code>ggplot(LINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
@@ -1269,6 +1533,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/figure/H3K27me3_TE_overlap.Rmd/Plot LINE-1.png" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/figure/H3K27me3_TE_overlap.Rmd/Plot LINE-1.png" target="_blank">177cb71</a>
@@ -1327,6 +1602,43 @@ ggplot(LINE_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)
   theme_classic() +
   facet_wrap(~comparison)</code></pre>
 <p><img src="figure/H3K27me3_TE_overlap.Rmd/Apply%20ROI%20LINE-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Apply-ROI-LINE-1">
+Past versions of "Apply ROI LINE-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Apply-ROI-LINE-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/figure/H3K27me3_TE_overlap.Rmd/Apply ROI LINE-1.png" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="ltr" class="section level3">
@@ -1384,14 +1696,14 @@ LTR_results &lt;- comparisons %&gt;%
     autoWidth = TRUE,
     scrollX = TRUE))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-76504a9d21e95bf556c2" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-76504a9d21e95bf556c2">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"5531\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["ERV1","ERVK","ERVL","ERVL-MaLR","Gypsy","LTR","ERV1","ERVL","ERVL-MaLR","Gypsy","ERV1","ERVK","ERVL","ERVL-MaLR","Gypsy","LTR"],[3168,208,5195,5482,496,33,4,3,8,1,3186,210,5226,5531,498,33],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-76504a9d21e95bf556c2">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"5374\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["ERV1","ERVK","ERVL","ERVL-MaLR","Gypsy","LTR","ERV1","ERVL","ERVL-MaLR","Gypsy","ERV1","ERVK","ERVL","ERVL-MaLR","Gypsy","LTR"],[3161,218,5021,5323,472,33,3,3,9,1,3179,220,5051,5374,474,33],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>total_LTR_summits</code></pre>
 <pre><code># A tibble: 3 × 2
   cluster               total
   &lt;chr&gt;                 &lt;int&gt;
-1 Set_1                148911
+1 Set_1                148910
 2 Set_2                   235
-3 all_H3K27me3_regions 150464</code></pre>
+3 all_H3K27me3_regions 150463</code></pre>
 <pre class="r"><code># ---- Prepare the table ----
 LTR_counts_display &lt;- LTR_results %&gt;%
   # 1. Split comparison
@@ -1441,7 +1753,7 @@ datatable(
   # Round numeric columns for readability
   formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-72118e3de6abfa29a40d" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-72118e3de6abfa29a40d">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1.27872901746851\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.393072034560096\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.072096607145805\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.432579642874835\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["ERVL-MaLR","ERV1","ERVL","ERVK","LTR","Gypsy"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.9220663305986108,0.7966195809681194,0.3577294983016647,0,0,1.278729017468511],[0.393072034560096,0.2150991183954468,0.07320940814630839,0,0,0.03217465323268557],[1.849265644954412,2.069468327336955,1.05911736304177,null,null,7.227456479586487],[1,0.8224971315013823,0.07209660714580586,1,1,0.5438877797126542],[1,1,0.4325796428748352,1,1,1],[-0.1170575574826432,-0.3280371531988047,-1.483059007309451,null,null,0.3547105671319072],["depleted","depleted","depleted","depleted","depleted","enriched"],[false,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-72118e3de6abfa29a40d">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1.34395735071104\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"0.484643245906787\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.098732786549594\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.592396719297566\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["ERV1","ERVL","ERVK","LTR","Gypsy","ERVL-MaLR"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.596231703759333,0.3705719276786454,0,0,1.343957350711037,1.074192807701814],[0.1220012634076934,0.07583735664363489,0,0,0.03381247823382998,0.4846432459067864],[1.765834963477311,1.097170517743197,null,null,7.597825024089924,2.077375435859854],[0.4978225839277092,0.09873278654959435,1,1,0.5262392669664965,0.7261810574281982],[1,0.5923967192975661,1,1,1,1],[-0.7460550042944482,-1.432174499363461,null,null,0.4264873562015145,0.1032529670197288],["depleted","depleted","depleted","depleted","enriched","enriched"],[false,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 <pre class="r"><code>ggplot(LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
@@ -1479,6 +1791,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/figure/H3K27me3_TE_overlap.Rmd/Plot LTR-1.png" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/figure/H3K27me3_TE_overlap.Rmd/Plot LTR-1.png" target="_blank">177cb71</a>
 </td>
 <td>
@@ -1492,6 +1815,69 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>LTR_hits &lt;- findOverlaps(H3K27me3_summit_gr, LTR_gr, ignore.strand = TRUE)
+LTR_name_overlap_df &lt;- tibble(
+  summit_id = queryHits(LTR_hits),
+  cluster   = mcols(H3K27me3_summit_gr)$cluster[queryHits(LTR_hits)],
+  TE_type   = mcols(LTR_gr)$repFamily[subjectHits(LTR_hits)],
+  repName= mcols(LTR_gr)$repName[subjectHits(LTR_hits)])
+
+LTR_ERV1_counts &lt;-
+  LTR_name_overlap_df %&gt;%
+    dplyr::filter(TE_type==&quot;ERV1&quot;) %&gt;% 
+  count(cluster, repName, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_LTR_summits &lt;- tibble(
+  cluster = mcols(H3K27me3_summit_gr)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_LTR_ERV1_counts &lt;- LTR_ERV1_counts %&gt;%
+  left_join(total_LTR_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  select(cluster, repName, status, count)
+
+LTR_ERV1_df_long &lt;- bind_rows(LTR_ERV1_counts %&gt;%
+                            dplyr::select(cluster, repName, status, count),
+                          not_LTR_ERV1_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+ERV1_LTR_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       LTR_ERV1_df_long %&gt;%
+        distinct(repName) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            LTR_ERV1_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))</code></pre>
+<pre class="r"><code>ggplot(ERV1_LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(data = subset(ERV1_LTR_results, FDR &lt; 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;LTR Name (type) enrichment at ROI summits\nH3K27me3&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/Plotting%20ERV1%20ltr%20data-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="overlapping-ltr-family-with-rois-to-get-a-count"
 class="section level4">
 <h4>Overlapping LTR family with ROIs to get a count</h4>
@@ -1535,6 +1921,43 @@ ggplot(LTR_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type))
   theme_classic() +
   facet_wrap(~comparison)</code></pre>
 <p><img src="figure/H3K27me3_TE_overlap.Rmd/Apply%20ROI%20LTR-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Apply-ROI-LTR-1">
+Past versions of "Apply ROI LTR-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Apply-ROI-LTR-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/figure/H3K27me3_TE_overlap.Rmd/Apply ROI LTR-1.png" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="sva" class="section level3">
@@ -1592,14 +2015,14 @@ SVA_results &lt;- comparisons %&gt;%
     autoWidth = TRUE,
     scrollX = TRUE))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-0a58fb401ace3924c9b1" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-0a58fb401ace3924c9b1">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"2\" data-max=\"8\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F","SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F"],[3,3,2,7,2,2,3,4,2,8,2,2],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-0a58fb401ace3924c9b1">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"2\" data-max=\"13\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F","SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F"],[2,6,2,12,3,4,2,7,2,13,3,4],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>total_SVA_summits</code></pre>
 <pre><code># A tibble: 3 × 2
   cluster               total
   &lt;chr&gt;                 &lt;int&gt;
-1 Set_1                148911
+1 Set_1                148910
 2 Set_2                   235
-3 all_H3K27me3_regions 150464</code></pre>
+3 all_H3K27me3_regions 150463</code></pre>
 <pre class="r"><code># ---- Prepare the table ----
 SVA_counts_display &lt;- SVA_results %&gt;%
   # 1. Split comparison
@@ -1687,6 +2110,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/figure/H3K27me3_TE_overlap.Rmd/Plot SVA-1.png" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/figure/H3K27me3_TE_overlap.Rmd/Plot SVA-1.png" target="_blank">177cb71</a>
 </td>
 <td>
@@ -1743,6 +2177,43 @@ ggplot(SVA_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type))
   theme_classic() +
   facet_wrap(~comparison)</code></pre>
 <p><img src="figure/H3K27me3_TE_overlap.Rmd/Apply%20ROI%20SVA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Apply-ROI-SVA-1">
+Past versions of "Apply ROI SVA-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Apply-ROI-SVA-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/figure/H3K27me3_TE_overlap.Rmd/Apply ROI SVA-1.png" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="dna" class="section level3">
@@ -1800,14 +2271,14 @@ DNA_results &lt;- comparisons %&gt;%
     autoWidth = TRUE,
     scrollX = TRUE))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-6a36fbbf64cb69d3550f" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-6a36fbbf64cb69d3550f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"1749\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["DNA","MULE-MuDR","PiggyBac","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tip100","PiggyBac","TcMar-Tigger","hAT-Charlie","DNA","MULE-MuDR","PiggyBac","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tip100"],[16,25,2,28,21,805,63,31,142,1735,703,1,9,1,16,25,3,29,21,838,64,31,143,1749,707],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-6a36fbbf64cb69d3550f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"1740\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","Set_2","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions","all_H3K27me3_regions"],["DNA","MULE-MuDR","PiggyBac","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tip100","PiggyBac","TcMar-Tigger","hAT-Charlie","DNA","MULE-MuDR","PiggyBac","TcMar","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tip100"],[17,27,3,31,23,859,61,28,136,1723,672,1,9,2,17,27,4,1,32,23,892,62,28,137,1740,676],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>total_DNA_summits</code></pre>
 <pre><code># A tibble: 3 × 2
   cluster               total
   &lt;chr&gt;                 &lt;int&gt;
-1 Set_1                148911
+1 Set_1                148910
 2 Set_2                   235
-3 all_H3K27me3_regions 150464</code></pre>
+3 all_H3K27me3_regions 150463</code></pre>
 <pre class="r"><code># ---- Prepare the table ----
 DNA_counts_display &lt;- DNA_results %&gt;%
   # 1. Split comparison
@@ -1857,7 +2328,7 @@ datatable(
   # Round numeric columns for readability
   formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-59f945287a722aca07c9" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-59f945287a722aca07c9">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"315.03640810465\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"5.37121085075978\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"7.095136063e-06\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"7.8046496696e-05\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["hAT-Charlie","DNA","MULE-MuDR","TcMar-Mariner","TcMar-Tc2","hAT","hAT-Ac","hAT-Blackjack","hAT-Tip100","PiggyBac","TcMar-Tigger"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.3625278177088356,0,0,0,0,0,0,0,0,315.0364081046498,7.327026738490494],[0.009137074282986575,0,0,0,0,0,0,0,0,5.371210850759778,3.295274236121153],[2.042324009063821,null,null,null,null,null,null,null,null,7136.935548991004,14.2269124904433],[0.5335938497758526,1,1,1,1,1,1,1,1,0.004719499491814723,7.095136063335788e-06],[1,1,1,1,1,1,1,1,1,0.02595724720498098,7.804649669669367e-05],[-1.463836393743758,null,null,null,null,null,null,null,null,8.299374757297631,2.87322788050842],["depleted","depleted","depleted","depleted","depleted","depleted","depleted","depleted","depleted","enriched","enriched"],[false,false,false,false,false,false,false,false,false,true,true]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-59f945287a722aca07c9">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"212.111482890328\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"4.02385930067267\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1.1789103841e-05\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.000141469246101\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["hAT-Charlie","DNA","MULE-MuDR","TcMar-Mariner","TcMar-Tc2","hAT","hAT-Ac","hAT-Blackjack","hAT-Tip100","TcMar","PiggyBac","TcMar-Tigger"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.7332616704425932,0,0,0,0,0,0,0,0,0,212.1114828903283,6.862430934222811],[0.08820666102850444,0,0,0,0,0,0,0,0,0,4.02385930067267,3.088012268598487],[2.682798263194289,null,null,null,null,null,null,null,null,null,2755.171203576023,13.32810986901965],[0.9999999999999999,1,1,1,1,1,1,1,1,1,0.006287774170918583,1.178910384176978e-05],[1,1,1,1,1,1,1,1,1,1,0.0377266450255115,0.0001414692461012374],[-0.44759996708356,null,null,null,null,null,null,null,null,null,7.728678914653122,2.778719724430309],["depleted","depleted","depleted","depleted","depleted","depleted","depleted","depleted","depleted","depleted","enriched","enriched"],[false,false,false,false,false,false,false,false,false,false,true,true]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 <pre class="r"><code>ggplot(DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
@@ -1893,6 +2364,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/figure/H3K27me3_TE_overlap.Rmd/Plot DNA-1.png" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/177cb717eee0e178a86c1a4c12f41df29bf47757/docs/figure/H3K27me3_TE_overlap.Rmd/Plot DNA-1.png" target="_blank">177cb71</a>
@@ -1976,6 +2458,352 @@ ggplot(DNA_results_full, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type))
   theme_classic() +
   facet_wrap(~comparison)</code></pre>
 <p><img src="figure/H3K27me3_TE_overlap.Rmd/Apply%20ROI%20DNA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Apply-ROI-DNA-1">
+Past versions of "Apply ROI DNA-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Apply-ROI-DNA-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba7cf29bd6ead6102af409899a48b36824db57e9/docs/figure/H3K27me3_TE_overlap.Rmd/Apply ROI DNA-1.png" target="_blank">ba7cf29</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="proportions-of-sets-and-sets-of-tes" class="section level3">
+<h3>Proportions of SETs and SETS of TEs</h3>
+<pre class="r"><code>annotated_tables &lt;- H3K27me3_sets_gr$all_H3K27me3_regions %&gt;% as.data.frame()
+
+anno_H3K27me3_summits &lt;- readRDS(&quot;data/TE_annotation/H3K27me3_annotated_summit_TE_overlaps.RDS&quot;)
+
+anno_H3K27me3 &lt;- annotated_tables
+
+
+# H3K27me3_set_case_lookup &lt;- bind_rows(H3K27me3_set_case_lfc, .id = &quot;set_case&quot;) %&gt;% 
+#   dplyr::select(Peakid,cluster:set_case)
+
+anno_H3K27me3 %&gt;% 
+  left_join(H3K27me3_lookup) %&gt;%
+  group_by(cluster) %&gt;% 
+  count() %&gt;%
+  ungroup() %&gt;% 
+  mutate(percent = n / sum(n)) %&gt;% 
+  
+  ggplot(.,aes(x=cluster, y=percent, fill=cluster)) +
+  geom_col() +
+    geom_text(
+    aes(label = sprintf(&quot;%.3f&quot;, percent)),
+    vjust = -0.3,
+    size = 3
+  ) +
+  ylab(&quot;proportion&quot;)+
+  ggtitle(&quot;Proportion of ROIs by cluster, H3K27me3&quot;)+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" />
+### TE proportions by ROI-summits</p>
+<pre class="r"><code>H3K27me3_te_summary_summits &lt;- anno_H3K27me3_summits %&gt;% 
+  left_join(H3K27me3_lookup) %&gt;% 
+   mutate(repClass = na_if(repClass, &quot;&quot;),   # treat empty as NA
+    n_TE_class = case_when(
+      is.na(repClass) ~ 0L,
+      TRUE ~ lengths(strsplit(repClass, &quot;;&quot;)))) %&gt;% 
+  mutate( category = case_when(n_TE_class == 0 ~ &quot;No TE overlap&quot;,
+                               n_TE_class == 1 ~ &quot;Single TE class&quot;,
+                               n_TE_class &gt; 1  ~ &quot;Multiple TE classes&quot;))
+
+
+pie_df_summits &lt;- H3K27me3_te_summary_summits %&gt;% 
+  count(category) %&gt;% 
+  mutate(
+    percent = n / sum(n) * 100
+  )
+
+ggplot(pie_df_summits, aes(x = &quot;&quot;, y = percent, fill = category)) +
+  geom_col(width = 1, color = &quot;white&quot;) +
+  coord_polar(theta = &quot;y&quot;) +
+  theme_void() +
+  geom_text(
+    aes(label = sprintf(&quot;%.1f%%&quot;, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 4
+  ) +
+  labs(
+    title = &quot;ROI summit overlap with transposable elements&quot;
+  )</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/TE%20summit%20ROI-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>H3K27me3_te_family_long_summits &lt;- H3K27me3_te_summary_summits %&gt;% 
+  filter(!is.na(repClass), repClass != &quot;&quot;) %&gt;%   # TE-positive only
+  separate_rows(repClass, sep = &quot;;&quot;) %&gt;% 
+  distinct(Peakid, repClass,cluster)
+
+
+fam_pie_df_summits &lt;- H3K27me3_te_family_long_summits %&gt;% 
+  count(repClass, name = &quot;n&quot;) %&gt;% 
+  mutate(percent = n / sum(n)*100) %&gt;% 
+  mutate(
+    repClass = if_else(percent &lt; 2, &quot;Other&quot;, repClass)
+  ) %&gt;% 
+  group_by(repClass) %&gt;% 
+  summarise(n = sum(n), .groups = &quot;drop&quot;) %&gt;% 
+  mutate(percent = n / sum(n) * 100)
+  
+
+ggplot(fam_pie_df_summits, aes(x = &quot;&quot;, y = percent, fill = repClass)) +
+  geom_col(width = 1, color = &quot;white&quot;) +
+  coord_polar(theta = &quot;y&quot;) +
+  theme_void() +
+  geom_text(
+    aes(label = sprintf(&quot;%s\n%.1f%%&quot;, repClass, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(
+    title = &quot;TE Class composition among TE-overlapping ROI summits&quot;,
+    fill = &quot;TE Class&quot;)</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/class%20summit-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># unique(rpt_split_gr_list$LTR$repFamily)</code></pre>
+<pre class="r"><code>human_genome_LTR &lt;- LTR_df %&gt;% 
+  dplyr::filter(repFamily %in% c(&quot;ERV1&quot;, &quot;ERVK&quot;,&quot;ERVL&quot;, &quot;ERVL-MaLR&quot;,&quot;Gypsy&quot;,&quot;LTR&quot;)) %&gt;%
+  count(repFamily, name = &quot;n&quot;) %&gt;% 
+  mutate(percent= n/ sum(n) * 100)
+
+
+H3K27me3_long_repFamily_summits &lt;- H3K27me3_te_summary_summits %&gt;% 
+  filter(!is.na(repFamily), repFamily != &quot;&quot;) %&gt;%   # TE-positive only
+  separate_rows(repFamily, sep = &quot;;&quot;) %&gt;% 
+  distinct(Peakid, repFamily)
+
+
+H3K27me3_LTR_pie_df_summits &lt;- H3K27me3_long_repFamily_summits %&gt;% 
+  dplyr::filter(repFamily %in% c(&quot;ERV1&quot;, &quot;ERVK&quot;,&quot;ERVL&quot;, &quot;ERVL-MaLR&quot;,&quot;Gypsy&quot;,&quot;LTR&quot;)) %&gt;%
+  count(repFamily, name = &quot;n&quot;) %&gt;% 
+  mutate(percent= n/ sum(n) * 100)
+
+ggplot(H3K27me3_LTR_pie_df_summits, aes(x = &quot;&quot;, y = percent, fill = repFamily)) +
+  geom_col(width = 1, color = &quot;white&quot;) +
+  coord_polar(theta = &quot;y&quot;) +
+  theme_void() +
+  geom_text_repel(
+    aes(label = sprintf(&quot;%s\n%.1f%%&quot;, repFamily, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(
+    title = &quot;LTR family composition among TE-overlapping ROI summits&quot;,
+    fill = &quot;TE family&quot;
+  )</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/family%20LTR%20summit%20breakdown-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(human_genome_LTR, aes(x = &quot;&quot;, y = percent, fill = repFamily)) +
+  geom_col(width = 1, color = &quot;white&quot;) +
+  coord_polar(theta = &quot;y&quot;) +
+  theme_void() +
+  geom_text_repel(
+    aes(label = sprintf(&quot;%s\n%.1f%%&quot;, repFamily, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(
+    title = &quot;LTR family composition across human genome&quot;,
+    fill = &quot;TE family&quot;
+  )</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/family%20LTR%20summit%20breakdown-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>rpt_genome &lt;- repeatmasker_clean %&gt;% 
+ mutate(cluster = &quot;hg38&quot;) %&gt;% 
+  group_by(cluster, repClass) %&gt;% 
+  summarise(n = n(), .groups = &quot;drop&quot;) %&gt;% 
+  mutate(percent = n / sum(n) * 100) %&gt;% 
+  mutate(
+    repClass = if_else(percent &lt; 1.2, &quot;Other&quot;, repClass)
+  ) %&gt;% 
+  group_by(repClass) %&gt;% 
+  summarise(n = sum(n), .groups = &quot;drop&quot;) %&gt;% 
+  mutate(percent = n / sum(n) * 100)
+
+
+H3K27me3_te_family_clust_summits &lt;- H3K27me3_te_family_long_summits %&gt;% 
+  dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;%
+   distinct(Peakid, cluster, repClass) %&gt;%
+    count(cluster, repClass, name = &quot;n&quot;) %&gt;% 
+  group_by(cluster) %&gt;% 
+  mutate(percent = n / sum(n)*100) %&gt;% 
+  mutate(
+    repClass = if_else(percent &lt; 2, &quot;Other&quot;, repClass)
+  ) %&gt;% 
+  group_by(cluster,repClass) %&gt;% 
+  summarise(n = sum(n), .groups = &quot;drop&quot;) %&gt;% 
+  group_by(cluster) %&gt;% 
+  mutate(percent = n / sum(n) * 100) %&gt;% 
+  rbind((rpt_genome %&gt;% mutate(cluster=&quot;hg38&quot;)))
+
+ggplot(H3K27me3_te_family_clust_summits, aes(x = &quot;&quot;, y=percent, fill=repClass))+
+  geom_col(width =1, color=&quot;white&quot;)+
+  coord_polar(theta = &quot;y&quot;)+
+  geom_text_repel(
+    aes(x= 1.5,label = sprintf(&quot;%s\n%.1f%%&quot;, repClass, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~cluster)+
+  theme_void()+
+  labs(
+    title = &quot;TE Class composition among TE-overlapping ROI summits per set&quot;,
+    fill = &quot;TE family&quot;
+  )</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(H3K27me3_te_family_clust_summits, aes(x = cluster, y=percent, fill=repClass))+
+   geom_col(width = 0.8, color = &quot;white&quot;) +
+  geom_text(
+    aes(label = sprintf(&quot;%s\n%.1f%%&quot;, repClass, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  theme_bw() +
+  labs(
+    title = &quot;TE Class composition among TE-overlapping ROI summits per set&quot;,
+    fill = &quot;TE family&quot;
+  )</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>  ggplot(H3K27me3_te_family_clust_summits, aes(x = cluster, y=percent, fill=repClass))+
+   geom_col(width = 0.8, color = &quot;white&quot;) +
+  # geom_text(
+  #   aes(label = sprintf(&quot;%s\n%.1f%%&quot;, repClass, percent)),
+  #   position = position_stack(vjust = 0.5),
+  #   size = 3
+  # ) +
+  theme_bw() +
+  labs(
+    title = &quot;TE Class composition among TE-overlapping ROI summits per set&quot;,
+    fill = &quot;TE family&quot;
+  )</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR_genome &lt;-
+repeatmasker_clean %&gt;% 
+ mutate(cluster = &quot;hg38&quot;) %&gt;% 
+  dplyr::filter(repFamily %in% c(&quot;ERV1&quot;, &quot;ERVK&quot;,&quot;ERVL&quot;, &quot;ERVL-MaLR&quot;,&quot;Gypsy&quot;,&quot;LTR&quot;))%&gt;%
+  group_by(repFamily) %&gt;% 
+  summarise(n = dplyr::n(), .groups = &quot;drop&quot;) %&gt;% 
+  mutate(percent = n / sum(n) * 100) 
+ 
+
+H3K27me3_long_repFamily_summits &lt;-
+H3K27me3_te_summary_summits %&gt;% 
+   dplyr::filter(cluster != &quot;not_assigned&quot;) %&gt;%
+  filter(!is.na(repFamily), repFamily != &quot;&quot;) %&gt;%   # TE-positive only
+  separate_rows(repFamily, sep = &quot;;&quot;) %&gt;% 
+  distinct(cluster,Peakid, repFamily) %&gt;% 
+  
+  dplyr::filter(repFamily %in% c(&quot;ERV1&quot;, &quot;ERVK&quot;,&quot;ERVL&quot;, &quot;ERVL-MaLR&quot;,&quot;Gypsy&quot;,&quot;LTR&quot;)) %&gt;%
+  count(cluster,repFamily, name = &quot;n&quot;) %&gt;% 
+  group_by(cluster) %&gt;% 
+  mutate(percent = n / sum(n)*100) %&gt;% 
+  group_by(cluster,repFamily) %&gt;% 
+  summarise(n = sum(n), .groups = &quot;drop&quot;) %&gt;% 
+  group_by(cluster) %&gt;% 
+  mutate(percent = n / sum(n) * 100) %&gt;% 
+  rbind((LTR_genome %&gt;% mutate(cluster=&quot;hg38&quot;)))
+
+
+ggplot(H3K27me3_long_repFamily_summits, aes(x = &quot;&quot;, y=percent, fill=repFamily))+
+  geom_col(width =1, color=&quot;white&quot;)+
+  coord_polar(theta = &quot;y&quot;)+
+    geom_text_repel(
+    aes(label = sprintf(&quot;%s\n%.1f%%&quot;, repFamily, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3,
+    show.legend = FALSE
+  ) +
+  facet_wrap(~cluster)+
+  theme_void()+
+  labs(
+    title = &quot;TE family relative abundance among ROI summits by set H3K27me3&quot;,
+    fill = &quot;TE family&quot;
+  )</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(H3K27me3_long_repFamily_summits, aes(x = cluster, y=percent, fill=repFamily))+
+   geom_col(width = 0.8, color = &quot;white&quot;) +
+  geom_text_repel(
+    aes(label = sprintf(&quot;%s\n%.1f%%&quot;, repFamily, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  theme_bw() +
+  labs(
+    title = &quot;TE Family composition among TE-overlapping ROI summits per set H3K27me3&quot;,
+    fill = &quot;TE family&quot;
+  )</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR_bar_df_summits &lt;-H3K27me3_te_summary_summits %&gt;%
+  filter(!is.na(repFamily), repFamily != &quot;&quot;)  %&gt;%   # TE-positive only
+  separate_rows(repFamily, sep = &quot;;&quot;) %&gt;% 
+  distinct(cluster,Peakid, repFamily) %&gt;% 
+  dplyr::filter(repFamily %in% c(&quot;ERV1&quot;, &quot;ERVK&quot;,&quot;ERVL&quot;, &quot;ERVL-MaLR&quot;,&quot;Gypsy&quot;,&quot;LTR&quot;)) %&gt;%
+  group_by(repFamily, cluster) %&gt;% 
+  summarise(n = dplyr::n(), .groups = &quot;drop&quot;) %&gt;% 
+  # optionally convert NA to a string
+  mutate(cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster))
+
+ggplot(LTR_bar_df_summits, aes(x = repFamily, y = n, fill = cluster)) +
+  geom_col(position = &quot;fill&quot;) +
+  theme_classic() +
+  labs(
+    x = &quot;LTR Family&quot;,
+    y = &quot;Proportion of ROIs&quot;,
+    fill = &quot;Cluster&quot;,
+    title = &quot;Proportion of ROI summits across each LTR family&quot;
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="figure/H3K27me3_TE_overlap.Rmd/LTR%20barplot%20summits-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summit_H3K27me3_LTR_breakdown &lt;- anno_H3K27me3_summits %&gt;% 
+  left_join(H3K27me3_lookup) %&gt;% 
+   mutate(repClass = na_if(repClass, &quot;&quot;)) %&gt;% 
+  dplyr::filter(repFamily %in% c(&quot;ERV1&quot;, &quot;ERVK&quot;,&quot;ERVL&quot;, &quot;ERVL-MaLR&quot;,&quot;Gypsy&quot;,&quot;LTR&quot;)) %&gt;% 
+  dplyr::select(Peakid, repClass,repFamily, repName, cluster)
+
+summit_H3K27me3_LTR_breakdown %&gt;% 
+  # dplyr::filter(repFamily==&quot;ERVK&quot;) %&gt;% 
+  group_by(repFamily,cluster) %&gt;% tally() %&gt;%
+pivot_wider(., id_cols=repFamily, names_from = cluster, values_from = n)</code></pre>
+<pre><code># A tibble: 6 × 4
+# Groups:   repFamily [6]
+  repFamily Set_1 Set_2 all_H3K27me3_regions
+  &lt;chr&gt;     &lt;int&gt; &lt;int&gt;                &lt;int&gt;
+1 ERV1       3152     3                 3170
+2 ERVK        218    NA                  220
+3 ERVL       5009     3                 5039
+4 ERVL-MaLR  5314     9                 5365
+5 Gypsy       472     1                  474
+6 LTR          84    NA                   84</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2152,7 +2980,6 @@ loaded via a namespace (and not attached):
 [133] fastmatch_1.1-6                        
 [134] cowplot_1.2.0                          
 [135] KEGGREST_1.46.0                        </code></pre>
-</div>
 </div>
 </div>
 </div>
