@@ -1,0 +1,468 @@
+---
+title: "plotHeatmap_trial"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(data.table)
+library(circlize)
+library(ComplexHeatmap)
+
+```
+
+
+
+```{r}
+matrix_file <- "C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output/four_histone/matrix_MER61E_ERV1_LTR.gz"
+cm <- fread(cmd = paste("gzip -dc", matrix_file), skip = 1)
+dim(cm)
+head(cm[,1:10])
+
+sample_names <- c(
+"H3K27ac_DOX_144R_merged","H3K27ac_DOX_24R_merged","H3K27ac_DOX_24T_merged",
+"H3K27ac_VEH_144R_merged","H3K27ac_VEH_24R_merged","H3K27ac_VEH_24T_merged",
+"H3K27me3_DOX_144R_merged","H3K27me3_DOX_24R_merged","H3K27me3_DOX_24T_merged",
+"H3K27me3_VEH_144R_merged","H3K27me3_VEH_24R_merged","H3K27me3_VEH_24T_merged",
+"H3K36me3_DOX_144R_merged","H3K36me3_DOX_24R_merged","H3K36me3_DOX_24T_merged",
+"H3K36me3_VEH_144R_merged","H3K36me3_VEH_24R_merged","H3K36me3_VEH_24T_merged",
+"H3K9me3_DOX_144R_merged","H3K9me3_DOX_24R_merged","H3K9me3_DOX_24T_merged",
+"H3K9me3_VEH_144R_merged","H3K9me3_VEH_24R_merged","H3K9me3_VEH_24T_merged"
+)
+meta <- meta <- cm[,1:6]
+bins <- 900
+signal_list <- lapply(1:length(sample_names), function(i) {
+  start <- 6 + (i-1)*bins + 1
+  end <- 6 + i*bins
+  as.matrix(cm[,start:end])
+})
+
+names(signal_list) <- sample_names
+
+profiles <- lapply(signal_list, colMeans)
+
+profiles_df <- do.call(cbind, profiles)
+profiles_df <- as.data.frame(profiles_df)
+
+profiles_df$bin <- 1:nrow(profiles_df)
+```
+
+```{r}
+long <- pivot_longer(
+  profiles_df,
+  -bin,
+  names_to="sample",
+  values_to="signal"
+) %>%
+  separate(sample, into=c("mark","condition","time"), sep="_", remove = FALSE)
+
+
+ggplot(long, aes(bin, signal, color=sample)) +
+  geom_line(size=1) +
+  theme_bw() +
+  labs(
+    x="Scaled TE region",
+    y="ChIP signal"
+  )+
+facet_wrap(~time)
+
+long$condition <- ifelse(grepl("DOX", long$sample),"DOX","VEH")
+long$mark <- sub("_.*","",long$sample)
+
+
+ggplot(long, aes(bin, signal, color=time)) +
+  geom_line(size=1) +
+  facet_grid(mark ~ condition) +
+  theme_bw()+
+  geom_vline(xintercept=c(200,700), linetype="dashed")+
+  ggtitle("signal across all LTR:ERV1:MER61E")
+```
+
+```{r}
+plot_deeptools_matrix <- function(matrix_file, bins = 900){
+
+  library(data.table)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+  library(stringr)
+
+  message("Processing: ", matrix_file)
+
+  cm <- fread(cmd = paste("gzip -dc", matrix_file), skip = 1)
+
+  sample_names <- c(
+  "H3K27ac_DOX_144R_merged","H3K27ac_DOX_24R_merged","H3K27ac_DOX_24T_merged",
+  "H3K27ac_VEH_144R_merged","H3K27ac_VEH_24R_merged","H3K27ac_VEH_24T_merged",
+  "H3K27me3_DOX_144R_merged","H3K27me3_DOX_24R_merged","H3K27me3_DOX_24T_merged",
+  "H3K27me3_VEH_144R_merged","H3K27me3_VEH_24R_merged","H3K27me3_VEH_24T_merged",
+  "H3K36me3_DOX_144R_merged","H3K36me3_DOX_24R_merged","H3K36me3_DOX_24T_merged",
+  "H3K36me3_VEH_144R_merged","H3K36me3_VEH_24R_merged","H3K36me3_VEH_24T_merged",
+  "H3K9me3_DOX_144R_merged","H3K9me3_DOX_24R_merged","H3K9me3_DOX_24T_merged",
+  "H3K9me3_VEH_144R_merged","H3K9me3_VEH_24R_merged","H3K9me3_VEH_24T_merged"
+  )
+
+  signal_list <- lapply(seq_along(sample_names), function(i){
+
+    start <- 6 + (i-1)*bins + 1
+    end <- 6 + i*bins
+
+    as.matrix(cm[,start:end])
+  })
+
+  names(signal_list) <- sample_names
+
+  profiles <- lapply(signal_list, colMeans)
+
+  profiles_df <- do.call(cbind, profiles) |> as.data.frame()
+  profiles_df$bin <- 1:nrow(profiles_df)
+
+  long <- profiles_df |>
+    pivot_longer(-bin, names_to="sample", values_to="signal") |>
+    separate(sample, into=c("mark","condition","time","extra"), sep="_") |>
+    mutate(sample = paste(mark,condition,time,sep="_"))
+
+  # remove unwanted marks
+  long <- long |> filter(!mark %in% c("H3K27me3","H3K36me3"))
+
+  title <- tools::file_path_sans_ext(basename(matrix_file))
+
+  p <- ggplot(long, aes(bin, signal, color=time)) +
+    geom_line(linewidth=1) +
+    facet_grid(mark ~ condition) +
+    geom_vline(xintercept=c(200,700), linetype="dashed") +
+    theme_bw() +
+    ggtitle(title)
+
+  return(p)
+}
+```
+
+```{r}
+plot_deeptools_matrix("C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output/four_histone/matrix_MER61E_ERV1_LTR.gz")
+```
+```{r}
+matrix_dir <- "C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output/four_histone/"
+
+matrix_files <- list.files(
+  matrix_dir,
+  pattern="matrix_.*gz$",
+  full.names=TRUE
+)
+
+plots <- lapply(matrix_files, plot_deeptools_matrix)
+```
+
+```{r}
+plots
+```
+
+### Heatmap plotting
+
+```{r}
+
+meta <- cm[,1:6]
+signal <- cm[,7:ncol(cm)]
+
+bins <- 900
+sample_index <- 2
+
+start <- (sample_index - 1) * bins + 1
+end <- sample_index * bins
+
+mat <- as.matrix(signal[,start:end])
+### sorting rows by signal
+row_order <- order(rowMeans(mat), decreasing = TRUE)
+mat <- mat[row_order,]
+
+
+### Color scale
+col_fun <- colorRamp2(
+  c(0, 0.5, 2),
+  c("white", "orange", "red")
+)
+#### color scale for centered data
+# col_fun <- colorRamp2(
+#   c(-2, 0, 2),
+#   c("blue", "white", "red")
+# )
+
+region <- c(
+  rep("Upstream",200),
+  rep("TE",500),
+  rep("Downstream",200)
+)
+Heatmap(
+  mat,
+  col = col_fun,
+  name = "signal",
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  column_split = region,
+  cluster_columns = FALSE
+)
+```
+
+
+```{r only 2 histone matrices}
+plot_2hist_deeptools_matrix <- function(matrix_file, bins = 400){
+
+  library(data.table)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+  library(stringr)
+
+  message("Processing: ", matrix_file)
+
+  cm <- fread(cmd = paste("gzip -dc", matrix_file), skip = 1)
+
+  sample_names <- c(
+  "H3K27ac_DOX_144R_merged","H3K27ac_DOX_24R_merged","H3K27ac_DOX_24T_merged",
+  "H3K27ac_VEH_144R_merged","H3K27ac_VEH_24R_merged","H3K27ac_VEH_24T_merged",
+  "H3K9me3_DOX_144R_merged","H3K9me3_DOX_24R_merged","H3K9me3_DOX_24T_merged",
+  "H3K9me3_VEH_144R_merged","H3K9me3_VEH_24R_merged","H3K9me3_VEH_24T_merged"
+  )
+
+  signal_list <- lapply(seq_along(sample_names), function(i){
+
+    start <- 6 + (i-1)*bins + 1
+    end <- 6 + i*bins
+
+    as.matrix(cm[,start:end])
+  })
+
+  names(signal_list) <- sample_names
+
+  profiles <- lapply(signal_list, colMeans)
+
+  profiles_df <- do.call(cbind, profiles) |> as.data.frame()
+ profiles_df$pos_kb <- seq(-2, 2, length.out = nrow(profiles_df))
+ 
+ 
+  long <- profiles_df |>
+    pivot_longer(-pos_kb, names_to="sample", values_to="signal") |>
+    separate(sample, into=c("mark","condition","time","extra"), sep="_") |>
+    mutate(sample = paste(mark,condition,time,sep="_"))
+
+  # # remove unwanted marks
+  # long <- long |> filter(!mark %in% c("H3K27me3","H3K36me3"))
+
+  title <- tools::file_path_sans_ext(basename(matrix_file))
+
+  p <- ggplot(long, aes(pos_kb, signal, color=time)) +
+    geom_line(linewidth=1) +
+    facet_grid(mark ~ condition) +
+    geom_vline(xintercept = 0, linetype="dashed")+
+    # geom_smooth(se=FALSE, method = "loess")+
+    theme_bw() +
+    ggtitle(title)
+
+  return(p)
+}
+```
+
+```{r}
+plot_2hist_deeptools_matrix("C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_MER61E_ERV1_LTR.gz", bins=400)
+```
+```{r}
+matrix_dir_cent <- "C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/"
+
+matrix_files_cent <- list.files(
+  matrix_dir_cent,
+  pattern="matcenter_.*gz$",
+  full.names=TRUE
+)
+
+plots_cent <- lapply(matrix_files_cent, plot_2hist_deeptools_matrix)
+for (p in plots_cent) {
+  print(p)
+}
+```
+
+```{r, eval=FALSE}
+
+col_fun <- colorRamp2(
+  c(-2, 0, 2),
+  c("blue", "white", "red")
+)
+bins=400
+cm <- fread(cmd = paste("gzip -dc", "C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_MER61E_ERV1_LTR.gz"), skip = 1)
+
+  sample_names <- c(
+  "H3K27ac_DOX_144R_merged","H3K27ac_DOX_24R_merged","H3K27ac_DOX_24T_merged",
+  "H3K27ac_VEH_144R_merged","H3K27ac_VEH_24R_merged","H3K27ac_VEH_24T_merged",
+  "H3K9me3_DOX_144R_merged","H3K9me3_DOX_24R_merged","H3K9me3_DOX_24T_merged",
+  "H3K9me3_VEH_144R_merged","H3K9me3_VEH_24R_merged","H3K9me3_VEH_24T_merged"
+  )
+  ##extract per-sample matrices
+  signal_list <- lapply(seq_along(sample_names), function(i){
+
+    start <- 6 + (i-1)*bins + 1
+    end <- 6 + i*bins
+
+    as.matrix(cm[,start:end])
+  })
+ref_mat <-signal_list[[3]] 
+row_order <- order(rowMeans(ref_mat), decreasing = TRUE)
+  names(signal_list) <- sample_names
+
+  for (i in seq_along(signal_list)) {  
+  #scaling
+  mat <- signal_list[[i]]
+mat_scaled <- t(scale(t(mat)))
+### sorting rows by signal
+# row_order <- order(rowMeans(mat), decreasing = TRUE)
+mat_scaled <- mat_scaled[row_order,]
+
+mat_scaled[is.na(mat_scaled)] <- 0
+
+region <- ifelse(seq_len(ncol(mat_scaled)) <= ncol(mat_scaled)/2, "Upstream", "Downstream")
+
+
+Heatmap(
+  mat_scaled,
+      col = col_fun,
+      name = "signal",
+      show_row_names = FALSE,
+      show_column_names = FALSE,
+      cluster_rows = FALSE,           # Important to preserve row_order
+      cluster_columns = FALSE,
+      column_split = region,
+      column_title = names(signal_list)[i])
+}
+```
+
+
+
+```{r}
+plot_deeptools_heatmaps <- function(matrix_file,
+                                    sample_order_H3K27ac = c("H3K27ac_DOX_24T_merged",
+                                                              "H3K27ac_DOX_24R_merged",
+                                                              "H3K27ac_DOX_144R_merged",
+                                                              "H3K27ac_VEH_24T_merged",
+                                                              "H3K27ac_VEH_24R_merged",
+                                                              "H3K27ac_VEH_144R_merged"),
+                                    sample_order_H3K9me3 = c("H3K9me3_DOX_24T_merged",
+                                                              "H3K9me3_DOX_24R_merged",
+                                                              "H3K9me3_DOX_144R_merged",
+                                                              "H3K9me3_VEH_24T_merged",
+                                                              "H3K9me3_VEH_24R_merged",
+                                                              "H3K9me3_VEH_144R_merged"),
+                                    bins = 400,
+                                    reference_sample = "H3K27ac_DOX_24T_merged") {
+  
+  # Read the matrix
+  cm <- fread(cmd = paste("gzip -dc", matrix_file), skip = 1)
+  
+  # Full list of samples
+  sample_names <- c(
+    "H3K27ac_DOX_144R_merged","H3K27ac_DOX_24R_merged","H3K27ac_DOX_24T_merged",
+    "H3K27ac_VEH_144R_merged","H3K27ac_VEH_24R_merged","H3K27ac_VEH_24T_merged",
+    "H3K9me3_DOX_144R_merged","H3K9me3_DOX_24R_merged","H3K9me3_DOX_24T_merged",
+    "H3K9me3_VEH_144R_merged","H3K9me3_VEH_24R_merged","H3K9me3_VEH_24T_merged"
+  )
+  
+  # Extract per-sample matrices
+  signal_list <- lapply(seq_along(sample_names), function(i){
+    start <- 6 + (i-1)*bins + 1
+    end <- 6 + i*bins
+    as.matrix(cm[, start:end])
+  })
+  names(signal_list) <- sample_names
+  file_part <- str_extract(basename(matrix_file), "(?<=matcenter_).*?(?=_ERV1_LTR)")
+  # Determine row order from reference sample
+  ref_mat <- signal_list[[which(names(signal_list) == reference_sample)]]
+  row_order <- order(rowMeans(ref_mat), decreasing = TRUE)
+  
+  # Color function
+  col_fun <- colorRamp2(c(-2, 0, 2), c("blue", "white", "red"))
+  
+  ## Helper function to scale and reorder matrix
+  prepare_mat <- function(mat) {
+    mat_scaled <- t(scale(t(mat)))          # row scaling
+    mat_scaled[is.na(mat_scaled)] <- 0
+    mat_scaled[row_order, , drop = FALSE]   # apply reference row order
+  }
+  
+  # Function to create heatmaps for a given sample vector
+ plot_heatmap_group <- function(sample_vector, group_name) {
+    ht_list <- NULL
+    
+    for (s in sample_vector) {
+      mat <- prepare_mat(signal_list[[s]])
+      region <- ifelse(seq_len(ncol(mat)) <= ncol(mat)/2, "Upstream", "Downstream")
+      
+      # Shorten the column title
+      short_title <- str_extract(s, "(DOX|VEH)_\\d+[RT]")        # keeps "DOX_24T" etc.
+      short_title <- str_replace(short_title, "_merged", "")
+      
+      
+      ht <- Heatmap(mat,
+                    col = col_fun,
+                    name = "signal",
+                    show_row_names = FALSE,
+                    show_column_names = FALSE,
+                    cluster_rows = FALSE,
+                    cluster_columns = FALSE,
+                    # column_split = region,
+                    column_title = short_title)
+      
+      if (is.null(ht_list)) {
+        ht_list <- ht
+      } else {
+        ht_list <- ht_list + ht
+      }
+    }
+    
+    # Draw all heatmaps with a master title
+    draw(ht_list, heatmap_legend_side = "right", column_title = paste0(group_name," - ",file_part))
+  }
+  
+  # Plot H3K27ac group
+  plot_heatmap_group(sample_order_H3K27ac, "H3K27ac")
+  
+  # Plot H3K9me3 group
+  plot_heatmap_group(sample_order_H3K9me3, "H3K9me3")
+}
+
+```
+
+```{r}
+plot_deeptools_heatmaps("C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_MER61E_ERV1_LTR.gz")
+
+for (f in matrix_files_cent) {
+  plot_deeptools_heatmaps(f)   # plots automatically
+}
+```
+
+
