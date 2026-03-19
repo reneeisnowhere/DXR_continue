@@ -102,3 +102,6 @@ Looking at finalized assigned cluster sets and characteristics
 ### ATAC integration
 [First integration of ATAC data with H3K27ac](https://reneeisnowhere.github.io/DXR_continue/ATAC_integration_data1.html)
 
+### Histone signal across TEs
+
+[Plotting of types of TEs, specifically LTRs](https://reneeisnowhere.github.io/DXR_continue/computeMatrixplots.html)
