@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Renee Matthews" />
+
+<meta name="date" content="2026-03-19" />
+
+<title>plotHeatmap_trial</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DXR_project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/reneeisnowhere/DXR_continue">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">plotHeatmap_trial</h1>
+<h4 class="author">Renee Matthews</h4>
+<h4 class="date">2026-03-19</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-03-19
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>DXR_continue/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250701code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250701)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250701code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250701)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee77cb373fb084c1ee5a70befd18c99f4e47c10b2targetblanke77cb37a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e77cb373fb084c1ee5a70befd18c99f4e47c10b2" target="_blank">e77cb37</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee77cb373fb084c1ee5a70befd18c99f4e47c10b2targetblanke77cb37a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e77cb373fb084c1ee5a70befd18c99f4e47c10b2" target="_blank">e77cb37</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/Bed_exports/
+    Ignored:    data/Cormotif_data/
+    Ignored:    data/DER_data/
+    Ignored:    data/Other_paper_data/
+    Ignored:    data/RDS_files/
+    Ignored:    data/TE_annotation/
+    Ignored:    data/alignment_summary.txt
+    Ignored:    data/all_peak_final_dataframe.txt
+    Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/motif_lists/
+    Ignored:    data/number_frag_peaks_summary.txt
+
+Untracked files:
+    Untracked:  H3K27ac_all_regions_test.bed
+    Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  analysis/GREAT_H3K27ac.Rmd
+    Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_TEtype.Rmd
+    Untracked:  analysis/H3K27me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K36me3_TE_investigation.Rmd
+    Untracked:  analysis/Top2a_Top2b_expression.Rmd
+    Untracked:  analysis/maps_and_plots.Rmd
+    Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/For_john.R
+    Untracked:  other_analysis/
+
+Unstaged changes:
+    Modified:   analysis/H3K27_TE_overlap.Rmd
+    Modified:   analysis/H3K27ac_cisRE.Rmd
+    Modified:   analysis/H3K27ac_summit_processing.Rmd
+    Modified:   analysis/H3K27me3_summit_processing.Rmd
+    Modified:   analysis/H3K36me3_summit_processing.Rmd
+    Modified:   analysis/H3K9me3_TE_investigation.Rmd
+    Modified:   analysis/chromHMM.Rmd
+    Modified:   analysis/dual_histone_TE_investigation.Rmd
+    Modified:   analysis/summit_files_processing.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/computeMatrixplots.Rmd</code>)
+and HTML (<code>docs/computeMatrixplots.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/e77cb373fb084c1ee5a70befd18c99f4e47c10b2/analysis/computeMatrixplots.Rmd" target="_blank">e77cb37</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-19
+</td>
+<td>
+first commit
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+</style>
+<pre class="r"><code>library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(data.table)
+library(circlize)
+library(ComplexHeatmap)</code></pre>
+<pre class="r"><code>matrix_file &lt;- &quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output/four_histone/matrix_MER61E_ERV1_LTR.gz&quot;
+cm &lt;- fread(cmd = paste(&quot;gzip -dc&quot;, matrix_file), skip = 1)
+dim(cm)</code></pre>
+<pre><code>[1]   261 21606</code></pre>
+<pre class="r"><code>head(cm[,1:10])</code></pre>
+<pre><code>       V1       V2       V3                       V4    V5     V6       V7
+   &lt;char&gt;    &lt;int&gt;    &lt;int&gt;                   &lt;char&gt; &lt;num&gt; &lt;char&gt;    &lt;num&gt;
+1:   chr1 63032707 63032840 chr1:63032708-63032840:1     0      + 0.000000
+2:   chr1 63033079 63033512 chr1:63033080-63033512:1     0      + 0.000000
+3:   chr1 69055251 69055817 chr1:69055252-69055817:1     0      + 0.000000
+4:   chr1 71345730 71345939 chr1:71345731-71345939:1     0      + 0.000000
+5:   chr1 72000824 72001353 chr1:72000825-72001353:1     0      + 0.000000
+6:   chr1 76040192 76040658 chr1:76040193-76040658:1     0      + 0.014045
+         V8       V9      V10
+      &lt;num&gt;    &lt;num&gt;    &lt;num&gt;
+1: 0.000000 0.000000 0.000000
+2: 0.000000 0.025281 0.028090
+3: 0.000000 0.000000 0.000000
+4: 0.000000 0.000000 0.000000
+5: 0.000000 0.000000 0.000000
+6: 0.014045 0.014045 0.014045</code></pre>
+<pre class="r"><code>sample_names &lt;- c(
+&quot;H3K27ac_DOX_144R_merged&quot;,&quot;H3K27ac_DOX_24R_merged&quot;,&quot;H3K27ac_DOX_24T_merged&quot;,
+&quot;H3K27ac_VEH_144R_merged&quot;,&quot;H3K27ac_VEH_24R_merged&quot;,&quot;H3K27ac_VEH_24T_merged&quot;,
+&quot;H3K27me3_DOX_144R_merged&quot;,&quot;H3K27me3_DOX_24R_merged&quot;,&quot;H3K27me3_DOX_24T_merged&quot;,
+&quot;H3K27me3_VEH_144R_merged&quot;,&quot;H3K27me3_VEH_24R_merged&quot;,&quot;H3K27me3_VEH_24T_merged&quot;,
+&quot;H3K36me3_DOX_144R_merged&quot;,&quot;H3K36me3_DOX_24R_merged&quot;,&quot;H3K36me3_DOX_24T_merged&quot;,
+&quot;H3K36me3_VEH_144R_merged&quot;,&quot;H3K36me3_VEH_24R_merged&quot;,&quot;H3K36me3_VEH_24T_merged&quot;,
+&quot;H3K9me3_DOX_144R_merged&quot;,&quot;H3K9me3_DOX_24R_merged&quot;,&quot;H3K9me3_DOX_24T_merged&quot;,
+&quot;H3K9me3_VEH_144R_merged&quot;,&quot;H3K9me3_VEH_24R_merged&quot;,&quot;H3K9me3_VEH_24T_merged&quot;
+)
+meta &lt;- meta &lt;- cm[,1:6]
+bins &lt;- 900
+signal_list &lt;- lapply(1:length(sample_names), function(i) {
+  start &lt;- 6 + (i-1)*bins + 1
+  end &lt;- 6 + i*bins
+  as.matrix(cm[,start:end])
+})
+
+names(signal_list) &lt;- sample_names
+
+profiles &lt;- lapply(signal_list, colMeans)
+
+profiles_df &lt;- do.call(cbind, profiles)
+profiles_df &lt;- as.data.frame(profiles_df)
+
+profiles_df$bin &lt;- 1:nrow(profiles_df)</code></pre>
+<pre class="r"><code>long &lt;- pivot_longer(
+  profiles_df,
+  -bin,
+  names_to=&quot;sample&quot;,
+  values_to=&quot;signal&quot;
+) %&gt;%
+  separate(sample, into=c(&quot;mark&quot;,&quot;condition&quot;,&quot;time&quot;), sep=&quot;_&quot;, remove = FALSE)
+
+
+ggplot(long, aes(bin, signal, color=sample)) +
+  geom_line(size=1) +
+  theme_bw() +
+  labs(
+    x=&quot;Scaled TE region&quot;,
+    y=&quot;ChIP signal&quot;
+  )+
+facet_wrap(~time)</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>long$condition &lt;- ifelse(grepl(&quot;DOX&quot;, long$sample),&quot;DOX&quot;,&quot;VEH&quot;)
+long$mark &lt;- sub(&quot;_.*&quot;,&quot;&quot;,long$sample)
+
+
+ggplot(long, aes(bin, signal, color=time)) +
+  geom_line(size=1) +
+  facet_grid(mark ~ condition) +
+  theme_bw()+
+  geom_vline(xintercept=c(200,700), linetype=&quot;dashed&quot;)+
+  ggtitle(&quot;signal across all LTR:ERV1:MER61E&quot;)</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_deeptools_matrix &lt;- function(matrix_file, bins = 900){
+
+  library(data.table)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+  library(stringr)
+
+  message(&quot;Processing: &quot;, matrix_file)
+
+  cm &lt;- fread(cmd = paste(&quot;gzip -dc&quot;, matrix_file), skip = 1)
+
+  sample_names &lt;- c(
+  &quot;H3K27ac_DOX_144R_merged&quot;,&quot;H3K27ac_DOX_24R_merged&quot;,&quot;H3K27ac_DOX_24T_merged&quot;,
+  &quot;H3K27ac_VEH_144R_merged&quot;,&quot;H3K27ac_VEH_24R_merged&quot;,&quot;H3K27ac_VEH_24T_merged&quot;,
+  &quot;H3K27me3_DOX_144R_merged&quot;,&quot;H3K27me3_DOX_24R_merged&quot;,&quot;H3K27me3_DOX_24T_merged&quot;,
+  &quot;H3K27me3_VEH_144R_merged&quot;,&quot;H3K27me3_VEH_24R_merged&quot;,&quot;H3K27me3_VEH_24T_merged&quot;,
+  &quot;H3K36me3_DOX_144R_merged&quot;,&quot;H3K36me3_DOX_24R_merged&quot;,&quot;H3K36me3_DOX_24T_merged&quot;,
+  &quot;H3K36me3_VEH_144R_merged&quot;,&quot;H3K36me3_VEH_24R_merged&quot;,&quot;H3K36me3_VEH_24T_merged&quot;,
+  &quot;H3K9me3_DOX_144R_merged&quot;,&quot;H3K9me3_DOX_24R_merged&quot;,&quot;H3K9me3_DOX_24T_merged&quot;,
+  &quot;H3K9me3_VEH_144R_merged&quot;,&quot;H3K9me3_VEH_24R_merged&quot;,&quot;H3K9me3_VEH_24T_merged&quot;
+  )
+
+  signal_list &lt;- lapply(seq_along(sample_names), function(i){
+
+    start &lt;- 6 + (i-1)*bins + 1
+    end &lt;- 6 + i*bins
+
+    as.matrix(cm[,start:end])
+  })
+
+  names(signal_list) &lt;- sample_names
+
+  profiles &lt;- lapply(signal_list, colMeans)
+
+  profiles_df &lt;- do.call(cbind, profiles) |&gt; as.data.frame()
+  profiles_df$bin &lt;- 1:nrow(profiles_df)
+
+  long &lt;- profiles_df |&gt;
+    pivot_longer(-bin, names_to=&quot;sample&quot;, values_to=&quot;signal&quot;) |&gt;
+    separate(sample, into=c(&quot;mark&quot;,&quot;condition&quot;,&quot;time&quot;,&quot;extra&quot;), sep=&quot;_&quot;) |&gt;
+    mutate(sample = paste(mark,condition,time,sep=&quot;_&quot;))
+
+  # remove unwanted marks
+  long &lt;- long |&gt; filter(!mark %in% c(&quot;H3K27me3&quot;,&quot;H3K36me3&quot;))
+
+  title &lt;- tools::file_path_sans_ext(basename(matrix_file))
+
+  p &lt;- ggplot(long, aes(bin, signal, color=time)) +
+    geom_line(linewidth=1) +
+    facet_grid(mark ~ condition) +
+    geom_vline(xintercept=c(200,700), linetype=&quot;dashed&quot;) +
+    theme_bw() +
+    ggtitle(title)
+
+  return(p)
+}</code></pre>
+<pre class="r"><code>plot_deeptools_matrix(&quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output/four_histone/matrix_MER61E_ERV1_LTR.gz&quot;)</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>matrix_dir &lt;- &quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output/four_histone/&quot;
+
+matrix_files &lt;- list.files(
+  matrix_dir,
+  pattern=&quot;matrix_.*gz$&quot;,
+  full.names=TRUE
+)
+
+plots &lt;- lapply(matrix_files, plot_deeptools_matrix)</code></pre>
+<pre class="r"><code>plots</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[4]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[5]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[6]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[7]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[8]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[9]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[10]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[11]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-11.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[12]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-12.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[13]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-13.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[14]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-14.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[15]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-15.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[16]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-16.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[17]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-17.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[18]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-18.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[19]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-19.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[20]]</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-7-20.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="heatmap-plotting" class="section level3">
+<h3>Heatmap plotting</h3>
+<pre class="r"><code>meta &lt;- cm[,1:6]
+signal &lt;- cm[,7:ncol(cm)]
+
+bins &lt;- 900
+sample_index &lt;- 2
+
+start &lt;- (sample_index - 1) * bins + 1
+end &lt;- sample_index * bins
+
+mat &lt;- as.matrix(signal[,start:end])
+### sorting rows by signal
+row_order &lt;- order(rowMeans(mat), decreasing = TRUE)
+mat &lt;- mat[row_order,]
+
+
+### Color scale
+col_fun &lt;- colorRamp2(
+  c(0, 0.5, 2),
+  c(&quot;white&quot;, &quot;orange&quot;, &quot;red&quot;)
+)
+#### color scale for centered data
+# col_fun &lt;- colorRamp2(
+#   c(-2, 0, 2),
+#   c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;)
+# )
+
+region &lt;- c(
+  rep(&quot;Upstream&quot;,200),
+  rep(&quot;TE&quot;,500),
+  rep(&quot;Downstream&quot;,200)
+)
+Heatmap(
+  mat,
+  col = col_fun,
+  name = &quot;signal&quot;,
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  column_split = region,
+  cluster_columns = FALSE
+)</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_2hist_deeptools_matrix &lt;- function(matrix_file, bins = 400){
+
+  library(data.table)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+  library(stringr)
+
+  message(&quot;Processing: &quot;, matrix_file)
+
+  cm &lt;- fread(cmd = paste(&quot;gzip -dc&quot;, matrix_file), skip = 1)
+
+  sample_names &lt;- c(
+  &quot;H3K27ac_DOX_144R_merged&quot;,&quot;H3K27ac_DOX_24R_merged&quot;,&quot;H3K27ac_DOX_24T_merged&quot;,
+  &quot;H3K27ac_VEH_144R_merged&quot;,&quot;H3K27ac_VEH_24R_merged&quot;,&quot;H3K27ac_VEH_24T_merged&quot;,
+  &quot;H3K9me3_DOX_144R_merged&quot;,&quot;H3K9me3_DOX_24R_merged&quot;,&quot;H3K9me3_DOX_24T_merged&quot;,
+  &quot;H3K9me3_VEH_144R_merged&quot;,&quot;H3K9me3_VEH_24R_merged&quot;,&quot;H3K9me3_VEH_24T_merged&quot;
+  )
+
+  signal_list &lt;- lapply(seq_along(sample_names), function(i){
+
+    start &lt;- 6 + (i-1)*bins + 1
+    end &lt;- 6 + i*bins
+
+    as.matrix(cm[,start:end])
+  })
+
+  names(signal_list) &lt;- sample_names
+
+  profiles &lt;- lapply(signal_list, colMeans)
+
+  profiles_df &lt;- do.call(cbind, profiles) |&gt; as.data.frame()
+ profiles_df$pos_kb &lt;- seq(-2, 2, length.out = nrow(profiles_df))
+ 
+ 
+  long &lt;- profiles_df |&gt;
+    pivot_longer(-pos_kb, names_to=&quot;sample&quot;, values_to=&quot;signal&quot;) |&gt;
+    separate(sample, into=c(&quot;mark&quot;,&quot;condition&quot;,&quot;time&quot;,&quot;extra&quot;), sep=&quot;_&quot;) |&gt;
+    mutate(sample = paste(mark,condition,time,sep=&quot;_&quot;))
+
+  # # remove unwanted marks
+  # long &lt;- long |&gt; filter(!mark %in% c(&quot;H3K27me3&quot;,&quot;H3K36me3&quot;))
+
+  title &lt;- tools::file_path_sans_ext(basename(matrix_file))
+
+  p &lt;- ggplot(long, aes(pos_kb, signal, color=time)) +
+    geom_line(linewidth=1) +
+    facet_grid(mark ~ condition) +
+    geom_vline(xintercept = 0, linetype=&quot;dashed&quot;)+
+    # geom_smooth(se=FALSE, method = &quot;loess&quot;)+
+    theme_bw() +
+    ggtitle(title)
+
+  return(p)
+}</code></pre>
+<pre class="r"><code>plot_2hist_deeptools_matrix(&quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_MER61E_ERV1_LTR.gz&quot;, bins=400)</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>matrix_dir_cent &lt;- &quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/&quot;
+
+matrix_files_cent &lt;- list.files(
+  matrix_dir_cent,
+  pattern=&quot;matcenter_.*gz$&quot;,
+  full.names=TRUE
+)
+
+plots_cent &lt;- lapply(matrix_files_cent, plot_2hist_deeptools_matrix)
+for (p in plots_cent) {
+  print(p)
+}</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-14.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-15.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-16.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-17.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-18.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-19.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>col_fun &lt;- colorRamp2(
+  c(-2, 0, 2),
+  c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;)
+)
+bins=400
+cm &lt;- fread(cmd = paste(&quot;gzip -dc&quot;, &quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_MER61E_ERV1_LTR.gz&quot;), skip = 1)
+
+  sample_names &lt;- c(
+  &quot;H3K27ac_DOX_144R_merged&quot;,&quot;H3K27ac_DOX_24R_merged&quot;,&quot;H3K27ac_DOX_24T_merged&quot;,
+  &quot;H3K27ac_VEH_144R_merged&quot;,&quot;H3K27ac_VEH_24R_merged&quot;,&quot;H3K27ac_VEH_24T_merged&quot;,
+  &quot;H3K9me3_DOX_144R_merged&quot;,&quot;H3K9me3_DOX_24R_merged&quot;,&quot;H3K9me3_DOX_24T_merged&quot;,
+  &quot;H3K9me3_VEH_144R_merged&quot;,&quot;H3K9me3_VEH_24R_merged&quot;,&quot;H3K9me3_VEH_24T_merged&quot;
+  )
+  ##extract per-sample matrices
+  signal_list &lt;- lapply(seq_along(sample_names), function(i){
+
+    start &lt;- 6 + (i-1)*bins + 1
+    end &lt;- 6 + i*bins
+
+    as.matrix(cm[,start:end])
+  })
+ref_mat &lt;-signal_list[[3]] 
+row_order &lt;- order(rowMeans(ref_mat), decreasing = TRUE)
+  names(signal_list) &lt;- sample_names
+
+  for (i in seq_along(signal_list)) {  
+  #scaling
+  mat &lt;- signal_list[[i]]
+mat_scaled &lt;- t(scale(t(mat)))
+### sorting rows by signal
+# row_order &lt;- order(rowMeans(mat), decreasing = TRUE)
+mat_scaled &lt;- mat_scaled[row_order,]
+
+mat_scaled[is.na(mat_scaled)] &lt;- 0
+
+region &lt;- ifelse(seq_len(ncol(mat_scaled)) &lt;= ncol(mat_scaled)/2, &quot;Upstream&quot;, &quot;Downstream&quot;)
+
+
+Heatmap(
+  mat_scaled,
+      col = col_fun,
+      name = &quot;signal&quot;,
+      show_row_names = FALSE,
+      show_column_names = FALSE,
+      cluster_rows = FALSE,           # Important to preserve row_order
+      cluster_columns = FALSE,
+      column_split = region,
+      column_title = names(signal_list)[i])
+}</code></pre>
+<pre class="r"><code>plot_deeptools_heatmaps &lt;- function(matrix_file,
+                                    sample_order_H3K27ac = c(&quot;H3K27ac_DOX_24T_merged&quot;,
+                                                              &quot;H3K27ac_DOX_24R_merged&quot;,
+                                                              &quot;H3K27ac_DOX_144R_merged&quot;,
+                                                              &quot;H3K27ac_VEH_24T_merged&quot;,
+                                                              &quot;H3K27ac_VEH_24R_merged&quot;,
+                                                              &quot;H3K27ac_VEH_144R_merged&quot;),
+                                    sample_order_H3K9me3 = c(&quot;H3K9me3_DOX_24T_merged&quot;,
+                                                              &quot;H3K9me3_DOX_24R_merged&quot;,
+                                                              &quot;H3K9me3_DOX_144R_merged&quot;,
+                                                              &quot;H3K9me3_VEH_24T_merged&quot;,
+                                                              &quot;H3K9me3_VEH_24R_merged&quot;,
+                                                              &quot;H3K9me3_VEH_144R_merged&quot;),
+                                    bins = 400,
+                                    reference_sample = &quot;H3K27ac_DOX_24T_merged&quot;) {
+  
+  # Read the matrix
+  cm &lt;- fread(cmd = paste(&quot;gzip -dc&quot;, matrix_file), skip = 1)
+  
+  # Full list of samples
+  sample_names &lt;- c(
+    &quot;H3K27ac_DOX_144R_merged&quot;,&quot;H3K27ac_DOX_24R_merged&quot;,&quot;H3K27ac_DOX_24T_merged&quot;,
+    &quot;H3K27ac_VEH_144R_merged&quot;,&quot;H3K27ac_VEH_24R_merged&quot;,&quot;H3K27ac_VEH_24T_merged&quot;,
+    &quot;H3K9me3_DOX_144R_merged&quot;,&quot;H3K9me3_DOX_24R_merged&quot;,&quot;H3K9me3_DOX_24T_merged&quot;,
+    &quot;H3K9me3_VEH_144R_merged&quot;,&quot;H3K9me3_VEH_24R_merged&quot;,&quot;H3K9me3_VEH_24T_merged&quot;
+  )
+  
+  # Extract per-sample matrices
+  signal_list &lt;- lapply(seq_along(sample_names), function(i){
+    start &lt;- 6 + (i-1)*bins + 1
+    end &lt;- 6 + i*bins
+    as.matrix(cm[, start:end])
+  })
+  names(signal_list) &lt;- sample_names
+  file_part &lt;- str_extract(basename(matrix_file), &quot;(?&lt;=matcenter_).*?(?=_ERV1_LTR)&quot;)
+  # Determine row order from reference sample
+  ref_mat &lt;- signal_list[[which(names(signal_list) == reference_sample)]]
+  row_order &lt;- order(rowMeans(ref_mat), decreasing = TRUE)
+  
+  # Color function
+  col_fun &lt;- colorRamp2(c(-2, 0, 2), c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;))
+  
+  ## Helper function to scale and reorder matrix
+  prepare_mat &lt;- function(mat) {
+    mat_scaled &lt;- t(scale(t(mat)))          # row scaling
+    mat_scaled[is.na(mat_scaled)] &lt;- 0
+    mat_scaled[row_order, , drop = FALSE]   # apply reference row order
+  }
+  
+  # Function to create heatmaps for a given sample vector
+ plot_heatmap_group &lt;- function(sample_vector, group_name) {
+    ht_list &lt;- NULL
+    
+    for (s in sample_vector) {
+      mat &lt;- prepare_mat(signal_list[[s]])
+      region &lt;- ifelse(seq_len(ncol(mat)) &lt;= ncol(mat)/2, &quot;Upstream&quot;, &quot;Downstream&quot;)
+      
+      # Shorten the column title
+      short_title &lt;- str_extract(s, &quot;(DOX|VEH)_\\d+[RT]&quot;)        # keeps &quot;DOX_24T&quot; etc.
+      short_title &lt;- str_replace(short_title, &quot;_merged&quot;, &quot;&quot;)
+      
+      
+      ht &lt;- Heatmap(mat,
+                    col = col_fun,
+                    name = &quot;signal&quot;,
+                    show_row_names = FALSE,
+                    show_column_names = FALSE,
+                    cluster_rows = FALSE,
+                    cluster_columns = FALSE,
+                    # column_split = region,
+                    column_title = short_title)
+      
+      if (is.null(ht_list)) {
+        ht_list &lt;- ht
+      } else {
+        ht_list &lt;- ht_list + ht
+      }
+    }
+    
+    # Draw all heatmaps with a master title
+    draw(ht_list, heatmap_legend_side = &quot;right&quot;, column_title = paste0(group_name,&quot; - &quot;,file_part))
+  }
+  
+  # Plot H3K27ac group
+  plot_heatmap_group(sample_order_H3K27ac, &quot;H3K27ac&quot;)
+  
+  # Plot H3K9me3 group
+  plot_heatmap_group(sample_order_H3K9me3, &quot;H3K9me3&quot;)
+}</code></pre>
+<pre class="r"><code>plot_deeptools_heatmaps(&quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_MER61E_ERV1_LTR.gz&quot;)</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>for (f in matrix_files_cent) {
+  plot_deeptools_heatmaps(f)   # plots automatically
+}</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-14.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-15.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-16.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-17.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-18.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-19.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-20.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-21.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-22.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-23.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-24.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-25.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-26.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-27.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-28.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-29.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-30.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-31.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-32.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-33.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-34.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-35.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-36.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-37.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-38.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-39.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-40.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26200)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] ComplexHeatmap_2.22.0 circlize_0.4.16       data.table_1.17.8    
+ [4] DT_0.33               ggrepel_0.9.6         rtracklayer_1.66.0   
+ [7] genomation_1.38.0     plyranges_1.26.0      GenomicRanges_1.58.0 
+[10] GenomeInfoDb_1.42.3   IRanges_2.40.1        S4Vectors_0.44.0     
+[13] BiocGenerics_0.52.0   lubridate_1.9.4       forcats_1.0.0        
+[16] stringr_1.5.1         dplyr_1.1.4           purrr_1.1.0          
+[19] readr_2.1.5           tidyr_1.3.1           tibble_3.3.0         
+[22] ggplot2_3.5.2         tidyverse_2.0.0       workflowr_1.7.1      
+
+loaded via a namespace (and not attached):
+  [1] bitops_1.0-9                rlang_1.1.6                
+  [3] magrittr_2.0.3              clue_0.3-66                
+  [5] GetoptLong_1.0.5            git2r_0.36.2               
+  [7] gridBase_0.4-7              matrixStats_1.5.0          
+  [9] compiler_4.4.2              getPass_0.2-4              
+ [11] png_0.1-8                   callr_3.7.6                
+ [13] vctrs_0.6.5                 reshape2_1.4.4             
+ [15] shape_1.4.6.1               pkgconfig_2.0.3            
+ [17] crayon_1.5.3                fastmap_1.2.0              
+ [19] magick_2.8.7                XVector_0.46.0             
+ [21] labeling_0.4.3              Rsamtools_2.22.0           
+ [23] promises_1.3.3              rmarkdown_2.29             
+ [25] tzdb_0.5.0                  UCSC.utils_1.2.0           
+ [27] ps_1.9.1                    xfun_0.52                  
+ [29] zlibbioc_1.52.0             cachem_1.1.0               
+ [31] jsonlite_2.0.0              later_1.4.2                
+ [33] DelayedArray_0.32.0         BiocParallel_1.40.2        
+ [35] cluster_2.1.8.1             parallel_4.4.2             
+ [37] R6_2.6.1                    bslib_0.9.0                
+ [39] stringi_1.8.7               RColorBrewer_1.1-3         
+ [41] jquerylib_0.1.4             iterators_1.0.14           
+ [43] Rcpp_1.1.0                  SummarizedExperiment_1.36.0
+ [45] knitr_1.50                  httpuv_1.6.16              
+ [47] Matrix_1.7-3                timechange_0.3.0           
+ [49] tidyselect_1.2.1            rstudioapi_0.17.1          
+ [51] dichromat_2.0-0.1           abind_1.4-8                
+ [53] yaml_2.3.10                 seqPattern_1.38.0          
+ [55] doParallel_1.0.17           codetools_0.2-20           
+ [57] curl_7.0.0                  processx_3.8.6             
+ [59] lattice_0.22-7              plyr_1.8.9                 
+ [61] Biobase_2.66.0              withr_3.0.2                
+ [63] evaluate_1.0.5              Biostrings_2.74.1          
+ [65] pillar_1.11.0               MatrixGenerics_1.18.1      
+ [67] whisker_0.4.1               KernSmooth_2.23-26         
+ [69] foreach_1.5.2               generics_0.1.4             
+ [71] rprojroot_2.1.1             RCurl_1.98-1.17            
+ [73] hms_1.1.3                   scales_1.4.0               
+ [75] glue_1.8.0                  tools_4.4.2                
+ [77] BiocIO_1.16.0               BSgenome_1.74.0            
+ [79] GenomicAlignments_1.42.0    fs_1.6.6                   
+ [81] XML_3.99-0.18               Cairo_1.6-5                
+ [83] impute_1.80.0               plotrix_3.8-4              
+ [85] colorspace_2.1-1            GenomeInfoDbData_1.2.13    
+ [87] restfulr_0.0.16             cli_3.6.5                  
+ [89] S4Arrays_1.6.0              gtable_0.3.6               
+ [91] sass_0.4.10                 digest_0.6.37              
+ [93] SparseArray_1.6.2           htmlwidgets_1.6.4          
+ [95] rjson_0.2.23                farver_2.1.2               
+ [97] htmltools_0.5.8.1           lifecycle_1.0.4            
+ [99] httr_1.4.7                  GlobalOptions_0.1.2        </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
