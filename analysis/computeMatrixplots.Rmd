@@ -40,7 +40,44 @@ library(ComplexHeatmap)
 
 ```
 
+```{r repeatmasker loading}
 
+repeatmasker <- read_delim("data/Other_paper_data/repeatmasker_20250911.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+colnames(repeatmasker)
+
+autosomes <- paste0("chr", 1:22)
+repeatmasker_clean <- repeatmasker %>% mutate(
+    strand = ifelse(strand == "C", "-", "+")
+  ) %>% 
+   mutate(
+    start = genoStart + 1,
+    end   = genoEnd)%>% 
+  mutate(repFamily= str_remove(repFamily, "\\?$")) %>% 
+  dplyr::filter(genoName %in% autosomes) %>% 
+  mutate(RM_id=paste0(genoName,":",start,"-",end,":",id))
+
+
+rpt_split <- split(repeatmasker_clean, repeatmasker_clean$repClass)
+
+rpt_split_gr_list <- lapply(rpt_split, function(df) {
+  GRanges(
+    seqnames = df$genoName,
+    ranges   = IRanges(start = df$start, end = df$end),
+    strand   = df$strand,
+    repName   = df$repName,
+    repClass  = df$repClass,
+    repFamily = df$repFamily,
+    swScore   = df$swScore,
+    milliDiv  = df$milliDiv,
+    milliDel  = df$milliDel,
+    milliIns  = df$milliIns,
+    RM_id        = df$RM_id
+  )
+})
+
+```
 
 ```{r}
 matrix_file <- "C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output/four_histone/matrix_MER61E_ERV1_LTR.gz"
@@ -465,4 +502,181 @@ for (f in matrix_files_cent) {
 }
 ```
 
+
+#### finding switches
+
+```{r}
+
+plot_switching_TEs <- function(matrix_file,
+                               bins = 400,
+                               fc_threshold_ac = 0.01,
+                               fc_threshold_me3 = -0.5) {
+  
+  # -----------------------------
+  # 1️⃣ Load matrix
+  # -----------------------------
+  cm <- fread(cmd = paste("gzip -dc", matrix_file), skip = 1)
+  
+  sample_names <- c(
+    "H3K27ac_DOX_144R_merged","H3K27ac_DOX_24R_merged","H3K27ac_DOX_24T_merged",
+    "H3K27ac_VEH_144R_merged","H3K27ac_VEH_24R_merged","H3K27ac_VEH_24T_merged",
+    "H3K9me3_DOX_144R_merged","H3K9me3_DOX_24R_merged","H3K9me3_DOX_24T_merged",
+    "H3K9me3_VEH_144R_merged","H3K9me3_VEH_24R_merged","H3K9me3_VEH_24T_merged"
+  )
+  
+  # -----------------------------
+  # 2️⃣ Extract matrices
+  # -----------------------------
+  signal_list <- lapply(seq_along(sample_names), function(i){
+    start <- 6 + (i-1)*bins + 1
+    end <- 6 + i*bins
+    as.matrix(cm[, start:end])
+  })
+  names(signal_list) <- sample_names
+  
+  # -----------------------------
+  # 3️⃣ Compute average signal across bins for each mark & condition
+  # -----------------------------
+  avg_signal <- function(mark, cond) {
+    rows <- grep(paste0(mark,"_",cond), names(signal_list))
+    # Average across replicates
+    Reduce("+", signal_list[rows]) / length(rows)
+  }
+  
+  H3K27ac_DOX_avg <- avg_signal("H3K27ac", "DOX")
+  H3K27ac_VEH_avg <- avg_signal("H3K27ac", "VEH")
+  H3K9me3_DOX_avg <- avg_signal("H3K9me3", "DOX")
+  H3K9me3_VEH_avg <- avg_signal("H3K9me3", "VEH")
+  
+  # -----------------------------
+  # 4️⃣ Compute log2 fold-changes
+  # -----------------------------
+  H3K27ac_log2fc <- log2((H3K27ac_DOX_avg + 1) / (H3K27ac_VEH_avg + 1))
+  H3K9me3_log2fc <- log2((H3K9me3_DOX_avg + 1) / (H3K9me3_VEH_avg + 1))
+  
+  # -----------------------------
+  # 5️⃣ Identify switching TEs
+  # -----------------------------
+  switching_rows <- which(H3K27ac_log2fc > fc_threshold_ac &
+                          H3K9me3_log2fc < fc_threshold_me3)
+  
+  if(length(switching_rows) == 0) {
+    message("No switching TEs found with these thresholds.")
+    return(NULL)
+  }
+  
+  # -----------------------------
+  # 6️⃣ Prepare matrices for plotting
+  # -----------------------------
+  prepare_mat <- function(mat, rows) {
+    mat_sub <- mat[rows, , drop = FALSE]
+    mat_scaled <- t(scale(t(mat_sub)))
+    mat_scaled[is.na(mat_scaled)] <- 0
+    mat_scaled
+  }
+  
+  # Reference row order: H3K27ac DOX 24T
+  ref_mat <- signal_list[["H3K27ac_DOX_24T_merged"]][switching_rows, ]
+  row_order <- order(rowMeans(ref_mat), decreasing = TRUE)
+  
+  # Function to make heatmaps for a given mark
+  make_heatmap <- function(mark, samples) {
+    ht_list <- NULL
+    for(s in samples) {
+      mat_scaled <- prepare_mat(signal_list[[s]], switching_rows)
+      mat_scaled <- mat_scaled[row_order, ]
+      short_title <- str_extract(s, "(DOX|VEH)_\\d+[RT]")
+      ht <- Heatmap(mat_scaled,
+                    col = colorRamp2(c(-2,0,2), c("blue","white","red")),
+                    name = "signal",
+                    show_row_names = FALSE,
+                    show_column_names = FALSE,
+                    cluster_rows = FALSE,
+                    cluster_columns = FALSE,
+                    column_title = short_title)
+      ht_list <- if(is.null(ht_list)) ht else ht_list + ht
+    }
+    ht_list
+  }
+  
+  # Define sample order for plotting
+  H3K27ac_samples <- c("H3K27ac_DOX_24T_merged","H3K27ac_DOX_24R_merged","H3K27ac_DOX_144R_merged",
+                       "H3K27ac_VEH_24T_merged","H3K27ac_VEH_24R_merged","H3K27ac_VEH_144R_merged")
+  H3K9me3_samples <- c("H3K9me3_DOX_24T_merged","H3K9me3_DOX_24R_merged","H3K9me3_DOX_144R_merged",
+                       "H3K9me3_VEH_24T_merged","H3K9me3_VEH_24R_merged","H3K9me3_VEH_144R_merged")
+  
+  ht_H3K27ac <- make_heatmap("H3K27ac", H3K27ac_samples)
+  ht_H3K9me3 <- make_heatmap("H3K9me3", H3K9me3_samples)
+  
+  # -----------------------------
+  # 7️⃣ Extract file part for master title
+  # -----------------------------
+  file_part <- str_extract(basename(matrix_file), "(?<=matcenter_).*?(?=_ERV1_LTR)")
+  
+  draw(ht_H3K27ac, heatmap_legend_side = "right", column_title = paste0("H3K27ac - ", file_part))
+  draw(ht_H3K9me3, heatmap_legend_side = "right", column_title = paste0("H3K9me3 - ", file_part))
+  
+  return(list(H3K27ac = ht_H3K27ac, H3K9me3 = ht_H3K9me3, switching_rows = switching_rows))
+}
+
+```
+
+
+```{r, eval=FALSE}
+result <- plot_switching_TEs(
+  "C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_MER61E_ERV1_LTR.gz")
+
+# 
+##debug
+matrix_file <- ("C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_MER61E_ERV1_LTR.gz")
+
+bins <- 400
+
+H3K27ac_DOX_24T <- rowMeans(signal_list[["H3K27ac_DOX_24T_merged"]])
+H3K27ac_VEH_24T <- rowMeans(signal_list[["H3K27ac_VEH_24T_merged"]])
+
+H3K9me3_DOX_24T <- rowMeans(signal_list[["H3K9me3_DOX_24T_merged"]])
+H3K9me3_VEH_24T <- rowMeans(signal_list[["H3K9me3_VEH_24T_merged"]])
+
+
+summary(H3K27ac_DOX_24T)
+summary(H3K27ac_VEH_24T)
+
+summary(H3K9me3_DOX_24T)
+summary(H3K9me3_H3K9me3_VEH_24TVEH_144R)
+
+H3K27ac_log2fc_24T <- log2((H3K27ac_DOX_24T + 1) / (H3K27ac_VEH_24T + 1))
+H3K9me3_log2fc_24T <- log2((H3K9me3_DOX_24T + 1) / (H3K9me3_VEH_24T + 1))
+
+summary(H3K27ac_log2fc_24T)
+summary(H3K9me3_log2fc_24T)
+
+
+
+```
+
+```{r, eval=FALSE}
+fc_threshold_ac <- 0.01  
+fc_threshold_me3 <- 0    
+
+switching_rows <- which(
+  H3K27ac_log2fc_24T > fc_threshold_ac &
+  H3K9me3_log2fc_24T <= fc_threshold_me3)
+
+
+mat_H3K27ac_24T <- signal_list[["H3K27ac_DOX_24T_merged"]][switching_rows, ]
+mat_H3K9me3_24T <- signal_list[["H3K9me3_DOX_24T_merged"]][switching_rows, ]
+
+row_order <- order(rowMeans(mat_H3K27ac_24T), decreasing = TRUE)
+mat_H3K27ac_24T <- mat_H3K27ac_24T[row_order, ]
+mat_H3K9me3_24T <- mat_H3K9me3_24T[row_order, ]
+
+bed_names <- cm[switching_rows, 4]  # column 4 = name
+test <- rpt_split$LTR
+
+test %>% 
+  dplyr::filter(RM_id %in% bed_names$V4)
+H3K27ac_summit_ols %>% dplyr::filter(ID %in%bed_names$V4)
+
+```
 
