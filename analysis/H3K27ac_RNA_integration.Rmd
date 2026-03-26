@@ -947,13 +947,17 @@ for (aim in just_kzfp$entrezgene_id){
     dplyr::pull(hgnc_symbol)
   
   # Create tab title
-  knitr::asis_output(paste0("\n\n### ", symbol, " (", aim, ")\n\n"))
+  cat(paste0("\n\n### ", symbol, " (", aim, ")\n\n"))
   
-plot <- ggplot(df, aes(x=time, y=log2cpm,group=group))+
-   geom_boxplot(aes(fill=trt)) +
-  ggtitle(paste0("gene ", aim," ",symbol))+
-  theme_bw()
-print(plot)
+print(
+    ggplot(df, aes(x=time, y=log2cpm, group=group))+
+      geom_boxplot(aes(fill=trt)) +
+      ggtitle(paste0("gene ", aim," ",symbol))+
+      theme_bw()
+  )
+
+# IMPORTANT: force separation between tabs
+  cat("\n\n")
   }
 
 ```
