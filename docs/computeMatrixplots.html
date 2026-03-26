@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-03-20" />
+<meta name="date" content="2026-03-26" />
 
 <title>plotHeatmap_trial</title>
 
@@ -361,7 +361,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">plotHeatmap_trial</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-03-20</h4>
+<h4 class="date">2026-03-26</h4>
 
 </div>
 
@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-03-20
+<strong>Last updated:</strong> 2026-03-26
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreef8dc9bf4e4804ce4740fbc5169ce61a5923f0b64targetblankf8dc9bfa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree86c62f1ab139e4b04b636368e67d6ef729563eddtargetblank86c62f1a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/f8dc9bf4e4804ce4740fbc5169ce61a5923f0b64" target="_blank">f8dc9bf</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/86c62f1ab139e4b04b636368e67d6ef729563edd" target="_blank">86c62f1</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreef8dc9bf4e4804ce4740fbc5169ce61a5923f0b64targetblankf8dc9bfa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree86c62f1ab139e4b04b636368e67d6ef729563eddtargetblank86c62f1a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/f8dc9bf4e4804ce4740fbc5169ce61a5923f0b64" target="_blank">f8dc9bf</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/86c62f1ab139e4b04b636368e67d6ef729563edd" target="_blank">86c62f1</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -556,7 +556,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
@@ -582,10 +581,12 @@ Untracked files:
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
     Untracked:  code/For_john.R
+    Untracked:  code/KZFP_genes_bedifle_creation.R
     Untracked:  other_analysis/
 
 Unstaged changes:
     Modified:   analysis/H3K27_TE_overlap.Rmd
+    Modified:   analysis/H3K27ac_RNA_integration.Rmd
     Modified:   analysis/H3K27ac_cisRE.Rmd
     Modified:   analysis/H3K27ac_summit_processing.Rmd
     Modified:   analysis/H3K27me3_summit_processing.Rmd
@@ -594,6 +595,7 @@ Unstaged changes:
     Modified:   analysis/chromHMM.Rmd
     Modified:   analysis/dual_histone_TE_investigation.Rmd
     Modified:   analysis/summit_files_processing.Rmd
+    Modified:   code/ZNF_genes_bedfile_creation.R
 
 </code></pre>
 <p>
@@ -638,6 +640,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/86c62f1ab139e4b04b636368e67d6ef729563edd/analysis/computeMatrixplots.Rmd" target="_blank">86c62f1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-26
+</td>
+<td>
+updates
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/computeMatrixplots.html" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -718,6 +754,8 @@ library(DT)
 library(data.table)
 library(circlize)
 library(ComplexHeatmap)</code></pre>
+<p>downloading repeatmasker and add in RM_id for other plots with
+age</p>
 <pre class="r"><code>repeatmasker &lt;- read_delim(&quot;data/Other_paper_data/repeatmasker_20250911.txt&quot;, 
     delim = &quot;\t&quot;, escape_double = FALSE, 
     trim_ws = TRUE)
@@ -754,27 +792,29 @@ rpt_split_gr_list &lt;- lapply(rpt_split, function(df) {
     RM_id        = df$RM_id
   )
 })</code></pre>
-<pre class="r"><code>matrix_file &lt;- &quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output/four_histone/matrix_MER61E_ERV1_LTR.gz&quot;
+<p>testing the downloading of the matrix files for future ref (I change
+the code below to view files I am interested in)</p>
+<pre class="r"><code>matrix_file &lt;- &quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_4histone/matrix_KZFP.gz&quot;
 cm &lt;- fread(cmd = paste(&quot;gzip -dc&quot;, matrix_file), skip = 1)
 dim(cm)</code></pre>
-<pre><code>[1]   261 21606</code></pre>
+<pre><code>[1]   477 21606</code></pre>
 <pre class="r"><code>head(cm[,1:10])</code></pre>
-<pre><code>       V1       V2       V3                       V4    V5     V6       V7
-   &lt;char&gt;    &lt;int&gt;    &lt;int&gt;                   &lt;char&gt; &lt;num&gt; &lt;char&gt;    &lt;num&gt;
-1:   chr1 63032707 63032840 chr1:63032708-63032840:1     0      + 0.000000
-2:   chr1 63033079 63033512 chr1:63033080-63033512:1     0      + 0.000000
-3:   chr1 69055251 69055817 chr1:69055252-69055817:1     0      + 0.000000
-4:   chr1 71345730 71345939 chr1:71345731-71345939:1     0      + 0.000000
-5:   chr1 72000824 72001353 chr1:72000825-72001353:1     0      + 0.000000
-6:   chr1 76040192 76040658 chr1:76040193-76040658:1     0      + 0.014045
-         V8       V9      V10
-      &lt;num&gt;    &lt;num&gt;    &lt;num&gt;
-1: 0.000000 0.000000 0.000000
-2: 0.000000 0.025281 0.028090
-3: 0.000000 0.000000 0.000000
-4: 0.000000 0.000000 0.000000
-5: 0.000000 0.000000 0.000000
-6: 0.014045 0.014045 0.014045</code></pre>
+<pre><code>       V1       V2       V3     V4    V5     V6       V7       V8       V9
+   &lt;char&gt;    &lt;int&gt;    &lt;int&gt; &lt;char&gt; &lt;num&gt; &lt;char&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;
+1:  chr19  2852583  2853823 ZNF555     0      + 0.014045 0.009832 0.000000
+2:  chr16  3436440  3437227 ZNF597     0      - 0.117980 0.126407 0.109553
+3:  chr19 44235182 44236812 ZNF227     0      + 0.000000 0.000000 0.000000
+4:  chr19 43913448 43914937  ZNF45     0      - 0.000000 0.000000 0.000000
+5:   chr8   245434   246338 ZNF596     0      + 0.000000 0.000000 0.000000
+6:   chr3 44594345 44595165 ZNF660     0      + 0.000000 0.000000 0.000000
+        V10
+      &lt;num&gt;
+1: 0.000000
+2: 0.070226
+3: 0.000000
+4: 0.000000
+5: 0.000000
+6: 0.000000</code></pre>
 <pre class="r"><code>sample_names &lt;- c(
 &quot;H3K27ac_DOX_144R_merged&quot;,&quot;H3K27ac_DOX_24R_merged&quot;,&quot;H3K27ac_DOX_24T_merged&quot;,
 &quot;H3K27ac_VEH_144R_merged&quot;,&quot;H3K27ac_VEH_24R_merged&quot;,&quot;H3K27ac_VEH_24T_merged&quot;,
@@ -782,6 +822,13 @@ dim(cm)</code></pre>
 &quot;H3K27me3_VEH_144R_merged&quot;,&quot;H3K27me3_VEH_24R_merged&quot;,&quot;H3K27me3_VEH_24T_merged&quot;,
 &quot;H3K36me3_DOX_144R_merged&quot;,&quot;H3K36me3_DOX_24R_merged&quot;,&quot;H3K36me3_DOX_24T_merged&quot;,
 &quot;H3K36me3_VEH_144R_merged&quot;,&quot;H3K36me3_VEH_24R_merged&quot;,&quot;H3K36me3_VEH_24T_merged&quot;,
+&quot;H3K9me3_DOX_144R_merged&quot;,&quot;H3K9me3_DOX_24R_merged&quot;,&quot;H3K9me3_DOX_24T_merged&quot;,
+&quot;H3K9me3_VEH_144R_merged&quot;,&quot;H3K9me3_VEH_24R_merged&quot;,&quot;H3K9me3_VEH_24T_merged&quot;
+)
+
+sample_names_short &lt;- c(
+&quot;H3K27ac_DOX_144R_merged&quot;,&quot;H3K27ac_DOX_24R_merged&quot;,&quot;H3K27ac_DOX_24T_merged&quot;,
+&quot;H3K27ac_VEH_144R_merged&quot;,&quot;H3K27ac_VEH_24R_merged&quot;,&quot;H3K27ac_VEH_24T_merged&quot;,
 &quot;H3K9me3_DOX_144R_merged&quot;,&quot;H3K9me3_DOX_24R_merged&quot;,&quot;H3K9me3_DOX_24T_merged&quot;,
 &quot;H3K9me3_VEH_144R_merged&quot;,&quot;H3K9me3_VEH_24R_merged&quot;,&quot;H3K9me3_VEH_24T_merged&quot;
 )
@@ -807,17 +854,18 @@ profiles_df$bin &lt;- 1:nrow(profiles_df)</code></pre>
   names_to=&quot;sample&quot;,
   values_to=&quot;signal&quot;
 ) %&gt;%
-  separate(sample, into=c(&quot;mark&quot;,&quot;condition&quot;,&quot;time&quot;), sep=&quot;_&quot;, remove = FALSE)
+  separate(sample, into=c(&quot;mark&quot;,&quot;condition&quot;,&quot;time&quot;), sep=&quot;_&quot;, remove = FALSE) %&gt;% 
+  mutate(time=factor(time, levels = c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;)))
 
 
-ggplot(long, aes(bin, signal, color=sample)) +
+ggplot(long, aes(bin, signal, color=condition)) +
   geom_line(size=1) +
   theme_bw() +
   labs(
     x=&quot;Scaled TE region&quot;,
     y=&quot;ChIP signal&quot;
   )+
-facet_wrap(~time)</code></pre>
+facet_wrap(mark~time,nrow=4, ncol=3)</code></pre>
 <p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
@@ -948,7 +996,7 @@ reneeisnowhere
     mutate(sample = paste(mark,condition,time,sep=&quot;_&quot;))
 
   # remove unwanted marks
-  long &lt;- long |&gt; filter(!mark %in% c(&quot;H3K27me3&quot;,&quot;H3K36me3&quot;))
+  # long &lt;- long |&gt; filter(!mark %in% c(&quot;H3K27me3&quot;,&quot;H3K36me3&quot;))
 
   title &lt;- tools::file_path_sans_ext(basename(matrix_file))
 
@@ -1000,6 +1048,8 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>    plot_deeptools_matrix(&quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_4histone/matrix_KZFP.gz&quot;)</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>matrix_dir &lt;- &quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output/four_histone/&quot;
 
 matrix_files &lt;- list.files(
@@ -1809,86 +1859,6 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<div id="heatmap-plotting" class="section level3">
-<h3>Heatmap plotting</h3>
-<pre class="r"><code>meta &lt;- cm[,1:6]
-signal &lt;- cm[,7:ncol(cm)]
-
-bins &lt;- 900
-sample_index &lt;- 2
-
-start &lt;- (sample_index - 1) * bins + 1
-end &lt;- sample_index * bins
-
-mat &lt;- as.matrix(signal[,start:end])
-### sorting rows by signal
-row_order &lt;- order(rowMeans(mat), decreasing = TRUE)
-mat &lt;- mat[row_order,]
-
-
-### Color scale
-col_fun &lt;- colorRamp2(
-  c(0, 0.5, 2),
-  c(&quot;white&quot;, &quot;orange&quot;, &quot;red&quot;)
-)
-#### color scale for centered data
-# col_fun &lt;- colorRamp2(
-#   c(-2, 0, 2),
-#   c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;)
-# )
-
-region &lt;- c(
-  rep(&quot;Upstream&quot;,200),
-  rep(&quot;TE&quot;,500),
-  rep(&quot;Downstream&quot;,200)
-)
-Heatmap(
-  mat,
-  col = col_fun,
-  name = &quot;signal&quot;,
-  show_row_names = FALSE,
-  show_column_names = FALSE,
-  column_split = region,
-  cluster_columns = FALSE
-)</code></pre>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
-Past versions of unnamed-chunk-8-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-8-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-8-1.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
 <pre class="r"><code>plot_2hist_deeptools_matrix &lt;- function(matrix_file, bins = 400){
 
   library(data.table)
@@ -1944,7 +1914,57 @@ reneeisnowhere
 
   return(p)
 }</code></pre>
-<pre class="r"><code>plot_2hist_deeptools_matrix(&quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_MER61E_ERV1_LTR.gz&quot;, bins=400)</code></pre>
+<pre class="r"><code>plot_2hist_deeptools_matrix(&quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_KZFP.gz&quot;, bins=400)</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-8-1.png" target="_blank">8fe7ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>matrix_dir_cent &lt;- &quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/&quot;
+
+matrix_files_cent &lt;- list.files(
+  matrix_dir_cent,
+  pattern=&quot;matcenter_.*gz$&quot;,
+  full.names=TRUE
+)
+
+plots_cent &lt;- lapply(matrix_files_cent, plot_2hist_deeptools_matrix)
+for (p in plots_cent) {
+  print(p)
+}</code></pre>
 <p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
@@ -1983,741 +2003,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>matrix_dir_cent &lt;- &quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/&quot;
-
-matrix_files_cent &lt;- list.files(
-  matrix_dir_cent,
-  pattern=&quot;matcenter_.*gz$&quot;,
-  full.names=TRUE
-)
-
-plots_cent &lt;- lapply(matrix_files_cent, plot_2hist_deeptools_matrix)
-for (p in plots_cent) {
-  print(p)
-}</code></pre>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
-Past versions of unnamed-chunk-10-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-1.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-2">
-Past versions of unnamed-chunk-10-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-2.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-3">
-Past versions of unnamed-chunk-10-3.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-3.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-4">
-Past versions of unnamed-chunk-10-4.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-4.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-5">
-Past versions of unnamed-chunk-10-5.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-5.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-6.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-6">
-Past versions of unnamed-chunk-10-6.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-6" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-6.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-7.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-7">
-Past versions of unnamed-chunk-10-7.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-7" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-7.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-8.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-8">
-Past versions of unnamed-chunk-10-8.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-8" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-8.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-9.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-9">
-Past versions of unnamed-chunk-10-9.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-9" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-9.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-10.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-10">
-Past versions of unnamed-chunk-10-10.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-10" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-10.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-11.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-11">
-Past versions of unnamed-chunk-10-11.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-11" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-11.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-12.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-12">
-Past versions of unnamed-chunk-10-12.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-12" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-12.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-13.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-13">
-Past versions of unnamed-chunk-10-13.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-13" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-13.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-14.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-14">
-Past versions of unnamed-chunk-10-14.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-14" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-14.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-15.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-15">
-Past versions of unnamed-chunk-10-15.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-15" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-15.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-16.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-16">
-Past versions of unnamed-chunk-10-16.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-16" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-16.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-17.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-17">
-Past versions of unnamed-chunk-10-17.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-17" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-17.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-18.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-18">
-Past versions of unnamed-chunk-10-18.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-18" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-18.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-19.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-19">
-Past versions of unnamed-chunk-10-19.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-19" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-10-19.png" target="_blank">8fe7ed0</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-19
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-20.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-21.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-22.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-23.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-24.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-10-25.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-14.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-15.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-16.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-17.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-18.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-19.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-20.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-21.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-22.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-23.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-24.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-25.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-9-26.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>col_fun &lt;- colorRamp2(
   c(-2, 0, 2),
   c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;)
@@ -2767,6 +2053,48 @@ Heatmap(
       column_split = region,
       column_title = names(signal_list)[i])
 }</code></pre>
+<div id="heatmap-plotting" class="section level3">
+<h3>Heatmap plotting</h3>
+<pre class="r"><code>meta &lt;- cm[,1:6]
+signal &lt;- cm[,7:ncol(cm)]
+
+bins &lt;- 900
+sample_index &lt;- 2
+
+start &lt;- (sample_index - 1) * bins + 1
+end &lt;- sample_index * bins
+
+mat &lt;- as.matrix(signal[,start:end])
+### sorting rows by signal
+row_order &lt;- order(rowMeans(mat), decreasing = TRUE)
+mat &lt;- mat[row_order,]
+
+
+### Color scale
+col_fun &lt;- colorRamp2(
+  c(0, 0.5, 2),
+  c(&quot;white&quot;, &quot;orange&quot;, &quot;red&quot;)
+)
+#### color scale for centered data
+# col_fun &lt;- colorRamp2(
+#   c(-2, 0, 2),
+#   c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;)
+# )
+
+region &lt;- c(
+  rep(&quot;Upstream&quot;,200),
+  rep(&quot;TE&quot;,500),
+  rep(&quot;Downstream&quot;,200)
+)
+Heatmap(
+  mat,
+  col = col_fun,
+  name = &quot;signal&quot;,
+  show_row_names = FALSE,
+  show_column_names = FALSE,
+  # column_split = region,
+  cluster_columns = FALSE
+)</code></pre>
 <pre class="r"><code>plot_deeptools_heatmaps &lt;- function(matrix_file,
                                     sample_order_H3K27ac = c(&quot;H3K27ac_DOX_24T_merged&quot;,
                                                               &quot;H3K27ac_DOX_24R_merged&quot;,
@@ -2961,6 +2289,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-3.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-3.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -2997,6 +2336,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-4.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-4.png" target="_blank">8fe7ed0</a>
@@ -3037,6 +2387,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-5.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-5.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3073,6 +2434,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-6.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-6.png" target="_blank">8fe7ed0</a>
@@ -3113,6 +2485,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-7.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-7.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3149,6 +2532,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-8.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-8.png" target="_blank">8fe7ed0</a>
@@ -3189,6 +2583,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-9.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-9.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3225,6 +2630,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-10.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-10.png" target="_blank">8fe7ed0</a>
@@ -3265,6 +2681,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-11.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-11.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3301,6 +2728,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-12.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-12.png" target="_blank">8fe7ed0</a>
@@ -3341,6 +2779,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-13.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-13.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3377,6 +2826,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-14.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-14.png" target="_blank">8fe7ed0</a>
@@ -3417,6 +2877,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-15.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-15.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3453,6 +2924,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-16.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-16.png" target="_blank">8fe7ed0</a>
@@ -3493,6 +2975,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-17.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-17.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3529,6 +3022,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-18.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-18.png" target="_blank">8fe7ed0</a>
@@ -3569,6 +3073,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-19.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-19.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3605,6 +3120,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-20.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-20.png" target="_blank">8fe7ed0</a>
@@ -3645,6 +3171,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-21.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-21.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3681,6 +3218,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-22.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-22.png" target="_blank">8fe7ed0</a>
@@ -3721,6 +3269,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-23.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-23.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3757,6 +3316,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-24.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-24.png" target="_blank">8fe7ed0</a>
@@ -3797,6 +3367,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-25.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-25.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3833,6 +3414,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-26.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-26.png" target="_blank">8fe7ed0</a>
@@ -3873,6 +3465,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-27.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-27.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3909,6 +3512,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-28.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-28.png" target="_blank">8fe7ed0</a>
@@ -3949,6 +3563,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-29.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-29.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -3985,6 +3610,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-30.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-30.png" target="_blank">8fe7ed0</a>
@@ -4025,6 +3661,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-31.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-31.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -4061,6 +3708,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-32.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-32.png" target="_blank">8fe7ed0</a>
@@ -4101,6 +3759,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-33.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-33.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -4137,6 +3806,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-34.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-34.png" target="_blank">8fe7ed0</a>
@@ -4177,6 +3857,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-35.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-35.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -4213,6 +3904,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-36.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-36.png" target="_blank">8fe7ed0</a>
@@ -4253,6 +3955,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-37.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-37.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -4289,6 +4002,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-38.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-38.png" target="_blank">8fe7ed0</a>
@@ -4329,6 +4053,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-39.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-39.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -4367,6 +4102,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-40.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8fe7ed09d26a0eca34b841720a1935b050866670/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-40.png" target="_blank">8fe7ed0</a>
 </td>
 <td>
@@ -4380,9 +4126,584 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-41.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-42.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-43.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-44.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-45.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-46.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-47.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-48.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-49.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-50.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-51.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-52.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-41.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-41">
+Past versions of unnamed-chunk-13-41.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-41" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-41.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-42.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-42">
+Past versions of unnamed-chunk-13-42.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-42" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-42.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-43.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-43">
+Past versions of unnamed-chunk-13-43.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-43" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-43.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-44.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-44">
+Past versions of unnamed-chunk-13-44.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-44" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-44.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-45.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-45">
+Past versions of unnamed-chunk-13-45.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-45" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-45.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-46.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-46">
+Past versions of unnamed-chunk-13-46.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-46" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-46.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-47.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-47">
+Past versions of unnamed-chunk-13-47.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-47" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-47.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-48.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-48">
+Past versions of unnamed-chunk-13-48.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-48" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-48.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-49.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-49">
+Past versions of unnamed-chunk-13-49.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-49" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-49.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-50.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-50">
+Past versions of unnamed-chunk-13-50.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-50" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-50.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-51.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-51">
+Past versions of unnamed-chunk-13-51.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-51" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-51.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-52.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-52">
+Past versions of unnamed-chunk-13-52.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-52" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ba0a439e1fc7c4b32c8be031c5214fb7c1d176db/docs/figure/computeMatrixplots.Rmd/unnamed-chunk-13-52.png" target="_blank">ba0a439</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-53.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-13-54.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_deeptools_heatmaps(&quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_KZFP.gz&quot;)</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" />
+#### plotting using 4 histones for KZFP</p>
+<pre class="r"><code>plot_deeptools_KZFPheatmaps &lt;- function(matrix_file,
+                                        sample_order_H3K27ac =
+                          c(&quot;H3K27ac_DOX_24T_merged&quot;,
+                            &quot;H3K27ac_DOX_24R_merged&quot;,
+                            &quot;H3K27ac_DOX_144R_merged&quot;,
+                            &quot;H3K27ac_VEH_24T_merged&quot;,
+                            &quot;H3K27ac_VEH_24R_merged&quot;,
+                            &quot;H3K27ac_VEH_144R_merged&quot;),
+                                        sample_order_H3K9me3 =
+                            c(&quot;H3K9me3_DOX_24T_merged&quot;,
+                              &quot;H3K9me3_DOX_24R_merged&quot;,
+                              &quot;H3K9me3_DOX_144R_merged&quot;,
+                              &quot;H3K9me3_VEH_24T_merged&quot;,
+                              &quot;H3K9me3_VEH_24R_merged&quot;,
+                              &quot;H3K9me3_VEH_144R_merged&quot;),
+                          sample_order_H3K27me3 =
+                            c(&quot;H3K27me3_DOX_24T_merged&quot;,
+                              &quot;H3K27me3_DOX_24R_merged&quot;,
+                              &quot;H3K27me3_DOX_144R_merged&quot;,
+                              &quot;H3K27me3_VEH_24T_merged&quot;,
+                              &quot;H3K27me3_VEH_24R_merged&quot;,
+                              &quot;H3K27me3_VEH_144R_merged&quot;),
+                          sample_order_H3K36me3 =
+                            c(&quot;H3K36me3_DOX_24T_merged&quot;,
+                              &quot;H3K36me3_DOX_24R_merged&quot;,
+                              &quot;H3K36me3_DOX_144R_merged&quot;,
+                              &quot;H3K36me3_VEH_24T_merged&quot;,
+                              &quot;H3K36me3_VEH_24R_merged&quot;,
+                              &quot;H3K36me3_VEH_144R_merged&quot;),
+                                    bins = 900,
+                          reference_sample =&quot;H3K27ac_VEH_24T_merged&quot;) {
+  
+  # Read the matrix
+  cm &lt;- fread(cmd = paste(&quot;gzip -dc&quot;, matrix_file), skip = 1)
+  
+  # Full list of samples
+  sample_names &lt;- c(
+  &quot;H3K27ac_DOX_144R_merged&quot;,&quot;H3K27ac_DOX_24R_merged&quot;,&quot;H3K27ac_DOX_24T_merged&quot;,
+  &quot;H3K27ac_VEH_144R_merged&quot;,&quot;H3K27ac_VEH_24R_merged&quot;,&quot;H3K27ac_VEH_24T_merged&quot;,
+  &quot;H3K27me3_DOX_144R_merged&quot;,&quot;H3K27me3_DOX_24R_merged&quot;,&quot;H3K27me3_DOX_24T_merged&quot;,
+  &quot;H3K27me3_VEH_144R_merged&quot;,&quot;H3K27me3_VEH_24R_merged&quot;,&quot;H3K27me3_VEH_24T_merged&quot;,
+  &quot;H3K36me3_DOX_144R_merged&quot;,&quot;H3K36me3_DOX_24R_merged&quot;,&quot;H3K36me3_DOX_24T_merged&quot;,
+  &quot;H3K36me3_VEH_144R_merged&quot;,&quot;H3K36me3_VEH_24R_merged&quot;,&quot;H3K36me3_VEH_24T_merged&quot;,
+  &quot;H3K9me3_DOX_144R_merged&quot;,&quot;H3K9me3_DOX_24R_merged&quot;,&quot;H3K9me3_DOX_24T_merged&quot;,
+  &quot;H3K9me3_VEH_144R_merged&quot;,&quot;H3K9me3_VEH_24R_merged&quot;,&quot;H3K9me3_VEH_24T_merged&quot;
+  )
+  
+  # Extract per-sample matrices
+  signal_list &lt;- lapply(seq_along(sample_names), function(i){
+    start &lt;- 6 + (i-1)*bins + 1
+    end &lt;- 6 + i*bins
+    as.matrix(cm[, start:end])
+  })
+  names(signal_list) &lt;- sample_names
+  file_part &lt;- str_extract(basename(matrix_file), &quot;(?&lt;=matrix_)[^.]+&quot;)
+  # Determine row order from reference sample
+  ref_mat &lt;- signal_list[[which(names(signal_list) == reference_sample)]]
+  row_order &lt;- order(rowMeans(ref_mat), decreasing = TRUE)
+  
+  # Color function
+  col_fun &lt;- colorRamp2(c(-2, 0, 2), c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;))
+  
+  ## Helper function to scale and reorder matrix
+  prepare_mat &lt;- function(mat) {
+    mat_scaled &lt;- t(scale(t(mat)))          # row scaling
+    mat_scaled[is.na(mat_scaled)] &lt;- 0
+    mat_scaled[row_order, , drop = FALSE]   # apply reference row order
+  }
+  
+  # Function to create heatmaps for a given sample vector
+ plot_heatmap_group &lt;- function(sample_vector, group_name) {
+    ht_list &lt;- NULL
+    
+    for (s in sample_vector) {
+      mat &lt;- prepare_mat(signal_list[[s]])
+      
+      # Shorten the column title
+      short_title &lt;- str_extract(s, &quot;(DOX|VEH)_\\d+[RT]&quot;)        # keeps &quot;DOX_24T&quot; etc.
+      short_title &lt;- str_replace(short_title, &quot;_merged&quot;, &quot;&quot;)
+      
+      
+      ht &lt;- Heatmap(mat,
+                    col = col_fun,
+                    name = &quot;signal&quot;,
+                    show_row_names = FALSE,
+                    show_column_names = FALSE,
+                    cluster_rows = FALSE,
+                    cluster_columns = FALSE,
+                    column_title = short_title)
+      
+      if (is.null(ht_list)) {
+        ht_list &lt;- ht
+      } else {
+        ht_list &lt;- ht_list + ht
+      }
+    }
+    
+    # Draw all heatmaps with a master title
+    draw(ht_list, heatmap_legend_side = &quot;right&quot;, column_title = paste0(group_name,&quot; - &quot;,file_part,&quot; VEH 24T ordered&quot;))
+  }
+  
+  # Plot H3K27ac group
+  plot_heatmap_group(sample_order_H3K27ac, &quot;H3K27ac&quot;)
+  
+  # Plot H3K9me3 group
+  plot_heatmap_group(sample_order_H3K9me3, &quot;H3K9me3&quot;)
+
+# Plot H3K27me3 group
+  plot_heatmap_group(sample_order_H3K27me3, &quot;H3K27me3&quot;)
+  
+  # Plot H3K36me3 group
+  plot_heatmap_group(sample_order_H3K36me3, &quot;H3K36me3&quot;)
+}</code></pre>
+<pre class="r"><code>plot_deeptools_KZFPheatmaps(&quot;C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_4histone/matrix_KZFP.gz&quot;)</code></pre>
+<p><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-15-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-15-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/computeMatrixplots.Rmd/unnamed-chunk-15-4.png" width="672" style="display: block; margin: auto;" /></p>
 <div id="finding-switches" class="section level4">
 <h4>finding switches</h4>
+<p>This code is disabled due to working on another document.</p>
 <pre class="r"><code>plot_switching_TEs &lt;- function(matrix_file,
                                bins = 400,
                                fc_threshold_ac = 0.01,
