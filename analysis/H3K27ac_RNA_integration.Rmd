@@ -34,9 +34,11 @@ library(rtracklayer)
 library(stringr)
 library(ggrepel)
 library(DT)
+library(data.table)
 library(readxl)
 library(ChIPseeker)
 library(smplot2)
+library(biomaRt)
 ```
 
 adding in data files.
@@ -69,6 +71,30 @@ RNA_cluster_lookup<- readRDS( "data/Other_paper_data/RNA_cluster_lookup.RDS")
 LTR_summits_overlap_df <- readRDS("data/RDS_files/H3K27ac_summit_LTR_overlaps.RDS")
 
 H3K27ac_set_case_lfc <- readRDS( "data/RDS_files/H3K27ac_set_case_lfc.RDS")
+
+Symbol_lookup <- RNA_full_toptable %>% 
+  dplyr::select (Entrez_ID,SYMBOL) %>% 
+  distinct(Entrez_ID,SYMBOL)
+
+  KZFP_2017_list <- read_excel("data/Other_paper_data/41586_2017_BFnature21683_MOESM103_ESM.xlsx")
+
+  
+  KZFPIDs <- KZFP_2017_list %>% 
+    dplyr::filter(Species == "Homo_sapiens.GRCh38") %>%
+    dplyr::select(Label,`Gene ID`, Type)
+  
+  mart <- useEnsembl(biomart = "genes",
+                     dataset = "hsapiens_gene_ensembl",
+                     mirror = "useast") ### using a different mirror due to server issues
+  
+  ensembl_ID <- KZFPIDs$`Gene ID`
+  
+  results_KZFP <- getBM(attributes = c("ensembl_gene_id", "entrezgene_id","hgnc_symbol"),
+               filters = "ensembl_gene_id",
+               values = ensembl_ID,
+               mart = mart)
+  
+  results_KZFP %>% na.omit()
 
 ```
 
@@ -348,7 +374,7 @@ summit_LTR_ROIs <- LTR_summits_overlap_df %>%
   left_join(H3K27ac_anno_df) %>% 
   dplyr::select(Peakid:cluster,geneId,distanceToTSS)
 
-summit_LTR_ROIs %>% distinct(geneId)
+# summit_LTR_ROIs %>% distinct(geneId)
 
 just_summit_LTR_ROI_peakids <- summit_LTR_ROIs %>% distinct(Peakid,.keep_all = TRUE) %>% dplyr::select(Peakid,geneId)
 
@@ -880,4 +906,130 @@ summit_LTR_ROIs %>%
   theme_classic()+
   ggtitle("getting an idea of TSS distribution")
 ```
+### KZFP information
 
+#### all KZFP log2cpm expression
+```{r Basic LFC}
+RNA_filcpm_final_matrix <- read_csv("data/Other_paper_data/RNA_filcpm_final_matrix.csv")
+
+just_kzfp <- results_KZFP %>% na.omit()%>%
+  arrange(hgnc_symbol)
+
+
+KZFP_RNA <- RNA_filcpm_final_matrix %>% 
+  dplyr::filter(Entrezid %in% just_kzfp$entrezgene_id) %>% 
+  pivot_longer(cols=!Entrezid, names_to = "sample",values_to = "log2cpm") %>% 
+  separate_wider_delim(cols = sample, names = c("trt","time","ind"), delim = "_") %>% 
+  mutate(group=paste0(trt,"_",time),
+  time=factor(time,levels=c("24T","24R","144R"))) 
+
+
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
+  dplyr::filter(Entrez_ID %in% just_kzfp$entrezgene_id) %>% 
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  ggtitle("LFC of all KZFP in RNA data")+
+  theme_bw()
+```
+
+### KZFP Plots {.tabset .tabset-dropdown}
+```{r Basic LFC all kzfp}
+for (aim in just_kzfp$entrezgene_id){
+  df <- KZFP_RNA %>% 
+    mutate(time=factor(time, levels=c("24T","24R","144R"))) %>% 
+        dplyr::filter(Entrezid== aim)
+  if (nrow(df) == 0) next
+  symbol <- just_kzfp %>% 
+      dplyr::filter(entrezgene_id==aim) %>% 
+    dplyr::pull(hgnc_symbol)
+  
+  # Create tab title
+  cat("\n\n### ", symbol, " (", aim, ")\n\n")
+  
+plot <- ggplot(df, aes(x=time, y=log2cpm,group=group))+
+   geom_boxplot(aes(fill=trt)) +
+  ggtitle(paste0("gene ", aim," ",symbol))+
+  theme_bw()
+print(plot)
+  }
+
+```
+
+
+Age and KZFP expression
+
+
+```{r}
+
+# results_KZFP
+KZFP_age <- KZFP_2017_list %>% 
+  dplyr::filter(Label %in% results_KZFP$hgnc_symbol) %>% 
+  group_by(Label) %>% 
+  summarise(
+    max_MY = max(`Estimated evolutionary distance from human (MY)`, na.rm=TRUE),
+    human_gene = `Gene ID`[`Latin name` == "Homo sapiens"][1],
+    cluster = `Cluster #`[`Latin name` == "Homo sapiens"][1])
+
+KZFP_RNA %>% 
+  left_join(.,just_kzfp, by =c("Entrezid"="entrezgene_id")) %>% 
+  left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("hgnc_symbol"="Label"))
+
+
+
+RNA_full_toptable %>% 
+    dplyr::filter(Entrez_ID %in%just_kzfp$entrezgene_id) %>% 
+  left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label")) %>% 
+  mutate(timepoint=factor(timepoint,levels=c("24T","24R","144R"))) %>%
+  
+  ggplot(.,aes(x = max_MY, y = logFC))+
+  geom_point()+
+  # geom_smooth(method = "lm",  se = FALSE) +
+   # geom_smooth(method = "loess", color = "red", span=1) +
+  facet_wrap(~timepoint)
+```
+
+```{r}
+RNA_full_toptable %>% 
+    dplyr::filter(Entrez_ID %in%just_kzfp$entrezgene_id) %>% 
+  left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label")) %>% 
+  na.omit() %>% 
+   mutate(age_bin = case_when(
+    max_MY <= 50 ~ "0-50 mya",
+    max_MY <= 150 ~ "50-150 mya",
+    max_MY <= 200 ~ "150-200 mya",
+    max_MY > 300 ~ "> 300 mya",
+    TRUE~"unknown")) %>% 
+ mutate(timepoint=factor(timepoint,levels=c("24T","24R","144R")),
+        age_bin=factor(age_bin,levels=c("0-50 mya","50-150 mya","150-200 mya","> 300 mya","unknown"))) %>%
+   # summarise(mean_logFC = mean(logFC, na.rm=TRUE)) %>% 
+  ggplot(.,aes(x = age_bin, y = logFC))+
+  geom_boxplot()+
+  facet_wrap(~timepoint) + 
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  ggtitle("RNA expression and time (mya-million years ago)")
+```
+```{r}
+RNA_full_toptable %>% 
+    dplyr::filter(Entrez_ID %in%just_kzfp$entrezgene_id) %>% 
+  left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label")) %>% 
+  # dplyr::filter(is.na(max_MY)) %>% 
+  dplyr::filter(SYMBOL=="ZNF605")
+
+
+RNA_full_toptable %>% 
+    dplyr::filter(Entrez_ID %in%just_kzfp$entrezgene_id) %>% 
+  left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label")) %>% 
+  na.omit() %>% 
+   mutate(age_bin = case_when(
+    max_MY <= 50 ~ "0-50 mya",
+    max_MY <= 150 ~ "50-150 mya",
+    max_MY <= 200 ~ "150-200 mya",
+    max_MY > 300 ~ "> 300 mya",
+    TRUE~"unknown")) %>% 
+ mutate(timepoint=factor(timepoint,levels=c("24T","24R","144R")),
+        age_bin=factor(age_bin,levels=c("0-50 mya","50-150 mya","150-200 mya","> 300 mya","unknown"))) %>% 
+  group_by(age_bin) %>% tally()
+```
+### H3K27ac regions crossing LTR at summit with age
