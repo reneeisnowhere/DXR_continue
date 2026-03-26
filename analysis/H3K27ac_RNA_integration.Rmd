@@ -935,8 +935,8 @@ RNA_full_toptable %>%
   theme_bw()
 ```
 
-### KZFP Plots {.tabset .tabset-dropdown}
-```{r Basic LFC all kzfp, results='asis'}
+## KZFP Plots {.tabset .tabset-dropdown}
+```{r Basic LFC all kzfp, results='asis', echo=FALSE}
 for (aim in just_kzfp$entrezgene_id){
   df <- KZFP_RNA %>% 
     mutate(time=factor(time, levels=c("24T","24R","144R"))) %>% 
@@ -947,7 +947,7 @@ for (aim in just_kzfp$entrezgene_id){
     dplyr::pull(hgnc_symbol)
   
   # Create tab title
-  cat("\n\n### ", symbol, " (", aim, ")\n\n")
+  knitr::asis_output(paste0("\n\n### ", symbol, " (", aim, ")\n\n"))
   
 plot <- ggplot(df, aes(x=time, y=log2cpm,group=group))+
    geom_boxplot(aes(fill=trt)) +
