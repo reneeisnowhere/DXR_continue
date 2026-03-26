@@ -2,7 +2,9 @@
 title: "RNA and H3K27ac"
 author: "Renee Matthews"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document:
+  toc: true
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -934,7 +936,7 @@ RNA_full_toptable %>%
 ```
 
 ### KZFP Plots {.tabset .tabset-dropdown}
-```{r Basic LFC all kzfp}
+```{r Basic LFC all kzfp, results='asis'}
 for (aim in just_kzfp$entrezgene_id){
   df <- KZFP_RNA %>% 
     mutate(time=factor(time, levels=c("24T","24R","144R"))) %>% 
