@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree8557ebc7ddc5726c8307ca5fa3d96ff2d155fef5targetblank8557ebca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree546d63a1fe9c8d297af78a72f312fe1982efb885targetblank546d63aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/8557ebc7ddc5726c8307ca5fa3d96ff2d155fef5" target="_blank">8557ebc</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/546d63a1fe9c8d297af78a72f312fe1982efb885" target="_blank">546d63a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree8557ebc7ddc5726c8307ca5fa3d96ff2d155fef5targetblank8557ebca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree546d63a1fe9c8d297af78a72f312fe1982efb885targetblank546d63aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/8557ebc7ddc5726c8307ca5fa3d96ff2d155fef5" target="_blank">8557ebc</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/546d63a1fe9c8d297af78a72f312fe1982efb885" target="_blank">546d63a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -646,6 +646,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/546d63a1fe9c8d297af78a72f312fe1982efb885/analysis/memesuite_TE_enrichment.Rmd" target="_blank">546d63a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-27
+</td>
+<td>
+updates and tabs
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/0b5761f3b45f8fbd484d87e654199164d9c7c561/docs/memesuite_TE_enrichment.html" target="_blank">0b5761f</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/8557ebc7ddc5726c8307ca5fa3d96ff2d155fef5/analysis/memesuite_TE_enrichment.Rmd" target="_blank">8557ebc</a>
 </td>
 <td>
@@ -689,6 +723,258 @@ library(readxl)
 library(ChIPseeker)
 library(smplot2)
 library(biomaRt)</code></pre>
+<div id="exploring-tf-motifs-locations-across-te-subfamilies"
+class="section level3">
+<h3>Exploring TF motifs locations across TE subfamilies</h3>
+<p>Testing files</p>
+<pre class="r"><code>##loading TE dataframe
+te_df &lt;- read.table(&quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;, header=FALSE) # or your BED
+colnames(te_df) &lt;- c(&quot;chr&quot;,&quot;start&quot;,&quot;end&quot;,&quot;name&quot;,&quot;score&quot;,&quot;strand&quot;)
+##checking for NAs
+sum(is.na(te_df$start))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>sum(is.na(te_df$end))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>##cleaning TE dataframe (ususally not need, this is just in case)
+te_df_clean &lt;- te_df[!is.na(te_df$start) &amp; !is.na(te_df$end), ]
+##Convert to Granges
+te_gr &lt;- GRanges(
+  seqnames = te_df_clean$chr,
+  ranges = IRanges(start=te_df_clean$start, end=te_df_clean$end),
+  strand = te_df_clean$strand)
+### loading fimo for TE
+fimo &lt;- read.delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results/MER61E_ERV1_LTR_xstreme/fimo_out_1/fimo.tsv&quot;)
+
+##checking fimo for NA_s
+sum(is.na(fimo$start))</code></pre>
+<pre><code>[1] 3</code></pre>
+<pre class="r"><code>sum(is.na(fimo$stop))</code></pre>
+<pre><code>[1] 3</code></pre>
+<pre class="r"><code>##cleaning fimo
+
+fimo_clean &lt;- fimo[!is.na(fimo$start) &amp; !is.na(fimo$stop), ]
+
+##making grages of fimo
+fimo_gr &lt;- GRanges(
+  seqnames = fimo_clean$sequence_name,
+  ranges = IRanges(start = fimo_clean$start, end = fimo_clean$stop),
+  strand = fimo_clean$strand,
+  score = fimo_clean$score)</code></pre>
+<p>overlapping and computing relative positions</p>
+<pre class="r"><code>hits &lt;- findOverlaps(fimo_gr, te_gr)
+rel_pos &lt;- (start(fimo_gr)[queryHits(hits)] - start(te_gr)[subjectHits(hits)]) /
+           width(te_gr)[subjectHits(hits)]
+rel_pos &lt;- pmin(pmax(rel_pos, 0), 1)
+
+df &lt;- data.frame(rel_pos = rel_pos)
+
+ggplot(df, aes(x = rel_pos)) +
+  geom_density(fill = &quot;steelblue&quot;, alpha = 0.5) +
+  labs(x = &quot;Relative position in TE&quot;, y = &quot;Motif density&quot;) +
+  theme_classic() +
+  ggtitle(&quot;Motif distribution along TE sequences&quot;)</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ==============================================
+# Function: plot_fimo_motifs
+# ==============================================
+
+plot_fimo_motifs &lt;- function(fimo_root_dir, te_bed_file) {
+  
+  # # Create output dir if it doesn&#39;t exist
+  # dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+  # 
+  # ------------------------------
+  # Load TE BED file
+  # ------------------------------
+  te_df &lt;- read.table(te_bed_file, header = FALSE, stringsAsFactors = FALSE)
+  colnames(te_df) &lt;- c(&quot;chr&quot;,&quot;start&quot;,&quot;end&quot;,&quot;name&quot;,&quot;score&quot;,&quot;strand&quot;)
+  te_df &lt;- te_df[!is.na(te_df$start) &amp; !is.na(te_df$end) &amp; (te_df$start &lt;= te_df$end), ]
+  te_gr &lt;- GRanges(
+    seqnames = te_df$chr,
+    ranges = IRanges(start = te_df$start, end = te_df$end),
+    strand = te_df$strand
+  )
+  
+  # ------------------------------
+  # Find all FIMO directories
+  # ------------------------------
+  fimo_dirs &lt;- list.dirs(fimo_root_dir, recursive = FALSE)
+  
+  for (fimo_subdir in fimo_dirs) {
+    
+    fimo_file &lt;- file.path(fimo_subdir, &quot;fimo.tsv&quot;)
+    
+    if (!file.exists(fimo_file)) {
+      message(&quot;Skipping &quot;, fimo_subdir, &quot;: fimo.tsv not found&quot;)
+      next
+    }
+    
+    message(&quot;Processing &quot;, fimo_file)
+    
+    # ------------------------------
+    # Load and clean FIMO
+    # ------------------------------
+    fimo &lt;- read.delim(fimo_file, stringsAsFactors = FALSE)
+    fimo &lt;- fimo[!is.na(fimo$start) &amp; !is.na(fimo$stop) &amp; (fimo$start &lt;= fimo$stop), ]
+    motif_name &lt;- unique(fimo$motif_alt_id)
+    
+    if (length(motif_name) &gt; 1) {motif_name &lt;- motif_name[1]}
+
+    
+    if (nrow(fimo) == 0) {
+      message(&quot;No valid FIMO entries for &quot;, fimo_subdir)
+      next
+    }
+    
+    fimo_gr &lt;- GRanges(
+      seqnames = fimo$sequence_name,
+      ranges = IRanges(start = fimo$start, end = fimo$stop),
+      strand = fimo$strand,
+      score = fimo$score
+    )
+    
+    # ------------------------------
+    # Find overlaps with TEs
+    # ------------------------------
+    hits &lt;- findOverlaps(fimo_gr, te_gr)
+    
+    if (length(hits) == 0) {
+      message(&quot;No overlaps found for &quot;, fimo_subdir)
+      next
+    }
+    
+    # ------------------------------
+    # Compute relative positions
+    # ------------------------------
+    rel_pos &lt;- (start(fimo_gr)[queryHits(hits)] - start(te_gr)[subjectHits(hits)]) /
+               width(te_gr)[subjectHits(hits)]
+    rel_pos &lt;- pmin(pmax(rel_pos, 0), 1)
+    
+    df &lt;- data.frame(rel_pos = rel_pos)
+    
+    # ------------------------------
+    # Plot density
+    # ------------------------------
+   
+    cat(paste0(&quot;#### MER61E &quot;, motif_name, &quot;\n\n&quot;))
+    p &lt;- ggplot(df, aes(x = rel_pos)) +
+      geom_density(fill = &quot;steelblue&quot;, alpha = 0.5) +
+      labs(x = &quot;Relative position in TE&quot;, y = &quot;Motif density&quot;) +
+      theme_classic() +
+      ggtitle(paste(&quot;Motif distribution:&quot;, basename(fimo_subdir),&quot;\n&quot;,motif_name))
+    
+   print(p)
+  }
+  
+  message(&quot;All FIMO directories processed!&quot;)
+}</code></pre>
+</div>
+<div id="mer61e-density-plots"
+class="section level3 tabset tabset-dropdown">
+<h3 class="tabset tabset-dropdown">MER61E density Plots</h3>
+<pre class="r"><code>plot_fimo_motifs(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results/MER61E_ERV1_LTR_xstreme&quot;, &quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;)</code></pre>
+<pre><code>#### MER61E MEME-4</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-12</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-27</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-15</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-9</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-5</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-10</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-29</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-13</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-17</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-8</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-11.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-12</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-12.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-25</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-13.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-6</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-14.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-18</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-15.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-7</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-16.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-20</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-17.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-9</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-18.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-25</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-19.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-24</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-20.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-21</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-21.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-23</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-22.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-3</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-23.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-22</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-24.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-26</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-25.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-17</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-26.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-21</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-27.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-27</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-28.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-31</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-29.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-23</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-30.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-28</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-31.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-33</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-32.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-39</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-33.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-11</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-34.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-33</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-35.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-42</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-36.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-35</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-37.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-40</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-38.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-32</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-39.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-41</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-40.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-37</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-41.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-36</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-42.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-39</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-43.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-42</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-44.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-4</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-45.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-45</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-46.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-44</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-47.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-13</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-48.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E MEME-6</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-49.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-18</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-50.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>#### MER61E STREME-2</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-51.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -863,31 +1149,33 @@ loaded via a namespace (and not attached):
 [130] rlang_1.1.6                            
 [131] crayon_1.5.3                           
 [132] ggsignif_0.6.4                         
-[133] ps_1.9.1                               
-[134] getPass_0.2-4                          
-[135] plyr_1.8.9                             
-[136] fs_1.6.6                               
-[137] stringi_1.8.7                          
-[138] gridBase_0.4-7                         
-[139] BiocParallel_1.40.2                    
-[140] Biostrings_2.74.1                      
-[141] lazyeval_0.2.2                         
-[142] GOSemSim_2.32.0                        
-[143] Matrix_1.7-3                           
-[144] BSgenome_1.74.0                        
-[145] hms_1.1.3                              
-[146] patchwork_1.3.2                        
-[147] bit64_4.6.0-1                          
-[148] KEGGREST_1.46.0                        
-[149] SummarizedExperiment_1.36.0            
-[150] broom_1.0.9                            
-[151] igraph_2.1.4                           
-[152] memoise_2.0.1                          
-[153] bslib_0.9.0                            
-[154] ggtree_3.14.0                          
-[155] fastmatch_1.1-6                        
-[156] bit_4.6.0                              
-[157] ape_5.8-1                              </code></pre>
+[133] labeling_0.4.3                         
+[134] ps_1.9.1                               
+[135] getPass_0.2-4                          
+[136] plyr_1.8.9                             
+[137] fs_1.6.6                               
+[138] stringi_1.8.7                          
+[139] gridBase_0.4-7                         
+[140] BiocParallel_1.40.2                    
+[141] Biostrings_2.74.1                      
+[142] lazyeval_0.2.2                         
+[143] GOSemSim_2.32.0                        
+[144] Matrix_1.7-3                           
+[145] BSgenome_1.74.0                        
+[146] hms_1.1.3                              
+[147] patchwork_1.3.2                        
+[148] bit64_4.6.0-1                          
+[149] KEGGREST_1.46.0                        
+[150] SummarizedExperiment_1.36.0            
+[151] broom_1.0.9                            
+[152] igraph_2.1.4                           
+[153] memoise_2.0.1                          
+[154] bslib_0.9.0                            
+[155] ggtree_3.14.0                          
+[156] fastmatch_1.1-6                        
+[157] bit_4.6.0                              
+[158] ape_5.8-1                              </code></pre>
+</div>
 </div>
 </div>
 </div>
