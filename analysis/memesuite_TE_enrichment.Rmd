@@ -53,7 +53,7 @@ library(biomaRt)
 
 
 
-### Exploring TF motifs locations across TE subfamilies
+## Exploring TF motifs locations across TE subfamilies
 Testing files
 ```{r data set loading}
 
@@ -190,7 +190,7 @@ plot_fimo_motifs <- function(fimo_root_dir, te_bed_file) {
     # Plot density
     # ------------------------------
    
-    cat(paste0("#### MER61E ", motif_name, "\n\n"))
+    cat(paste0("### MER61E ", motif_name, "\n\n"))
     p <- ggplot(df, aes(x = rel_pos)) +
       geom_density(fill = "steelblue", alpha = 0.5) +
       labs(x = "Relative position in TE", y = "Motif density") +
@@ -205,7 +205,7 @@ plot_fimo_motifs <- function(fimo_root_dir, te_bed_file) {
 
 ```
 
-### MER61E density Plots {.tabset .tabset-dropdown}
+## MER61E density Plots {.tabset .tabset-dropdown}
 
 ```{r}
 plot_fimo_motifs("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results/MER61E_ERV1_LTR_xstreme", "data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
