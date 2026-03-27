@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec8cc778b8555bc2d59c3e7acc5430088003c6c4btargetblankc8cc778a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree8a64d3000c620f2c4cfaa8c2ee1c2e5d256d7ed8targetblank8a64d30a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c8cc778b8555bc2d59c3e7acc5430088003c6c4b" target="_blank">c8cc778</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/8a64d3000c620f2c4cfaa8c2ee1c2e5d256d7ed8" target="_blank">8a64d30</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec8cc778b8555bc2d59c3e7acc5430088003c6c4btargetblankc8cc778a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree8a64d3000c620f2c4cfaa8c2ee1c2e5d256d7ed8targetblank8a64d30a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c8cc778b8555bc2d59c3e7acc5430088003c6c4b" target="_blank">c8cc778</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/8a64d3000c620f2c4cfaa8c2ee1c2e5d256d7ed8" target="_blank">8a64d30</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -641,6 +641,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8a64d3000c620f2c4cfaa8c2ee1c2e5d256d7ed8/analysis/memesuite_TE_enrichment.Rmd" target="_blank">8a64d30</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-27
+</td>
+<td>
+working
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/f2452853a956a505a7200440fa15bd027484fce7/docs/memesuite_TE_enrichment.html" target="_blank">f245285</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -758,8 +792,8 @@ library(ChIPseeker)
 library(smplot2)
 library(biomaRt)</code></pre>
 <div id="exploring-tf-motifs-locations-across-te-subfamilies"
-class="section level3">
-<h3>Exploring TF motifs locations across TE subfamilies</h3>
+class="section level2">
+<h2>Exploring TF motifs locations across TE subfamilies</h2>
 <p>Testing files</p>
 <pre class="r"><code>##loading TE dataframe
 te_df &lt;- read.table(&quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;, header=FALSE) # or your BED
@@ -927,7 +961,7 @@ plot_fimo_motifs &lt;- function(fimo_root_dir, te_bed_file) {
     # Plot density
     # ------------------------------
    
-    cat(paste0(&quot;#### MER61E &quot;, motif_name, &quot;\n\n&quot;))
+    cat(paste0(&quot;### MER61E &quot;, motif_name, &quot;\n\n&quot;))
     p &lt;- ggplot(df, aes(x = rel_pos)) +
       geom_density(fill = &quot;steelblue&quot;, alpha = 0.5) +
       labs(x = &quot;Relative position in TE&quot;, y = &quot;Motif density&quot;) +
@@ -941,10 +975,10 @@ plot_fimo_motifs &lt;- function(fimo_root_dir, te_bed_file) {
 }</code></pre>
 </div>
 <div id="mer61e-density-plots"
-class="section level3 tabset tabset-dropdown">
-<h3 class="tabset tabset-dropdown">MER61E density Plots</h3>
+class="section level2 tabset tabset-dropdown">
+<h2 class="tabset tabset-dropdown">MER61E density Plots</h2>
 <pre class="r"><code>plot_fimo_motifs(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results/MER61E_ERV1_LTR_xstreme&quot;, &quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;)</code></pre>
-<pre><code>#### MER61E MEME-4</code></pre>
+<pre><code>### MER61E MEME-4</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
@@ -983,7 +1017,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-12</code></pre>
+<pre><code>### MER61E MEME-12</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
@@ -1022,7 +1056,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-27</code></pre>
+<pre><code>### MER61E MEME-27</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-3">
@@ -1061,7 +1095,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-15</code></pre>
+<pre><code>### MER61E STREME-15</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-4">
@@ -1100,7 +1134,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-9</code></pre>
+<pre><code>### MER61E STREME-9</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-5.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-5">
@@ -1139,7 +1173,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-5</code></pre>
+<pre><code>### MER61E STREME-5</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-6">
@@ -1178,7 +1212,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-10</code></pre>
+<pre><code>### MER61E STREME-10</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-7.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-7">
@@ -1217,7 +1251,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-29</code></pre>
+<pre><code>### MER61E STREME-29</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-8.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-8">
@@ -1256,7 +1290,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-13</code></pre>
+<pre><code>### MER61E MEME-13</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-9.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-9">
@@ -1295,7 +1329,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-17</code></pre>
+<pre><code>### MER61E MEME-17</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-10.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-10">
@@ -1334,7 +1368,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-8</code></pre>
+<pre><code>### MER61E STREME-8</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-11.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-11">
@@ -1373,7 +1407,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-12</code></pre>
+<pre><code>### MER61E STREME-12</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-12.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-12">
@@ -1412,7 +1446,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-25</code></pre>
+<pre><code>### MER61E STREME-25</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-13.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-13">
@@ -1451,7 +1485,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-6</code></pre>
+<pre><code>### MER61E STREME-6</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-14.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-14">
@@ -1490,7 +1524,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-18</code></pre>
+<pre><code>### MER61E MEME-18</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-15.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-15">
@@ -1529,7 +1563,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-7</code></pre>
+<pre><code>### MER61E STREME-7</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-16.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-16">
@@ -1568,7 +1602,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-20</code></pre>
+<pre><code>### MER61E MEME-20</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-17.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-17">
@@ -1607,7 +1641,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-9</code></pre>
+<pre><code>### MER61E MEME-9</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-18.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-18">
@@ -1646,7 +1680,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-25</code></pre>
+<pre><code>### MER61E MEME-25</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-19.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-19">
@@ -1685,7 +1719,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-24</code></pre>
+<pre><code>### MER61E STREME-24</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-20.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-20">
@@ -1724,7 +1758,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-21</code></pre>
+<pre><code>### MER61E STREME-21</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-21.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-21">
@@ -1763,7 +1797,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-23</code></pre>
+<pre><code>### MER61E STREME-23</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-22.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-22">
@@ -1802,7 +1836,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-3</code></pre>
+<pre><code>### MER61E STREME-3</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-23.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-23">
@@ -1841,7 +1875,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-22</code></pre>
+<pre><code>### MER61E MEME-22</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-24.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-24">
@@ -1880,7 +1914,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-26</code></pre>
+<pre><code>### MER61E STREME-26</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-25.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-25">
@@ -1919,7 +1953,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-17</code></pre>
+<pre><code>### MER61E STREME-17</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-26.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-26">
@@ -1958,7 +1992,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-21</code></pre>
+<pre><code>### MER61E MEME-21</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-27.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-27">
@@ -1997,7 +2031,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-27</code></pre>
+<pre><code>### MER61E STREME-27</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-28.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-28">
@@ -2036,7 +2070,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-31</code></pre>
+<pre><code>### MER61E MEME-31</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-29.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-29">
@@ -2075,7 +2109,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-23</code></pre>
+<pre><code>### MER61E MEME-23</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-30.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-30">
@@ -2114,7 +2148,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-28</code></pre>
+<pre><code>### MER61E MEME-28</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-31.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-31">
@@ -2153,7 +2187,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-33</code></pre>
+<pre><code>### MER61E MEME-33</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-32.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-32">
@@ -2192,7 +2226,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-39</code></pre>
+<pre><code>### MER61E STREME-39</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-33.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-33">
@@ -2231,7 +2265,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-11</code></pre>
+<pre><code>### MER61E MEME-11</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-34.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-34">
@@ -2270,7 +2304,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-33</code></pre>
+<pre><code>### MER61E STREME-33</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-35.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-35">
@@ -2309,7 +2343,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-42</code></pre>
+<pre><code>### MER61E STREME-42</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-36.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-36">
@@ -2348,7 +2382,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-35</code></pre>
+<pre><code>### MER61E MEME-35</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-37.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-37">
@@ -2387,7 +2421,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-40</code></pre>
+<pre><code>### MER61E MEME-40</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-38.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-38">
@@ -2426,7 +2460,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-32</code></pre>
+<pre><code>### MER61E STREME-32</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-39.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-39">
@@ -2465,7 +2499,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-41</code></pre>
+<pre><code>### MER61E STREME-41</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-40.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-40">
@@ -2504,7 +2538,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-37</code></pre>
+<pre><code>### MER61E MEME-37</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-41.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-41">
@@ -2543,7 +2577,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-36</code></pre>
+<pre><code>### MER61E MEME-36</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-42.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-42">
@@ -2582,7 +2616,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-39</code></pre>
+<pre><code>### MER61E MEME-39</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-43.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-43">
@@ -2621,7 +2655,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-42</code></pre>
+<pre><code>### MER61E MEME-42</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-44.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-44">
@@ -2660,7 +2694,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-4</code></pre>
+<pre><code>### MER61E STREME-4</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-45.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-45">
@@ -2699,7 +2733,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-45</code></pre>
+<pre><code>### MER61E MEME-45</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-46.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-46">
@@ -2738,7 +2772,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-44</code></pre>
+<pre><code>### MER61E MEME-44</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-47.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-47">
@@ -2777,7 +2811,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-13</code></pre>
+<pre><code>### MER61E STREME-13</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-48.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-48">
@@ -2816,7 +2850,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E MEME-6</code></pre>
+<pre><code>### MER61E MEME-6</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-49.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-49">
@@ -2855,7 +2889,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-18</code></pre>
+<pre><code>### MER61E STREME-18</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-50.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-50">
@@ -2894,7 +2928,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre><code>#### MER61E STREME-2</code></pre>
+<pre><code>### MER61E STREME-2</code></pre>
 <p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-51.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-51">
