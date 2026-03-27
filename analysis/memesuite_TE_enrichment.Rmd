@@ -200,9 +200,10 @@ plot_fimo_motifs <- function(fimo_root_dir, te_bed_file) {
       ggtitle(paste("Motif distribution:", basename(fimo_subdir),"\n",motif_name))
     
    print(p)
+   cat("\n\n")
   }
   
- cat("\n\n")
+ 
 }
 
 ```
