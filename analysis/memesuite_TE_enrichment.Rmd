@@ -206,6 +206,7 @@ plot_fimo_motifs <- function(fimo_root_dir, te_bed_file) {
 ```
 
 ### MER61E density Plots {.tabset .tabset-dropdown}
+
 ```{r}
 plot_fimo_motifs("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results/MER61E_ERV1_LTR_xstreme", "data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
 ```
