@@ -46,12 +46,167 @@ library(biomaRt)
 ```
 
 
+
+
+
+
+
+
+
+### Exploring TF motifs locations across TE subfamilies
+Testing files
 ```{r data set loading}
+
+##loading TE dataframe
+te_df <- read.table("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed", header=FALSE) # or your BED
+colnames(te_df) <- c("chr","start","end","name","score","strand")
+##checking for NAs
+sum(is.na(te_df$start))
+sum(is.na(te_df$end))
+##cleaning TE dataframe (ususally not need, this is just in case)
+te_df_clean <- te_df[!is.na(te_df$start) & !is.na(te_df$end), ]
+##Convert to Granges
+te_gr <- GRanges(
+  seqnames = te_df_clean$chr,
+  ranges = IRanges(start=te_df_clean$start, end=te_df_clean$end),
+  strand = te_df_clean$strand)
+### loading fimo for TE
+fimo <- read.delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results/MER61E_ERV1_LTR_xstreme/fimo_out_1/fimo.tsv")
+
+##checking fimo for NA_s
+sum(is.na(fimo$start))
+sum(is.na(fimo$stop))
+##cleaning fimo
+
+fimo_clean <- fimo[!is.na(fimo$start) & !is.na(fimo$stop), ]
+
+##making grages of fimo
+fimo_gr <- GRanges(
+  seqnames = fimo_clean$sequence_name,
+  ranges = IRanges(start = fimo_clean$start, end = fimo_clean$stop),
+  strand = fimo_clean$strand,
+  score = fimo_clean$score)
+
+```
+ overlapping and computing relative positions
+
+```{r}
+hits <- findOverlaps(fimo_gr, te_gr)
+rel_pos <- (start(fimo_gr)[queryHits(hits)] - start(te_gr)[subjectHits(hits)]) /
+           width(te_gr)[subjectHits(hits)]
+rel_pos <- pmin(pmax(rel_pos, 0), 1)
+
+df <- data.frame(rel_pos = rel_pos)
+
+ggplot(df, aes(x = rel_pos)) +
+  geom_density(fill = "steelblue", alpha = 0.5) +
+  labs(x = "Relative position in TE", y = "Motif density") +
+  theme_classic() +
+  ggtitle("Motif distribution along TE sequences")
+
 
 ```
 
+```{r}
+# ==============================================
+# Function: plot_fimo_motifs
+# ==============================================
 
+plot_fimo_motifs <- function(fimo_root_dir, te_bed_file) {
+  
+  # # Create output dir if it doesn't exist
+  # dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+  # 
+  # ------------------------------
+  # Load TE BED file
+  # ------------------------------
+  te_df <- read.table(te_bed_file, header = FALSE, stringsAsFactors = FALSE)
+  colnames(te_df) <- c("chr","start","end","name","score","strand")
+  te_df <- te_df[!is.na(te_df$start) & !is.na(te_df$end) & (te_df$start <= te_df$end), ]
+  te_gr <- GRanges(
+    seqnames = te_df$chr,
+    ranges = IRanges(start = te_df$start, end = te_df$end),
+    strand = te_df$strand
+  )
+  
+  # ------------------------------
+  # Find all FIMO directories
+  # ------------------------------
+  fimo_dirs <- list.dirs(fimo_root_dir, recursive = FALSE)
+  
+  for (fimo_subdir in fimo_dirs) {
+    
+    fimo_file <- file.path(fimo_subdir, "fimo.tsv")
+    
+    if (!file.exists(fimo_file)) {
+      message("Skipping ", fimo_subdir, ": fimo.tsv not found")
+      next
+    }
+    
+    message("Processing ", fimo_file)
+    
+    # ------------------------------
+    # Load and clean FIMO
+    # ------------------------------
+    fimo <- read.delim(fimo_file, stringsAsFactors = FALSE)
+    fimo <- fimo[!is.na(fimo$start) & !is.na(fimo$stop) & (fimo$start <= fimo$stop), ]
+    motif_name <- unique(fimo$motif_alt_id)
+    
+    if (length(motif_name) > 1) {motif_name <- motif_name[1]}
 
+    
+    if (nrow(fimo) == 0) {
+      message("No valid FIMO entries for ", fimo_subdir)
+      next
+    }
+    
+    fimo_gr <- GRanges(
+      seqnames = fimo$sequence_name,
+      ranges = IRanges(start = fimo$start, end = fimo$stop),
+      strand = fimo$strand,
+      score = fimo$score
+    )
+    
+    # ------------------------------
+    # Find overlaps with TEs
+    # ------------------------------
+    hits <- findOverlaps(fimo_gr, te_gr)
+    
+    if (length(hits) == 0) {
+      message("No overlaps found for ", fimo_subdir)
+      next
+    }
+    
+    # ------------------------------
+    # Compute relative positions
+    # ------------------------------
+    rel_pos <- (start(fimo_gr)[queryHits(hits)] - start(te_gr)[subjectHits(hits)]) /
+               width(te_gr)[subjectHits(hits)]
+    rel_pos <- pmin(pmax(rel_pos, 0), 1)
+    
+    df <- data.frame(rel_pos = rel_pos)
+    
+    # ------------------------------
+    # Plot density
+    # ------------------------------
+   
+    cat(paste0("#### MER61E ", motif_name, "\n\n"))
+    p <- ggplot(df, aes(x = rel_pos)) +
+      geom_density(fill = "steelblue", alpha = 0.5) +
+      labs(x = "Relative position in TE", y = "Motif density") +
+      theme_classic() +
+      ggtitle(paste("Motif distribution:", basename(fimo_subdir),"\n",motif_name))
+    
+   print(p)
+  }
+  
+  message("All FIMO directories processed!")
+}
 
+```
 
+### MER61E density Plots {.tabset .tabset-dropdown}
+```{r}
+plot_fimo_motifs("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results/MER61E_ERV1_LTR_xstreme", "data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
+```
 
