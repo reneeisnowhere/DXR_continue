@@ -1,0 +1,57 @@
+---
+title: "memesuite-TE-enrichment"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+  toc: true
+  toc_float: true
+  toc_depth: 4
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(data.table)
+library(readxl)
+library(ChIPseeker)
+library(smplot2)
+library(biomaRt)
+```
+
+
+```{r data set loading}
+
+```
+
+
+
+
+
+
