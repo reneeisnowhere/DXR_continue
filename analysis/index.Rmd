@@ -105,3 +105,5 @@ Looking at finalized assigned cluster sets and characteristics
 ### Histone signal across TEs
 
 [Plotting of types of TEs, specifically LTRs](https://reneeisnowhere.github.io/DXR_continue/computeMatrixplots.html)
+
+[Plotting subfamily MER61*](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_TEtype.html)
