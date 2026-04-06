@@ -11,11 +11,11 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-03-27" />
+<meta name="date" content="2026-04-06" />
 
 <title>memesuite-TE-enrichment</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -37,6 +37,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -361,7 +363,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">memesuite-TE-enrichment</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-03-27</h4>
+<h4 class="date">2026-04-06</h4>
 
 </div>
 
@@ -390,7 +392,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-03-27
+<strong>Last updated:</strong> 2026-04-06
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -408,7 +410,7 @@ title="This is the local directory in which the code in this file was executed."
 This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
 analysis was created with <a
   href="https://github.com/workflowr/workflowr">workflowr</a> (version
-1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
 that were applied when the results were created. The <em>Past
 versions</em> tab lists the development history.
 </p>
@@ -521,15 +523,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree712395f58c5e4a0fce86dc4242b5262f7e3f63cctargetblank712395fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec90b2248351618bbbe46cf5649aca2f01edada29targetblankc90b224a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/712395f58c5e4a0fce86dc4242b5262f7e3f63cc" target="_blank">712395f</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c90b2248351618bbbe46cf5649aca2f01edada29" target="_blank">c90b224</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree712395f58c5e4a0fce86dc4242b5262f7e3f63cctargetblank712395fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec90b2248351618bbbe46cf5649aca2f01edada29targetblankc90b224a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +541,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/712395f58c5e4a0fce86dc4242b5262f7e3f63cc" target="_blank">712395f</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c90b2248351618bbbe46cf5649aca2f01edada29" target="_blank">c90b224</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -572,16 +574,19 @@ Ignored files:
 Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
     Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  MER61C_ERV1_LTR.fa
     Untracked:  analysis/GREAT_H3K27ac.Rmd
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
-    Untracked:  analysis/H3K27ac_TEtype.Rmd
     Untracked:  analysis/H3K27me3_TE_investigation.Rmd
     Untracked:  analysis/H3K36me3_TE_investigation.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/Bed_file_summary.R
+    Untracked:  code/FASTA_conversion.R
     Untracked:  code/For_john.R
     Untracked:  code/KZFP_genes_bedifle_creation.R
+    Untracked:  code/Liftover_code.R
     Untracked:  other_analysis/
 
 Unstaged changes:
@@ -594,6 +599,7 @@ Unstaged changes:
     Modified:   analysis/H3K9me3_TE_investigation.Rmd
     Modified:   analysis/chromHMM.Rmd
     Modified:   analysis/dual_histone_TE_investigation.Rmd
+    Modified:   analysis/index.Rmd
     Modified:   analysis/summit_files_processing.Rmd
     Modified:   code/ZNF_genes_bedfile_creation.R
 
@@ -641,6 +647,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/c90b2248351618bbbe46cf5649aca2f01edada29/analysis/memesuite_TE_enrichment.Rmd" target="_blank">c90b224</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-06
+</td>
+<td>
+commit first
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/3dbf5e20cde3bfea9166309b69de48dfbaf2ec7d/docs/memesuite_TE_enrichment.html" target="_blank">3dbf5e2</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -892,7 +932,12 @@ library(data.table)
 library(readxl)
 library(ChIPseeker)
 library(smplot2)
-library(biomaRt)</code></pre>
+library(biomaRt)
+library(TFBSTools)
+library(JASPAR2022)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(universalmotif)
+library(kableExtra)</code></pre>
 <div id="exploring-tf-motifs-locations-across-te-subfamilies"
 class="section level2">
 <h2>Exploring TF motifs locations across TE subfamilies</h2>
@@ -929,7 +974,16 @@ fimo_gr &lt;- GRanges(
   seqnames = fimo_clean$sequence_name,
   ranges = IRanges(start = fimo_clean$start, end = fimo_clean$stop),
   strand = fimo_clean$strand,
-  score = fimo_clean$score)</code></pre>
+  score = fimo_clean$score)
+
+
+ERV1_summary_char &lt;- read.csv(file.path(&quot;data/Other_paper_data/ERV1_file_summary.csv&quot;))
+
+ERV1_summary_char %&gt;% 
+  dplyr::filter(filename==&quot;MER61E_ERV1_LTR.bed&quot;)</code></pre>
+<pre><code>             filename n_lines average_length max_len min_len
+1 MER61E_ERV1_LTR.bed     267       389.2846     975      27</code></pre>
+<pre class="r"><code>RNA_full_toptable &lt;-  readRDS(&quot;data/Other_paper_data/RNA_full_toptable.RDS&quot;)</code></pre>
 <p>overlapping and computing relative positions</p>
 <pre class="r"><code>hits &lt;- findOverlaps(fimo_gr, te_gr)
 rel_pos &lt;- (start(fimo_gr)[queryHits(hits)] - start(te_gr)[subjectHits(hits)]) /
@@ -943,44 +997,6 @@ ggplot(df, aes(x = rel_pos)) +
   labs(x = &quot;Relative position in TE&quot;, y = &quot;Motif density&quot;) +
   theme_classic() +
   ggtitle(&quot;Motif distribution along TE sequences&quot;)</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
-Past versions of unnamed-chunk-2-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-2-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/0f1f844248ef7dd2745a5723dcfb5914e718b484/docs/figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-2-1.png" target="_blank">0f1f844</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-03-27
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
 </div>
 <div id="mer61e-density-plots"
 class="section level2 tabset tabset-dropdown">
@@ -1082,7 +1098,7 @@ plot_fimo_motifs &lt;- function(fimo_root_dir, te_bed_file) {
 }</code></pre>
 <pre class="r"><code>plot_fimo_motifs(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results/MER61E_ERV1_LTR_xstreme&quot;, &quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;)</code></pre>
 <pre><code>### MER61E MEME-4</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
 Past versions of unnamed-chunk-4-1.png
@@ -1121,7 +1137,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-12</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
 Past versions of unnamed-chunk-4-2.png
@@ -1160,7 +1176,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-27</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-3">
 Past versions of unnamed-chunk-4-3.png
@@ -1199,7 +1215,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-15</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-4">
 Past versions of unnamed-chunk-4-4.png
@@ -1238,7 +1254,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-9</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-5">
 Past versions of unnamed-chunk-4-5.png
@@ -1277,7 +1293,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-5</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-6">
 Past versions of unnamed-chunk-4-6.png
@@ -1316,7 +1332,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-10</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-7">
 Past versions of unnamed-chunk-4-7.png
@@ -1355,7 +1371,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-29</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-8">
 Past versions of unnamed-chunk-4-8.png
@@ -1394,7 +1410,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-13</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-9">
 Past versions of unnamed-chunk-4-9.png
@@ -1433,7 +1449,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-17</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-10">
 Past versions of unnamed-chunk-4-10.png
@@ -1472,7 +1488,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-8</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-11">
 Past versions of unnamed-chunk-4-11.png
@@ -1511,7 +1527,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-12</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-12">
 Past versions of unnamed-chunk-4-12.png
@@ -1550,7 +1566,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-25</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-13.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-13">
 Past versions of unnamed-chunk-4-13.png
@@ -1589,7 +1605,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-6</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-14.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-14.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-14">
 Past versions of unnamed-chunk-4-14.png
@@ -1628,7 +1644,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-18</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-15.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-15.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-15">
 Past versions of unnamed-chunk-4-15.png
@@ -1667,7 +1683,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-7</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-16.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-16.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-16">
 Past versions of unnamed-chunk-4-16.png
@@ -1706,7 +1722,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-20</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-17.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-17.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-17">
 Past versions of unnamed-chunk-4-17.png
@@ -1745,7 +1761,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-9</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-18.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-18.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-18">
 Past versions of unnamed-chunk-4-18.png
@@ -1784,7 +1800,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-25</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-19.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-19.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-19">
 Past versions of unnamed-chunk-4-19.png
@@ -1823,7 +1839,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-24</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-20.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-20.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-20">
 Past versions of unnamed-chunk-4-20.png
@@ -1862,7 +1878,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-21</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-21.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-21.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-21">
 Past versions of unnamed-chunk-4-21.png
@@ -1901,7 +1917,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-23</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-22.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-22.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-22">
 Past versions of unnamed-chunk-4-22.png
@@ -1940,7 +1956,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-3</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-23.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-23.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-23">
 Past versions of unnamed-chunk-4-23.png
@@ -1979,7 +1995,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-22</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-24.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-24.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-24">
 Past versions of unnamed-chunk-4-24.png
@@ -2018,7 +2034,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-26</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-25.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-25.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-25">
 Past versions of unnamed-chunk-4-25.png
@@ -2057,7 +2073,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-17</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-26.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-26.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-26">
 Past versions of unnamed-chunk-4-26.png
@@ -2096,7 +2112,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-21</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-27.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-27.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-27">
 Past versions of unnamed-chunk-4-27.png
@@ -2135,7 +2151,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-27</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-28.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-28.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-28">
 Past versions of unnamed-chunk-4-28.png
@@ -2174,7 +2190,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-31</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-29.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-29.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-29">
 Past versions of unnamed-chunk-4-29.png
@@ -2213,7 +2229,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-23</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-30.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-30.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-30">
 Past versions of unnamed-chunk-4-30.png
@@ -2252,7 +2268,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-28</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-31.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-31.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-31">
 Past versions of unnamed-chunk-4-31.png
@@ -2291,7 +2307,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-33</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-32.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-32.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-32">
 Past versions of unnamed-chunk-4-32.png
@@ -2330,7 +2346,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-39</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-33.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-33.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-33">
 Past versions of unnamed-chunk-4-33.png
@@ -2369,7 +2385,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-11</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-34.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-34.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-34">
 Past versions of unnamed-chunk-4-34.png
@@ -2408,7 +2424,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-33</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-35.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-35.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-35">
 Past versions of unnamed-chunk-4-35.png
@@ -2447,7 +2463,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-42</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-36.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-36.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-36">
 Past versions of unnamed-chunk-4-36.png
@@ -2486,7 +2502,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-35</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-37.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-37.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-37">
 Past versions of unnamed-chunk-4-37.png
@@ -2525,7 +2541,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-40</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-38.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-38.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-38">
 Past versions of unnamed-chunk-4-38.png
@@ -2564,7 +2580,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-32</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-39.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-39.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-39">
 Past versions of unnamed-chunk-4-39.png
@@ -2603,7 +2619,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-41</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-40.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-40.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-40">
 Past versions of unnamed-chunk-4-40.png
@@ -2642,7 +2658,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-37</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-41.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-41.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-41">
 Past versions of unnamed-chunk-4-41.png
@@ -2681,7 +2697,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-36</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-42.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-42.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-42">
 Past versions of unnamed-chunk-4-42.png
@@ -2720,7 +2736,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-39</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-43.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-43.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-43">
 Past versions of unnamed-chunk-4-43.png
@@ -2759,7 +2775,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-42</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-44.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-44.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-44">
 Past versions of unnamed-chunk-4-44.png
@@ -2798,7 +2814,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-4</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-45.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-45.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-45">
 Past versions of unnamed-chunk-4-45.png
@@ -2837,7 +2853,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-45</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-46.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-46.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-46">
 Past versions of unnamed-chunk-4-46.png
@@ -2876,7 +2892,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-44</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-47.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-47.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-47">
 Past versions of unnamed-chunk-4-47.png
@@ -2915,7 +2931,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-13</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-48.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-48.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-48">
 Past versions of unnamed-chunk-4-48.png
@@ -2954,7 +2970,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E MEME-6</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-49.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-49.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-49">
 Past versions of unnamed-chunk-4-49.png
@@ -2993,7 +3009,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-18</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-50.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-50.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-50">
 Past versions of unnamed-chunk-4-50.png
@@ -3032,7 +3048,7 @@ reneeisnowhere
 </div>
 </div>
 <pre><code>### MER61E STREME-2</code></pre>
-<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-51.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-4-51.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-51">
 Past versions of unnamed-chunk-4-51.png
@@ -3070,6 +3086,1197 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>MER61E_sea &lt;- read.delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_sea_jaspar_results/MER61E_ERV1_LTR_sea_jaspar/sea.tsv&quot;)
+
+
+motif_ids &lt;- unique(MER61E_sea$ID)
+  
+opts &lt;- list(
+  collection = &quot;CORE&quot;,
+  tax_group = &quot;vertebrates&quot;,
+  all_versions = TRUE
+)
+
+pfm_list &lt;- getMatrixSet(JASPAR2022, opts)
+pfm_subset &lt;- pfm_list[names(pfm_list) %in% motif_ids]
+ ### only selecting the first tag...
+jaspar_df &lt;- data.frame(
+  motif_id = names(pfm_subset),
+  TF = sapply(pfm_subset, function(x) x@name),
+  family = sapply(pfm_subset, function(x) {
+    if (is.null(x@tags$family)) return(NA)
+    x@tags$family[1]}))
+
+MER61E_sea %&gt;% 
+  left_join(jaspar_df, by = c(&quot;ID&quot;=&quot;motif_id&quot;)) %&gt;% 
+  dplyr::filter(!is.na(TF)) %&gt;% 
+   arrange(desc(ENR_RATIO)) %&gt;%
+   mutate(ALT_ID = fct_reorder(ALT_ID, ENR_RATIO)) %&gt;% 
+  slice_head(n = 25) %&gt;% 
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
+  ggplot(., aes (y= ALT_ID)) +
+  geom_col(aes(x=log10Evalue, fill=family))+
+  geom_point(aes(x=ENR_RATIO/4), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~.*4,name=&quot;Enrichment Ratio&quot;))+
+  theme_classic()+
+  ylab(&quot;Enriched TF motif&quot;)+
+  ggtitle(paste(&quot;Top 25 TF motifs by Enrichment ratio for MER61E TEs&quot;))</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-5-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>MER61E_sea %&gt;% 
+  left_join(jaspar_df, by = c(&quot;ID&quot;=&quot;motif_id&quot;)) %&gt;% 
+  filter(!is.na(TF)) %&gt;% 
+  group_by(family) %&gt;% 
+  slice_max(ENR_RATIO, n = 1, with_ties = FALSE) %&gt;%   # ✅ best per family
+  ungroup() %&gt;% 
+  arrange(desc(ENR_RATIO)) %&gt;% 
+  slice_head(n = 25) %&gt;% 
+  mutate(
+    ALT_ID = fct_reorder(ALT_ID, ENR_RATIO),
+    log10Evalue = -log10(EVALUE)
+  ) %&gt;% 
+  ggplot(aes(y = ALT_ID)) +
+  geom_col(aes(x =(log10Evalue), fill = family)) +
+  geom_point(aes(x = ENR_RATIO/3), size = 4) +
+  scale_x_continuous(
+    expand = c(0, .125),
+    sec.axis = sec_axis(~.*3, name = &quot;Enrichment Ratio&quot;)
+  ) +
+  theme_classic() +
+  ylab(&quot;Enriched TF motif&quot;) +
+  ggtitle(&quot;Top 25 TF motifs by Enrichment ratio for MER61E TEs grouped by family&quot;)</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-6-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>MER61C_sea &lt;- read.delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_sea_jaspar_results/MER61C_ERV1_LTR_sea_jaspar/sea.tsv&quot;)
+
+
+motif_ids_c &lt;- unique(MER61C_sea$ID)
+  
+# opts &lt;- list(
+#   collection = &quot;CORE&quot;,
+#   tax_group = &quot;vertebrates&quot;,
+#   all_versions = TRUE
+# )
+
+# pfm_list &lt;- getMatrixSet(JASPAR2022, opts)
+pfm_subset_c &lt;- pfm_list[names(pfm_list) %in% motif_ids_c]
+ ### only selecting the first tag...
+jaspar_df_c &lt;- data.frame(
+  motif_id = names(pfm_subset_c),
+  TF = sapply(pfm_subset_c, function(x) x@name),
+  family = sapply(pfm_subset_c, function(x) {
+    if (is.null(x@tags$family)) return(NA)
+    x@tags$family[1]}))
+
+MER61C_sea %&gt;% 
+  left_join(jaspar_df_c, by = c(&quot;ID&quot;=&quot;motif_id&quot;)) %&gt;% 
+  dplyr::filter(!is.na(TF)) %&gt;% 
+   arrange(desc(ENR_RATIO)) %&gt;%
+   mutate(ALT_ID = fct_reorder(ALT_ID, ENR_RATIO)) %&gt;% 
+  slice_head(n = 25) %&gt;% 
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
+  ggplot(., aes (y= ALT_ID)) +
+  geom_col(aes(x=log10Evalue, fill=family))+
+  geom_point(aes(x=ENR_RATIO*2), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./2,name=&quot;Enrichment Ratio&quot;))+
+  theme_classic()+
+  ylab(&quot;Enriched TF motif&quot;)+
+  ggtitle(paste(&quot;Top 25 TF motifs by Enrichment ratio for MER61C TEs&quot;))</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-7-1.png" alt="" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>HERV1_LTRa_sea &lt;- read.delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_sea_jaspar_results/HERV1_LTRa_ERV1_LTR_sea_jaspar/sea.tsv&quot;)
+
+
+motif_ids_HERV1_LTRa &lt;- unique(HERV1_LTRa_sea$ID)
+  
+# opts &lt;- list(
+#   collection = &quot;CORE&quot;,
+#   tax_group = &quot;vertebrates&quot;,
+#   all_versions = TRUE
+# )
+
+# pfm_list &lt;- getMatrixSet(JASPAR2022, opts)
+pfm_subset_HERV1_LTRa &lt;- pfm_list[names(pfm_list) %in% motif_ids_HERV1_LTRa]
+ ### only selecting the first tag...
+jaspar_df_HERV1_LTRa &lt;- data.frame(
+  motif_id = names(pfm_subset_HERV1_LTRa),
+  TF = sapply(pfm_subset_HERV1_LTRa, function(x) x@name),
+  family = sapply(pfm_subset_HERV1_LTRa, function(x) {
+    if (is.null(x@tags$family)) return(NA)
+    x@tags$family[1]}))
+
+HERV1_LTRa_sea %&gt;% 
+  left_join(jaspar_df_HERV1_LTRa, by = c(&quot;ID&quot;=&quot;motif_id&quot;)) %&gt;% 
+  dplyr::filter(!is.na(TF)) %&gt;% 
+   arrange(desc(ENR_RATIO)) %&gt;%
+   mutate(ALT_ID = fct_reorder(ALT_ID, ENR_RATIO)) %&gt;% 
+  slice_head(n = 25) %&gt;% 
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
+  ggplot(., aes (y= ALT_ID)) +
+  geom_col(aes(x=log10Evalue, fill=family))+
+  geom_point(aes(x=ENR_RATIO*.1), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./.1,name=&quot;Enrichment Ratio&quot;))+
+  theme_classic()+
+  ylab(&quot;Enriched TF motif&quot;)+
+  ggtitle(paste(&quot;Top 25 TF motifs by Enrichment ratio for HERV1_LTRa TEs&quot;))</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-8-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>### Expression related?
+
+MER61E_sea %&gt;% 
+  left_join(jaspar_df, by = c(&quot;ID&quot;=&quot;motif_id&quot;)) %&gt;% 
+  dplyr::filter(!is.na(TF)) %&gt;% 
+  dplyr::filter(ALT_ID %in% RNA_full_toptable$SYMBOL) %&gt;% 
+   arrange(desc(ENR_RATIO)) %&gt;%
+   mutate(ALT_ID = fct_reorder(ALT_ID, ENR_RATIO)) %&gt;% 
+  slice_head(n = 25) %&gt;% 
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
+  ggplot(., aes (y= ALT_ID)) +
+  geom_col(aes(x=log10Evalue, fill=family))+
+  geom_point(aes(x=ENR_RATIO/4), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~.*4,name=&quot;Enrichment Ratio&quot;))+
+  theme_classic()+
+  ylab(&quot;Enriched TF motif&quot;)+
+  ggtitle(paste(&quot;Top 25 expressed TF motifs by Enrichment ratio for MER61E TEs&quot;))</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-9-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>txdb &lt;- TxDb.Hsapiens.UCSC.hg38.knownGene
+genes_gr &lt;- genes(txdb)
+sites &lt;- read.delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_sea_jaspar_results/MER61E_ERV1_LTR_sea_jaspar/sites.tsv&quot;, header=TRUE)
+
+tp53_sites &lt;- sites %&gt;% 
+  dplyr::filter(motif_ALT_ID==&quot;TP53&quot;)
+
+tp53_gr &lt;-  GRanges(seqnames = tp53_sites$seq_ID,
+  ranges = IRanges(start = tp53_sites$site_Start, end = tp53_sites$site_End),
+  motif = tp53_sites$motif_ALT_ID,
+  name=&quot;MER61E&quot;)
+
+
+hits &lt;- distanceToNearest(tp53_gr, genes_gr)
+
+# extract results
+res &lt;- data.frame(
+  MER61E_site = mcols(tp53_gr)$name[queryHits(hits)],
+  gene = names(genes_gr)[subjectHits(hits)],
+  distance = mcols(hits)$distance
+)
+
+RNA_full_toptable &lt;-  readRDS(&quot;data/Other_paper_data/RNA_full_toptable.RDS&quot;)
+
+Symbol_lookup &lt;- RNA_full_toptable %&gt;% 
+  dplyr::select (Entrez_ID,SYMBOL) %&gt;% 
+  distinct(Entrez_ID,SYMBOL)
+
+res %&gt;%
+  mutate(gene=as.numeric(gene)) %&gt;% 
+  dplyr::left_join(Symbol_lookup, by=c(&quot;gene&quot;=&quot;Entrez_ID&quot;))</code></pre>
+<pre><code>   MER61E_site      gene distance      SYMBOL
+1       MER61E 105379127    62781        &lt;NA&gt;
+2       MER61E 101927457     3094        &lt;NA&gt;
+3       MER61E    389158        0        &lt;NA&gt;
+4       MER61E     55137   217554        FIGN
+5       MER61E 106144535        0        &lt;NA&gt;
+6       MER61E 105371146   120216        &lt;NA&gt;
+7       MER61E     54916    15856     TMEM260
+8       MER61E     55521    91816      TRIM36
+9       MER61E      9369        0       NRXN3
+10      MER61E 102465537    35359        &lt;NA&gt;
+11      MER61E    497258        0     BDNF-AS
+12      MER61E 101927224    57003        &lt;NA&gt;
+13      MER61E      8522     7190        GAS7
+14      MER61E 105377188    18967        &lt;NA&gt;
+15      MER61E    202151   140392        &lt;NA&gt;
+16      MER61E      9969    78867       MED13
+17      MER61E 122455338     4599        &lt;NA&gt;
+18      MER61E    283710    52071        &lt;NA&gt;
+19      MER61E 107986749      272        &lt;NA&gt;
+20      MER61E 105373960        0        &lt;NA&gt;
+21      MER61E 105374557        0        &lt;NA&gt;
+22      MER61E 102725068        0        &lt;NA&gt;
+23      MER61E     80896    27716         NPL
+24      MER61E      4756        0        NEO1
+25      MER61E     81615        0     TMEM163
+26      MER61E 105373669        0        &lt;NA&gt;
+27      MER61E    387486    92062        &lt;NA&gt;
+28      MER61E     84837    53834 ARHGAP5-AS1
+29      MER61E     26037    32933     SIPA1L1
+30      MER61E    283867   192899        &lt;NA&gt;
+31      MER61E 124900778   115702        &lt;NA&gt;
+32      MER61E 103695365   109232        &lt;NA&gt;
+33      MER61E    257194        0       NEGR1
+34      MER61E     55734    73331       ZFP64
+35      MER61E     64940        0     STAG3L4
+36      MER61E    378884    29922      NHLRC1
+37      MER61E      3767        0      KCNJ11
+38      MER61E      7431     9884         VIM
+39      MER61E     27241        0        BBS9
+40      MER61E 105375826        0        &lt;NA&gt;
+41      MER61E     11257        0     TP53TG1</code></pre>
+<pre class="r"><code>A &lt;- c(0.48,-0.06,0.72,-3.59, 0.99,-0.07,-2.17,-2.17,-2.41,-0.65) 
+C &lt;- c(-1.21, -1.89,-2.29,1.34,-1.68,-1.74,-2.95, 0.55, 1.03, 0.44)
+G &lt;- c(0.44,1.03,0.55,-2.95,-1.74, -1.68,1.34,-2.29,-1.89, -1.21)
+T &lt;- c(-0.65,-2.41,-2.17,-2.17,-0.07, 0.99,-3.59,0.72,-0.06,0.48)
+
+TP53_half_mat &lt;- rbind(A,C,G,T)
+
+# background frequencies
+bg &lt;- c(A=0.25, C=0.25, G=0.25, T=0.25)
+
+# convert log-odds → probabilities
+TP53_half_prob_mat &lt;- apply(TP53_half_mat, 2, function(col) {
+  p &lt;- bg * (2^col)
+  p / sum(p)  # normalize
+})
+
+# TP53_half_prob_mat &lt;- t(TP53_half_prob_mat)
+
+rownames(TP53_half_prob_mat) &lt;- c(&quot;A&quot;,&quot;C&quot;,&quot;G&quot;,&quot;T&quot;)
+
+colSums(TP53_half_prob_mat) #all ones?  sanity checking as they should be
+TP53_half_prob_mat &lt;- as.matrix(TP53_half_prob_mat)
+
+TP53_half_motif &lt;- create_motif(TP53_half_prob_mat, name = &quot;TP53_half_motif_paper_pwm&quot;, alphabet = &quot;DNA&quot;)
+
+
+write_meme(TP53_half_motif, file = &quot;data/Other_paper_data/TP53_half_motif_paper_pwm.meme&quot;)</code></pre>
+<div id="looking-a-tp53-half-sites-from-ting-wang-paper"
+class="section level3">
+<h3>looking a TP53 half sites from Ting Wang paper</h3>
+<pre class="r"><code>plot_p53_motifs &lt;- function(fimo_root_dir, te_bed_file) {
+  
+  # # Create output dir if it doesn&#39;t exist
+  # dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+  # 
+  # ------------------------------
+  # Load TE BED file
+  # ------------------------------
+  te_df &lt;- read.table(te_bed_file, header = FALSE, stringsAsFactors = FALSE)
+  colnames(te_df) &lt;- c(&quot;chr&quot;,&quot;start&quot;,&quot;end&quot;,&quot;name&quot;,&quot;score&quot;,&quot;strand&quot;)
+  te_df &lt;- te_df[!is.na(te_df$start) &amp; !is.na(te_df$end) &amp; (te_df$start &lt;= te_df$end), ]
+  te_gr &lt;- GRanges(
+    seqnames = te_df$chr,
+    ranges = IRanges(start = te_df$start, end = te_df$end),
+    strand = te_df$strand
+  )
+  
+  # ------------------------------
+  # Find all FIMO directories
+  # ------------------------------
+  # fimo_dirs &lt;- list.dirs(fimo_root_dir, recursive = FALSE)
+  # 
+  # for (fimo_subdir in fimo_dirs) {
+    
+    fimo_file &lt;- file.path(fimo_root_dir, &quot;fimo.tsv&quot;)
+    # 
+    # if (!file.exists(fimo_file)) {
+    #   message(&quot;Skipping &quot;, fimo_subdir, &quot;: fimo.tsv not found&quot;)
+    #   next
+    # }
+    
+    message(&quot;Processing &quot;, fimo_file)
+    
+    # ------------------------------
+    # Load and clean FIMO
+    # ------------------------------
+    fimo &lt;- read.delim(fimo_file, stringsAsFactors = FALSE)
+  
+    fimo &lt;- fimo[!is.na(fimo$start) &amp; !is.na(fimo$stop) &amp; (fimo$start &lt;= fimo$stop), ]
+    motif_name &lt;- unique(fimo$motif_alt_id)
+    
+    if (length(motif_name) &gt; 1) {motif_name &lt;- motif_name[1]}
+
+    
+    if (nrow(fimo) == 0) {
+      message(&quot;No valid FIMO entries for &quot;, fimo_subdir)
+      next
+    }
+    
+    fimo_gr &lt;- GRanges(
+      seqnames = fimo$sequence_name,
+      ranges = IRanges(start = fimo$start, end = fimo$stop),
+      strand = fimo$strand,
+      score = fimo$score
+    )
+    
+    # ------------------------------
+    # Find overlaps with TEs
+    # ------------------------------
+    hits &lt;- findOverlaps(fimo_gr, te_gr)
+    
+    if (length(hits) == 0) {
+      message(&quot;No overlaps found for &quot;, fimo_root_dir)
+      next
+    }
+    
+    # ------------------------------
+    # Compute relative positions
+    # ------------------------------
+    rel_pos &lt;- (start(fimo_gr)[queryHits(hits)] - start(te_gr)[subjectHits(hits)]) /
+               width(te_gr)[subjectHits(hits)]
+    rel_pos &lt;- pmin(pmax(rel_pos, 0), 1)
+    
+    df &lt;- data.frame(rel_pos = rel_pos)
+    
+    # ------------------------------
+    # Plot density
+    # ------------------------------
+   
+    cat(paste0(&quot;### MER61E &quot;, motif_name, &quot;\n\n&quot;))
+    p &lt;- ggplot(df, aes(x = rel_pos)) +
+      geom_density(fill = &quot;steelblue&quot;, alpha = 0.5) +
+      labs(x = &quot;Relative position in TE&quot;, y = &quot;Motif density&quot;) +
+      theme_classic() +
+      ggtitle(paste(&quot;TP53 halfsite motif distribution:&quot;, basename(fimo_root_dir),&quot;\n&quot;,motif_name))
+    
+   print(p)
+   cat(&quot;\n\n&quot;)
+  }</code></pre>
+<pre class="r"><code>plot_p53_motifs(&quot;C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61E_ERV1_LTR_fimo&quot;, &quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;)</code></pre>
+<pre><code>### MER61E NA</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-12-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_p53_motifs(&quot;C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61C_ERV1_LTR_fimo&quot;, &quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61C_ERV1_LTR.bed&quot;)</code></pre>
+<pre><code>### MER61E NA</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-12-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_p53_motifs(&quot;C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61A_ERV1_LTR_fimo&quot;, &quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61A_ERV1_LTR.bed&quot;)</code></pre>
+<pre><code>### MER61E NA</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/unnamed-chunk-12-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_p53_motifs_all &lt;- function(fimo_root_dir, te_bed_base_dir) {
+ 
+  
+  # Initialize results list
+  results_list &lt;- list()
+  
+  # Find all directories ending with &quot;_fimo&quot;
+  fimo_dirs &lt;- list.dirs(fimo_root_dir, recursive = FALSE)
+  fimo_dirs &lt;- fimo_dirs[grepl(&quot;_fimo$&quot;, basename(fimo_dirs))]
+  
+  for (fimo_dir in fimo_dirs) {
+    base_name &lt;- sub(&quot;_fimo$&quot;, &quot;&quot;, basename(fimo_dir))
+    
+    # Find FIMO file
+    fimo_file &lt;- file.path(fimo_dir, &quot;fimo.tsv&quot;)
+    if (!file.exists(fimo_file)) {
+      message(&quot;Skipping &quot;, fimo_dir, &quot;: fimo.tsv not found&quot;)
+      next
+    }
+    
+    # Find corresponding TE BED file
+    te_file &lt;- file.path(te_bed_base_dir, paste0(base_name, &quot;.bed&quot;))
+    if (!file.exists(te_file)) {
+      message(&quot;Skipping &quot;, base_name, &quot;: TE BED file not found&quot;)
+      next
+    }
+    
+    # ------------------------------
+    # Load TE BED file
+    # ------------------------------
+    te_df &lt;- read.table(te_file, header = FALSE, stringsAsFactors = FALSE)
+    colnames(te_df) &lt;- c(&quot;chr&quot;,&quot;start&quot;,&quot;end&quot;,&quot;name&quot;,&quot;score&quot;,&quot;strand&quot;)
+    te_df &lt;- te_df[!is.na(te_df$start) &amp; !is.na(te_df$end) &amp; (te_df$start &lt;= te_df$end), ]
+    te_gr &lt;- GRanges(
+      seqnames = te_df$chr,
+      ranges = IRanges(start = te_df$start, end = te_df$end),
+      strand = te_df$strand
+    )
+    
+    # ------------------------------
+    # Load FIMO
+    # ------------------------------
+    fimo &lt;- read.delim(fimo_file, stringsAsFactors = FALSE)
+    
+    # Filter TP53 motifs
+    if (&quot;motif_id&quot; %in% colnames(fimo)) {
+      fimo &lt;- fimo[grepl(&quot;TP53&quot;, fimo$motif_id, ignore.case = TRUE), ]
+    } else {
+      message(&quot;No motif_id column in &quot;, fimo_file)
+      next
+    }
+    
+    # Skip if no motifs found
+    if (nrow(fimo) == 0) {
+      message(&quot;No TP53 motifs in &quot;, base_name)
+      results_list[[paste0(base_name, &quot;_no_hits&quot;)]] &lt;- data.frame(
+        TE_name = base_name,
+        motif_name = NA,
+        total_TEs = length(te_gr),
+        TEs_with_TP53 = 0,
+        total_TP53_hits = 0,
+        occupancy = 0
+      )
+      next
+    }
+    
+    # Clean FIMO entries
+    fimo &lt;- fimo[!is.na(fimo$start) &amp; !is.na(fimo$stop) &amp; (fimo$start &lt;= fimo$stop), ]
+    
+    motif_name &lt;- unique(fimo$motif_id)
+    
+    # Loop over each motif separately (in case multiple motifs exist)
+    for (mn in motif_name) {
+      fimo_motif &lt;- fimo[fimo$motif_id == mn, ]
+      
+      fimo_gr &lt;- GRanges(
+        seqnames = fimo_motif$sequence_name,
+        ranges = IRanges(start = fimo_motif$start, end = fimo_motif$stop),
+        strand = fimo_motif$strand,
+        score = fimo_motif$score
+      )
+      
+      # ------------------------------
+      # Overlaps
+      # ------------------------------
+      hits &lt;- findOverlaps(fimo_gr, te_gr)
+      n_te_total &lt;- length(te_gr)
+      
+      if (length(hits) == 0) {
+        message(&quot;No overlaps for motif &quot;, mn, &quot; in &quot;, base_name)
+        results_list[[paste0(base_name, &quot;_&quot;, mn)]] &lt;- data.frame(
+          TE_name = base_name,
+          motif_name = mn,
+          total_TEs = n_te_total,
+          TEs_with_TP53 = 0,
+          total_TP53_hits = 0,
+          occupancy = 0
+        )
+        next
+      }
+      
+      n_te_with_hits &lt;- length(unique(subjectHits(hits)))
+      n_total_hits &lt;- length(hits)
+      occupancy &lt;- n_te_with_hits / n_te_total
+      
+      # ------------------------------
+      # Compute relative positions
+      # ------------------------------
+      rel_pos &lt;- (start(fimo_gr)[queryHits(hits)] - start(te_gr)[subjectHits(hits)]) /
+                 width(te_gr)[subjectHits(hits)]
+      rel_pos &lt;- pmin(pmax(rel_pos, 0), 1)
+      df &lt;- data.frame(rel_pos = rel_pos)
+      
+      # ------------------------------
+      # Store results
+      # ------------------------------
+      results_list[[paste0(base_name, &quot;_&quot;, mn)]] &lt;- data.frame(
+        TE_name = base_name,
+        motif_name = mn,
+        total_TEs = n_te_total,
+        TEs_with_TP53 = n_te_with_hits,
+        total_TP53_hits = n_total_hits,
+        occupancy = occupancy
+      )
+      
+      # ------------------------------
+      # Plot density
+      # ------------------------------
+      cat(paste0(&quot;### &quot;, base_name, &quot; &quot;, mn, &quot;\n&quot;))
+      cat(base_name, &quot;| total TEs:&quot;, n_te_total, &quot;| with TP53:&quot;, n_te_with_hits, 
+          &quot;| hits:&quot;, n_total_hits, &quot;\n&quot;)
+      cat(&quot;Sequences with TP53 motif: &quot;, round(occupancy * 100, 2), &quot;%\n\n&quot;)
+      
+      p &lt;- ggplot(df, aes(x = rel_pos)) +
+        geom_density(fill = &quot;steelblue&quot;, alpha = 0.5) +
+        labs(x = &quot;Relative position in TE&quot;, y = &quot;Motif density&quot;) +
+        theme_classic() +
+        ggtitle(paste0(&quot;TP53 motif distribution: &quot;, base_name,
+                       &quot;\nSequences with motif: &quot;, round(occupancy * 100, 1), &quot;%&quot;))
+      print(p)
+      cat(&quot;\n\n&quot;)
+    }
+  } # end fimo_dirs loop
+  
+  # Combine all results into one data frame
+  results_df &lt;- do.call(rbind, results_list)
+  
+  print(results_df)
+  return(results_df)
+}</code></pre>
+<pre class="r"><code>Astorage &lt;- plot_p53_motifs_all(&quot;C:/Users/renee/Other_projects_data/DXR_data/fimo_results&quot;, &quot;data/Bed_exports/repeatmasker_sets/ERV1&quot;)</code></pre>
+<pre><code>### HERV1_I-int_ERV1_LTR TP53_half_motif_paper_pwm
+HERV1_I-int_ERV1_LTR | total TEs: 33 | with TP53: 9 | hits: 9 
+Sequences with TP53 motif:  27.27 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>### HERV1_LTRc_ERV1_LTR TP53_half_motif_paper_pwm
+HERV1_LTRc_ERV1_LTR | total TEs: 27 | with TP53: 17 | hits: 17 
+Sequences with TP53 motif:  62.96 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### HERV1_LTRd_ERV1_LTR TP53_half_motif_paper_pwm
+HERV1_LTRd_ERV1_LTR | total TEs: 12 | with TP53: 1 | hits: 1 
+Sequences with TP53 motif:  8.33 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### HERV1_LTRe_ERV1_LTR TP53_half_motif_paper_pwm
+HERV1_LTRe_ERV1_LTR | total TEs: 25 | with TP53: 8 | hits: 8 
+Sequences with TP53 motif:  32 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### LTR103_Mam_ERV1_LTR TP53_half_motif_paper_pwm
+LTR103_Mam_ERV1_LTR | total TEs: 668 | with TP53: 5 | hits: 5 
+Sequences with TP53 motif:  0.75 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### LTR103b_Mam_ERV1_LTR TP53_half_motif_paper_pwm
+LTR103b_Mam_ERV1_LTR | total TEs: 535 | with TP53: 8 | hits: 8 
+Sequences with TP53 motif:  1.5 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>### LTR10A_ERV1_LTR TP53_half_motif_paper_pwm
+LTR10A_ERV1_LTR | total TEs: 301 | with TP53: 3 | hits: 3 
+Sequences with TP53 motif:  1 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>### LTR10B1_ERV1_LTR TP53_half_motif_paper_pwm
+LTR10B1_ERV1_LTR | total TEs: 157 | with TP53: 56 | hits: 84 
+Sequences with TP53 motif:  35.67 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### LTR10B2_ERV1_LTR TP53_half_motif_paper_pwm
+LTR10B2_ERV1_LTR | total TEs: 93 | with TP53: 36 | hits: 48 
+Sequences with TP53 motif:  38.71 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### LTR10C_ERV1_LTR TP53_half_motif_paper_pwm
+LTR10C_ERV1_LTR | total TEs: 467 | with TP53: 59 | hits: 64 
+Sequences with TP53 motif:  12.63 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### LTR10D_ERV1_LTR TP53_half_motif_paper_pwm
+LTR10D_ERV1_LTR | total TEs: 153 | with TP53: 45 | hits: 45 
+Sequences with TP53 motif:  29.41 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### LTR10E_ERV1_LTR TP53_half_motif_paper_pwm
+LTR10E_ERV1_LTR | total TEs: 255 | with TP53: 154 | hits: 211 
+Sequences with TP53 motif:  60.39 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### LTR10F_ERV1_LTR TP53_half_motif_paper_pwm
+LTR10F_ERV1_LTR | total TEs: 392 | with TP53: 2 | hits: 2 
+Sequences with TP53 motif:  0.51 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>### MER61-int_ERV1_LTR TP53_half_motif_paper_pwm
+MER61-int_ERV1_LTR | total TEs: 945 | with TP53: 83 | hits: 91 
+Sequences with TP53 motif:  8.78 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-14.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### MER61A_ERV1_LTR TP53_half_motif_paper_pwm
+MER61A_ERV1_LTR | total TEs: 713 | with TP53: 5 | hits: 5 
+Sequences with TP53 motif:  0.7 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-15.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### MER61B_ERV1_LTR TP53_half_motif_paper_pwm
+MER61B_ERV1_LTR | total TEs: 355 | with TP53: 2 | hits: 2 
+Sequences with TP53 motif:  0.56 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-16.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### MER61C_ERV1_LTR TP53_half_motif_paper_pwm
+MER61C_ERV1_LTR | total TEs: 274 | with TP53: 144 | hits: 175 
+Sequences with TP53 motif:  52.55 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-17.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### MER61D_ERV1_LTR TP53_half_motif_paper_pwm
+MER61D_ERV1_LTR | total TEs: 249 | with TP53: 156 | hits: 209 
+Sequences with TP53 motif:  62.65 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-18.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### MER61E_ERV1_LTR TP53_half_motif_paper_pwm
+MER61E_ERV1_LTR | total TEs: 267 | with TP53: 156 | hits: 285 
+Sequences with TP53 motif:  58.43 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-19.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+### MER61F_ERV1_LTR TP53_half_motif_paper_pwm
+MER61F_ERV1_LTR | total TEs: 129 | with TP53: 18 | hits: 25 
+Sequences with TP53 motif:  13.95 %</code></pre>
+<p><img src="figure/memesuite_TE_enrichment.Rmd/for_tp53motifs-20.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+                                                            TE_name
+HERV1_I-int_ERV1_LTR_TP53_half_motif_paper_pwm HERV1_I-int_ERV1_LTR
+HERV1_LTRc_ERV1_LTR_TP53_half_motif_paper_pwm   HERV1_LTRc_ERV1_LTR
+HERV1_LTRd_ERV1_LTR_TP53_half_motif_paper_pwm   HERV1_LTRd_ERV1_LTR
+HERV1_LTRe_ERV1_LTR_TP53_half_motif_paper_pwm   HERV1_LTRe_ERV1_LTR
+LTR103_Mam_ERV1_LTR_TP53_half_motif_paper_pwm   LTR103_Mam_ERV1_LTR
+LTR103b_Mam_ERV1_LTR_TP53_half_motif_paper_pwm LTR103b_Mam_ERV1_LTR
+LTR10A_ERV1_LTR_TP53_half_motif_paper_pwm           LTR10A_ERV1_LTR
+LTR10B1_ERV1_LTR_TP53_half_motif_paper_pwm         LTR10B1_ERV1_LTR
+LTR10B2_ERV1_LTR_TP53_half_motif_paper_pwm         LTR10B2_ERV1_LTR
+LTR10C_ERV1_LTR_TP53_half_motif_paper_pwm           LTR10C_ERV1_LTR
+LTR10D_ERV1_LTR_TP53_half_motif_paper_pwm           LTR10D_ERV1_LTR
+LTR10E_ERV1_LTR_TP53_half_motif_paper_pwm           LTR10E_ERV1_LTR
+LTR10F_ERV1_LTR_TP53_half_motif_paper_pwm           LTR10F_ERV1_LTR
+MER61-int_ERV1_LTR_TP53_half_motif_paper_pwm     MER61-int_ERV1_LTR
+MER61A_ERV1_LTR_TP53_half_motif_paper_pwm           MER61A_ERV1_LTR
+MER61B_ERV1_LTR_TP53_half_motif_paper_pwm           MER61B_ERV1_LTR
+MER61C_ERV1_LTR_TP53_half_motif_paper_pwm           MER61C_ERV1_LTR
+MER61D_ERV1_LTR_TP53_half_motif_paper_pwm           MER61D_ERV1_LTR
+MER61E_ERV1_LTR_TP53_half_motif_paper_pwm           MER61E_ERV1_LTR
+MER61F_ERV1_LTR_TP53_half_motif_paper_pwm           MER61F_ERV1_LTR
+                                                              motif_name
+HERV1_I-int_ERV1_LTR_TP53_half_motif_paper_pwm TP53_half_motif_paper_pwm
+HERV1_LTRc_ERV1_LTR_TP53_half_motif_paper_pwm  TP53_half_motif_paper_pwm
+HERV1_LTRd_ERV1_LTR_TP53_half_motif_paper_pwm  TP53_half_motif_paper_pwm
+HERV1_LTRe_ERV1_LTR_TP53_half_motif_paper_pwm  TP53_half_motif_paper_pwm
+LTR103_Mam_ERV1_LTR_TP53_half_motif_paper_pwm  TP53_half_motif_paper_pwm
+LTR103b_Mam_ERV1_LTR_TP53_half_motif_paper_pwm TP53_half_motif_paper_pwm
+LTR10A_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+LTR10B1_ERV1_LTR_TP53_half_motif_paper_pwm     TP53_half_motif_paper_pwm
+LTR10B2_ERV1_LTR_TP53_half_motif_paper_pwm     TP53_half_motif_paper_pwm
+LTR10C_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+LTR10D_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+LTR10E_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+LTR10F_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+MER61-int_ERV1_LTR_TP53_half_motif_paper_pwm   TP53_half_motif_paper_pwm
+MER61A_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+MER61B_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+MER61C_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+MER61D_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+MER61E_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+MER61F_ERV1_LTR_TP53_half_motif_paper_pwm      TP53_half_motif_paper_pwm
+                                               total_TEs TEs_with_TP53
+HERV1_I-int_ERV1_LTR_TP53_half_motif_paper_pwm        33             9
+HERV1_LTRc_ERV1_LTR_TP53_half_motif_paper_pwm         27            17
+HERV1_LTRd_ERV1_LTR_TP53_half_motif_paper_pwm         12             1
+HERV1_LTRe_ERV1_LTR_TP53_half_motif_paper_pwm         25             8
+LTR103_Mam_ERV1_LTR_TP53_half_motif_paper_pwm        668             5
+LTR103b_Mam_ERV1_LTR_TP53_half_motif_paper_pwm       535             8
+LTR10A_ERV1_LTR_TP53_half_motif_paper_pwm            301             3
+LTR10B1_ERV1_LTR_TP53_half_motif_paper_pwm           157            56
+LTR10B2_ERV1_LTR_TP53_half_motif_paper_pwm            93            36
+LTR10C_ERV1_LTR_TP53_half_motif_paper_pwm            467            59
+LTR10D_ERV1_LTR_TP53_half_motif_paper_pwm            153            45
+LTR10E_ERV1_LTR_TP53_half_motif_paper_pwm            255           154
+LTR10F_ERV1_LTR_TP53_half_motif_paper_pwm            392             2
+MER61-int_ERV1_LTR_TP53_half_motif_paper_pwm         945            83
+MER61A_ERV1_LTR_TP53_half_motif_paper_pwm            713             5
+MER61B_ERV1_LTR_TP53_half_motif_paper_pwm            355             2
+MER61C_ERV1_LTR_TP53_half_motif_paper_pwm            274           144
+MER61D_ERV1_LTR_TP53_half_motif_paper_pwm            249           156
+MER61E_ERV1_LTR_TP53_half_motif_paper_pwm            267           156
+MER61F_ERV1_LTR_TP53_half_motif_paper_pwm            129            18
+                                               total_TP53_hits   occupancy
+HERV1_I-int_ERV1_LTR_TP53_half_motif_paper_pwm               9 0.272727273
+HERV1_LTRc_ERV1_LTR_TP53_half_motif_paper_pwm               17 0.629629630
+HERV1_LTRd_ERV1_LTR_TP53_half_motif_paper_pwm                1 0.083333333
+HERV1_LTRe_ERV1_LTR_TP53_half_motif_paper_pwm                8 0.320000000
+LTR103_Mam_ERV1_LTR_TP53_half_motif_paper_pwm                5 0.007485030
+LTR103b_Mam_ERV1_LTR_TP53_half_motif_paper_pwm               8 0.014953271
+LTR10A_ERV1_LTR_TP53_half_motif_paper_pwm                    3 0.009966777
+LTR10B1_ERV1_LTR_TP53_half_motif_paper_pwm                  84 0.356687898
+LTR10B2_ERV1_LTR_TP53_half_motif_paper_pwm                  48 0.387096774
+LTR10C_ERV1_LTR_TP53_half_motif_paper_pwm                   64 0.126338330
+LTR10D_ERV1_LTR_TP53_half_motif_paper_pwm                   45 0.294117647
+LTR10E_ERV1_LTR_TP53_half_motif_paper_pwm                  211 0.603921569
+LTR10F_ERV1_LTR_TP53_half_motif_paper_pwm                    2 0.005102041
+MER61-int_ERV1_LTR_TP53_half_motif_paper_pwm                91 0.087830688
+MER61A_ERV1_LTR_TP53_half_motif_paper_pwm                    5 0.007012623
+MER61B_ERV1_LTR_TP53_half_motif_paper_pwm                    2 0.005633803
+MER61C_ERV1_LTR_TP53_half_motif_paper_pwm                  175 0.525547445
+MER61D_ERV1_LTR_TP53_half_motif_paper_pwm                  209 0.626506024
+MER61E_ERV1_LTR_TP53_half_motif_paper_pwm                  285 0.584269663
+MER61F_ERV1_LTR_TP53_half_motif_paper_pwm                   25 0.139534884</code></pre>
+<pre class="r"><code>kable(Astorage, caption = &quot;TP53 motif occupancy per TE family&quot;) %&gt;%
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;), full_width = FALSE) %&gt;%
+  column_spec(1, bold = TRUE) %&gt;%          # make TE_name bold
+  column_spec(6, color = &quot;white&quot;, background = spec_color(Astorage$occupancy, end = 0.9))  # color occupancy</code></pre>
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+TP53 motif occupancy per TE family
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+TE_name
+</th>
+<th style="text-align:left;">
+motif_name
+</th>
+<th style="text-align:right;">
+total_TEs
+</th>
+<th style="text-align:right;">
+TEs_with_TP53
+</th>
+<th style="text-align:right;">
+total_TP53_hits
+</th>
+<th style="text-align:right;">
+occupancy
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+HERV1_I-int_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+HERV1_I-int_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(43, 116, 142, 255) !important;">
+9
+</td>
+<td style="text-align:right;">
+0.2727273
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+HERV1_LTRc_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+HERV1_LTRc_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(187, 223, 39, 255) !important;">
+17
+</td>
+<td style="text-align:right;">
+0.6296296
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+HERV1_LTRd_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+HERV1_LTRd_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(72, 41, 121, 255) !important;">
+1
+</td>
+<td style="text-align:right;">
+0.0833333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+HERV1_LTRe_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+HERV1_LTRe_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(37, 133, 142, 255) !important;">
+8
+</td>
+<td style="text-align:right;">
+0.3200000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LTR103_Mam_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+LTR103_Mam_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+668
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(68, 2, 86, 255) !important;">
+5
+</td>
+<td style="text-align:right;">
+0.0074850
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LTR103b_Mam_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+LTR103b_Mam_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+535
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(70, 6, 90, 255) !important;">
+8
+</td>
+<td style="text-align:right;">
+0.0149533
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LTR10A_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+LTR10A_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+301
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(69, 4, 87, 255) !important;">
+3
+</td>
+<td style="text-align:right;">
+0.0099668
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LTR10B1_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+LTR10B1_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+157
+</td>
+<td style="text-align:right;">
+56
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(32, 146, 140, 255) !important;">
+84
+</td>
+<td style="text-align:right;">
+0.3566879
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LTR10B2_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+LTR10B2_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+93
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(30, 156, 137, 255) !important;">
+48
+</td>
+<td style="text-align:right;">
+0.3870968
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LTR10C_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+LTR10C_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+467
+</td>
+<td style="text-align:right;">
+59
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(67, 61, 132, 255) !important;">
+64
+</td>
+<td style="text-align:right;">
+0.1263383
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LTR10D_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+LTR10D_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+153
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(40, 124, 142, 255) !important;">
+45
+</td>
+<td style="text-align:right;">
+0.2941176
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LTR10E_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+LTR10E_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+255
+</td>
+<td style="text-align:right;">
+154
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(163, 218, 55, 255) !important;">
+211
+</td>
+<td style="text-align:right;">
+0.6039216
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LTR10F_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+LTR10F_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+392
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(68, 1, 84, 255) !important;">
+2
+</td>
+<td style="text-align:right;">
+0.0051020
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+MER61-int_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+MER61-int_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+945
+</td>
+<td style="text-align:right;">
+83
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(71, 43, 122, 255) !important;">
+91
+</td>
+<td style="text-align:right;">
+0.0878307
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+MER61A_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+MER61A_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+713
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(68, 2, 86, 255) !important;">
+5
+</td>
+<td style="text-align:right;">
+0.0070126
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+MER61B_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+MER61B_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+355
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(68, 1, 84, 255) !important;">
+2
+</td>
+<td style="text-align:right;">
+0.0056338
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+MER61C_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+MER61C_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+274
+</td>
+<td style="text-align:right;">
+144
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(93, 201, 98, 255) !important;">
+175
+</td>
+<td style="text-align:right;">
+0.5255474
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+MER61D_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+MER61D_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+249
+</td>
+<td style="text-align:right;">
+156
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(185, 222, 40, 255) !important;">
+209
+</td>
+<td style="text-align:right;">
+0.6265060
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+MER61E_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+MER61E_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+267
+</td>
+<td style="text-align:right;">
+156
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(143, 214, 68, 255) !important;">
+285
+</td>
+<td style="text-align:right;">
+0.5842697
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+MER61F_ERV1_LTR_TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:left;">
+MER61F_ERV1_LTR
+</td>
+<td style="text-align:left;">
+TP53_half_motif_paper_pwm
+</td>
+<td style="text-align:right;">
+129
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;color: white !important;background-color: rgba(65, 65, 134, 255) !important;">
+25
+</td>
+<td style="text-align:right;">
+0.1395349
+</td>
+</tr>
+</tbody>
+</table>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -3101,175 +4308,212 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] biomaRt_2.62.1       smplot2_0.2.5        ChIPseeker_1.42.1   
- [4] readxl_1.4.5         data.table_1.17.8    DT_0.33             
- [7] ggrepel_0.9.6        rtracklayer_1.66.0   genomation_1.38.0   
-[10] plyranges_1.26.0     GenomicRanges_1.58.0 GenomeInfoDb_1.42.3 
-[13] IRanges_2.40.1       S4Vectors_0.44.0     BiocGenerics_0.52.0 
-[16] lubridate_1.9.4      forcats_1.0.0        stringr_1.5.1       
-[19] dplyr_1.1.4          purrr_1.1.0          readr_2.1.5         
-[22] tidyr_1.3.1          tibble_3.3.0         ggplot2_3.5.2       
-[25] tidyverse_2.0.0      workflowr_1.7.1     
+ [1] kableExtra_1.4.0                        
+ [2] universalmotif_1.24.2                   
+ [3] TxDb.Hsapiens.UCSC.hg38.knownGene_3.20.0
+ [4] GenomicFeatures_1.58.0                  
+ [5] AnnotationDbi_1.68.0                    
+ [6] Biobase_2.66.0                          
+ [7] JASPAR2022_0.99.8                       
+ [8] BiocFileCache_2.14.0                    
+ [9] dbplyr_2.5.2                            
+[10] TFBSTools_1.44.0                        
+[11] biomaRt_2.62.1                          
+[12] smplot2_0.2.6                           
+[13] ChIPseeker_1.42.1                       
+[14] readxl_1.4.5                            
+[15] data.table_1.18.2.1                     
+[16] DT_0.34.0                               
+[17] ggrepel_0.9.8                           
+[18] rtracklayer_1.66.0                      
+[19] genomation_1.38.0                       
+[20] plyranges_1.26.0                        
+[21] GenomicRanges_1.58.0                    
+[22] GenomeInfoDb_1.42.3                     
+[23] IRanges_2.40.1                          
+[24] S4Vectors_0.44.0                        
+[25] BiocGenerics_0.52.0                     
+[26] lubridate_1.9.5                         
+[27] forcats_1.0.1                           
+[28] stringr_1.6.0                           
+[29] dplyr_1.2.0                             
+[30] purrr_1.2.1                             
+[31] readr_2.2.0                             
+[32] tidyr_1.3.2                             
+[33] tibble_3.3.1                            
+[34] ggplot2_4.0.2                           
+[35] tidyverse_2.0.0                         
+[36] workflowr_1.7.2                         
 
 loaded via a namespace (and not attached):
-  [1] splines_4.4.2                          
-  [2] later_1.4.2                            
-  [3] BiocIO_1.16.0                          
-  [4] filelock_1.0.3                         
-  [5] bitops_1.0-9                           
-  [6] ggplotify_0.1.2                        
-  [7] R.oo_1.27.1                            
-  [8] cellranger_1.1.0                       
-  [9] rpart_4.1.24                           
- [10] XML_3.99-0.18                          
- [11] httr2_1.2.1                            
- [12] lifecycle_1.0.4                        
- [13] rstatix_0.7.2                          
- [14] rprojroot_2.1.1                        
- [15] processx_3.8.6                         
- [16] lattice_0.22-7                         
- [17] backports_1.5.0                        
- [18] magrittr_2.0.3                         
- [19] Hmisc_5.2-3                            
- [20] sass_0.4.10                            
- [21] rmarkdown_2.29                         
- [22] jquerylib_0.1.4                        
- [23] yaml_2.3.10                            
- [24] plotrix_3.8-4                          
- [25] httpuv_1.6.16                          
- [26] ggtangle_0.0.7                         
- [27] cowplot_1.2.0                          
- [28] DBI_1.2.3                              
- [29] RColorBrewer_1.1-3                     
- [30] abind_1.4-8                            
- [31] zlibbioc_1.52.0                        
- [32] R.utils_2.13.0                         
- [33] RCurl_1.98-1.17                        
- [34] yulab.utils_0.2.1                      
- [35] nnet_7.3-20                            
- [36] rappdirs_0.3.3                         
- [37] git2r_0.36.2                           
- [38] GenomeInfoDbData_1.2.13                
- [39] enrichplot_1.26.6                      
- [40] tidytree_0.4.6                         
- [41] codetools_0.2-20                       
- [42] DelayedArray_0.32.0                    
- [43] xml2_1.4.0                             
- [44] DOSE_4.0.1                             
- [45] tidyselect_1.2.1                       
- [46] aplot_0.2.8                            
- [47] UCSC.utils_1.2.0                       
- [48] farver_2.1.2                           
- [49] BiocFileCache_2.14.0                   
- [50] matrixStats_1.5.0                      
- [51] base64enc_0.1-3                        
- [52] GenomicAlignments_1.42.0               
- [53] jsonlite_2.0.0                         
- [54] Formula_1.2-5                          
- [55] progress_1.2.3                         
- [56] tools_4.4.2                            
- [57] treeio_1.30.0                          
- [58] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
- [59] Rcpp_1.1.0                             
- [60] glue_1.8.0                             
- [61] gridExtra_2.3                          
- [62] SparseArray_1.6.2                      
- [63] xfun_0.52                              
- [64] qvalue_2.38.0                          
- [65] MatrixGenerics_1.18.1                  
- [66] withr_3.0.2                            
- [67] fastmap_1.2.0                          
- [68] boot_1.3-32                            
- [69] callr_3.7.6                            
- [70] caTools_1.18.3                         
- [71] digest_0.6.37                          
- [72] timechange_0.3.0                       
- [73] R6_2.6.1                               
- [74] gridGraphics_0.5-1                     
- [75] seqPattern_1.38.0                      
- [76] colorspace_2.1-1                       
- [77] GO.db_3.20.0                           
- [78] gtools_3.9.5                           
- [79] dichromat_2.0-0.1                      
- [80] RSQLite_2.4.3                          
- [81] R.methodsS3_1.8.2                      
- [82] generics_0.1.4                         
- [83] prettyunits_1.2.0                      
- [84] httr_1.4.7                             
- [85] htmlwidgets_1.6.4                      
- [86] S4Arrays_1.6.0                         
- [87] whisker_0.4.1                          
- [88] pkgconfig_2.0.3                        
- [89] gtable_0.3.6                           
- [90] blob_1.2.4                             
- [91] impute_1.80.0                          
- [92] XVector_0.46.0                         
- [93] htmltools_0.5.8.1                      
- [94] carData_3.0-5                          
- [95] pwr_1.3-0                              
- [96] fgsea_1.32.4                           
- [97] scales_1.4.0                           
- [98] Biobase_2.66.0                         
- [99] png_0.1-8                              
-[100] ggfun_0.2.0                            
-[101] knitr_1.50                             
-[102] rstudioapi_0.17.1                      
-[103] tzdb_0.5.0                             
-[104] reshape2_1.4.4                         
-[105] rjson_0.2.23                           
-[106] checkmate_2.3.3                        
-[107] nlme_3.1-168                           
-[108] curl_7.0.0                             
-[109] zoo_1.8-14                             
-[110] cachem_1.1.0                           
-[111] KernSmooth_2.23-26                     
-[112] parallel_4.4.2                         
-[113] foreign_0.8-90                         
-[114] AnnotationDbi_1.68.0                   
-[115] restfulr_0.0.16                        
-[116] pillar_1.11.0                          
-[117] vctrs_0.6.5                            
-[118] gplots_3.2.0                           
-[119] ggpubr_0.6.1                           
-[120] promises_1.3.3                         
-[121] car_3.1-3                              
-[122] dbplyr_2.5.0                           
-[123] cluster_2.1.8.1                        
-[124] htmlTable_2.4.3                        
-[125] evaluate_1.0.5                         
-[126] GenomicFeatures_1.58.0                 
-[127] cli_3.6.5                              
-[128] compiler_4.4.2                         
-[129] Rsamtools_2.22.0                       
-[130] rlang_1.1.6                            
-[131] crayon_1.5.3                           
-[132] ggsignif_0.6.4                         
-[133] labeling_0.4.3                         
-[134] ps_1.9.1                               
-[135] getPass_0.2-4                          
-[136] plyr_1.8.9                             
-[137] fs_1.6.6                               
-[138] stringi_1.8.7                          
-[139] gridBase_0.4-7                         
-[140] BiocParallel_1.40.2                    
-[141] Biostrings_2.74.1                      
-[142] lazyeval_0.2.2                         
-[143] GOSemSim_2.32.0                        
-[144] Matrix_1.7-3                           
-[145] BSgenome_1.74.0                        
-[146] hms_1.1.3                              
-[147] patchwork_1.3.2                        
-[148] bit64_4.6.0-1                          
-[149] KEGGREST_1.46.0                        
-[150] SummarizedExperiment_1.36.0            
-[151] broom_1.0.9                            
-[152] igraph_2.1.4                           
-[153] memoise_2.0.1                          
-[154] bslib_0.9.0                            
-[155] ggtree_3.14.0                          
-[156] fastmatch_1.1-6                        
-[157] bit_4.6.0                              
-[158] ape_5.8-1                              </code></pre>
+  [1] fs_2.0.1                               
+  [2] matrixStats_1.5.0                      
+  [3] bitops_1.0-9                           
+  [4] enrichplot_1.26.6                      
+  [5] DirichletMultinomial_1.48.0            
+  [6] httr_1.4.8                             
+  [7] RColorBrewer_1.1-3                     
+  [8] tools_4.4.2                            
+  [9] backports_1.5.0                        
+ [10] R6_2.6.1                               
+ [11] lazyeval_0.2.2                         
+ [12] withr_3.0.2                            
+ [13] prettyunits_1.2.0                      
+ [14] gridExtra_2.3                          
+ [15] textshaping_1.0.5                      
+ [16] cli_3.6.5                              
+ [17] labeling_0.4.3                         
+ [18] sass_0.4.10                            
+ [19] S7_0.2.1                               
+ [20] systemfonts_1.3.2                      
+ [21] Rsamtools_2.22.0                       
+ [22] yulab.utils_0.2.4                      
+ [23] foreign_0.8-91                         
+ [24] svglite_2.2.2                          
+ [25] DOSE_4.0.1                             
+ [26] R.utils_2.13.0                         
+ [27] dichromat_2.0-0.1                      
+ [28] plotrix_3.8-14                         
+ [29] BSgenome_1.74.0                        
+ [30] pwr_1.3-0                              
+ [31] rstudioapi_0.18.0                      
+ [32] impute_1.80.0                          
+ [33] RSQLite_2.4.6                          
+ [34] generics_0.1.4                         
+ [35] gridGraphics_0.5-1                     
+ [36] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+ [37] BiocIO_1.16.0                          
+ [38] gtools_3.9.5                           
+ [39] car_3.1-5                              
+ [40] GO.db_3.20.0                           
+ [41] Matrix_1.7-5                           
+ [42] abind_1.4-8                            
+ [43] R.methodsS3_1.8.2                      
+ [44] lifecycle_1.0.5                        
+ [45] whisker_0.4.1                          
+ [46] yaml_2.3.12                            
+ [47] carData_3.0-6                          
+ [48] SummarizedExperiment_1.36.0            
+ [49] gplots_3.3.0                           
+ [50] qvalue_2.38.0                          
+ [51] SparseArray_1.6.2                      
+ [52] blob_1.3.0                             
+ [53] promises_1.5.0                         
+ [54] crayon_1.5.3                           
+ [55] pwalign_1.2.0                          
+ [56] ggtangle_0.1.1                         
+ [57] lattice_0.22-9                         
+ [58] cowplot_1.2.0                          
+ [59] annotate_1.84.0                        
+ [60] KEGGREST_1.46.0                        
+ [61] pillar_1.11.1                          
+ [62] knitr_1.51                             
+ [63] fgsea_1.32.4                           
+ [64] rjson_0.2.23                           
+ [65] boot_1.3-32                            
+ [66] codetools_0.2-20                       
+ [67] fastmatch_1.1-8                        
+ [68] glue_1.8.0                             
+ [69] getPass_0.2-4                          
+ [70] ggfun_0.2.0                            
+ [71] vctrs_0.7.2                            
+ [72] png_0.1-9                              
+ [73] treeio_1.30.0                          
+ [74] cellranger_1.1.0                       
+ [75] poweRlaw_1.0.0                         
+ [76] gtable_0.3.6                           
+ [77] cachem_1.1.0                           
+ [78] xfun_0.57                              
+ [79] S4Arrays_1.6.0                         
+ [80] nlme_3.1-169                           
+ [81] ggtree_3.14.0                          
+ [82] bit64_4.6.0-1                          
+ [83] progress_1.2.3                         
+ [84] filelock_1.0.3                         
+ [85] rprojroot_2.1.1                        
+ [86] bslib_0.10.0                           
+ [87] KernSmooth_2.23-26                     
+ [88] otel_0.2.0                             
+ [89] rpart_4.1.27                           
+ [90] colorspace_2.1-2                       
+ [91] seqLogo_1.72.0                         
+ [92] DBI_1.3.0                              
+ [93] Hmisc_5.2-5                            
+ [94] seqPattern_1.38.0                      
+ [95] nnet_7.3-20                            
+ [96] tidyselect_1.2.1                       
+ [97] processx_3.8.7                         
+ [98] bit_4.6.0                              
+ [99] compiler_4.4.2                         
+[100] curl_7.0.0                             
+[101] git2r_0.36.2                           
+[102] httr2_1.2.2                            
+[103] htmlTable_2.4.3                        
+[104] xml2_1.5.2                             
+[105] DelayedArray_0.32.0                    
+[106] checkmate_2.3.4                        
+[107] scales_1.4.0                           
+[108] caTools_1.18.3                         
+[109] callr_3.7.6                            
+[110] rappdirs_0.3.4                         
+[111] digest_0.6.39                          
+[112] rmarkdown_2.31                         
+[113] XVector_0.46.0                         
+[114] htmltools_0.5.9                        
+[115] pkgconfig_2.0.3                        
+[116] base64enc_0.1-6                        
+[117] MatrixGenerics_1.18.1                  
+[118] fastmap_1.2.0                          
+[119] rlang_1.1.7                            
+[120] htmlwidgets_1.6.4                      
+[121] UCSC.utils_1.2.0                       
+[122] farver_2.1.2                           
+[123] jquerylib_0.1.4                        
+[124] zoo_1.8-15                             
+[125] jsonlite_2.0.0                         
+[126] BiocParallel_1.40.2                    
+[127] GOSemSim_2.32.0                        
+[128] R.oo_1.27.1                            
+[129] RCurl_1.98-1.18                        
+[130] magrittr_2.0.4                         
+[131] Formula_1.2-5                          
+[132] GenomeInfoDbData_1.2.13                
+[133] ggplotify_0.1.3                        
+[134] patchwork_1.3.2                        
+[135] Rcpp_1.1.1                             
+[136] ape_5.8-1                              
+[137] stringi_1.8.7                          
+[138] MASS_7.3-65                            
+[139] zlibbioc_1.52.0                        
+[140] plyr_1.8.9                             
+[141] parallel_4.4.2                         
+[142] CNEr_1.42.0                            
+[143] Biostrings_2.74.1                      
+[144] splines_4.4.2                          
+[145] hms_1.1.4                              
+[146] igraph_2.2.2                           
+[147] ggpubr_0.6.3                           
+[148] ggsignif_0.6.4                         
+[149] reshape2_1.4.5                         
+[150] TFMPvalue_0.0.9                        
+[151] XML_3.99-0.23                          
+[152] evaluate_1.0.5                         
+[153] tzdb_0.5.0                             
+[154] httpuv_1.6.17                          
+[155] gridBase_0.4-7                         
+[156] xtable_1.8-8                           
+[157] broom_1.0.12                           
+[158] restfulr_0.0.16                        
+[159] tidytree_0.4.7                         
+[160] rstatix_0.7.3                          
+[161] later_1.4.8                            
+[162] viridisLite_0.4.3                      
+[163] aplot_0.2.9                            
+[164] memoise_2.0.1                          
+[165] GenomicAlignments_1.42.0               
+[166] cluster_2.1.8.2                        
+[167] timechange_0.4.0                       </code></pre>
+</div>
 </div>
 </div>
 </div>
