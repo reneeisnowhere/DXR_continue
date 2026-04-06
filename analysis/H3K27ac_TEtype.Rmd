@@ -114,7 +114,10 @@ res %>% dplyr::filter(gene %in%
       geom_histogram(bins = 50)+
     ggtitle("density of MER61E TEs distance to expressed gene, bins=50")
 ```
-### RNA expression of MER61E nearby genes
+
+
+### RNA expression of MER61E nearby genes  
+
 
 ```{r}
 MER61E_lcpm_genes <- RNA_filcpm_final_matrix %>% 
@@ -143,6 +146,10 @@ plot <- ggplot(df, aes(x=time, y=log2cpm,group=group))+
 print(plot)
 }
 ```
+
+
+
+### Looking as LFC  
 
 
 ```{r}
@@ -266,6 +273,10 @@ summary(H3K27ac_rowmean)
 summary(H3K9me3_rowmean)
 ```
 
+
+### Identifying switch rows (not needed now)  
+
+
 ```{r identify switch rows }
 MER61E_switch_genes <- res %>% 
   dplyr::filter(ltr %in% row_names_MER61E) %>% 
@@ -313,6 +324,9 @@ RNA_full_toptable %>%
 
 
 ```
+
+
+### Proportion tables   
 
 
 
@@ -399,6 +413,8 @@ plot <- ggplot(prop_table, aes(x = clus_names, y = n, fill = clus_names)) +
 
 
 ```
+
+### KZFP hits  
 
 
 ```{r KZFP hits}
@@ -509,6 +525,9 @@ file_part <- str_extract(basename(matrix_file), "(?<=matcenter_).*?(?=_ERV1_LTR)
   
 
 ```
+### MER61 subfamily intro  
+
+
 here i am trying to construct a full matrices of all MER subfamilies. This involves concatenating several files
 ```{r MER61subfamily}
 MERall_IDs_clusters <- H3K27ac_summit_ols %>% 
@@ -545,6 +564,9 @@ signal_list_MER61all <- lapply(seq_along(sample_names), function(i){
 })
 names(signal_list_MER61all) <- sample_names
 ```
+
+### Heatmap of MER61 subfamily signal  
+
 
 ```{r mappingall MER61, fig.height=10}
 
