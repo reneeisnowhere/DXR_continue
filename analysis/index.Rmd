@@ -107,3 +107,5 @@ Looking at finalized assigned cluster sets and characteristics
 [Plotting of types of TEs, specifically LTRs](https://reneeisnowhere.github.io/DXR_continue/computeMatrixplots.html)
 
 [Plotting subfamily MER61*](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_TEtype.html)
+
+[Looking at p53 halfsites](https://reneeisnowhere.github.io/DXR_continue/memesuite_TE_enrichment.html)
