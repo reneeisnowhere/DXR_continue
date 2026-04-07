@@ -691,8 +691,9 @@ plot_p53_motifs_all <- function(fimo_root_dir, te_bed_base_dir) {
       # Store results
       # ------------------------------
       results_list[[paste0(base_name, "_", mn)]] <- data.frame(
-        TE_name = base_name,
+       
         motif_name = mn,
+        TE_name = base_name,
         total_TEs = n_te_total,
         TEs_with_TP53 = n_te_with_hits,
         total_TP53_hits = n_total_hits,
