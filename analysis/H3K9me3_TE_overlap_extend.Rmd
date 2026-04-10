@@ -372,7 +372,7 @@ cluster_pairs_3 <- list(
 
 H3K9me3_counts_summit_long <- map2_dfr(
   H3K9me3_counts_summit,      # the named list of wide tables
-  names(H3K9me3_counts_ext200), # names of TE columns (same names of TE columns)
+  names(H3K9me3_counts_summit), # names of TE columns (same names of TE columns)
   ~ .x %>%
     pivot_longer(
       cols = -cluster,       # everything except 'cluster'
@@ -408,7 +408,7 @@ H3K9me3_summit_results%>%
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "TE class enrichment at ROIs\nH3K9me3 ext_summits"
+    title = "TE class enrichment at ROIs\nH3K9me3 summits"
   ) +
   theme_classic() +
   facet_wrap(~comparison)
