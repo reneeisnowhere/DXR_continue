@@ -40,15 +40,19 @@ library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(ComplexHeatmap)
 library(circlize)
 library(readxl)
+library(kableExtra)
 ```
 
 ```{r data loading}
 
 annotated_H3K27ac_summits <- readRDS("data/TE_annotation/H3K27ac_annotated_summit_TE_overlaps.RDS")
 
-annotated_H3K27ac_summits
 
 H3K27ac_summit_ols <- readRDS("data/RDS_files/H3K27ac_summit_ROI_TE_overlaps.RDS")
+
+MER61E_ids <- H3K27ac_summit_ols %>% 
+  dplyr::filter(repName =="MER61E") %>% 
+  dplyr::filter(cluster=="Set_3")
 
 MER61E_peakid <- H3K27ac_summit_ols %>% 
   dplyr::filter(repName=="MER61E") %>% 
@@ -91,6 +95,10 @@ MER61E_genes <- res %>% distinct(gene)
 
 RNA_expressed_genes <- RNA_full_toptable %>% distinct(Entrez_ID)
 
+summit_overlap_MER61E_genes <- res %>% 
+  dplyr::filter(ltr %in% MER61E_ids$ID) %>% 
+  distinct(gene)
+
 ```
 
 
@@ -98,17 +106,45 @@ RNA_expressed_genes <- RNA_full_toptable %>% distinct(Entrez_ID)
 
 
 RNA_full_toptable %>% 
-  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"), labels = c("tx + 0","tx + 24h","tx + 144h"))) %>% 
   dplyr::filter(Entrez_ID %in% MER61E_genes$gene) %>% 
   ggplot(., aes(x=timepoint, y=logFC))+
   geom_boxplot()+
-  ggtitle("LFC at timepoints of genes nearest to a MER61E TE")
+  ggtitle("LFC at timepoints of genes nearest to all MER61E TE")+
+  theme_bw()
   
+
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"), labels = c("tx + 0","tx + 24h","tx + 144h"))) %>% 
+  # dplyr::filter(Entrez_ID %in% MER61E_genes$gene) %>% 
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  ggtitle("LFC at timepoints of all genes")+
+  theme_bw()
+
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"), labels = c("tx + 0","tx + 24h","tx + 144h"))) %>% 
+  dplyr::filter(Entrez_ID %in% summit_overlap_MER61E_genes$gene) %>%
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  ggtitle("LFC at timepoints of all genes that are near MER61E overlapping summits")+
+  theme_bw()+
+  ylim(-5,5)
+
   res %>% dplyr::filter(gene %in% RNA_expressed_genes$Entrez_ID) %>% 
     ggplot(., aes(x=distance))+
     geom_density()+
     ggtitle("density of MER61E TEs distance to expressed gene")
-res %>% dplyr::filter(gene %in%  
+
+
+  res %>% dplyr::filter(gene %in% RNA_expressed_genes$Entrez_ID) %>% 
+    ggplot(., aes(x=distance))+
+    geom_density()+
+    ggtitle("density of MER61E TEs distance to expressed gene")
+  
+  
+
+  res %>% dplyr::filter(gene %in%  
   RNA_expressed_genes$Entrez_ID) %>% 
     ggplot(., aes(x=distance))+
       geom_histogram(bins = 50)+
@@ -126,6 +162,8 @@ MER61E_lcpm_genes <- RNA_filcpm_final_matrix %>%
   separate_wider_delim(cols = sample, names = c("trt","time","ind"), delim = "_") %>% 
   mutate(group=paste0(trt,"_",time),
   time=factor(time,levels=c("24T","24R","144R"))) 
+
+
 
 
 for (aim in MER61E_genes$gene){
@@ -416,6 +454,29 @@ plot <- ggplot(prop_table, aes(x = clus_names, y = n, fill = clus_names)) +
 
 ### KZFP hits  
 
+```{r}
+KZFP_hits_all <- KZFP_targets %>% 
+  dplyr::filter(`Target Subfamily` %in% c("HERV1_I-int","LTR10A","LTR10C", "MER61A","MER61B","MER61C","MER61D","MER61E","MER61F","MER61-int")) %>% 
+  distinct(KZFP)
+
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
+  dplyr::filter(SYMBOL %in% KZFP_hits_all$KZFP) %>% 
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  geom_point(aes(color=SYMBOL))+
+  ggtitle("LFC of KZFPs that target specific ERV1 subfamilies")+
+  theme_bw()+
+  ylim(-2,2)
+
+ test_table <- KZFP_targets %>% 
+  dplyr::filter(`Target Subfamily` %in% c("HERV1_I-int","LTR10A","LTR10C", "MER61A","MER61B","MER61C","MER61D","MER61E","MER61F","MER61-int"))  %>% 
+   dplyr::select(KZFP, `Target Subfamily`)
+ kable(test_table,
+       caption = "ZNFs that target specific ERV1:LTRs") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  column_spec(1, bold = TRUE) 
+```
 
 ```{r KZFP hits}
 
@@ -628,5 +689,29 @@ ht_H3K9me3_MERall <- make_heatmap_MER61fam(H3K9me3_samples)
 draw(ht_H3K27ac_MERall, heatmap_legend_side = "right", column_title = paste0("H3K27ac all MER61"))
   draw(ht_H3K9me3_MERall, heatmap_legend_side = "right", column_title = paste0("H3K9me3 all MER61"))
   
+```
+```{r}
+
+
+
+MER61E_lcpm_genes_one <- RNA_filcpm_final_matrix %>% 
+  dplyr::filter(Entrezid %in% c("374383")) %>% 
+  pivot_longer(cols=!Entrezid, names_to = "sample",values_to = "log2cpm") %>% 
+  separate_wider_delim(cols = sample, names = c("trt","time","ind"), delim = "_") %>% 
+  mutate(group=paste0(trt,"_",time),
+  time=factor(time,levels=c("24T","24R","144R"))) 
+
+
+# MER61E_lcpm_genes %>% 
+   
+  symbol <- Symbol_lookup %>% 
+    dplyr::filter(Entrez_ID=="374383") %>% 
+    dplyr::pull(SYMBOL)
+  
+ggplot(MER61E_lcpm_genes_one, aes(x=time, y=log2cpm,group=group))+
+  geom_boxplot(aes(fill=trt)) +
+  ggtitle(paste0("gene 374383 ",symbol))+
+  theme_bw()
+
 ```
 
