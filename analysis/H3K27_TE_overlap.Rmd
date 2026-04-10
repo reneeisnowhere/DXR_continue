@@ -1503,6 +1503,42 @@ for (group_name in set_list) {
 
 ```
 
+```{r making bed file subsets of LTRERV1, eval=FALSE}
+out_dir <- "data/Bed_exports/repeatmasker_sets/ERV1"
+
+
+split_LTR_gr <- split(LTR_gr, mcols(LTR_gr)$repFamily)
+set_list <- unique(split_LTR_gr$ERV1$repName)
+split_LTR_ERV1_gr <- split_LTR_gr$ERV1
+split_ERV1_gr <- split(split_LTR_ERV1_gr, mcols(split_LTR_ERV1_gr)$repName)
+
+
+for (group_name in set_list) {
+  
+ gr <- split_ERV1_gr[[group_name]]
+ 
+  
+  # Set BED name column
+  mcols(gr)$name <- mcols(gr)$RM_id
+  
+  # Optional: if you want a score column
+  if(!"score" %in% colnames(mcols(gr))) {
+    mcols(gr)$score <- 0
+  }
+  
+  # Export to BED
+ bed_file <- file.path(out_dir, paste0(group_name, "_ERV1_LTR.bed"))
+  
+  # Export
+  export(gr, bed_file, format = "BED")
+  
+  cat("Exported:", bed_file, "\n")
+}
+
+
+```
+
+
 
 ```{r making named bedfiles, eval=FALSE}
 peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")

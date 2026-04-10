@@ -38,12 +38,13 @@ library(DT)
 
 First steps: breakdown repeatmasker into groups and pull out the ones by each class I am interested in.  
 ```{r repeatmasker loading}
-
 repeatmasker <- read_delim("data/Other_paper_data/repeatmasker_20250911.txt", 
     delim = "\t", escape_double = FALSE, 
     trim_ws = TRUE)
 colnames(repeatmasker)
+##this is to remove sex chromosomes and non-canonical chromatin assignments
 autosomes <- paste0("chr", 1:22)
+
 repeatmasker_clean <- repeatmasker %>% mutate(
     strand = ifelse(strand == "C", "-", "+")
   ) %>% 
@@ -51,7 +52,9 @@ repeatmasker_clean <- repeatmasker %>% mutate(
     start = genoStart + 1,
     end   = genoEnd)%>% 
   mutate(repFamily= str_remove(repFamily, "\\?$")) %>% 
-  dplyr::filter(genoName %in% autosomes)
+  dplyr::filter(genoName %in% autosomes) %>% 
+  mutate(RM_id=paste0(genoName,":",start,"-",end,":",id))
+
 
 rpt_split <- split(repeatmasker_clean, repeatmasker_clean$repClass)
 
@@ -65,24 +68,60 @@ rpt_split_gr_list <- lapply(rpt_split, function(df) {
     repFamily = df$repFamily,
     swScore   = df$swScore,
     milliDiv  = df$milliDiv,
-    id        = df$id
+    milliDel  = df$milliDel,
+    milliIns  = df$milliIns,
+    RM_id        = df$RM_id
   )
 })
-
-
-
+### full repeatmasker cleaned up granges frame
+rmskr_std_gr <- GRanges(
+  seqnames = repeatmasker_clean$genoName,
+  ranges   = IRanges(
+    start = repeatmasker_clean$start,
+    end   = repeatmasker_clean$end
+  ),
+  strand   = repeatmasker_clean$strand,
+  repName   = repeatmasker_clean$repName,
+  repClass  = repeatmasker_clean$repClass,
+  repFamily = repeatmasker_clean$repFamily,
+  swScore   = repeatmasker_clean$swScore,
+  milliDiv  = repeatmasker_clean$milliDiv,
+  milliDel  = repeatmasker_clean$milliDel,
+  milliIns  = repeatmasker_clean$milliIns,
+  id        = repeatmasker_clean$RM_id
+)
 ```
 
 ```{r subset rpt_split_gr_list}
 SINE_gr <- rpt_split_gr_list$SINE
+SINE_df <- SINE_gr %>% 
+  as.data.frame()
+
+SINE_split_df <- split(SINE_df, SINE_df$repFamily)
 
 LINE_gr <- rpt_split_gr_list$LINE
+LINE_df <- LINE_gr %>% 
+  as.data.frame()
+
+LINE_split_df <- split(LINE_df, LINE_df$repFamily)
 
 LTR_gr <- rpt_split_gr_list$LTR
+LTR_df <- LTR_gr %>% 
+  as.data.frame()
+
+LTR_split_df <- split(LTR_df, LTR_df$repFamily)
 
 SVA_gr <- rpt_split_gr_list$Retroposon
+SVA_df <- SVA_gr %>% 
+  as.data.frame()
+
+SVA_split_df <- split(SVA_df, SVA_df$repFamily)
 
 DNA_gr <- rpt_split_gr_list$DNA
+DNA_df <- DNA_gr %>% 
+  as.data.frame()
+
+DNA_split_df <- split(DNA_df, DNA_df$repFamily)
 ```
 
 ```{r loading H3K27ac data}
@@ -104,6 +143,80 @@ H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
 )
 
  H3K27ac_summit_gr_ext <- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
+```
+
+```{r toplist data}
+
+H3K27ac_toplist <- readRDS( "data/DER_data/H3K27ac_toplist.RDS")
+
+H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
+
+
+cluster_colors <- c("Set_1" = "#d93e40","Set_2" = "#1c9f50","Set_3" = "#3570b3","NA"  ="grey70")
+
+```
+
+```{r}
+test_pair_TE_repName <- function(df_long, rep_name, cluster1, cluster2) {
+  
+  # Subset for the specific repName
+  sub_df <- df_long %>%
+    filter(repName == rep_name) %>%
+    complete(
+      cluster = c(cluster1, cluster2),
+      status  = c("TE", "not_TE"),
+      fill = list(count = 0)
+    )
+  
+  # fixed order of statuses
+  status_levels <- c("TE", "not_TE")
+  
+  # make sure both statuses exist
+  statuses <- unique(sub_df$status)
+  if(length(statuses) != 2) {
+    sub_df <- sub_df %>%
+      complete(cluster, status, fill = list(count = 0))
+    statuses <- unique(sub_df$status)
+  }
+  
+  # counts for cluster1
+  c1_counts <- sub_df %>%
+    filter(cluster == cluster1) %>%
+    arrange(factor(status, levels = status_levels)) %>%
+    pull(count)
+  
+  # counts for cluster2
+  c2_counts <- sub_df %>%
+    filter(cluster == cluster2) %>%
+    arrange(factor(status, levels = status_levels)) %>%
+    pull(count)
+  
+  # 2x2 matrix for Fisher test
+  mat <- matrix(
+    c(c2_counts, c1_counts),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      cluster = c(cluster2, cluster1),
+      category = status_levels
+    )
+  )
+  
+  ft <- tryCatch(
+    fisher.test(mat, workspace = 2e8),
+    error = function(e) fisher.test(mat, simulate.p.value = TRUE, B = 1e5)
+  )
+  
+  tibble(
+    repName     = rep_name,
+    comparison  = paste(cluster2, "vs", cluster1),
+    odds_ratio  = ft$estimate,
+    lower_CI    = ft$conf.int[1],
+    upper_CI    = ft$conf.int[2],
+    p_value     = ft$p.value
+  )
+}
+
 ```
 
 ```{r Fisher test information}
