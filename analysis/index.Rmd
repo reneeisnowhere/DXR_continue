@@ -37,10 +37,10 @@ Also contains principal component contributions to variance in PCA for all histo
 [Examining Cormotif results](https://reneeisnowhere.github.io/DXR_continue/Motif_cluster_analysis.html)  
 Looking at finalized assigned cluster sets and characteristics
 
-[Starting with repeatmasker overlaps](https://reneeisnowhere.github.io/DXR_continue/repeatmasker_data.html)
 
 
-### Examining summit and ROI relationship  
+
+### Analyzing ROIs and summits  
 
 [Collecting all summits](https://reneeisnowhere.github.io/DXR_continue/summit_files_processing.html)
 
@@ -52,29 +52,35 @@ Looking at finalized assigned cluster sets and characteristics
 
 [Investigating summits H3K27me3](https://reneeisnowhere.github.io/DXR_continue/H3K27me3_summit_processing.html) Uses double reduction method to cluster summits across treatment-time, then across all summits.
 
+### Investigating Transposable Elements
+
+[Starting with repeatmasker overlaps](https://reneeisnowhere.github.io/DXR_continue/repeatmasker_data.html)  
+Contains Overlapping TE elements and full ROI, including information about TE overlapping by at least 1 bp, and then by at least 50% of TE in ROI.
 
 [TE overlaps of ROI summits-H3K27ac](https://reneeisnowhere.github.io/DXR_continue/H3K27_TE_overlap.html)
+
+[Looking at TE families centered on TEs across histones](https://reneeisnowhere.github.io/DXR_continue/dual_histone_TE_investigation.html)  
+
+[Looking at TE families centered on H3K27ac ROIs histones](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_TE_investigation.html) 
 
 [TE overlaps of ROI summits-H3K27ac extended regions](https://reneeisnowhere.github.io/DXR_continue/H3K27_TE_overlap_extend.html)
 
 [TE overlaps of ROI summits-H3K27ac using alternate calls of summits](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_summit_topqonly.html)
 
-[TE overlaps of ROI summits-H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TE_overlap.html)  
+[TE overlaps of ROI summits-H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TE_overlap.html) 
+
+[TE overlaps of ROI summits-H3K9me3 extended regions](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TE_overlap_extend.html)
+
 
 [TE overlaps of ROI summits-H3K36me3](https://reneeisnowhere.github.io/DXR_continue/H3K36me3_TE_overlap.html)  
 
 
 [TE overlaps of ROI summits-H3K27me3](https://reneeisnowhere.github.io/DXR_continue/H3K27me3_TE_overlap.html)  
 
-###  TEs and ROIs
-
-[Looking at TE families centered on TEs across histones](https://reneeisnowhere.github.io/DXR_continue/dual_histone_TE_investigation.html)  
-
-[Looking at TE families centered on H3K27ac ROIs histones](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_TE_investigation.html) 
 
 [Looking at TE families centered on H3K9me3 ROIs histones](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_TE_investigation.html) 
 
-### Summit and transcription factor motif enrichment data
+### Transcription factor motif enrichment data
 
 [H3K27ac TF motif enrichment](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_TF_motifs.html)
 
