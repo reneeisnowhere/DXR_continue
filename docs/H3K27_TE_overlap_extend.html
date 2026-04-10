@@ -11,11 +11,11 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-01-26" />
+<meta name="date" content="2026-04-10" />
 
 <title>H3K27ac Extended summits and TE overlap</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -37,10 +37,10 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<link href="site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet" />
 <script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
 <link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<script src="site_libs/datatables-binding-0.34.0/datatables.js"></script>
 <link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
@@ -375,7 +375,7 @@ div.tocify {
 <h1 class="title toc-ignore">H3K27ac Extended summits and TE
 overlap</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-01-26</h4>
+<h4 class="date">2026-04-10</h4>
 
 </div>
 
@@ -404,7 +404,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-01-26
+<strong>Last updated:</strong> 2026-04-10
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -422,7 +422,7 @@ title="This is the local directory in which the code in this file was executed."
 This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
 analysis was created with <a
   href="https://github.com/workflowr/workflowr">workflowr</a> (version
-1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
 that were applied when the results were created. The <em>Past
 versions</em> tab lists the development history.
 </p>
@@ -535,15 +535,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreea44db38c6403ac414feb308dc99bf6b31d347fdatargetblanka44db38a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree570ce7af13e42316ee7a0841861e0b9b4eae32aftargetblank570ce7aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/a44db38c6403ac414feb308dc99bf6b31d347fda" target="_blank">a44db38</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/570ce7af13e42316ee7a0841861e0b9b4eae32af" target="_blank">570ce7a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreea44db38c6403ac414feb308dc99bf6b31d347fdatargetblanka44db38a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree570ce7af13e42316ee7a0841861e0b9b4eae32aftargetblank570ce7aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -553,7 +553,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/a44db38c6403ac414feb308dc99bf6b31d347fda" target="_blank">a44db38</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/570ce7af13e42316ee7a0841861e0b9b4eae32af" target="_blank">570ce7a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -570,6 +570,7 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
@@ -586,21 +587,36 @@ Ignored files:
 Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
     Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  MER61C_ERV1_LTR.fa
     Untracked:  analysis/GREAT_H3K27ac.Rmd
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
-    Untracked:  analysis/H3K27ac_cisRE.Rmd
+    Untracked:  analysis/H3K27ac_TE_investigation_200bp.Rmd
+    Untracked:  analysis/H3K27me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K36me3_TE_investigation.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/Bed_file_summary.R
+    Untracked:  code/FASTA_conversion.R
+    Untracked:  code/For_john.R
+    Untracked:  code/KZFP_genes_bedifle_creation.R
+    Untracked:  code/Liftover_code.R
     Untracked:  other_analysis/
 
 Unstaged changes:
+    Modified:   analysis/H3K27_TE_overlap.Rmd
     Modified:   analysis/H3K27ac_RNA_integration.Rmd
-    Modified:   analysis/H3K27ac_TF_motifs.Rmd
+    Modified:   analysis/H3K27ac_TEtype.Rmd
+    Modified:   analysis/H3K27ac_cisRE.Rmd
+    Modified:   analysis/H3K27ac_summit_processing.Rmd
+    Modified:   analysis/H3K27me3_summit_processing.Rmd
+    Modified:   analysis/H3K36me3_summit_processing.Rmd
+    Modified:   analysis/H3K9me3_TE_investigation.Rmd
     Modified:   analysis/chromHMM.Rmd
-    Modified:   analysis/final_analysis.Rmd
-    Modified:   analysis/repeatmasker_data.Rmd
+    Modified:   analysis/dual_histone_TE_investigation.Rmd
+    Modified:   analysis/memesuite_TE_enrichment.Rmd
     Modified:   analysis/summit_files_processing.Rmd
+    Modified:   code/ZNF_genes_bedfile_creation.R
 
 </code></pre>
 <p>
@@ -646,6 +662,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/8f7ef0724d1552ad8a18d2253172dd4c57d4a81c/docs/H3K27_TE_overlap_extend.html" target="_blank">8f7ef07</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1021,7 +1054,7 @@ datatable(
   ) +
   theme_classic() +
   facet_wrap(~comparison)</code></pre>
-<p><img src="figure/H3K27_TE_overlap_extend.Rmd/Plot%20SINE-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/Plot%20SINE-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-SINE-1">
 Past versions of "Plot SINE-1.png"
@@ -1186,7 +1219,7 @@ datatable(
   ) +
   theme_classic()+
   facet_wrap(~comparison)</code></pre>
-<p><img src="figure/H3K27_TE_overlap_extend.Rmd/Plot%20LINE-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/Plot%20LINE-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-LINE-1">
 Past versions of "Plot LINE-1.png"
@@ -1351,7 +1384,7 @@ datatable(
   ) +
   theme_classic()+
   facet_wrap(~comparison)</code></pre>
-<p><img src="figure/H3K27_TE_overlap_extend.Rmd/Plot%20LTR-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/Plot%20LTR-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-LTR-1">
 Past versions of "Plot LTR-1.png"
@@ -1516,7 +1549,7 @@ datatable(
   ) +
   theme_classic()+
   facet_wrap(~comparison)</code></pre>
-<p><img src="figure/H3K27_TE_overlap_extend.Rmd/Plot%20SVA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/Plot%20SVA-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-SVA-1">
 Past versions of "Plot SVA-1.png"
@@ -1681,7 +1714,7 @@ datatable(
   ) +
   theme_classic()+
   facet_wrap(~comparison)</code></pre>
-<p><img src="figure/H3K27_TE_overlap_extend.Rmd/Plot%20DNA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/Plot%20DNA-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-DNA-1">
 Past versions of "Plot DNA-1.png"
@@ -1800,63 +1833,63 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] DT_0.33              ggrepel_0.9.6        rtracklayer_1.66.0  
+ [1] DT_0.34.0            ggrepel_0.9.8        rtracklayer_1.66.0  
  [4] genomation_1.38.0    plyranges_1.26.0     GenomicRanges_1.58.0
  [7] GenomeInfoDb_1.42.3  IRanges_2.40.1       S4Vectors_0.44.0    
-[10] BiocGenerics_0.52.0  lubridate_1.9.4      forcats_1.0.0       
-[13] stringr_1.5.1        dplyr_1.1.4          purrr_1.1.0         
-[16] readr_2.1.5          tidyr_1.3.1          tibble_3.3.0        
-[19] ggplot2_3.5.2        tidyverse_2.0.0      workflowr_1.7.1     
+[10] BiocGenerics_0.52.0  lubridate_1.9.5      forcats_1.0.1       
+[13] stringr_1.6.0        dplyr_1.2.0          purrr_1.2.1         
+[16] readr_2.2.0          tidyr_1.3.2          tibble_3.3.1        
+[19] ggplot2_4.0.2        tidyverse_2.0.0      workflowr_1.7.2     
 
 loaded via a namespace (and not attached):
- [1] bitops_1.0-9                rlang_1.1.6                
- [3] magrittr_2.0.3              git2r_0.36.2               
- [5] gridBase_0.4-7              matrixStats_1.5.0          
- [7] compiler_4.4.2              getPass_0.2-4              
- [9] callr_3.7.6                 vctrs_0.6.5                
-[11] reshape2_1.4.4              pkgconfig_2.0.3            
-[13] crayon_1.5.3                fastmap_1.2.0              
-[15] XVector_0.46.0              labeling_0.4.3             
-[17] utf8_1.2.6                  Rsamtools_2.22.0           
-[19] promises_1.3.3              rmarkdown_2.29             
-[21] tzdb_0.5.0                  UCSC.utils_1.2.0           
-[23] ps_1.9.1                    bit_4.6.0                  
-[25] xfun_0.52                   zlibbioc_1.52.0            
+ [1] bitops_1.0-9                rlang_1.1.7                
+ [3] magrittr_2.0.4              git2r_0.36.2               
+ [5] gridBase_0.4-7              otel_0.2.0                 
+ [7] matrixStats_1.5.0           compiler_4.4.2             
+ [9] getPass_0.2-4               callr_3.7.6                
+[11] vctrs_0.7.2                 reshape2_1.4.5             
+[13] pkgconfig_2.0.3             crayon_1.5.3               
+[15] fastmap_1.2.0               XVector_0.46.0             
+[17] labeling_0.4.3              utf8_1.2.6                 
+[19] Rsamtools_2.22.0            promises_1.5.0             
+[21] rmarkdown_2.31              tzdb_0.5.0                 
+[23] UCSC.utils_1.2.0            bit_4.6.0                  
+[25] xfun_0.57                   zlibbioc_1.52.0            
 [27] cachem_1.1.0                jsonlite_2.0.0             
-[29] later_1.4.2                 DelayedArray_0.32.0        
+[29] later_1.4.8                 DelayedArray_0.32.0        
 [31] BiocParallel_1.40.2         parallel_4.4.2             
-[33] R6_2.6.1                    bslib_0.9.0                
+[33] R6_2.6.1                    bslib_0.10.0               
 [35] stringi_1.8.7               RColorBrewer_1.1-3         
-[37] jquerylib_0.1.4             Rcpp_1.1.0                 
-[39] SummarizedExperiment_1.36.0 knitr_1.50                 
-[41] httpuv_1.6.16               Matrix_1.7-3               
-[43] timechange_0.3.0            tidyselect_1.2.1           
-[45] rstudioapi_0.17.1           dichromat_2.0-0.1          
-[47] abind_1.4-8                 yaml_2.3.10                
+[37] jquerylib_0.1.4             Rcpp_1.1.1                 
+[39] SummarizedExperiment_1.36.0 knitr_1.51                 
+[41] httpuv_1.6.17               Matrix_1.7-5               
+[43] timechange_0.4.0            tidyselect_1.2.1           
+[45] rstudioapi_0.18.0           dichromat_2.0-0.1          
+[47] abind_1.4-8                 yaml_2.3.12                
 [49] seqPattern_1.38.0           codetools_0.2-20           
-[51] curl_7.0.0                  processx_3.8.6             
-[53] lattice_0.22-7              plyr_1.8.9                 
+[51] curl_7.0.0                  processx_3.8.7             
+[53] lattice_0.22-9              plyr_1.8.9                 
 [55] Biobase_2.66.0              withr_3.0.2                
-[57] evaluate_1.0.5              Biostrings_2.74.1          
-[59] pillar_1.11.0               MatrixGenerics_1.18.1      
-[61] whisker_0.4.1               KernSmooth_2.23-26         
-[63] generics_0.1.4              vroom_1.6.5                
-[65] rprojroot_2.1.1             RCurl_1.98-1.17            
-[67] hms_1.1.3                   scales_1.4.0               
-[69] glue_1.8.0                  tools_4.4.2                
-[71] BiocIO_1.16.0               data.table_1.17.8          
-[73] BSgenome_1.74.0             GenomicAlignments_1.42.0   
-[75] fs_1.6.6                    XML_3.99-0.18              
-[77] impute_1.80.0               plotrix_3.8-4              
-[79] crosstalk_1.2.2             colorspace_2.1-1           
-[81] GenomeInfoDbData_1.2.13     restfulr_0.0.16            
-[83] cli_3.6.5                   S4Arrays_1.6.0             
-[85] gtable_0.3.6                sass_0.4.10                
-[87] digest_0.6.37               SparseArray_1.6.2          
-[89] htmlwidgets_1.6.4           rjson_0.2.23               
-[91] farver_2.1.2                htmltools_0.5.8.1          
-[93] lifecycle_1.0.4             httr_1.4.7                 
-[95] bit64_4.6.0-1              </code></pre>
+[57] S7_0.2.1                    evaluate_1.0.5             
+[59] Biostrings_2.74.1           pillar_1.11.1              
+[61] MatrixGenerics_1.18.1       whisker_0.4.1              
+[63] KernSmooth_2.23-26          generics_0.1.4             
+[65] vroom_1.7.1                 rprojroot_2.1.1            
+[67] RCurl_1.98-1.18             hms_1.1.4                  
+[69] scales_1.4.0                glue_1.8.0                 
+[71] tools_4.4.2                 BiocIO_1.16.0              
+[73] data.table_1.18.2.1         BSgenome_1.74.0            
+[75] GenomicAlignments_1.42.0    fs_2.0.1                   
+[77] XML_3.99-0.23               impute_1.80.0              
+[79] plotrix_3.8-14              crosstalk_1.2.2            
+[81] colorspace_2.1-2            GenomeInfoDbData_1.2.13    
+[83] restfulr_0.0.16             cli_3.6.5                  
+[85] S4Arrays_1.6.0              gtable_0.3.6               
+[87] sass_0.4.10                 digest_0.6.39              
+[89] SparseArray_1.6.2           htmlwidgets_1.6.4          
+[91] rjson_0.2.23                farver_2.1.2               
+[93] htmltools_0.5.9             lifecycle_1.0.5            
+[95] httr_1.4.8                  bit64_4.6.0-1              </code></pre>
 </div>
 </div>
 </div>
