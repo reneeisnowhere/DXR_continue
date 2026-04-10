@@ -535,15 +535,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree570ce7af13e42316ee7a0841861e0b9b4eae32aftargetblank570ce7aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeff93ad9b392e5fda9362e0a601154914f64a11a6targetblankff93ad9a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/570ce7af13e42316ee7a0841861e0b9b4eae32af" target="_blank">570ce7a</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/ff93ad9b392e5fda9362e0a601154914f64a11a6" target="_blank">ff93ad9</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree570ce7af13e42316ee7a0841861e0b9b4eae32aftargetblank570ce7aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeff93ad9b392e5fda9362e0a601154914f64a11a6targetblankff93ad9a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -553,7 +553,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/570ce7af13e42316ee7a0841861e0b9b4eae32af" target="_blank">570ce7a</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/ff93ad9b392e5fda9362e0a601154914f64a11a6" target="_blank">ff93ad9</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -570,7 +570,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
@@ -596,15 +595,12 @@ Untracked files:
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
-    Untracked:  code/Bed_file_summary.R
     Untracked:  code/FASTA_conversion.R
     Untracked:  code/For_john.R
-    Untracked:  code/KZFP_genes_bedifle_creation.R
     Untracked:  code/Liftover_code.R
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27_TE_overlap.Rmd
     Modified:   analysis/H3K27ac_RNA_integration.Rmd
     Modified:   analysis/H3K27ac_TEtype.Rmd
     Modified:   analysis/H3K27ac_cisRE.Rmd
@@ -616,7 +612,6 @@ Unstaged changes:
     Modified:   analysis/dual_histone_TE_investigation.Rmd
     Modified:   analysis/memesuite_TE_enrichment.Rmd
     Modified:   analysis/summit_files_processing.Rmd
-    Modified:   code/ZNF_genes_bedfile_creation.R
 
 </code></pre>
 <p>
@@ -662,6 +657,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ff93ad9b392e5fda9362e0a601154914f64a11a6/analysis/H3K27_TE_overlap_extend.Rmd" target="_blank">ff93ad9</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-10
+</td>
+<td>
+more things
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/97b142ec65a311a798c38bcac5a00ff91bca17b7/docs/H3K27_TE_overlap_extend.html" target="_blank">97b142e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -816,7 +845,9 @@ colnames(repeatmasker)</code></pre>
 <pre><code> [1] &quot;#bin&quot;      &quot;swScore&quot;   &quot;milliDiv&quot;  &quot;milliDel&quot;  &quot;milliIns&quot;  &quot;genoName&quot; 
  [7] &quot;genoStart&quot; &quot;genoEnd&quot;   &quot;genoLeft&quot;  &quot;strand&quot;    &quot;repName&quot;   &quot;repClass&quot; 
 [13] &quot;repFamily&quot; &quot;repStart&quot;  &quot;repEnd&quot;    &quot;repLeft&quot;   &quot;id&quot;       </code></pre>
-<pre class="r"><code>autosomes &lt;- paste0(&quot;chr&quot;, 1:22)
+<pre class="r"><code>##this is to remove sex chromosomes and non-canonical chromatin assignments
+autosomes &lt;- paste0(&quot;chr&quot;, 1:22)
+
 repeatmasker_clean &lt;- repeatmasker %&gt;% mutate(
     strand = ifelse(strand == &quot;C&quot;, &quot;-&quot;, &quot;+&quot;)
   ) %&gt;% 
@@ -824,7 +855,9 @@ repeatmasker_clean &lt;- repeatmasker %&gt;% mutate(
     start = genoStart + 1,
     end   = genoEnd)%&gt;% 
   mutate(repFamily= str_remove(repFamily, &quot;\\?$&quot;)) %&gt;% 
-  dplyr::filter(genoName %in% autosomes)
+  dplyr::filter(genoName %in% autosomes) %&gt;% 
+  mutate(RM_id=paste0(genoName,&quot;:&quot;,start,&quot;-&quot;,end,&quot;:&quot;,id))
+
 
 rpt_split &lt;- split(repeatmasker_clean, repeatmasker_clean$repClass)
 
@@ -838,18 +871,57 @@ rpt_split_gr_list &lt;- lapply(rpt_split, function(df) {
     repFamily = df$repFamily,
     swScore   = df$swScore,
     milliDiv  = df$milliDiv,
-    id        = df$id
+    milliDel  = df$milliDel,
+    milliIns  = df$milliIns,
+    RM_id        = df$RM_id
   )
-})</code></pre>
+})
+### full repeatmasker cleaned up granges frame
+rmskr_std_gr &lt;- GRanges(
+  seqnames = repeatmasker_clean$genoName,
+  ranges   = IRanges(
+    start = repeatmasker_clean$start,
+    end   = repeatmasker_clean$end
+  ),
+  strand   = repeatmasker_clean$strand,
+  repName   = repeatmasker_clean$repName,
+  repClass  = repeatmasker_clean$repClass,
+  repFamily = repeatmasker_clean$repFamily,
+  swScore   = repeatmasker_clean$swScore,
+  milliDiv  = repeatmasker_clean$milliDiv,
+  milliDel  = repeatmasker_clean$milliDel,
+  milliIns  = repeatmasker_clean$milliIns,
+  id        = repeatmasker_clean$RM_id
+)</code></pre>
 <pre class="r"><code>SINE_gr &lt;- rpt_split_gr_list$SINE
+SINE_df &lt;- SINE_gr %&gt;% 
+  as.data.frame()
+
+SINE_split_df &lt;- split(SINE_df, SINE_df$repFamily)
 
 LINE_gr &lt;- rpt_split_gr_list$LINE
+LINE_df &lt;- LINE_gr %&gt;% 
+  as.data.frame()
+
+LINE_split_df &lt;- split(LINE_df, LINE_df$repFamily)
 
 LTR_gr &lt;- rpt_split_gr_list$LTR
+LTR_df &lt;- LTR_gr %&gt;% 
+  as.data.frame()
+
+LTR_split_df &lt;- split(LTR_df, LTR_df$repFamily)
 
 SVA_gr &lt;- rpt_split_gr_list$Retroposon
+SVA_df &lt;- SVA_gr %&gt;% 
+  as.data.frame()
 
-DNA_gr &lt;- rpt_split_gr_list$DNA</code></pre>
+SVA_split_df &lt;- split(SVA_df, SVA_df$repFamily)
+
+DNA_gr &lt;- rpt_split_gr_list$DNA
+DNA_df &lt;- DNA_gr %&gt;% 
+  as.data.frame()
+
+DNA_split_df &lt;- split(DNA_df, DNA_df$repFamily)</code></pre>
 <pre class="r"><code>H3K27ac_summit_gr &lt;- readRDS(&quot;data/RDS_files/H3K27ac_complete_summit_gr.RDS&quot;)
 
 
@@ -868,6 +940,71 @@ H3K27ac_lookup &lt;- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
 )
 
  H3K27ac_summit_gr_ext &lt;- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = &quot;center&quot;)</code></pre>
+<pre class="r"><code>H3K27ac_toplist &lt;- readRDS( &quot;data/DER_data/H3K27ac_toplist.RDS&quot;)
+
+H3K27ac_toptable_list &lt;- bind_rows(H3K27ac_toplist, .id = &quot;group&quot;)
+
+
+cluster_colors &lt;- c(&quot;Set_1&quot; = &quot;#d93e40&quot;,&quot;Set_2&quot; = &quot;#1c9f50&quot;,&quot;Set_3&quot; = &quot;#3570b3&quot;,&quot;NA&quot;  =&quot;grey70&quot;)</code></pre>
+<pre class="r"><code>test_pair_TE_repName &lt;- function(df_long, rep_name, cluster1, cluster2) {
+  
+  # Subset for the specific repName
+  sub_df &lt;- df_long %&gt;%
+    filter(repName == rep_name) %&gt;%
+    complete(
+      cluster = c(cluster1, cluster2),
+      status  = c(&quot;TE&quot;, &quot;not_TE&quot;),
+      fill = list(count = 0)
+    )
+  
+  # fixed order of statuses
+  status_levels &lt;- c(&quot;TE&quot;, &quot;not_TE&quot;)
+  
+  # make sure both statuses exist
+  statuses &lt;- unique(sub_df$status)
+  if(length(statuses) != 2) {
+    sub_df &lt;- sub_df %&gt;%
+      complete(cluster, status, fill = list(count = 0))
+    statuses &lt;- unique(sub_df$status)
+  }
+  
+  # counts for cluster1
+  c1_counts &lt;- sub_df %&gt;%
+    filter(cluster == cluster1) %&gt;%
+    arrange(factor(status, levels = status_levels)) %&gt;%
+    pull(count)
+  
+  # counts for cluster2
+  c2_counts &lt;- sub_df %&gt;%
+    filter(cluster == cluster2) %&gt;%
+    arrange(factor(status, levels = status_levels)) %&gt;%
+    pull(count)
+  
+  # 2x2 matrix for Fisher test
+  mat &lt;- matrix(
+    c(c2_counts, c1_counts),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      cluster = c(cluster2, cluster1),
+      category = status_levels
+    )
+  )
+  
+  ft &lt;- tryCatch(
+    fisher.test(mat, workspace = 2e8),
+    error = function(e) fisher.test(mat, simulate.p.value = TRUE, B = 1e5)
+  )
+  
+  tibble(
+    repName     = rep_name,
+    comparison  = paste(cluster2, &quot;vs&quot;, cluster1),
+    odds_ratio  = ft$estimate,
+    lower_CI    = ft$conf.int[1],
+    upper_CI    = ft$conf.int[2],
+    p_value     = ft$p.value
+  )
+}</code></pre>
 <pre class="r"><code># Generic pairwise Fisher test
 test_pair_TE_generic &lt;- function(df_long, te_name, cluster1, cluster2) {
   
@@ -1079,6 +1216,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97b142ec65a311a798c38bcac5a00ff91bca17b7/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot SINE-1.png" target="_blank">97b142e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6d24630bbdebe405d8bb487c00b7a1a456c4b0b4/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot SINE-1.png" target="_blank">6d24630</a>
 </td>
 <td>
@@ -1242,6 +1390,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97b142ec65a311a798c38bcac5a00ff91bca17b7/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot LINE-1.png" target="_blank">97b142e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6d24630bbdebe405d8bb487c00b7a1a456c4b0b4/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot LINE-1.png" target="_blank">6d24630</a>
@@ -1409,6 +1568,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97b142ec65a311a798c38bcac5a00ff91bca17b7/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot LTR-1.png" target="_blank">97b142e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6d24630bbdebe405d8bb487c00b7a1a456c4b0b4/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot LTR-1.png" target="_blank">6d24630</a>
 </td>
 <td>
@@ -1574,6 +1744,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97b142ec65a311a798c38bcac5a00ff91bca17b7/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot SVA-1.png" target="_blank">97b142e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6d24630bbdebe405d8bb487c00b7a1a456c4b0b4/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot SVA-1.png" target="_blank">6d24630</a>
 </td>
 <td>
@@ -1737,6 +1918,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/97b142ec65a311a798c38bcac5a00ff91bca17b7/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot DNA-1.png" target="_blank">97b142e</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6d24630bbdebe405d8bb487c00b7a1a456c4b0b4/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot DNA-1.png" target="_blank">6d24630</a>
