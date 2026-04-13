@@ -5,6 +5,8 @@ date: "`r Sys.Date()`"
 output: 
   html_document:
   toc: true
+  toc_float: true
+  toc_depth: 4
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -47,7 +49,7 @@ adding in data files.
 
 The current analysis should be RNA DEGs and ROIs by set expression levels.
 more steps will include viewing the association of DEGs with enrichment/depletion of ROIs containing TEs by class/family with a look at age.
-### Data loading  
+## Data loading  
 
 
 ```{r needed data files}
@@ -312,7 +314,7 @@ exp(cbind(OR = coef(fit_chronic), confint(fit_chronic)))
 ```
 
 looking at expression levels of Chronic and Acute genes by set?
-### RNA expression in Chronic or Acute genes  
+## RNA expression in Chronic or Acute genes  
 
 
 ```{r}
@@ -908,7 +910,7 @@ summit_LTR_ROIs %>%
   theme_classic()+
   ggtitle("getting an idea of TSS distribution")
 ```
-### KZFP information
+## KZFP information
 
 #### all KZFP log2cpm expression
 ```{r Basic LFC}
@@ -963,7 +965,7 @@ print(
 ```
 
 
-Age and KZFP expression
+## Age and KZFP expression
 
 
 ```{r}
@@ -987,8 +989,10 @@ RNA_full_toptable %>%
     dplyr::filter(Entrez_ID %in%just_kzfp$entrezgene_id) %>% 
   left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label")) %>% 
   mutate(timepoint=factor(timepoint,levels=c("24T","24R","144R"))) %>%
+  mutate(color_by=case_when(SYMBOL=="ZNF780A"~"A",
+                            TRUE~"B")) %>% 
   
-  ggplot(.,aes(x = max_MY, y = logFC))+
+  ggplot(.,aes(x = max_MY, y = logFC, color=color_by))+
   geom_point()+
   # geom_smooth(method = "lm",  se = FALSE) +
    # geom_smooth(method = "loess", color = "red", span=1) +
@@ -1017,11 +1021,11 @@ RNA_full_toptable %>%
   ggtitle("RNA expression and time (mya-million years ago)")
 ```
 ```{r}
-RNA_full_toptable %>% 
-    dplyr::filter(Entrez_ID %in%just_kzfp$entrezgene_id) %>% 
-  left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label")) %>% 
-  # dplyr::filter(is.na(max_MY)) %>% 
-  dplyr::filter(SYMBOL=="ZNF605")
+# RNA_full_toptable %>% 
+#     dplyr::filter(Entrez_ID %in%just_kzfp$entrezgene_id) %>% 
+#   left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label")) %>% 
+#   # dplyr::filter(is.na(max_MY)) %>% 
+#   dplyr::filter(SYMBOL=="ZNF605")
 
 
 RNA_full_toptable %>% 
@@ -1039,3 +1043,8 @@ RNA_full_toptable %>%
   group_by(age_bin) %>% tally()
 ```
 ### H3K27ac regions crossing LTR at summit with age
+
+```{r}
+
+```
+
