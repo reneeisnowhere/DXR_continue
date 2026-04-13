@@ -283,29 +283,29 @@ overlapping summits and all TEs dataframe making:
 
 ```{r}
 
-dataf <- H3K27ac_summit_gr
+datafa <- H3K27ac_summit_gr
 # H3K27ac_summit_ols <-
   
    # 1️⃣ find overlaps
-  hits <- findOverlaps(dataf, rmskr_std_gr)
+  hitsfa <- findOverlaps(datafa, rmskr_std_gr)
   
-  if (length(hits) == 0) {
+  if (length(hitsfa) == 0) {
   H3K27ac_summit_ols <- tibble()
 } else {
 
   H3K27ac_summit_ols <- tibble(
-    Peakid     = dataf$Peakid[queryHits(hits)],
-    cluster    = dataf$cluster[queryHits(hits)],
-    seqnames   = as.character(seqnames(dataf))[queryHits(hits)],
-    summit_pos = start(dataf)[queryHits(hits)],
+    Peakid     = datafa$Peakid[queryHits(hitsfa)],
+    cluster    = datafa$cluster[queryHits(hitsfa)],
+    seqnames   = as.character(seqnames(datafa))[queryHits(hitsfa)],
+    summit_pos = start(datafa)[queryHits(hitsfa)],
 
-    repName   = rmskr_std_gr$repName[subjectHits(hits)],
-    repFamily = rmskr_std_gr$repFamily[subjectHits(hits)],
-    repClass  = rmskr_std_gr$repClass[subjectHits(hits)],
-    milliDiv  = rmskr_std_gr$milliDiv[subjectHits(hits)],
-    milliDel  = rmskr_std_gr$milliDel[subjectHits(hits)],
-    milliIns  = rmskr_std_gr$milliIns[subjectHits(hits)],
-    ID  = rmskr_std_gr$id[subjectHits(hits)]
+    repName   = rmskr_std_gr$repName[subjectHits(hitsfa)],
+    repFamily = rmskr_std_gr$repFamily[subjectHits(hitsfa)],
+    repClass  = rmskr_std_gr$repClass[subjectHits(hitsfa)],
+    milliDiv  = rmskr_std_gr$milliDiv[subjectHits(hitsfa)],
+    milliDel  = rmskr_std_gr$milliDel[subjectHits(hitsfa)],
+    milliIns  = rmskr_std_gr$milliIns[subjectHits(hitsfa)],
+    ID  = rmskr_std_gr$id[subjectHits(hitsfa)]
   )
 }
 # rmskr_nonoverlapping_H3K27ac_gr <- rmskr_std_gr[countOverlaps(rmskr_std_gr, H3K27ac_sets_gr[[4]]) == 0]
@@ -319,7 +319,7 @@ H3K27ac_summit_Peakids <- H3K27ac_summit_ols %>%
 making summit TE overlap annotation dataframe
 ```{r}
 all_summits_df <- 
-dataf %>% as.data.frame() %>% 
+datafa %>% as.data.frame() %>% 
   mutate(summit_id=paste0(seqnames,":",start)) %>% 
   dplyr::select(summit_id, Peakid:cluster)
 
@@ -330,9 +330,9 @@ annotated_H3K27ac_summits <- All_H3K27ac %>%
                   as.data.frame() %>% 
                   group_by(Peakid) %>% 
                   summarize(., 
-                            repClass=paste0(unique(repClass), collapse=";"),
-                            repFamily=paste0(unique(repFamily),collapse=";"),
-                            repName=paste0(unique(repName),collapse=";"),
+                            repClass=paste0(repClass, collapse=";"),
+                            repFamily=paste0(repFamily,collapse=";"),
+                            repName=paste0(repName,collapse=";"),
                             summit_pos=paste0(unique(summit_pos),collapse = ";"))))%>%
               mutate(TE_status = if_else(is.na(repClass),   "wnot_TE","TE")) %>%
               mutate(SINE_status = case_when(is.na(repClass)~ "wnot_SINE",
@@ -605,6 +605,8 @@ count_sine_families <- function(peak_gr, sine_gr, cluster_name) {
   bind_rows(te_counts, not_te)
 }
 ```
+
+
 ```{r Overlapping repNAMEfunction}
 count_ERV1_repNames <- function(peak_gr, TE_gr, cluster_name) {
   
@@ -650,11 +652,10 @@ count_ERV1_repNames <- function(peak_gr, TE_gr, cluster_name) {
   n_total_peaks <- length(peak_gr)
   n_TE_peaks    <- length(unique(queryHits(hits)))
   
-  not_te <- tibble(
-    cluster = cluster_name,
-    repName = unique(te_counts$repName),
-    status  = "not_TE",
-    count   = n_total_peaks - n_TE_peaks
+  not_te <- te_counts %>%
+  mutate(
+    status = "not_TE",
+    count  = n_total_peaks - count
   )
   
   bind_rows(te_counts, not_te)
@@ -1139,7 +1140,7 @@ LTRERV1_results_full <- comparisons %>%
         pull() %>%
         map_dfr(function(rep) {
           test_pair_TE_repName(
-            LTR_ERV1_df_long,
+            fullROI_long_LTR_ERV1,
             rep_name  = rep,
             cluster1 = c1,
             cluster2 = c2
