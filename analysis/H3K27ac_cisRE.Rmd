@@ -137,7 +137,16 @@ H3K27ac_cre_df <- tibble(
   cCRE_ID   = mcols(SCREEN_hg38_cCREs)$cCRE_ID[subjectHits(H3K27ac_cre_hits)],
   cCRE_class= mcols(SCREEN_hg38_cCREs)$cCRE_class[subjectHits(H3K27ac_cre_hits)])
 
+# test <- mergeByOverlaps(H3K27ac_summit_gr,SCREEN_hg38_cCREs)
+# 
+# test
 
+SCREEN_hg38_cCREs
+H3K27ac_cre_df%>% as.data.frame() %>%
+  # dplyr::filter(cCRE_ID %in% c("EH38E1711087", "EH38E4104717", "EH38E3092695"))
+  dplyr::filter(cCRE_ID %in% c("EH38E1535425", "EH38E2955081","EH38E2955082", "EH38E4035740", "EH38E2955083"))
+# H3K27ac_cre_df %>% dplyr::filter(cCRE_ID =="EH38D4811366")
+#   SCREEN_hg38_cCREs %>% as.data.frame()%>% dplyr::filter( DHS_ID=="EH38D4811366")
 ```
 
 ```{r color fill}
@@ -241,5 +250,14 @@ H3K27ac_heart_cre_counts <- H3K27ac_heart_cre_anno %>%
 # dplyr::left_join((SCREEN_heart_hg38_cCREs %>% as.data.frame()),(SCREEN_hg38_cCREs %>% as.data.frame()) 
 
 H3K27ac_heart_cre_counts %>% ungroup %>% distinct (cCRE_ID)
+```
+```{r}
+
+annotated_H3K27ac_summits <- readRDS("data/TE_annotation/H3K27ac_annotated_summit_TE_overlaps.RDS")
+
+annotated_H3K27ac_summits %>% 
+  dplyr::filter(cluster=="Set_2" &!is.na(summit_pos))
+ 
+
 ```
 
