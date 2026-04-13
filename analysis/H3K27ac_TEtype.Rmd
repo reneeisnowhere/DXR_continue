@@ -68,6 +68,8 @@ Symbol_lookup <- RNA_full_toptable %>%
 
 KZFP_targets <- read_excel("data/Other_paper_data/KZFP_primary_targests_Supplemental_Table_S3.xlsx", sheet = "Primary_targets")
 
+KZFP_2026_list <- read_excel("data/Other_paper_data/human_protein_coding_KZFPs_Davis_natgen_2026.xlsx")
+
 ERV1_summary_char <- read.csv(file.path("data/Other_paper_data/ERV1_file_summary.csv"))
 
 ```
@@ -131,12 +133,7 @@ RNA_full_toptable %>%
   theme_bw()+
   ylim(-5,5)
 
-  res %>% dplyr::filter(gene %in% RNA_expressed_genes$Entrez_ID) %>% 
-    ggplot(., aes(x=distance))+
-    geom_density()+
-    ggtitle("density of MER61E TEs distance to expressed gene")
-
-
+  
   res %>% dplyr::filter(gene %in% RNA_expressed_genes$Entrez_ID) %>% 
     ggplot(., aes(x=distance))+
     geom_density()+
@@ -713,5 +710,107 @@ ggplot(MER61E_lcpm_genes_one, aes(x=time, y=log2cpm,group=group))+
   ggtitle(paste0("gene 374383 ",symbol))+
   theme_bw()
 
+```
+###  Expanding the overlap +/- 200bp from summit
+
+```{r}
+
+annotated_H3K27ac_extended <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+# H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+# H3K27ac_summit_gr_ext <- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
+# 
+# extended_MER61E_subset <- subsetByOverlaps(H3K27ac_summit_gr_ext,ltr_gr)
+
+annotated_H3K27ac_extended %>% as.data.frame() %>% 
+  filter(str_detect(repName,";"))
+
+
+
+annotated_H3K27ac_extended %>%
+  
+  mutate(across(repClass:repID, ~str_count(.x, ";") + 1, .names = "n_{col}")) %>%
+  filter(!(n_repClass == n_repFamily & n_repFamily == n_repName & n_repName == n_repID))
+  
+  
+  annotated_H3K27ac_extended %>% 
+    dplyr::filter(str_detect(repName,str_c(Mer_list, collapse="|")))
+```
+
+
+```{r}
+for (Mer in Mer_list){
+
+prop_table <- annotated_H3K27ac_extended %>% 
+  dplyr::filter(str_detect(repName,Mer)) %>% 
+  group_by(cluster) %>% 
+  summarise(n = dplyr::n(), .groups = "drop") %>% 
+  mutate(cluster = if_else(is.na(cluster), "NA", cluster),
+         clus_names=case_when(cluster =="Set_1"~"No response",
+                              cluster=="Set_3"~"Acute response",
+                              cluster=="Set_2"~"Sustained response",
+                              TRUE~"not assigned")) 
+  
+if(!"Set_2" %in% prop_table$cluster){
+  prop_table <- rbind(
+    prop_table,
+    data.frame(cluster = "Set_2", n = 0,clus_names="Sustained response")
+  )} 
+if(!"Set_3" %in% prop_table$cluster){
+  prop_table <- rbind(
+    prop_table,
+    data.frame(cluster = "Set_3", n = 0,clus_names="Acute response")
+  )} 
+
+plot <- ggplot(prop_table, aes(x = clus_names, y = n, fill = clus_names)) +
+  geom_col(position = "identity") +
+  geom_text(aes(
+      label = sprintf('%d (%.1f%%)', n, 100 * n / sum(n)),  
+      y = n + 0.05 * max(n)),
+    colour = 'royalblue',
+    size = 5) +
+  theme_classic() +
+  labs(x = "H3K27ac response group",
+    y = paste0("Proportion of ",Mer),
+    fill = "Cluster",
+    title = paste0("Proportion of ",Mer," across each H3K27ac set extended")) +
+  theme(axis.text.x = element_text(angle = 0, hjust = .5))
+    
+    print(plot)
+}
+
+
+```
+
+
+```{r prop_extended plot}
+df_clean <- annotated_H3K27ac_extended %>%
+  separate_rows(repClass,repFamily,repName,repID, sep = ";")
+
+prop_table_all <- df_clean %>%
+  filter(repName %in% Mer_list) %>%
+  mutate(
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    clus_names = case_when(
+      cluster == "Set_1" ~ "No response",
+      cluster == "Set_2" ~ "Sustained response",
+      cluster == "Set_3" ~ "Acute response",
+      TRUE ~ "Not assigned"
+    )
+  ) %>%
+  count(clus_names, repName) %>%
+  group_by(clus_names) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup()
+
+
+ggplot(prop_table_all, aes(x = clus_names, y = prop, fill = repName)) +
+  geom_col() +
+  theme_classic() +
+  labs(
+    x = "H3K27ac response group",
+    y = "Proportion",
+    fill = "MER61 subfamily",
+    title = "MER61 subfamily composition across H3K27ac sets"
+  )
 ```
 
