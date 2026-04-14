@@ -122,6 +122,12 @@ DNA_df <- DNA_gr %>%
   as.data.frame()
 
 DNA_split_df <- split(DNA_df, DNA_df$repFamily)
+
+# saveRDS(SINE_df,"data/RDS_files/SINE_DF_hg38.RDS")
+# saveRDS(LTR_df,"data/RDS_files/LTR_DF_hg38.RDS")
+# saveRDS(DNA_df,"data/RDS_files/DNA_DF_hg38.RDS")
+# saveRDS(LINE_df,"data/RDS_files/LINE_DF_hg38.RDS")
+# saveRDS(SVA_df,"data/RDS_files/SVA_DF_hg38.RDS")
 ```
 
 ```{r loading H3K27ac data}
@@ -157,7 +163,7 @@ cluster_colors <- c("Set_1" = "#d93e40","Set_2" = "#1c9f50","Set_3" = "#3570b3",
 
 ```
 
-### making extened dataframe
+### making extended dataframe
 
 ```{r overlapping all, eval=FALSE}
 dataf <- H3K27ac_ext200_gr
@@ -366,14 +372,14 @@ SINE_counts <- SINE_overlap_df %>%
   mutate(status = "TE")
 
 total_SINE_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %>% count(cluster, name = "total")
 
 not_SINE_counts <- SINE_counts %>%
   left_join(total_SINE_summits, by = "cluster") %>%
   mutate(count = total - count,
          status = "not_TE") %>%
-  select(cluster, TE_type, status, count)
+  dplyr::select(cluster, TE_type, status, count)
 
 SINE_df_long <- bind_rows(SINE_counts %>%
                             dplyr::select(cluster, TE_type, status, count),
@@ -477,9 +483,206 @@ ggplot(SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   theme_classic() +
   facet_wrap(~comparison)
 ```
+```{r SINE Alu Overlapping}
+SINE_hits <- findOverlaps(H3K27ac_summit_gr_ext, SINE_gr, ignore.strand = TRUE)
+SINE_name_overlap_df <- tibble(
+  summit_id = queryHits(SINE_hits),
+  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(SINE_hits)],
+  TE_type   = mcols(SINE_gr)$repFamily[subjectHits(SINE_hits)],
+  repName= mcols(SINE_gr)$repName[subjectHits(SINE_hits)])
+
+SINE_Alu_counts <-
+  SINE_name_overlap_df %>%
+    dplyr::filter(TE_type=="Alu") %>% 
+  count(cluster, repName, name = "count") %>%
+  mutate(status = "TE")
+
+total_SINE_summits <- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %>% count(cluster, name = "total")
+
+not_SINE_Alu_counts <- SINE_Alu_counts %>%
+  left_join(total_SINE_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  dplyr::select(cluster, repName, status, count)
+
+SINE_Alu_df_long <- bind_rows(SINE_Alu_counts %>%
+                            dplyr::select(cluster, repName, status, count),
+                          not_SINE_Alu_counts) %>% 
+  filter(!is.na(cluster))
+
+Alu_SINE_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       SINE_Alu_df_long %>%
+        distinct(repName) %>%
+        pull() %>%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            SINE_Alu_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(Alu_SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(data = subset(Alu_SINE_results, FDR < 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "SINE Name (Alu) enrichment at ROI extended-summits\nH3K27ac"
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)
+```
+#### tRNA-RTE  
 
 
+```{r SINE tRNA-RTE Overlapping}
+# SINE_hits <- findOverlaps(H3K27ac_summit_gr_ext, SINE_gr, ignore.strand = TRUE)
+# SINE_name_overlap_df <- tibble(
+#   summit_id = queryHits(SINE_hits),
+#   cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(SINE_hits)],
+#   TE_type   = mcols(SINE_gr)$repFamily[subjectHits(SINE_hits)],
+#   repName= mcols(SINE_gr)$repName[subjectHits(SINE_hits)])
 
+SINE_tRNARTE_counts <-
+  SINE_name_overlap_df %>%
+    dplyr::filter(TE_type=="tRNA-RTE") %>% 
+  count(cluster, repName, name = "count") %>%
+  mutate(status = "TE")
+
+total_SINE_summits <- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %>% count(cluster, name = "total")
+
+not_SINE_tRNARTE_counts <- SINE_tRNARTE_counts %>%
+  left_join(total_SINE_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  dplyr::select(cluster, repName, status, count)
+
+SINE_tRNARTE_df_long <- bind_rows(SINE_tRNARTE_counts %>%
+                            dplyr::select(cluster, repName, status, count),
+                          not_SINE_tRNARTE_counts) %>% 
+  filter(!is.na(cluster))
+
+tRNARTE_SINE_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       SINE_tRNARTE_df_long %>%
+        distinct(repName) %>%
+        pull() %>%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            SINE_tRNARTE_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(tRNARTE_SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(data = subset(tRNARTE_SINE_results, FDR < 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "SINE Name (tRNA-RTE) enrichment at ROI extended-summits\nH3K27ac"
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)
+```
+
+#### tRNA
+```{r SINE tRNA Overlapping}
+# SINE_hits <- findOverlaps(H3K27ac_summit_gr_ext, SINE_gr, ignore.strand = TRUE)
+# SINE_name_overlap_df <- tibble(
+#   summit_id = queryHits(SINE_hits),
+#   cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(SINE_hits)],
+#   TE_type   = mcols(SINE_gr)$repFamily[subjectHits(SINE_hits)],
+#   repName= mcols(SINE_gr)$repName[subjectHits(SINE_hits)])
+
+SINE_tRNA_counts <-
+  SINE_name_overlap_df %>%
+    dplyr::filter(TE_type=="tRNA") %>% 
+  count(cluster, repName, name = "count") %>%
+  mutate(status = "TE")
+
+total_SINE_summits <- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %>% count(cluster, name = "total")
+
+not_SINE_tRNA_counts <- SINE_tRNA_counts %>%
+  left_join(total_SINE_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  dplyr::select(cluster, repName, status, count)
+
+SINE_tRNA_df_long <- bind_rows(SINE_tRNA_counts %>%
+                            dplyr::select(cluster, repName, status, count),
+                          not_SINE_tRNA_counts) %>% 
+  filter(!is.na(cluster))
+
+tRNA_SINE_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       SINE_tRNARTE_df_long %>%
+        distinct(repName) %>%
+        pull() %>%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            SINE_tRNA_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(tRNA_SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(data = subset(tRNA_SINE_results, FDR < 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "SINE Name (tRNA) enrichment at ROI extended-summits\nH3K27ac"
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)
+```
 ### LINE
 Overlapping LINE family with summits to get a count
 ```{r LINE Overlapping}
@@ -494,14 +697,14 @@ LINE_counts <- LINE_overlap_df %>%
   mutate(status = "TE")
 
 total_LINE_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %>% count(cluster, name = "total")
 
 not_LINE_counts <- LINE_counts %>%
   left_join(total_LINE_summits, by = "cluster") %>%
   mutate(count = total - count,
          status = "not_TE") %>%
-  select(cluster, TE_type, status, count)
+  dplyr::select(cluster, TE_type, status, count)
 
 LINE_df_long <- bind_rows(LINE_counts %>%
                             dplyr::select(cluster, TE_type, status, count),
@@ -623,14 +826,14 @@ LTR_counts <- LTR_overlap_df %>%
   mutate(status = "TE")
 
 total_LTR_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %>% count(cluster, name = "total")
 
 not_LTR_counts <- LTR_counts %>%
   left_join(total_LTR_summits, by = "cluster") %>%
   mutate(count = total - count,
          status = "not_TE") %>%
-  select(cluster, TE_type, status, count)
+  dplyr::select(cluster, TE_type, status, count)
 
 LTR_df_long <- bind_rows(LTR_counts %>%
                             dplyr::select(cluster, TE_type, status, count),
@@ -737,7 +940,7 @@ ggplot(LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
 ```
 
 
-```{r}
+```{r ERV1-ltr}
 LTR_hits <- findOverlaps(H3K27ac_summit_gr_ext, LTR_gr, ignore.strand = TRUE)
 LTR_name_overlap_df <- tibble(
   summit_id = queryHits(LTR_hits),
@@ -752,14 +955,14 @@ LTR_ERV1_counts <-
   mutate(status = "TE")
 
 total_LTR_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %>% count(cluster, name = "total")
 
 not_LTR_ERV1_counts <- LTR_ERV1_counts %>%
   left_join(total_LTR_summits, by = "cluster") %>%
   mutate(count = total - count,
          status = "not_TE") %>%
-  select(cluster, repName, status, count)
+  dplyr::select(cluster, repName, status, count)
 
 LTR_ERV1_df_long <- bind_rows(LTR_ERV1_counts %>%
                             dplyr::select(cluster, repName, status, count),
@@ -804,7 +1007,83 @@ ggplot(ERV1_LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName))
 ```
 
 
+```{r ERVL-MaLR-ltr}
+# LTR_hits <- findOverlaps(H3K27ac_summit_gr_ext, LTR_gr, ignore.strand = TRUE)
+# LTR_name_overlap_df <- tibble(
+#   summit_id = queryHits(LTR_hits),
+#   cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(LTR_hits)],
+#   TE_type   = mcols(LTR_gr)$repFamily[subjectHits(LTR_hits)],
+#   repName= mcols(LTR_gr)$repName[subjectHits(LTR_hits)])
 
+LTR_ERVLMaLR_counts <-
+  LTR_name_overlap_df %>%
+    dplyr::filter(TE_type=="ERVL-MaLR") %>% 
+  count(cluster, repName, name = "count") %>%
+  mutate(status = "TE")
+
+total_LTR_summits <- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %>% count(cluster, name = "total")
+
+not_LTR_ERVLMaLR_counts <- LTR_ERVLMaLR_counts %>%
+  left_join(total_LTR_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  dplyr::select(cluster, repName, status, count)
+
+LTR_ERVLMaLR_df_long <- bind_rows(LTR_ERVLMaLR_counts %>%
+                            dplyr::select(cluster, repName, status, count),
+                          not_LTR_ERVLMaLR_counts) %>% 
+  filter(!is.na(cluster))
+
+ERV1_ERVLMaLR_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       LTR_ERVLMaLR_df_long %>%
+        distinct(repName) %>%
+        pull() %>%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            LTR_ERVLMaLR_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(ERV1_ERVLMaLR_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(data = subset(ERV1_ERVLMaLR_results, FDR < 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "LTR Name ERVL-MaLR enrichment at ROI extended-summits\nH3K27ac"
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)
+
+
+datatable(
+  ERV1_ERVLMaLR_results,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+)
+```
 
 
 
@@ -824,14 +1103,14 @@ SVA_counts <- SVA_overlap_df %>%
   mutate(status = "TE")
 
 total_SVA_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %>% count(cluster, name = "total")
 
 not_SVA_counts <- SVA_counts %>%
   left_join(total_SVA_summits, by = "cluster") %>%
   mutate(count = total - count,
          status = "not_TE") %>%
-  select(cluster, TE_type, status, count)
+  dplyr::select(cluster, TE_type, status, count)
 
 SVA_df_long <- bind_rows(SVA_counts %>%
                             dplyr::select(cluster, TE_type, status, count),
@@ -952,14 +1231,14 @@ DNA_counts <- DNA_overlap_df %>%
   mutate(status = "TE")
 
 total_DNA_summits <- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %>% count(cluster, name = "total")
 
 not_DNA_counts <- DNA_counts %>%
   left_join(total_DNA_summits, by = "cluster") %>%
   mutate(count = total - count,
          status = "not_TE") %>%
-  select(cluster, TE_type, status, count)
+  dplyr::select(cluster, TE_type, status, count)
 
 DNA_df_long <- bind_rows(DNA_counts %>%
                             dplyr::select(cluster, TE_type, status, count),
@@ -1063,6 +1342,76 @@ ggplot(DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   theme_classic()+
   facet_wrap(~comparison)
 ```
+### TcMar-Tigger
+```{r TcMar}
+
+DNA_hits <- findOverlaps(H3K27ac_summit_gr_ext, DNA_gr, ignore.strand = TRUE)
+DNA_name_overlap_df <- tibble(
+  summit_id = queryHits(DNA_hits),
+  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(DNA_hits)],
+  TE_type   = mcols(DNA_gr)$repFamily[subjectHits(DNA_hits)],
+  repName= mcols(DNA_gr)$repName[subjectHits(DNA_hits)])
+
+DNA_TcMarTigger_counts <-
+  DNA_name_overlap_df %>%
+    dplyr::filter(TE_type=="TcMar-Tigger") %>% 
+  count(cluster, repName, name = "count") %>%
+  mutate(status = "TE")
+
+total_DNA_summits <- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %>% count(cluster, name = "total")
+
+not_DNA_TcMarTigger_counts <- DNA_TcMarTigger_counts %>%
+  left_join(total_DNA_summits, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  dplyr::select(cluster, repName, status, count)
+
+DNA_TcMarTigger_df_long <- bind_rows(DNA_TcMarTigger_counts %>%
+                            dplyr::select(cluster, repName, status, count),
+                          not_DNA_TcMarTigger_counts) %>% 
+  filter(!is.na(cluster))
+
+TcMarTigger_DNA_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       DNA_TcMarTigger_df_long %>%
+        distinct(repName) %>%
+        pull() %>%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            DNA_TcMarTigger_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+ggplot(TcMarTigger_DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(data = subset(TcMarTigger_DNA_results, FDR < 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "DNA Name (TcMar-Tigger) enrichment at ROI extended-summits\nH3K27ac"
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)
+```
+
+```
+
 
 ```{r making named bedfiles, eval=FALSE}
 names(rpt_split_gr_list)
