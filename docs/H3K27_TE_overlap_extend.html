@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-04-13" />
+<meta name="date" content="2026-04-14" />
 
 <title>H3K27ac Extended summits and TE overlap</title>
 
@@ -375,7 +375,7 @@ div.tocify {
 <h1 class="title toc-ignore">H3K27ac Extended summits and TE
 overlap</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-04-13</h4>
+<h4 class="date">2026-04-14</h4>
 
 </div>
 
@@ -404,7 +404,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-04-13
+<strong>Last updated:</strong> 2026-04-14
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -535,15 +535,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree8400392345ecca9f7ab79cf63ab4e1b1ca70e6aftargetblank8400392a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree4fa43689fa73c3212b250e94d0e601a1125675cctargetblank4fa4368a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/8400392345ecca9f7ab79cf63ab4e1b1ca70e6af" target="_blank">8400392</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/4fa43689fa73c3212b250e94d0e601a1125675cc" target="_blank">4fa4368</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree8400392345ecca9f7ab79cf63ab4e1b1ca70e6aftargetblank8400392a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree4fa43689fa73c3212b250e94d0e601a1125675cctargetblank4fa4368a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -553,7 +553,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/8400392345ecca9f7ab79cf63ab4e1b1ca70e6af" target="_blank">8400392</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/4fa43689fa73c3212b250e94d0e601a1125675cc" target="_blank">4fa4368</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -603,9 +603,7 @@ Untracked files:
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27ac_RNA_integration.Rmd
     Modified:   analysis/H3K27ac_TEtype.Rmd
-    Modified:   analysis/H3K27ac_cisRE.Rmd
     Modified:   analysis/H3K27ac_summit_processing.Rmd
     Modified:   analysis/H3K27me3_summit_processing.Rmd
     Modified:   analysis/H3K36me3_summit_processing.Rmd
@@ -661,6 +659,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4fa43689fa73c3212b250e94d0e601a1125675cc/analysis/H3K27_TE_overlap_extend.Rmd" target="_blank">4fa4368</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-14
+</td>
+<td>
+wflow_publish("analysis/H3K27_TE_overlap_extend.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/face47d5e3cbdd87ef81231bf1d441e50cbfd037/docs/H3K27_TE_overlap_extend.html" target="_blank">face47d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -959,7 +991,13 @@ DNA_gr &lt;- rpt_split_gr_list$DNA
 DNA_df &lt;- DNA_gr %&gt;% 
   as.data.frame()
 
-DNA_split_df &lt;- split(DNA_df, DNA_df$repFamily)</code></pre>
+DNA_split_df &lt;- split(DNA_df, DNA_df$repFamily)
+
+# saveRDS(SINE_df,&quot;data/RDS_files/SINE_DF_hg38.RDS&quot;)
+# saveRDS(LTR_df,&quot;data/RDS_files/LTR_DF_hg38.RDS&quot;)
+# saveRDS(DNA_df,&quot;data/RDS_files/DNA_DF_hg38.RDS&quot;)
+# saveRDS(LINE_df,&quot;data/RDS_files/LINE_DF_hg38.RDS&quot;)
+# saveRDS(SVA_df,&quot;data/RDS_files/SVA_DF_hg38.RDS&quot;)</code></pre>
 <pre class="r"><code>H3K27ac_summit_gr &lt;- readRDS(&quot;data/RDS_files/H3K27ac_complete_summit_gr.RDS&quot;)
 
 
@@ -984,8 +1022,8 @@ H3K27ac_toptable_list &lt;- bind_rows(H3K27ac_toplist, .id = &quot;group&quot;)
 
 
 cluster_colors &lt;- c(&quot;Set_1&quot; = &quot;#d93e40&quot;,&quot;Set_2&quot; = &quot;#1c9f50&quot;,&quot;Set_3&quot; = &quot;#3570b3&quot;,&quot;NA&quot;  =&quot;grey70&quot;)</code></pre>
-<div id="making-extened-dataframe" class="section level3">
-<h3>making extened dataframe</h3>
+<div id="making-extended-dataframe" class="section level3">
+<h3>making extended dataframe</h3>
 <pre class="r"><code>dataf &lt;- H3K27ac_ext200_gr
 
   
@@ -1181,14 +1219,14 @@ SINE_counts &lt;- SINE_overlap_df %&gt;%
   mutate(status = &quot;TE&quot;)
 
 total_SINE_summits &lt;- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %&gt;% count(cluster, name = &quot;total&quot;)
 
 not_SINE_counts &lt;- SINE_counts %&gt;%
   left_join(total_SINE_summits, by = &quot;cluster&quot;) %&gt;%
   mutate(count = total - count,
          status = &quot;not_TE&quot;) %&gt;%
-  select(cluster, TE_type, status, count)
+  dplyr::select(cluster, TE_type, status, count)
 
 SINE_df_long &lt;- bind_rows(SINE_counts %&gt;%
                             dplyr::select(cluster, TE_type, status, count),
@@ -1342,10 +1380,202 @@ reneeisnowhere
 </table>
 </div>
 </div>
-</div>
-<div id="line" class="section level3">
-<h3>LINE</h3>
-<p>Overlapping LINE family with summits to get a count</p>
+<pre class="r"><code>SINE_hits &lt;- findOverlaps(H3K27ac_summit_gr_ext, SINE_gr, ignore.strand = TRUE)
+SINE_name_overlap_df &lt;- tibble(
+  summit_id = queryHits(SINE_hits),
+  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(SINE_hits)],
+  TE_type   = mcols(SINE_gr)$repFamily[subjectHits(SINE_hits)],
+  repName= mcols(SINE_gr)$repName[subjectHits(SINE_hits)])
+
+SINE_Alu_counts &lt;-
+  SINE_name_overlap_df %&gt;%
+    dplyr::filter(TE_type==&quot;Alu&quot;) %&gt;% 
+  count(cluster, repName, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_SINE_summits &lt;- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_SINE_Alu_counts &lt;- SINE_Alu_counts %&gt;%
+  left_join(total_SINE_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  dplyr::select(cluster, repName, status, count)
+
+SINE_Alu_df_long &lt;- bind_rows(SINE_Alu_counts %&gt;%
+                            dplyr::select(cluster, repName, status, count),
+                          not_SINE_Alu_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+Alu_SINE_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       SINE_Alu_df_long %&gt;%
+        distinct(repName) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            SINE_Alu_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))
+
+ggplot(Alu_SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(data = subset(Alu_SINE_results, FDR &lt; 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;SINE Name (Alu) enrichment at ROI extended-summits\nH3K27ac&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/SINE%20Alu%20Overlapping-1.png" alt="" width="672" style="display: block; margin: auto;" />
+#### tRNA-RTE</p>
+<pre class="r"><code># SINE_hits &lt;- findOverlaps(H3K27ac_summit_gr_ext, SINE_gr, ignore.strand = TRUE)
+# SINE_name_overlap_df &lt;- tibble(
+#   summit_id = queryHits(SINE_hits),
+#   cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(SINE_hits)],
+#   TE_type   = mcols(SINE_gr)$repFamily[subjectHits(SINE_hits)],
+#   repName= mcols(SINE_gr)$repName[subjectHits(SINE_hits)])
+
+SINE_tRNARTE_counts &lt;-
+  SINE_name_overlap_df %&gt;%
+    dplyr::filter(TE_type==&quot;tRNA-RTE&quot;) %&gt;% 
+  count(cluster, repName, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_SINE_summits &lt;- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_SINE_tRNARTE_counts &lt;- SINE_tRNARTE_counts %&gt;%
+  left_join(total_SINE_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  dplyr::select(cluster, repName, status, count)
+
+SINE_tRNARTE_df_long &lt;- bind_rows(SINE_tRNARTE_counts %&gt;%
+                            dplyr::select(cluster, repName, status, count),
+                          not_SINE_tRNARTE_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+tRNARTE_SINE_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       SINE_tRNARTE_df_long %&gt;%
+        distinct(repName) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            SINE_tRNARTE_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))
+
+ggplot(tRNARTE_SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(data = subset(tRNARTE_SINE_results, FDR &lt; 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;SINE Name (tRNA-RTE) enrichment at ROI extended-summits\nH3K27ac&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/SINE%20tRNA-RTE%20Overlapping-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<div id="trna" class="section level4">
+<h4>tRNA</h4>
+<pre class="r"><code># SINE_hits &lt;- findOverlaps(H3K27ac_summit_gr_ext, SINE_gr, ignore.strand = TRUE)
+# SINE_name_overlap_df &lt;- tibble(
+#   summit_id = queryHits(SINE_hits),
+#   cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(SINE_hits)],
+#   TE_type   = mcols(SINE_gr)$repFamily[subjectHits(SINE_hits)],
+#   repName= mcols(SINE_gr)$repName[subjectHits(SINE_hits)])
+
+SINE_tRNA_counts &lt;-
+  SINE_name_overlap_df %&gt;%
+    dplyr::filter(TE_type==&quot;tRNA&quot;) %&gt;% 
+  count(cluster, repName, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_SINE_summits &lt;- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_SINE_tRNA_counts &lt;- SINE_tRNA_counts %&gt;%
+  left_join(total_SINE_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  dplyr::select(cluster, repName, status, count)
+
+SINE_tRNA_df_long &lt;- bind_rows(SINE_tRNA_counts %&gt;%
+                            dplyr::select(cluster, repName, status, count),
+                          not_SINE_tRNA_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+tRNA_SINE_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       SINE_tRNARTE_df_long %&gt;%
+        distinct(repName) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            SINE_tRNA_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))
+
+ggplot(tRNA_SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(data = subset(tRNA_SINE_results, FDR &lt; 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;SINE Name (tRNA) enrichment at ROI extended-summits\nH3K27ac&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/SINE%20tRNA%20Overlapping-1.png" alt="" width="672" style="display: block; margin: auto;" />
+### LINE Overlapping LINE family with summits to get a count</p>
 <pre class="r"><code>LINE_hits &lt;- findOverlaps(H3K27ac_summit_gr_ext, LINE_gr, ignore.strand = TRUE)
 LINE_overlap_df &lt;- tibble(
   summit_id = queryHits(LINE_hits),
@@ -1357,14 +1587,14 @@ LINE_counts &lt;- LINE_overlap_df %&gt;%
   mutate(status = &quot;TE&quot;)
 
 total_LINE_summits &lt;- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %&gt;% count(cluster, name = &quot;total&quot;)
 
 not_LINE_counts &lt;- LINE_counts %&gt;%
   left_join(total_LINE_summits, by = &quot;cluster&quot;) %&gt;%
   mutate(count = total - count,
          status = &quot;not_TE&quot;) %&gt;%
-  select(cluster, TE_type, status, count)
+  dplyr::select(cluster, TE_type, status, count)
 
 LINE_df_long &lt;- bind_rows(LINE_counts %&gt;%
                             dplyr::select(cluster, TE_type, status, count),
@@ -1519,6 +1749,7 @@ reneeisnowhere
 </div>
 </div>
 </div>
+</div>
 <div id="ltr" class="section level3">
 <h3>LTR</h3>
 <p>Overlapping LTR family summits to get a count</p>
@@ -1533,14 +1764,14 @@ LTR_counts &lt;- LTR_overlap_df %&gt;%
   mutate(status = &quot;TE&quot;)
 
 total_LTR_summits &lt;- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %&gt;% count(cluster, name = &quot;total&quot;)
 
 not_LTR_counts &lt;- LTR_counts %&gt;%
   left_join(total_LTR_summits, by = &quot;cluster&quot;) %&gt;%
   mutate(count = total - count,
          status = &quot;not_TE&quot;) %&gt;%
-  select(cluster, TE_type, status, count)
+  dplyr::select(cluster, TE_type, status, count)
 
 LTR_df_long &lt;- bind_rows(LTR_counts %&gt;%
                             dplyr::select(cluster, TE_type, status, count),
@@ -1708,14 +1939,14 @@ LTR_ERV1_counts &lt;-
   mutate(status = &quot;TE&quot;)
 
 total_LTR_summits &lt;- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %&gt;% count(cluster, name = &quot;total&quot;)
 
 not_LTR_ERV1_counts &lt;- LTR_ERV1_counts %&gt;%
   left_join(total_LTR_summits, by = &quot;cluster&quot;) %&gt;%
   mutate(count = total - count,
          status = &quot;not_TE&quot;) %&gt;%
-  select(cluster, repName, status, count)
+  dplyr::select(cluster, repName, status, count)
 
 LTR_ERV1_df_long &lt;- bind_rows(LTR_ERV1_counts %&gt;%
                             dplyr::select(cluster, repName, status, count),
@@ -1757,7 +1988,83 @@ ggplot(ERV1_LTR_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName))
   ) +
   theme_classic()+
   facet_wrap(~comparison)</code></pre>
-<p><img src="figure/H3K27_TE_overlap_extend.Rmd/unnamed-chunk-6-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/ERV1-ltr-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># LTR_hits &lt;- findOverlaps(H3K27ac_summit_gr_ext, LTR_gr, ignore.strand = TRUE)
+# LTR_name_overlap_df &lt;- tibble(
+#   summit_id = queryHits(LTR_hits),
+#   cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(LTR_hits)],
+#   TE_type   = mcols(LTR_gr)$repFamily[subjectHits(LTR_hits)],
+#   repName= mcols(LTR_gr)$repName[subjectHits(LTR_hits)])
+
+LTR_ERVLMaLR_counts &lt;-
+  LTR_name_overlap_df %&gt;%
+    dplyr::filter(TE_type==&quot;ERVL-MaLR&quot;) %&gt;% 
+  count(cluster, repName, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_LTR_summits &lt;- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_LTR_ERVLMaLR_counts &lt;- LTR_ERVLMaLR_counts %&gt;%
+  left_join(total_LTR_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  dplyr::select(cluster, repName, status, count)
+
+LTR_ERVLMaLR_df_long &lt;- bind_rows(LTR_ERVLMaLR_counts %&gt;%
+                            dplyr::select(cluster, repName, status, count),
+                          not_LTR_ERVLMaLR_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+ERV1_ERVLMaLR_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       LTR_ERVLMaLR_df_long %&gt;%
+        distinct(repName) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            LTR_ERVLMaLR_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))
+
+ggplot(ERV1_ERVLMaLR_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(data = subset(ERV1_ERVLMaLR_results, FDR &lt; 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;LTR Name ERVL-MaLR enrichment at ROI extended-summits\nH3K27ac&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/ERVL-MaLR-ltr-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>datatable(
+  ERV1_ERVLMaLR_results,
+  rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0d0a58fb401ace3924c9" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0d0a58fb401ace3924c9">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"39.7617993946274\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"3.02871202054078\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"2.0755839e-08\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"3.19639927e-06\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],["MLT-int","MLT1-int","MLT1A","MLT1A-int","MLT1A0","MLT1A0-int","MLT1A1","MLT1A1-int","MLT1B","MLT1B-int","MLT1C","MLT1C-int","MLT1D","MLT1D-int","MLT1E","MLT1E1","MLT1E1A","MLT1E2","MLT1E2-int","MLT1E3","MLT1E3-int","MLT1F","MLT1F-int","MLT1F1","MLT1F1-int","MLT1F2","MLT1F2-int","MLT1G","MLT1G-int","MLT1G1","MLT1G1-int","MLT1G3","MLT1G3-int","MLT1H","MLT1H-int","MLT1H1","MLT1H1-int","MLT1H2","MLT1H2-int","MLT1I","MLT1I-int","MLT1J","MLT1J-int","MLT1J1","MLT1J1-int","MLT1J2","MLT1J2-int","MLT1K","MLT1K-int","MLT1L","MLT1L-int","MLT1M","MLT1N2","MLT1O","MLT1O-int","MST-int","MSTA","MSTA-int","MSTA1","MSTB","MSTB-int","MSTB1","MSTB1-int","MSTB2","MSTB2-int","MSTC","MSTC-int","MSTD","MSTD-int","THE1A","THE1A-int","THE1B","THE1B-int","THE1C","THE1C-int","THE1D","THE1D-int","MLT-int","MLT1-int","MLT1A","MLT1A-int","MLT1A0","MLT1A0-int","MLT1A1","MLT1A1-int","MLT1B","MLT1B-int","MLT1C","MLT1C-int","MLT1D","MLT1D-int","MLT1E","MLT1E1","MLT1E1A","MLT1E2","MLT1E2-int","MLT1E3","MLT1E3-int","MLT1F","MLT1F-int","MLT1F1","MLT1F1-int","MLT1F2","MLT1F2-int","MLT1G","MLT1G-int","MLT1G1","MLT1G1-int","MLT1G3","MLT1G3-int","MLT1H","MLT1H-int","MLT1H1","MLT1H1-int","MLT1H2","MLT1H2-int","MLT1I","MLT1I-int","MLT1J","MLT1J-int","MLT1J1","MLT1J1-int","MLT1J2","MLT1J2-int","MLT1K","MLT1K-int","MLT1L","MLT1L-int","MLT1M","MLT1N2","MLT1O","MLT1O-int","MST-int","MSTA","MSTA-int","MSTA1","MSTB","MSTB-int","MSTB1","MSTB1-int","MSTB2","MSTB2-int","MSTC","MSTC-int","MSTD","MSTD-int","THE1A","THE1A-int","THE1B","THE1B-int","THE1C","THE1C-int","THE1D","THE1D-int"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1"],[0,0,2.057867971314163,0,0.7288122001581718,0,0,0,1.731043548202314,0,0.9604060151722076,0,0.6061739938669971,31.82036815317133,4.677585264929113,3.615064500109658,0,2.876846745304334,19.8812182049806,0,0,1.096455362234362,0,0.9575966419951651,31.82036815317133,1.872730176250371,15.90755217376598,3.980512236707135,0,1.747945001511646,0,0,0,1.576385650906166,0,1.988486008744802,19.8812182049806,0.8278251768909831,39.76179939462741,1.919229650692908,0,2.229473951823935,3.313367037296828,3.005035452781258,11.3585696313741,2.412803061347114,0,2.273635938710169,0,0.7221735269430319,0,0,1.303432705046968,1.78113533145415,0,0,1.657774968020738,0,0,0.8545523293794992,0,2.209440772984329,0,0,0,2.565032618534115,0,2.436326074457433,0,0,0,1.045918871258674,1.849101100508064,2.374495196819748,0,1.544106191877463,0,0,0,1.864535433024714,0,1.144003035216885,2.077828693546271,1.995470708002153,0,1.265514485924316,1.511092890783188,0.8532919723778261,0,0.5069189604227439,0,0.9777303035534638,0.7554795336722863,2.238671911323999,0.2001393488902583,0,1.900187713734111,0,1.031729162546761,0,2.20478688402833,0,1.075601147358042,0,1.662727982409875,8.312669115907831,0.7304453869855637,0,1.06555951135009,0,2.644868394067353,0,1.246829641681415,0,2.774492078333145,0,0.6002227442315812,0,1.136078343514721,2.771275070638908,1.726059683869287,0,1.764484743436182,0,0.8994483600691963,0,0.7551463452249568,5.54138917385322,0.9065827324360544,0.8172807798527145,0.868144860511823,0,0,1.038924881928368,0.4261070614091741,0,1.43030206589945,0,0.9233684154865113,0,0.6648004776555932,0,0.5360962585019505,0,1.017659852570577,1.445456803011971,0,0.8747940326621332,0.8746614468059807,0,0.49600059681721,0,0.8067182078165592,0.9234031476473489],[0,0,0.4177863102469113,0,0.08761858726824345,0,0,0,0.6287035364954681,0,0.259761859176255,0,0.07295111332568648,3.028712020540783,0.111858809645199,0.08752432312227443,0,0.58077295317646,0.4034762295732947,0,0,0.131387686445893,0,0.02394212281066902,3.028712020540783,0.5037369778432673,0.336085285641645,0.7974919883433356,0,0.2083097100679626,0,0,0,0.5729797036538961,0,0.236499107309869,0.4034762295732947,0.02073050769643687,0.6736081652952444,0.6963805437808438,0,1.008135638061682,0.08051736977674945,0.8028541982791874,0.2519264852367038,0.6468755866645127,0,1.078344115272915,0,0.08682538845597451,0,0,0.155954741876042,0.3623052858063702,0,0,0.446511749823869,0,0,0.02139279430201783,0,0.2623065151204365,0,0,0,0.06289322852480762,0,0.493304813245835,0,0,0,0.1253895718168281,0.04573060590398817,0.2815019737063839,0,0.1843298329037104,0,0,0,0.9632575495840489,0,0.6290207117797781,0.04682018379996503,0.6988806426656736,0,0.7704098468443377,0.0351018243053479,0.4907971354346854,0,0.2164759062172896,0,0.02339169605829189,0.01830289834040658,0.8575973234321198,0.005010078646467034,0,0.4904076689476666,0,0.4622412626086116,0,1.059243081827798,0,0.5266618633655703,0,0.5867458593691739,0.1408642588447274,0.1947959447397641,0,0.336482876833297,0,1.906659914149311,0,0.4441455104867498,0,1.524066700382393,0,0.2711510410502807,0,0.7015184348290051,0.6986698975390341,0.8358559981011197,0,0.9383633079215149,0,0.534695486858013,0,0.3569419081210661,0.1055357229335288,0.1813495364808926,0.2940629817182634,0.3423112875977302,0,0,0.5272766063982863,0.01052298509772418,0,0.5995725568806621,0,0.244891005621042,0,0.0161895449990988,0,0.01315491037746041,0,0.3644705966947799,0.16512626915761,0,0.02105065660686833,0.3707560068756289,0,0.05885163062219121,0,0.2564407396728745,0.02215952911447691],[null,null,6.177481926288631,null,2.669562740349786,null,null,null,3.825951263864756,null,2.487765211386489,null,2.215817312686326,195.1908011604113,29.91338549091564,22.38257008950481,null,8.721320059329646,200.9394357987801,null,null,4.039918392944424,null,5.494283328052929,195.1908011604113,4.894838308700026,142.4480156228706,12.22719624898452,null,6.510004986533435,null,null,null,3.480080401108762,null,7.435391471659358,200.9394357987801,4.731303443720874,753.3160681315804,4.247489033802385,null,4.297506801871545,20.34869658831166,7.940387393215936,88.75035644065447,6.338192803726479,null,4.244180446488003,null,2.644959277543047,null,null,4.81921463201295,5.329128959258624,null,null,4.323585586459584,null,null,4.887800397559095,null,8.291513275613147,null,null,null,15.42095302911333,null,7.346951252778068,null,null,null,3.851134203652713,10.88121360703931,8.933317209739467,null,5.731754019294502,null,null,null,3.317363399965356,null,1.930406062716075,15.5000449936313,4.658038462181774,null,1.974875105548244,10.4017732552602,1.388372046281365,null,1.014313285627258,null,6.241514743992044,4.675323842447583,4.950501418521333,1.146719277153957,null,5.316198747162656,null,2.014619247718925,null,4.155484934446685,null,1.975146161180781,null,3.837729013083298,159.8696020556748,1.936147188803637,null,2.595705337743369,null,3.599711706290563,null,2.836593452942755,null,4.742695011115073,null,1.158704838746434,null,1.751647771844625,8.070248056841066,3.217591258012234,null,3.068901446401716,null,1.427068412957106,null,1.41621315290979,68.94989643450774,2.79253936857744,1.831772578534037,1.839597789138575,null,null,1.858429727327646,2.519021085102534,null,2.938652740627034,null,2.469454348376396,null,4.062532281877805,null,3.217912180331808,null,2.296751476045383,5.851900962615784,null,5.505505383525465,1.768683957970323,null,1.863746641529288,null,1.945200750182218,5.850250495226481],[1,1,0.1849036209786249,1,1,1,1,1,0.1706962269310904,1,1,1,0.7772330256561273,0.003108152970210398,0.2015380254093141,0.2499334142516519,1,0.0921127172875601,0.06060121778166166,1,1,0.7056276593290335,1,1,0.003108152970210398,0.1720666856171745,0.07227375163449658,0.04386079629510264,1,0.3216139069605464,1,1,1,0.2912561684100892,1,0.2712142399485223,0.06060121778166166,1,0.03681404142016275,0.1414095851069234,1,0.02392001800502149,0.2684606237654367,0.04885090376833156,0.09518581542916196,0.09032996769798581,1,0.01595656025564006,1,1,1,1,0.6689064900124315,0.2428156458226221,1,1,0.3138888949658426,1,1,1,1,0.2344394275466406,1,1,1,0.3297778541216487,1,0.1315060048119795,1,1,1,0.7174683029316047,0.4231832441725816,0.2115961327073662,1,0.3755351224726023,1,1,1,0.05256275750422418,1,0.570397481305961,0.408931785301153,0.1347204778634058,1,0.312862058601387,0.5039644796192086,0.6416918593204393,1,0.06322866631541604,1,1,1,0.04887932618722506,0.09330147849819183,1,0.2809494805479356,1,0.8613685838268647,1,0.02165728676171268,1,0.7477079550993837,1,0.2760598546014004,0.1607695813900406,0.8224225867411724,1,0.8113058016305155,1,2.075583941787574e-08,1,0.6364245253569557,1,0.0005979655640624984,1,0.1390300916862743,1,0.5583575969300824,0.07157717713145269,0.1039388568131497,1,0.04803474908582588,1,0.7360650907227794,1,0.4750964842649968,0.2083962528190725,0.9999999999999999,0.8474592616941984,0.8561949326176538,1,1,0.8790572548331854,0.7271580551039177,1,0.2842808794754659,1,1,1,1,1,1,1,0.8334134605518323,0.6508753725693626,1,1,0.8643373091422021,1,0.4389503722369739,1,0.8348918341634521,1],[1,1,0.9185534719583301,1,1,1,1,1,0.883275652834829,1,1,1,1,0.1196638893531003,0.9584060128510113,1,1,0.6663007080041338,0.6085759132858795,1,1,1,1,1,0.1196638893531003,0.883275652834829,0.6183420973173596,0.6085759132858795,1,1,1,1,1,1,1,1,0.6085759132858795,1,0.6085759132858795,0.806558374313563,1,0.5262403961104727,1,0.6085759132858795,0.6663007080041338,0.6663007080041338,1,0.4914620558737137,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0.806558374313563,1,1,1,1,1,0.9584060128510113,1,1,1,1,1,0.6085759132858795,1,1,1,0.806558374313563,1,1,1,1,1,0.6085759132858795,1,1,1,0.6085759132858795,0.6663007080041338,1,1,1,1,1,0.5262403961104727,1,1,1,1,0.883275652834829,1,1,1,1,3.196399270352864e-06,1,1,1,0.04604334843281238,1,0.806558374313563,1,1,0.6183420973173596,0.6959384325750021,1,0.6085759132858795,1,1,1,1,0.9584060128510113,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>repName<\/th>\n      <th>comparison<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[4,5,6,7,8]},{"name":"cluster2","targets":0},{"name":"cluster1","targets":1},{"name":"repName","targets":2},{"name":"comparison","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="sva" class="section level3">
 <h3>SVA</h3>
@@ -1773,14 +2080,14 @@ SVA_counts &lt;- SVA_overlap_df %&gt;%
   mutate(status = &quot;TE&quot;)
 
 total_SVA_summits &lt;- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %&gt;% count(cluster, name = &quot;total&quot;)
 
 not_SVA_counts &lt;- SVA_counts %&gt;%
   left_join(total_SVA_summits, by = &quot;cluster&quot;) %&gt;%
   mutate(count = total - count,
          status = &quot;not_TE&quot;) %&gt;%
-  select(cluster, TE_type, status, count)
+  dplyr::select(cluster, TE_type, status, count)
 
 SVA_df_long &lt;- bind_rows(SVA_counts %&gt;%
                             dplyr::select(cluster, TE_type, status, count),
@@ -1813,8 +2120,8 @@ SVA_results &lt;- comparisons %&gt;%
     pageLength = 10,
     autoWidth = TRUE,
     scrollX = TRUE))</code></pre>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-0d0a58fb401ace3924c9" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-0d0a58fb401ace3924c9">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"34\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_3","Set_3","Set_3","Set_3","Set_3",null,null,null,null,null,null],["SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F","SVA_B","SVA_A","SVA_B","SVA_C","SVA_D","SVA_F","SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F"],[17,24,6,34,15,15,1,2,1,1,8,6,8,6,3,19,5,7],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-b12ecdfcc414070ada7f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-b12ecdfcc414070ada7f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"34\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_3","Set_3","Set_3","Set_3","Set_3",null,null,null,null,null,null],["SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F","SVA_B","SVA_A","SVA_B","SVA_C","SVA_D","SVA_F","SVA_A","SVA_B","SVA_C","SVA_D","SVA_E","SVA_F"],[17,24,6,34,15,15,1,2,1,1,8,6,8,6,3,19,5,7],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>total_SVA_summits</code></pre>
 <pre><code># A tibble: 4 × 2
   cluster  total
@@ -1871,8 +2178,8 @@ datatable(
   ) %&gt;%
   # Round numeric columns for readability
   formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-b12ecdfcc414070ada7f" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-b12ecdfcc414070ada7f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"6.65329056299284\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"2.11431723101984\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.000861668091879\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.010340017102549\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["SVA_A","SVA_C","SVA_D","SVA_E","SVA_F","SVA_B","SVA_B","SVA_E","SVA_F","SVA_D","SVA_C","SVA_A"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0,0,0,0,0,3.313367037296828,0.6925079092557964,0,6.653290562992843,3.914782693257322,2.770472640011628,1.955763095825167],[0,0,0,0,0,0.08051736977674945,0.01683761170863086,0,2.114317231019835,1.564793198350713,0.06022268580607684,0.2191114704978609],[null,null,null,null,null,20.34869658831166,4.248566147231114,null,18.14736106347534,8.619493839968195,22.84022351343565,8.241425359316741],[1,1,1,1,1,0.2684606237654367,1,1,0.0008616680918790941,0.002227524715485094,0.3356661657267022,0.293746489697816],[1,1,1,1,1,0.8055987977440852,1,1,0.01034001710254913,0.01336514829291056,0.8055987977440852,0.8055987977440852],[null,null,null,null,null,1.728298026406551,-0.5300975463552073,null,2.734068040579388,1.968932226785502,1.47013211968022,0.9677316253118631],["depleted","depleted","depleted","depleted","depleted","enriched","depleted","depleted","enriched","enriched","enriched","enriched"],[false,false,false,false,false,false,false,false,true,true,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-316a36fbbf64cb69d355" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-316a36fbbf64cb69d355">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"6.65329056299284\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"2.11431723101984\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.000861668091879\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.010340017102549\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["SVA_A","SVA_C","SVA_D","SVA_E","SVA_F","SVA_B","SVA_B","SVA_E","SVA_F","SVA_D","SVA_C","SVA_A"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0,0,0,0,0,3.313367037296828,0.6925079092557964,0,6.653290562992843,3.914782693257322,2.770472640011628,1.955763095825167],[0,0,0,0,0,0.08051736977674945,0.01683761170863086,0,2.114317231019835,1.564793198350713,0.06022268580607684,0.2191114704978609],[null,null,null,null,null,20.34869658831166,4.248566147231114,null,18.14736106347534,8.619493839968195,22.84022351343565,8.241425359316741],[1,1,1,1,1,0.2684606237654367,1,1,0.0008616680918790941,0.002227524715485094,0.3356661657267022,0.293746489697816],[1,1,1,1,1,0.8055987977440852,1,1,0.01034001710254913,0.01336514829291056,0.8055987977440852,0.8055987977440852],[null,null,null,null,null,1.728298026406551,-0.5300975463552073,null,2.734068040579388,1.968932226785502,1.47013211968022,0.9677316253118631],["depleted","depleted","depleted","depleted","depleted","enriched","depleted","depleted","enriched","enriched","enriched","enriched"],[false,false,false,false,false,false,false,false,true,true,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 <pre class="r"><code>ggplot(SVA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
@@ -1908,6 +2215,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/face47d5e3cbdd87ef81231bf1d441e50cbfd037/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot SVA-1.png" target="_blank">face47d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/97b142ec65a311a798c38bcac5a00ff91bca17b7/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot SVA-1.png" target="_blank">97b142e</a>
@@ -1949,14 +2267,14 @@ DNA_counts &lt;- DNA_overlap_df %&gt;%
   mutate(status = &quot;TE&quot;)
 
 total_DNA_summits &lt;- tibble(
-  cluster = mcols(H3K27ac_summit_gr)$cluster
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
 ) %&gt;% count(cluster, name = &quot;total&quot;)
 
 not_DNA_counts &lt;- DNA_counts %&gt;%
   left_join(total_DNA_summits, by = &quot;cluster&quot;) %&gt;%
   mutate(count = total - count,
          status = &quot;not_TE&quot;) %&gt;%
-  select(cluster, TE_type, status, count)
+  dplyr::select(cluster, TE_type, status, count)
 
 DNA_df_long &lt;- bind_rows(DNA_counts %&gt;%
                             dplyr::select(cluster, TE_type, status, count),
@@ -1989,8 +2307,8 @@ DNA_results &lt;- comparisons %&gt;%
     pageLength = 10,
     autoWidth = TRUE,
     scrollX = TRUE))</code></pre>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-316a36fbbf64cb69d355" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-316a36fbbf64cb69d355">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"5187\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3",null,null,null,null,null,null,null,null,null,null,null,null,null],["DNA","MULE-MuDR","PIF-Harbinger","PiggyBac","TcMar","TcMar-Mariner","TcMar-Pogo","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tag1","hAT-Tip100","DNA","PiggyBac","TcMar","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tip100","DNA","MULE-MuDR","PiggyBac","TcMar","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tip100","DNA","MULE-MuDR","PiggyBac","TcMar","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tag1","hAT-Tip100"],[52,21,1,46,9,132,1,92,2310,173,107,366,5187,1,1096,1,1,1,4,1,52,2,5,57,14,7,1,2,1,5,6,154,15,8,15,286,73,13,5,17,4,43,29,834,46,35,95,1546,2,364],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0f59f945287a722aca07" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0f59f945287a722aca07">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"1\" data-max=\"5187\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3",null,null,null,null,null,null,null,null,null,null,null,null,null],["DNA","MULE-MuDR","PIF-Harbinger","PiggyBac","TcMar","TcMar-Mariner","TcMar-Pogo","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tag1","hAT-Tip100","DNA","PiggyBac","TcMar","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tip100","DNA","MULE-MuDR","PiggyBac","TcMar","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tip100","DNA","MULE-MuDR","PiggyBac","TcMar","TcMar-Mariner","TcMar-Tc2","TcMar-Tigger","hAT","hAT-Ac","hAT-Blackjack","hAT-Charlie","hAT-Tag1","hAT-Tip100"],[52,21,1,46,9,132,1,92,2310,173,107,366,5187,1,1096,1,1,1,4,1,52,2,5,57,14,7,1,2,1,5,6,154,15,8,15,286,73,13,5,17,4,43,29,834,46,35,95,1546,2,364],["TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE","TE"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>TE_type<\/th>\n      <th>count<\/th>\n      <th>status<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"cluster","targets":0},{"name":"TE_type","targets":1},{"name":"count","targets":2},{"name":"status","targets":3}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>total_DNA_summits</code></pre>
 <pre><code># A tibble: 4 × 2
   cluster  total
@@ -2047,8 +2365,8 @@ datatable(
   ) %&gt;%
   # Round numeric columns for readability
   formatRound(columns = c(&#39;odds_ratio&#39;,&#39;log2OR&#39;,&#39;FDR&#39;), digits = 2)</code></pre>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-0f59f945287a722aca07" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-0f59f945287a722aca07">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"8.83625516890824\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1.34794460791982\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.000101805523\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.003054165690001\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["hAT-Charlie","TcMar-Tc2","MULE-MuDR","PIF-Harbinger","TcMar-Pogo","hAT","hAT-Tag1","TcMar","TcMar-Mariner","TcMar-Tigger","PiggyBac","DNA","hAT-Ac","hAT-Blackjack","hAT-Tip100","hAT-Charlie","MULE-MuDR","PiggyBac","hAT-Blackjack","TcMar-Mariner","PIF-Harbinger","TcMar-Pogo","hAT-Tag1","DNA","TcMar","hAT","hAT-Ac","TcMar-Tigger","hAT-Tip100","TcMar-Tc2"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.868006491329452,0.8638487270647014,0,0,0,0,0,8.836255168908236,2.412803061347114,1.81990403782391,1.728402167059405,1.528859193408684,1.486322520147703,1.086138176137454,1.015453256261704,0.9126979936131027,0.7914633561045439,0.7225828022533552,0.6804758627639141,0.6293123273654364,0,0,0,2.238671911323999,1.846863414292978,1.442146947855671,1.243016116587621,1.110659323284071,1.108270250186624,1.084059918595353],[0.6528390808806147,0.02162305292263136,0,0,0,0,0,0.2014737713401089,0.6468755866645127,1.347944607919823,0.04280967665357778,0.03796006826359433,0.1775155999272826,0.3500015011803271,0.5518140736922832,0.8052462294415076,0.01913550468515959,0.0849475096562558,0.3767368840859537,0.2009498723303673,0,0,0,0.8575973234321198,0.04213185153965873,0.7895517130618188,0.5229774304272178,0.9355195093727464,0.8610471533247875,0.3876494834001612],[1.133551075619503,4.942282962169871,null,null,null,null,null,63.85396079911429,6.338192803726479,2.409501551739215,10.13837482671145,8.915181200367588,5.512700190054037,2.564043037552568,1.71706741581829,1.031193095659262,4.922604132591399,2.76384978653553,1.138134427924416,1.506814055386227,null,null,null,4.950501418521333,13.33035754662315,2.447322216019706,2.540237058046794,1.310631054800047,1.407371612958127,2.45235376590485],[0.3376800145034317,1,1,1,1,1,1,0.1175324182349726,0.09032996769798581,0.0001018055230000656,0.4444264808802824,0.4845962760752617,0.3931292238605045,0.8115410849811341,0.8914890549839846,0.1508106390880344,0.9999999999999999,1,0.1813954300834284,0.4559194534053418,1,1,1,0.04887932618722506,0.442476874213992,0.2030715705234079,0.5414180466762187,0.2176552168064782,0.408372217021772,0.8253288485208126],[0.9691925521505235,1,1,1,1,1,1,0.8162070630242931,0.8162070630242931,0.003054165690001968,0.9691925521505235,0.9691925521505235,0.9691925521505235,1,1,0.8162070630242931,1,1,0.8162070630242931,0.9691925521505235,1,1,1,0.733189892808376,0.9691925521505235,0.8162070630242931,1,0.8162070630242931,0.9691925521505235,1],[-0.2042222630772953,-0.2111493980322762,null,null,null,null,null,3.143435080712552,1.270710164201434,0.863862380201157,0.789438944883085,0.6124555418685796,0.5717472031786783,0.1192076513444401,0.02212383046464205,-0.1317905350004726,-0.3374055381952192,-0.4687651764013311,-0.555384106249046,-0.6681518912833045,null,null,null,1.162643109437167,0.885077175032577,0.5282181757724526,0.3138450020784928,0.1514163612998221,0.1483097235019703,0.1164445001155273],["depleted","depleted","depleted","depleted","depleted","depleted","depleted","enriched","enriched","enriched","enriched","enriched","enriched","enriched","enriched","depleted","depleted","depleted","depleted","depleted","depleted","depleted","depleted","enriched","enriched","enriched","enriched","enriched","enriched","enriched"],[false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-c961b62b3a4a0c109cae" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c961b62b3a4a0c109cae">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"8.83625516890824\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1.34794460791982\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.000101805523\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.003054165690001\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\" disabled=\"\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0\" data-max=\"1\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["hAT-Charlie","TcMar-Tc2","MULE-MuDR","PIF-Harbinger","TcMar-Pogo","hAT","hAT-Tag1","TcMar","TcMar-Mariner","TcMar-Tigger","PiggyBac","DNA","hAT-Ac","hAT-Blackjack","hAT-Tip100","hAT-Charlie","MULE-MuDR","PiggyBac","hAT-Blackjack","TcMar-Mariner","PIF-Harbinger","TcMar-Pogo","hAT-Tag1","DNA","TcMar","hAT","hAT-Ac","TcMar-Tigger","hAT-Tip100","TcMar-Tc2"],["Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_2 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1","Set_3 vs Set_1"],["Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_2","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3","Set_3"],["Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1","Set_1"],[0.868006491329452,0.8638487270647014,0,0,0,0,0,8.836255168908236,2.412803061347114,1.81990403782391,1.728402167059405,1.528859193408684,1.486322520147703,1.086138176137454,1.015453256261704,0.9126979936131027,0.7914633561045439,0.7225828022533552,0.6804758627639141,0.6293123273654364,0,0,0,2.238671911323999,1.846863414292978,1.442146947855671,1.243016116587621,1.110659323284071,1.108270250186624,1.084059918595353],[0.6528390808806147,0.02162305292263136,0,0,0,0,0,0.2014737713401089,0.6468755866645127,1.347944607919823,0.04280967665357778,0.03796006826359433,0.1775155999272826,0.3500015011803271,0.5518140736922832,0.8052462294415076,0.01913550468515959,0.0849475096562558,0.3767368840859537,0.2009498723303673,0,0,0,0.8575973234321198,0.04213185153965873,0.7895517130618188,0.5229774304272178,0.9355195093727464,0.8610471533247875,0.3876494834001612],[1.133551075619503,4.942282962169871,null,null,null,null,null,63.85396079911429,6.338192803726479,2.409501551739215,10.13837482671145,8.915181200367588,5.512700190054037,2.564043037552568,1.71706741581829,1.031193095659262,4.922604132591399,2.76384978653553,1.138134427924416,1.506814055386227,null,null,null,4.950501418521333,13.33035754662315,2.447322216019706,2.540237058046794,1.310631054800047,1.407371612958127,2.45235376590485],[0.3376800145034317,1,1,1,1,1,1,0.1175324182349726,0.09032996769798581,0.0001018055230000656,0.4444264808802824,0.4845962760752617,0.3931292238605045,0.8115410849811341,0.8914890549839846,0.1508106390880344,0.9999999999999999,1,0.1813954300834284,0.4559194534053418,1,1,1,0.04887932618722506,0.442476874213992,0.2030715705234079,0.5414180466762187,0.2176552168064782,0.408372217021772,0.8253288485208126],[0.9691925521505235,1,1,1,1,1,1,0.8162070630242931,0.8162070630242931,0.003054165690001968,0.9691925521505235,0.9691925521505235,0.9691925521505235,1,1,0.8162070630242931,1,1,0.8162070630242931,0.9691925521505235,1,1,1,0.733189892808376,0.9691925521505235,0.8162070630242931,1,0.8162070630242931,0.9691925521505235,1],[-0.2042222630772953,-0.2111493980322762,null,null,null,null,null,3.143435080712552,1.270710164201434,0.863862380201157,0.789438944883085,0.6124555418685796,0.5717472031786783,0.1192076513444401,0.02212383046464205,-0.1317905350004726,-0.3374055381952192,-0.4687651764013311,-0.555384106249046,-0.6681518912833045,null,null,null,1.162643109437167,0.885077175032577,0.5282181757724526,0.3138450020784928,0.1514163612998221,0.1483097235019703,0.1164445001155273],["depleted","depleted","depleted","depleted","depleted","depleted","depleted","enriched","enriched","enriched","enriched","enriched","enriched","enriched","enriched","depleted","depleted","depleted","depleted","depleted","depleted","depleted","depleted","enriched","enriched","enriched","enriched","enriched","enriched","enriched"],[false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>TE_type<\/th>\n      <th>comparison<\/th>\n      <th>cluster2<\/th>\n      <th>cluster1<\/th>\n      <th>odds_ratio<\/th>\n      <th>lower_CI<\/th>\n      <th>upper_CI<\/th>\n      <th>p_value<\/th>\n      <th>FDR<\/th>\n      <th>log2OR<\/th>\n      <th>direction<\/th>\n      <th>significant<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":9,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":8,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[4,5,6,7,8,9]},{"name":"TE_type","targets":0},{"name":"comparison","targets":1},{"name":"cluster2","targets":2},{"name":"cluster1","targets":3},{"name":"odds_ratio","targets":4},{"name":"lower_CI","targets":5},{"name":"upper_CI","targets":6},{"name":"p_value","targets":7},{"name":"FDR","targets":8},{"name":"log2OR","targets":9},{"name":"direction","targets":10},{"name":"significant","targets":11}],"order":[],"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[10]; $(row).css({'background-color':value == \"enriched\" ? \"#FFDD99\" : value == \"depleted\" ? \"#99CCFF\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'font-weight':value == true ? \"bold\" : null});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 <pre class="r"><code>ggplot(DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = TE_type)) +
   geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
@@ -2086,6 +2404,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/face47d5e3cbdd87ef81231bf1d441e50cbfd037/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot DNA-1.png" target="_blank">face47d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/97b142ec65a311a798c38bcac5a00ff91bca17b7/docs/figure/H3K27_TE_overlap_extend.Rmd/Plot DNA-1.png" target="_blank">97b142e</a>
 </td>
 <td>
@@ -2110,7 +2439,78 @@ reneeisnowhere
 </table>
 </div>
 </div>
-<pre class="r"><code>names(rpt_split_gr_list)
+</div>
+<div id="tcmar-tigger" class="section level3">
+<h3>TcMar-Tigger</h3>
+<pre class="r"><code>DNA_hits &lt;- findOverlaps(H3K27ac_summit_gr_ext, DNA_gr, ignore.strand = TRUE)
+DNA_name_overlap_df &lt;- tibble(
+  summit_id = queryHits(DNA_hits),
+  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(DNA_hits)],
+  TE_type   = mcols(DNA_gr)$repFamily[subjectHits(DNA_hits)],
+  repName= mcols(DNA_gr)$repName[subjectHits(DNA_hits)])
+
+DNA_TcMarTigger_counts &lt;-
+  DNA_name_overlap_df %&gt;%
+    dplyr::filter(TE_type==&quot;TcMar-Tigger&quot;) %&gt;% 
+  count(cluster, repName, name = &quot;count&quot;) %&gt;%
+  mutate(status = &quot;TE&quot;)
+
+total_DNA_summits &lt;- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %&gt;% count(cluster, name = &quot;total&quot;)
+
+not_DNA_TcMarTigger_counts &lt;- DNA_TcMarTigger_counts %&gt;%
+  left_join(total_DNA_summits, by = &quot;cluster&quot;) %&gt;%
+  mutate(count = total - count,
+         status = &quot;not_TE&quot;) %&gt;%
+  dplyr::select(cluster, repName, status, count)
+
+DNA_TcMarTigger_df_long &lt;- bind_rows(DNA_TcMarTigger_counts %&gt;%
+                            dplyr::select(cluster, repName, status, count),
+                          not_DNA_TcMarTigger_counts) %&gt;% 
+  filter(!is.na(cluster))
+
+TcMarTigger_DNA_results &lt;- comparisons %&gt;%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+       DNA_TcMarTigger_df_long %&gt;%
+        distinct(repName) %&gt;%
+        pull() %&gt;%
+        map_dfr(function(rep) {
+          test_pair_TE_repName(
+            DNA_TcMarTigger_df_long,
+            rep_name  = rep,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %&gt;%
+  unnest(results) %&gt;%
+  mutate(FDR = p.adjust(p_value, method = &quot;BH&quot;))
+
+ggplot(TcMarTigger_DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(data = subset(TcMarTigger_DNA_results, FDR &lt; 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;DNA Name (TcMar-Tigger) enrichment at ROI extended-summits\nH3K27ac&quot;
+  ) +
+  theme_classic()+
+  facet_wrap(~comparison)</code></pre>
+<p><img src="figure/H3K27_TE_overlap_extend.Rmd/TcMar-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+
+
+``` r
+names(rpt_split_gr_list)
 
 out_dir &lt;- &quot;data/Bed_exports/repeatmasker_sets&quot;
 set_list &lt;- names(rpt_split_gr_list)
