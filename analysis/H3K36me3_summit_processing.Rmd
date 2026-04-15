@@ -202,27 +202,34 @@ assign_best_summit_to_ROI_parallel <- function(consensus_gr,
     # -----------------------------
     # 2) Nearest fallback
     # -----------------------------
-    unassigned_peaks <- setdiff(roi_meta$Peakid, assigned_df$Peakid)
-
-    if (length(unassigned_peaks) > 0 && length(cons_chr) > 0) {
-
-      roi_unassigned <- rois_chr[rois_chr$Peakid %in% unassigned_peaks]
-
-      dn <- distanceToNearest(roi_unassigned, cons_chr)
-
-      dn_df <- tibble(
-        Peakid = roi_unassigned$Peakid[queryHits(dn)],
-        summit_pos = start(cons_chr)[subjectHits(dn)],
-        summit_score = mcols(cons_chr)$score[subjectHits(dn)],
-        distance = mcols(dn)$distance
-      ) %>%
-        filter(distance <= max_dist) %>%
-        group_by(Peakid) %>%
-        slice_max(summit_score, with_ties = FALSE) %>%
-        ungroup()
-
-      assigned_df <- bind_rows(assigned_df, dn_df)
-    }
+#     unassigned_peaks <- setdiff(roi_meta$Peakid, assigned_df$Peakid)
+# 
+#     if (length(unassigned_peaks) > 0 && length(cons_chr) > 0) {
+# 
+#       roi_unassigned <- rois_chr[rois_chr$Peakid %in% unassigned_peaks]
+# 
+#   # Expand each ROI symmetrically by max_dist
+#   roi_expanded <- roi_unassigned
+# start(roi_expanded) <- start(roi_expanded) - max_dist
+# end(roi_expanded)   <- end(roi_expanded) + max_dist
+# 
+#   ov2 <- findOverlaps(roi_expanded, cons_chr)
+# 
+#   dn_df <- if (length(ov2) > 0) {
+#     tibble(
+#       Peakid = roi_unassigned$Peakid[queryHits(ov2)],
+#       summit_pos = start(cons_chr)[subjectHits(ov2)],
+#       summit_score = mcols(cons_chr)$score[subjectHits(ov2)]
+#     ) %>%
+#       group_by(Peakid) %>%
+#       slice_max(summit_score, with_ties = FALSE) %>%
+#       ungroup()
+#   } else {
+#     tibble()
+#   }
+# 
+#   assigned_df <- bind_rows(assigned_df, dn_df)
+# }
 
     # -----------------------------
     # 3) Merge + derived metrics
@@ -575,8 +582,8 @@ ggplot(heatmap_avg, aes(x = factor(min_gap_within),
 
 
 ```{r apply the function}
-# options(future.globals.maxSize = 10 * 1024^3)
-# workers <- parallel::detectCores() - 1
+options(future.globals.maxSize = 10 * 1024^3)
+workers <- parallel::detectCores() - 1
 # ### Step 1
 # temp_highest_per_group <- get_highest_per_group_parallel(all_H3K36me3_summits_gr,
 #                                                          group_col = "group",
@@ -613,7 +620,7 @@ flat_highest_gr <- (c(temp_highest_per_group$DOX_144R, temp_highest_per_group$DO
 
 # saveRDS(consensus_summits_gr,"data/RDS_files/H3K36me3_consensus_summits_gr.RDS")
 consensus_summits_gr <- readRDS("data/RDS_files/H3K36me3_consensus_summits_gr.RDS")
-# final_data <- assign_best_summit_to_ROI_parallel(consensus_summits_gr, ROIs,max_dist = 500,workers = workers)
+final_data <- assign_best_summit_to_ROI_parallel(consensus_summits_gr, ROIs,max_dist = 100,workers = workers)
 
 # saveRDS(final_data,"data/RDS_files/H3K36me3_final_data.RDS")
 final_data <- readRDS("data/RDS_files/H3K36me3_final_data.RDS")
@@ -666,7 +673,7 @@ assigned_df_calc <- assigned_df %>% mutate(
               )
 
 complete_summit_df <- final_df %>% 
-  dplyr::select(!distance) %>% 
+  # dplyr::select(!distance) %>% 
    dplyr::filter(!is.na(summit_pos)) %>% 
   bind_rows(.,assigned_df_calc) %>% 
   left_join(., H3K36me3_lookup, by = "Peakid") %>% 

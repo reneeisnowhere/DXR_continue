@@ -683,7 +683,9 @@ ggplot(tRNA_SINE_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)
   theme_classic()+
   facet_wrap(~comparison)
 ```
-### LINE
+### LINE  
+
+
 Overlapping LINE family with summits to get a count
 ```{r LINE Overlapping}
 LINE_hits <- findOverlaps(H3K27ac_summit_gr_ext, LINE_gr, ignore.strand = TRUE)

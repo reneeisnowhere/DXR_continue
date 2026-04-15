@@ -139,7 +139,7 @@ H3K9me3_sets_gr <- lapply(peakAnnoList_H3K9me3, function(df) {
   cluster2 = c("Set_2", "Set_3"),
   cluster1 = c("Set_1", "Set_1")
 )
-
+H3K9me3_summit_ols <- readRDS("data/RDS_files/H3K9me3_summit_ROI_TE_overlaps.RDS")
 ```
 
 ```{r toplist data}
@@ -269,23 +269,44 @@ SINE_overlap_df %>%
   facet_wrap(~cluster)
 ```
 
+#### summit SINEs
+```{r SINE_sum Overlapping}
+sine_hits_sum <- findOverlaps(H3K9me3_summit_gr, SINE_gr, ignore.strand = TRUE)
 
-```{r SINE Overlapping 2, fig.height=10}
-SINE_overlap_df %>% 
+SINE_overlap_df_sum <- tibble(
+  peak_row = queryHits(sine_hits_sum),
+  Peakid   = H3K9me3_summit_gr$Peakid[queryHits(sine_hits_sum)],
+  cluster  = H3K9me3_summit_gr$cluster[queryHits(sine_hits_sum)],
+  
+  
+  repClass = SINE_gr$repClass[subjectHits(sine_hits_sum)],
+  repName  = SINE_gr$repName[subjectHits(sine_hits_sum)],
+  
+  TE_type  = ifelse(
+    SINE_gr$repFamily[subjectHits(sine_hits_sum)] == "SVA",
+    SINE_gr$repName[subjectHits(sine_hits_sum)],
+    SINE_gr$repFamily[subjectHits(sine_hits_sum)]
+  ),
+  
+  milliDiv = SINE_gr$milliDiv[subjectHits(sine_hits_sum)],
+  milliDel = SINE_gr$milliDel[subjectHits(sine_hits_sum)],
+  milliIns = SINE_gr$milliIns[subjectHits(sine_hits_sum)]
+)
+
+SINE_overlap_df_sum %>% 
   dplyr::left_join(H3K9me3_lookup) %>% 
   dplyr::filter(cluster %in% c("Set_1","Set_2","Set_3")) %>% 
-  ggplot(., aes(x = cluster, y = milliDiv)) +
-  geom_violin(trim = FALSE) +
+  ggplot(., aes(x = TE_type, y = milliDiv)) +
+   geom_violin(trim = FALSE) +
    geom_boxplot(width = 0.15, outlier.shape = NA) +
    coord_flip() +
    labs(
      y = "Divergence from consensus (milliDiv)",
      x = "TE family",
-     title = "Age distribution of SINE elements overlapping H3K9me3"
+     title = "Age distribution of SINE elements overlapping H3K9me3 summits"
    )+
-  facet_wrap(~repName)
+  facet_wrap(~cluster)
 ```
-
 
 
 ### LINE
@@ -328,7 +349,44 @@ LINE_overlap_df %>%
   facet_wrap(~cluster)
 ```
 
+#### summit LINEs
+```{r LINE_sum Overlapping}
+LINE_hits_sum <- findOverlaps(H3K9me3_summit_gr, LINE_gr, ignore.strand = TRUE)
 
+LINE_overlap_df_sum <- tibble(
+  peak_row = queryHits(LINE_hits_sum),
+  Peakid   = H3K9me3_summit_gr$Peakid[queryHits(LINE_hits_sum)],
+  cluster  = H3K9me3_summit_gr$cluster[queryHits(LINE_hits_sum)],
+  
+  
+  repClass = LINE_gr$repClass[subjectHits(LINE_hits_sum)],
+  repName  = LINE_gr$repName[subjectHits(LINE_hits_sum)],
+  
+  TE_type  = ifelse(
+    LINE_gr$repFamily[subjectHits(LINE_hits_sum)] == "SVA",
+    LINE_gr$repName[subjectHits(LINE_hits_sum)],
+    LINE_gr$repFamily[subjectHits(LINE_hits_sum)]
+  ),
+  
+  milliDiv = LINE_gr$milliDiv[subjectHits(LINE_hits_sum)],
+  milliDel = LINE_gr$milliDel[subjectHits(LINE_hits_sum)],
+  milliIns = LINE_gr$milliIns[subjectHits(LINE_hits_sum)]
+)
+
+LINE_overlap_df_sum %>% 
+  dplyr::left_join(H3K9me3_lookup) %>% 
+  dplyr::filter(cluster %in% c("Set_1","Set_2","Set_3")) %>% 
+  ggplot(., aes(x = TE_type, y = milliDiv)) +
+   geom_violin(trim = FALSE) +
+   geom_boxplot(width = 0.15, outlier.shape = NA) +
+   coord_flip() +
+   labs(
+     y = "Divergence from consensus (milliDiv)",
+     x = "TE family",
+     title = "Age distribution of LINE elements overlapping H3K9me3 summits"
+   )+
+  facet_wrap(~cluster)
+```
 ### LTR
 Overlapping LTR family with ROIs
 
@@ -369,7 +427,44 @@ LTR_overlap_df %>%
   facet_wrap(~cluster)
 ```
 
+#### summit LTRs
+```{r LTR_sum Overlapping}
+LTR_hits_sum <- findOverlaps(H3K9me3_summit_gr, LTR_gr, ignore.strand = TRUE)
 
+LTR_overlap_df_sum <- tibble(
+  peak_row = queryHits(LTR_hits_sum),
+  Peakid   = H3K9me3_summit_gr$Peakid[queryHits(LTR_hits_sum)],
+  cluster  = H3K9me3_summit_gr$cluster[queryHits(LTR_hits_sum)],
+  
+  
+  repClass = LTR_gr$repClass[subjectHits(LTR_hits_sum)],
+  repName  = LTR_gr$repName[subjectHits(LTR_hits_sum)],
+  
+  TE_type  = ifelse(
+    LTR_gr$repFamily[subjectHits(LTR_hits_sum)] == "SVA",
+    LTR_gr$repName[subjectHits(LTR_hits_sum)],
+    LTR_gr$repFamily[subjectHits(LTR_hits_sum)]
+  ),
+  
+  milliDiv = LTR_gr$milliDiv[subjectHits(LTR_hits_sum)],
+  milliDel = LTR_gr$milliDel[subjectHits(LTR_hits_sum)],
+  milliIns = LTR_gr$milliIns[subjectHits(LTR_hits_sum)]
+)
+
+LTR_overlap_df_sum %>% 
+  dplyr::left_join(H3K9me3_lookup) %>% 
+  dplyr::filter(cluster %in% c("Set_1","Set_2","Set_3")) %>% 
+  ggplot(., aes(x = TE_type, y = milliDiv)) +
+   geom_violin(trim = FALSE) +
+   geom_boxplot(width = 0.15, outlier.shape = NA) +
+   coord_flip() +
+   labs(
+     y = "Divergence from consensus (milliDiv)",
+     x = "TE family",
+     title = "Age distribution of LTR elements overlapping H3K9me3 summits"
+   )+
+  facet_wrap(~cluster)
+```
 
 ### DNA
 Overlapping DNA family with ROIs
@@ -411,7 +506,44 @@ DNA_overlap_df %>%
   facet_wrap(~cluster)
 ```
 
+#### summit DNAs
+```{r DNA_sum Overlapping}
+DNA_hits_sum <- findOverlaps(H3K9me3_summit_gr, DNA_gr, ignore.strand = TRUE)
 
+DNA_overlap_df_sum <- tibble(
+  peak_row = queryHits(DNA_hits_sum),
+  Peakid   = H3K9me3_summit_gr$Peakid[queryHits(DNA_hits_sum)],
+  cluster  = H3K9me3_summit_gr$cluster[queryHits(DNA_hits_sum)],
+  
+  
+  repClass = DNA_gr$repClass[subjectHits(DNA_hits_sum)],
+  repName  = DNA_gr$repName[subjectHits(DNA_hits_sum)],
+  
+  TE_type  = ifelse(
+    DNA_gr$repFamily[subjectHits(DNA_hits_sum)] == "SVA",
+    DNA_gr$repName[subjectHits(DNA_hits_sum)],
+    DNA_gr$repFamily[subjectHits(DNA_hits_sum)]
+  ),
+  
+  milliDiv = DNA_gr$milliDiv[subjectHits(DNA_hits_sum)],
+  milliDel = DNA_gr$milliDel[subjectHits(DNA_hits_sum)],
+  milliIns = DNA_gr$milliIns[subjectHits(DNA_hits_sum)]
+)
+
+DNA_overlap_df_sum %>% 
+  dplyr::left_join(H3K9me3_lookup) %>% 
+  dplyr::filter(cluster %in% c("Set_1","Set_2","Set_3")) %>% 
+  ggplot(., aes(x = TE_type, y = milliDiv)) +
+   geom_violin(trim = FALSE) +
+   geom_boxplot(width = 0.15, outlier.shape = NA) +
+   coord_flip() +
+   labs(
+     y = "Divergence from consensus (milliDiv)",
+     x = "TE family",
+     title = "Age distribution of DNA elements overlapping H3K9me3"
+   )+
+  facet_wrap(~cluster)
+```
 
 
 ### SVA/Retroposon
@@ -454,52 +586,93 @@ SVA_overlap_df %>%
   facet_wrap(~cluster)
 ```
 
+#### summit SVAs
+```{r SVA_sum Overlapping}
+SVA_hits_sum <- findOverlaps(H3K9me3_summit_gr, SVA_gr, ignore.strand = TRUE)
 
+SVA_overlap_df_sum <- tibble(
+  peak_row = queryHits(SVA_hits_sum),
+  Peakid   = H3K9me3_summit_gr$Peakid[queryHits(SVA_hits_sum)],
+  cluster  = H3K9me3_summit_gr$cluster[queryHits(SVA_hits_sum)],
+  
+  
+  repClass = SVA_gr$repClass[subjectHits(SVA_hits_sum)],
+  repName  = SVA_gr$repName[subjectHits(SVA_hits_sum)],
+  
+  TE_type  = ifelse(
+    SVA_gr$repFamily[subjectHits(SVA_hits_sum)] == "SVA",
+    SVA_gr$repName[subjectHits(SVA_hits_sum)],
+    SVA_gr$repFamily[subjectHits(SVA_hits_sum)]
+  ),
+  
+  milliDiv = SVA_gr$milliDiv[subjectHits(SVA_hits_sum)],
+  milliDel = SVA_gr$milliDel[subjectHits(SVA_hits_sum)],
+  milliIns = SVA_gr$milliIns[subjectHits(SVA_hits_sum)]
+)
+
+SVA_overlap_df_sum %>% 
+  dplyr::left_join(H3K9me3_lookup) %>% 
+  dplyr::filter(cluster %in% c("Set_1","Set_2","Set_3")) %>% 
+  ggplot(., aes(x = TE_type, y = milliDiv)) +
+   geom_violin(trim = FALSE) +
+   geom_boxplot(width = 0.15, outlier.shape = NA) +
+   coord_flip() +
+   labs(
+     y = "Divergence from consensus (milliDiv)",
+     x = "TE family",
+     title = "Age distribution of SVA elements overlapping H3K9me3 summits"
+   )+
+  facet_wrap(~cluster)
+```
 
 ### Looking for overlapping information: LTR specific  
 
-Here I am exploring H3K9me3 ROIs which overlap LTRs and also overlap H3K27ac ROIs, then exploring LFC of the H3K9me3 ROI sets across families of LTRs.  First I wanted to know how many H3K9me3 ROIs overlap LTRs, and howmany of those are more than one LTR:
-```{r H3K9me3 overalapping regions}
-
+Here I am exploring H3K9me3 ROIs which overlap LTRs and also overlap H3K27ac ROIs, then exploring LFC of the H3K9me3 ROI sets across families of LTRs.  First I wanted to know how many H3K9me3 ROIs overlap LTRs, and how many of those are more than one LTR:
+```{r H3K9me3 overlapping regions}
+print("Breakdown of Peaks and number of LTRs they cross")
 LTR_overlap_df %>% 
-  count(Peakid, name = "n_peaks") %>%
-  count(n_peaks)
+  count(Peakid, name = "n_peaks")%>%
+  count(n_peaks, name = "LTR_count")
+print("Breakdown of LTRs and number of Peaks they cross")
+LTR_overlap_df %>% 
+  count(RM_id, name = "n_LTR") %>% 
+  count(n_peaks, name="Peak count")
 
-LTR_only_K27ac_peakids <- LTR_overlap_df %>% distinct(Peakid)
+LTR_only_K9me3_peakids <- LTR_overlap_df %>% distinct(Peakid)
 
 
 ```
 
-I then overlapped ROIs with H3K9me3 ROIs to see how many unique H3K9me3 ROIs are involved.
+I then overlapped ROIs with H3K27ac ROIs to see how many unique H3K9me3 ROIs are involved.
 ```{r}
 
-K27ac_hits <- findOverlaps(H3K9me3_sets_gr$all_H3K9me3_regions, H3K27ac_sets_gr$all_H3K27ac, ignore.strand = TRUE)
+K9me3_hits <- findOverlaps(H3K9me3_sets_gr$all_H3K9me3_regions, H3K27ac_sets_gr$all_H3K27ac, ignore.strand = TRUE)
 
-K27ac_overlap_df <- tibble(
-  peak_row = queryHits(K27ac_hits),
-  Peakid   = H3K9me3_sets_gr$all_H3K9me3_regions$Peakid[queryHits(K27ac_hits)],
-  cluster  = H3K9me3_sets_gr$all_H3K9me3_regions$cluster[queryHits(K27ac_hits)],
-  ROI_K27ac = H3K27ac_sets_gr$all_H3K27ac$Peakid[subjectHits(K27ac_hits)])
+K9me3_overlap_df <- tibble(
+  peak_row = queryHits(K9me3_hits),
+  Peakid   = H3K9me3_sets_gr$all_H3K9me3_regions$Peakid[queryHits(K9me3_hits)],
+  cluster  = H3K9me3_sets_gr$all_H3K9me3_regions$cluster[queryHits(K9me3_hits)],
+  ROI_K27ac = H3K27ac_sets_gr$all_H3K27ac$Peakid[subjectHits(K9me3_hits)])
 
-K27ac_overlap_df %>%
+K9me3_overlap_df %>%
   count(Peakid, name = "n_peaks") %>%
   count(n_peaks)
 
-K27ac_only_K9me3_peakids <- K27ac_overlap_df %>% distinct(Peakid)
+K9me3_only_K27ac_peakids <- K9me3_overlap_df %>% distinct(Peakid)
 
 ```
 Now to filter and connect H3K9me3 ROIs, that overlap LTRs and at least one H3K9me3
 ```{r}
 LTR_overlap_df %>% 
-  dplyr::filter(Peakid %in% K27ac_only_K9me3_peakids$Peakid) %>%  distinct(RM_id)
+  dplyr::filter(Peakid %in% K9me3_only_K27ac_peakids$Peakid) %>%  distinct(RM_id)
 ```
 
 #### LFC of those regions
 
 ```{r}
 LTR_overlap_df %>% 
-  dplyr::filter(Peakid %in% K27ac_only_K9me3_peakids$Peakid) %>% 
-  left_join(., H3K27ac_lookup) %>% 
+  dplyr::filter(Peakid %in% K9me3_only_K27ac_peakids$Peakid) %>% 
+  left_join(., H3K9me3_lookup) %>% 
   left_join(., K9me3_lfctable, by = c("Peakid"="genes")) %>% 
   group_by(TE_type) %>% 
   tally() %>% 
@@ -518,7 +691,7 @@ LTR_overlap_df %>%
 ```{r}
 LTR_overlap_df %>% 
   dplyr::left_join(H3K9me3_lookup) %>% 
-   dplyr::filter(Peakid %in% K27ac_only_K9me3_peakids$Peakid) %>% 
+   dplyr::filter(Peakid %in% K9me3_only_K27ac_peakids$Peakid) %>% 
   dplyr::filter(cluster %in% c("Set_1","Set_2","Set_3")) %>% 
   ggplot(., aes(x = TE_type, y = milliDiv)) +
    geom_violin(trim = FALSE) +
@@ -531,10 +704,10 @@ LTR_overlap_df %>%
    )+
   facet_wrap(~cluster)
 
-LTR_K27ac_H3K9me3_lfc <- LTR_overlap_df %>% 
+LTR_K9me3_H3K9me3_lfc <- LTR_overlap_df %>% 
   dplyr::left_join(H3K9me3_lookup) %>% 
    left_join(., K9me3_lfctable, by = c("Peakid"="genes")) %>%
-   dplyr::filter(Peakid %in% K27ac_only_K9me3_peakids$Peakid)
+   dplyr::filter(Peakid %in% K9me3_only_K27ac_peakids$Peakid)
 
 ```
 ```{r}
@@ -544,7 +717,7 @@ plot_K9_family <- function(lfc_df,
                             fam_name){
 
   lfc_df %>% 
-  dplyr::filter(Peakid %in% K27ac_only_K9me3_peakids$Peakid) %>% 
+  dplyr::filter(Peakid %in% K9me3_only_K27ac_peakids$Peakid) %>% 
     dplyr::filter(.data$TE_type %in% fam_name) %>% 
   dplyr::filter(cluster != "NA") %>% 
   pivot_longer(.,cols=c(starts_with(grp)), names_to="group", values_to = "LFC") %>% 
@@ -562,22 +735,22 @@ plot_K9_family <- function(lfc_df,
 ```
 
 ```{r LTR lfc H3K9me3}
-plot_K9_family(LTR_K27ac_H3K9me3_lfc,"H3K9me3","LTR","ERV1")+
+plot_K9_family(LTR_K9me3_H3K9me3_lfc,"H3K9me3","LTR","ERV1")+
   scale_color_manual(values = cluster_colors, drop = FALSE)
-plot_K9_family(LTR_K27ac_H3K9me3_lfc,"H3K9me3","LTR","ERVK")+
+plot_K9_family(LTR_K9me3_H3K9me3_lfc,"H3K9me3","LTR","ERVK")+
   scale_color_manual(values = cluster_colors, drop = FALSE)
-plot_K9_family(LTR_K27ac_H3K9me3_lfc,"H3K9me3","LTR","ERVL")+
+plot_K9_family(LTR_K9me3_H3K9me3_lfc,"H3K9me3","LTR","ERVL")+
   scale_color_manual(values = cluster_colors, drop = FALSE)
-plot_K9_family(LTR_K27ac_H3K9me3_lfc,"H3K9me3","LTR","Gypsy")+
+plot_K9_family(LTR_K9me3_H3K9me3_lfc,"H3K9me3","LTR","Gypsy")+
   scale_color_manual(values = cluster_colors, drop = FALSE)
-plot_K9_family(LTR_K27ac_H3K9me3_lfc,"H3K9me3","LTR","ERVL-MaLR")+
+plot_K9_family(LTR_K9me3_H3K9me3_lfc,"H3K9me3","LTR","ERVL-MaLR")+
   scale_color_manual(values = cluster_colors, drop = FALSE)
-plot_K9_family(LTR_K27ac_H3K9me3_lfc,"H3K9me3","LTR","LTR")+
+plot_K9_family(LTR_K9me3_H3K9me3_lfc,"H3K9me3","LTR","LTR")+
   scale_color_manual(values = cluster_colors, drop = FALSE)
 ```
 
 
 ```{r}
-
+H3K9me3_summit_ols
 ```
 

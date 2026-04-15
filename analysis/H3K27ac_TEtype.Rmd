@@ -74,7 +74,11 @@ ERV1_summary_char <- read.csv(file.path("data/Other_paper_data/ERV1_file_summary
 
 ```
 
-```{r}
+
+### MER61E-ERV1-LTRs  
+
+
+```{r MER61E elements}
 
 # your LTRs
 ltr_gr <- rtracklayer::import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
@@ -184,7 +188,7 @@ print(plot)
 
 
 
-### Looking as LFC  
+#### Looking as LFC  
 
 
 ```{r}
@@ -732,8 +736,8 @@ annotated_H3K27ac_extended %>%
   filter(!(n_repClass == n_repFamily & n_repFamily == n_repName & n_repName == n_repID))
   
   
-  annotated_H3K27ac_extended %>% 
-    dplyr::filter(str_detect(repName,str_c(Mer_list, collapse="|")))
+  # annotated_H3K27ac_extended %>% 
+  #   dplyr::filter(str_detect(repName,str_c(Mer_list, collapse="|")))
 ```
 
 
@@ -781,6 +785,29 @@ plot <- ggplot(prop_table, aes(x = clus_names, y = n, fill = clus_names)) +
 
 ```
 
+```{r}
+LTR_df <- readRDS("data/RDS_files/LTR_DF_hg38.RDS")
+
+hgLTR <- LTR_df %>% 
+  filter(repName %in% Mer_list) %>% 
+  dplyr::select(repClass,repFamily,repName,RM_id) %>% 
+  mutate(Peakid="NA",
+         annotation="NA",
+         geneId="NA",
+         distanceToTSS=0,
+         summit_pos="0",
+         TE_status="TE",
+         SINE_status="wnot_SINE",
+         LINE_status="wnot_LINE",
+         LTR_status="LTR",
+         DNA_status="wnot_LTR",
+         SVA_status="wnot_SVA",
+         cluster="hg38")
+```
+
+
+#### MER subfamily  
+
 
 ```{r prop_extended plot}
 df_clean <- annotated_H3K27ac_extended %>%
@@ -788,19 +815,22 @@ df_clean <- annotated_H3K27ac_extended %>%
 
 prop_table_all <- df_clean %>%
   filter(repName %in% Mer_list) %>%
+  bind_rows(hgLTR) %>% 
   mutate(
     cluster = if_else(is.na(cluster), "NA", cluster),
     clus_names = case_when(
       cluster == "Set_1" ~ "No response",
       cluster == "Set_2" ~ "Sustained response",
       cluster == "Set_3" ~ "Acute response",
+      cluster == "hg38" ~ "hg38",
       TRUE ~ "Not assigned"
     )
   ) %>%
   count(clus_names, repName) %>%
   group_by(clus_names) %>%
   mutate(prop = n / sum(n)) %>%
-  ungroup()
+  ungroup() %>% 
+  mutate(clus_names=factor(clus_names, levels = c("hg38","No response","Sustained response","Acute response","Not assigned")))
 
 
 ggplot(prop_table_all, aes(x = clus_names, y = prop, fill = repName)) +
@@ -812,5 +842,153 @@ ggplot(prop_table_all, aes(x = clus_names, y = prop, fill = repName)) +
     fill = "MER61 subfamily",
     title = "MER61 subfamily composition across H3K27ac sets"
   )
+```
+
+### ERVL-MaLR:LTRs 
+
+
+```{r ERVL-MaLR initial}
+
+ERVLMaLR_counts_H3K27ac <- df_clean %>% 
+  dplyr::filter(repFamily=="ERVL-MaLR") %>% 
+  group_by(repName,cluster) %>% 
+  tally %>% 
+  pivot_wider(id_cols = repName,values_from = n, names_from = cluster) %>% 
+  replace(is.na(.), 0)
+
+ERVLMaLR_counts_hg38 <- LTR_df %>% 
+  dplyr::filter(repFamily=="ERVL-MaLR") %>% 
+  group_by(repName) %>% 
+  count(name="hg38")
+
+
+ERVLMaLR_joined_counts <- ERVLMaLR_counts_hg38 %>% 
+  left_join(ERVLMaLR_counts_H3K27ac) %>% 
+  replace(is.na(.), 0)
+  
+
+
+calc_enrichment <- function(df, set_col) {
+  total_genome <- sum(df$hg38, na.rm = TRUE)
+  total_set    <- sum(df[[set_col]], na.rm = TRUE)
+
+  df %>%
+    rowwise() %>%
+    mutate(
+      a = .data[[set_col]],
+      b = hg38 - a,
+      c = total_set - a,
+      d = total_genome - (a + b + c),
+
+      odds_ratio = ((a + 1e-5) * (d + 1e-5)) /
+                 ((b + 1e-5) * (c + 1e-5)),
+
+      p_value = fisher.test(matrix(c(a, b, c, d), nrow = 2))$p.value
+    ) %>%
+    ungroup()
+}
+
+
+calc_pairwise <- function(df, setA, setB) {
+  total_A <- sum(df[[setA]], na.rm = TRUE)
+  total_B <- sum(df[[setB]], na.rm = TRUE)
+
+  df %>%
+    rowwise() %>%
+    mutate(
+      a = .data[[setA]],
+      b = .data[[setB]],
+      c = total_A - a,
+      d = total_B - b,
+
+       odds_ratio = ((a + 1e-5) * (d + 1e-5)) /
+                 ((b + 1e-5) * (c + 1e-5)),
+
+      p_value = fisher.test(matrix(c(a, b, c, d), nrow = 2))$p.value
+    ) %>%
+    ungroup() %>%
+    mutate(
+      comparison = paste(setA, "vs", setB),
+      p_adj = p.adjust(p_value, method = "BH")
+    )
+}
+```
+
+```{r}
+res_set1 <- calc_enrichment(ERVLMaLR_joined_counts, "Set_1")
+res_set2 <- calc_enrichment(ERVLMaLR_joined_counts, "Set_2")
+res_set3 <- calc_enrichment(ERVLMaLR_joined_counts, "Set_3")
+
+res_set1 <- res_set1 %>%
+  mutate(p_adj = p.adjust(p_value, method = "BH"))
+res_set2 <- res_set2 %>%
+  mutate(p_adj = p.adjust(p_value, method = "BH"))
+res_set3 <- res_set3 %>%
+  mutate(p_adj = p.adjust(p_value, method = "BH"))
+
+
+res_2_v_1 <- calc_pairwise(ERVLMaLR_joined_counts,"Set_2","Set_1")
+
+res_3_v_1 <- calc_pairwise(ERVLMaLR_joined_counts,"Set_3","Set_1")
+
+res_2_v_3 <- calc_pairwise(ERVLMaLR_joined_counts, "Set_2","Set_3")
+
+```
+
+
+```{r}
+ggplot(res_2_v_1, aes(x = (odds_ratio), y = -log10(p_adj),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  geom_text_repel(data = subset(res_2_v_1, p_adj < 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  # geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "ERVL-MaLR family enrichment at extended ROI summits\n 2 v 1"
+  ) +
+  theme_classic()
+
+ggplot(res_3_v_1, aes(x = (odds_ratio), y = -log10(p_adj),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  # geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_text_repel(data = subset(res_3_v_1, p_adj < 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "ERVL-MaLR family enrichment at extended ROI summits\n 3 v 1"
+  ) +
+  theme_classic()
+
+
+ggplot(res_2_v_3, aes(x = (odds_ratio), y = -log10(p_adj),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  # geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_text_repel(data = subset(res_2_v_3, p_adj < 0.05),  # only significant points
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "ERVL-MaLR family enrichment at extended ROI summits\n 2 v 3"
+  ) +
+  theme_classic()
+```
+
+```{r}
+sum(res_3_v_1$Set_2)
+sum(res_2_v_1$Set_3)
+sum(res_2_v_3$not_assigned)
 ```
 
