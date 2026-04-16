@@ -453,10 +453,22 @@ seqlengths(complete_summit_gr) <- seqlengths(genome)[names(seqlengths(complete_s
 
 
 resize_and_trim <- function(gr, flank = 300, genome = BSgenome.Hsapiens.UCSC.hg38) {
+
+  # enforce valid input
+  gr <- gr[!is.na(start(gr)) & !is.na(end(gr))]
+
+  # resize to fixed window
   gr <- resize(gr, width = 1 + 2*flank, fix = "center")
+
+  # assign genome bounds
   seqlengths(gr) <- seqlengths(genome)[seqlevels(gr)]
+
+  # trim to chromosome boundaries
   gr <- trim(gr)
-  gr <- gr[width(gr) > 0]
+
+  # FINAL SAFETY FILTER (this is what you were missing)
+  gr <- gr[width(gr) > 0 & start(gr) < end(gr)]
+
   return(gr)
 }
 
@@ -464,14 +476,22 @@ SET_1_gr <-   complete_summit_gr[
   !is.na(mcols(complete_summit_gr)$cluster) &
   mcols(complete_summit_gr)$cluster == "Set_1"
 ]
+SET_2_gr <-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_2"
+]
+SET_3_gr <-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &
+  mcols(complete_summit_gr)$cluster == "Set_3"
+]
 
 
 # H3K27ac_set1_600 <- resize_and_trim(SET_1_gr,flank = 300)
-# H3K27ac_set1_400 <- resize_and_trim(SET_1_gr,flank = 200)
+H3K27ac_set1_400 <- resize_and_trim(SET_1_gr,flank = 200)
 # 
 # rtracklayer::export(SET_1_gr, "data/Bed_exports/H3K27ac_Set_1_summits.bed")
 # rtracklayer::export(H3K27ac_set1_600, "data/Bed_exports/H3K27ac_Set_1_600.bed")
-# rtracklayer::export(H3K27ac_set1_400, "data/Bed_exports/H3K27ac_Set_1_400.bed")
+rtracklayer::export(H3K27ac_set1_400, "data/Bed_exports/H3K27ac_Set_1_400.bed")
 
 SET_2_A_gr <-   complete_summit_gr[
   !is.na(mcols(complete_summit_gr)$cluster) &
@@ -484,12 +504,14 @@ SET_2_B_gr <- complete_summit_gr[
     mcols(complete_summit_gr)$Peakid %in% H3K27ac_set_case_lfc$Set_2_B$Peakid
 ]
 
-H3K27ac_set2_A_400 <- resize(SET_2_A_gr, width = 1 + 200*2, fix = "center")
+H3K27ac_set2_400 <- resize_and_trim(SET_2_gr,flank = 200)
+H3K27ac_set3_400 <- resize_and_trim(SET_3_gr,flank = 200)
+H3K27ac_set2_A_400 <- resize_and_trim(SET_2_A_gr, flank=200)
 
-H3K27ac_set2_B_400 <- resize(SET_2_B_gr, width = 1 + 200*2, fix = "center")
+H3K27ac_set2_B_400 <- resize_and_trim(SET_2_B_gr, flank=200)
 
 
-# rtracklayer::export(SET_2_gr, "data/Bed_exports/H3K27ac_Set_2_summits.bed")
+rtracklayer::export(SET_2_gr, "data/Bed_exports/H3K27ac_Set_2_summits.bed")
 rtracklayer::export(H3K27ac_set2_A_400, "data/Bed_exports/H3K27ac_set2_A_400.bed")
 rtracklayer::export(H3K27ac_set2_B_400, "data/Bed_exports/H3K27ac_set2_B_400.bed")
 
@@ -511,15 +533,16 @@ SET_3_B_gr <- complete_summit_gr[
     mcols(complete_summit_gr)$Peakid %in% H3K27ac_set_case_lfc$Set_3_B$Peakid
 ]
 
-H3K27ac_set3_A_400 <- resize(SET_3_A_gr, width = 1 + 200*2, fix = "center")
+H3K27ac_set3_A_400 <- resize_and_trim(SET_3_A_gr, SET_2_A_gr, flank=200)
 
-H3K27ac_set3_B_400 <- resize(SET_3_B_gr, width = 1 + 200*2, fix = "center")
+H3K27ac_set3_B_400 <- resize_and_trim(SET_3_B_gr, SET_2_A_gr, flank=200)
 
 
 rtracklayer::export(SET_3_gr, "data/Bed_exports/H3K27ac_Set_3_summits.bed")
 rtracklayer::export(H3K27ac_set3_A_400, "data/Bed_exports/H3K27ac_set3_A_400.bed")
 rtracklayer::export(H3K27ac_set3_B_400, "data/Bed_exports/H3K27ac_set3_B_400.bed")
-  
+  rtracklayer::export(H3K27ac_set2_400, "data/Bed_exports/H3K27ac_Set_2_400.bed")
+  rtracklayer::export(H3K27ac_set3_400, "data/Bed_exports/H3K27ac_Set_3_400.bed")
 
 # rtracklayer::export(complete_summit_gr, "data/Bed_exports/H3K27ac_complete_final_summits.bed")
 # 
