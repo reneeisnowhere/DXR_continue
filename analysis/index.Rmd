@@ -115,3 +115,6 @@ Contains Overlapping TE elements and full ROI, including information about TE ov
 [Plotting subfamily MER61*](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_TEtype.html)
 
 [Looking at p53 halfsites](https://reneeisnowhere.github.io/DXR_continue/memesuite_TE_enrichment.html)
+
+[Other p53 interrogation](https://reneeisnowhere.github.io/DXR_continue/TP53_motif_interrogation.html)
+
