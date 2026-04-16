@@ -309,7 +309,7 @@ plot_p53_motifs_all <- function(fimo_root_dir, te_bed_base_dir) {
   
   # Initialize results list
   results_list <- list()
-  
+  detail_list <- list()
   # Find all directories ending with "_fimo"
   fimo_dirs <- list.dirs(fimo_root_dir, recursive = FALSE)
   fimo_dirs <- fimo_dirs[grepl("_fimo$", basename(fimo_dirs))]
@@ -340,8 +340,9 @@ plot_p53_motifs_all <- function(fimo_root_dir, te_bed_base_dir) {
     te_gr <- GRanges(
       seqnames = te_df$chr,
       ranges = IRanges(start = te_df$start, end = te_df$end),
-      strand = te_df$strand
-    )
+      strand = te_df$strand,
+      name = te_df$name)
+    
     
     # ------------------------------
     # Load FIMO
@@ -408,6 +409,8 @@ plot_p53_motifs_all <- function(fimo_root_dir, te_bed_base_dir) {
       n_te_with_hits <- length(unique(subjectHits(hits)))
       n_total_hits <- length(hits)
       occupancy <- n_te_with_hits / n_te_total
+      te_names <- mcols(te_gr)$name[subjectHits(hits)]
+     
       
       # ------------------------------
       # Compute relative positions
@@ -428,6 +431,18 @@ plot_p53_motifs_all <- function(fimo_root_dir, te_bed_base_dir) {
         total_TP53_hits = n_total_hits,
         occupancy = occupancy
       )
+      # ------------------------------
+# Store details ONLY if hits exist
+# ------------------------------
+if (length(hits) > 0 && length(subjectHits(hits)) > 0) {
+
+  detail_list[[paste0(base_name, "_", mn)]] <- data.frame(
+    TE_name = base_name,
+    motif_name = mn,
+    Peakid = mcols(te_gr)$name[subjectHits(hits)]
+  )
+
+}
       
       # ------------------------------
       # Plot density
@@ -450,19 +465,22 @@ plot_p53_motifs_all <- function(fimo_root_dir, te_bed_base_dir) {
   
   # Combine all results into one data frame
   results_df <- do.call(rbind, results_list)
-  
+  detail_df <- dplyr::bind_rows(detail_list)
   print(results_df)
-  return(results_df)
+  return(list(
+  summary = results_df,
+  detail  = detail_df
+))
 }
 ```
 
 ```{r for_tp53motifs}
 Astorage <- plot_p53_motifs_all("C:/Users/renee/Other_projects_data/DXR_data/fimo_results", "data/Bed_exports/repeatmasker_sets/ERV1")
-
-kable(Astorage, caption = "TP53 motif occupancy per TE family") %>%
+table_summary <- Astorage$summary
+kable(table_summary, caption = "TP53 motif occupancy per TE family") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
   column_spec(1, bold = TRUE) %>%          # make TE_name bold
-  column_spec(6, color = "white", background = spec_color(Astorage$occupancy, end = 0.9))  # color occupancy
+  column_spec(6, color = "white", background = spec_color(table_summary$occupancy, end = 0.9))  # color occupancy
 ```
 
 ```{r Getting numbers togther}
@@ -475,6 +493,102 @@ kable(Astorage, caption = "TP53 motif occupancy per TE family") %>%
 
 
 
+In order to determine if MER61E integrants are enriched in p53 binding sites compared to MER61 integrants in Set_3, I need to first find all members of MER61 that are in Set_3.
+```{r finding}
+p53_TE_ids <- Astorage$detail #contains the TEs that have p53sites
+fimo_MER61int <-   read_delim("C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61-int_ERV1_LTR_fimo/fimo.tsv")
+    
+    
+Mer_list <- c("MER61-int","MER61A","MER61B","MER61C","MER61D","MER61E","MER61F")
+annotated_H3K27ac_ext200 <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+all_mer_members <- annotated_H3K27ac_ext200 %>% 
+  dplyr::select(Peakid,repClass:repID,cluster ) %>%
+  separate_longer_delim(cols = c(repClass, repFamily,repName, repID), delim = ";") %>% 
+  
+  dplyr::filter(repName %in% Mer_list) %>% 
+  mutate(p53=case_when(repID %in% p53_TE_ids$Peakid~"has_p53",
+                       TRUE~"no_p53")) %>% 
+  mutate(p53_bin=if_else(p53 == "has_p53", 1, 0)) 
 
+all_mer_members_clean <- all_mer_members %>%
+  group_by(Peakid) %>%
+  summarise(
+    repName = paste(unique(repName), collapse = ";"),
+    cluster = first(cluster),
+    p53_bin = max(p53_bin)   # 1 if any hit
+  )
+
+df <- all_mer_members %>%
+  dplyr::filter(repName == "MER61E",
+         cluster %in% c("Set_1", "Set_3"))
+
+tab <- table(df$cluster, df$p53_bin)
+tab
+fisher.test(tab)
+
+
+df_S1n3 <- all_mer_members_clean %>%
+  filter(cluster %in% c("Set_1", "Set_3")) %>%
+  mutate(
+    cluster = factor(cluster, levels = c("Set_1", "Set_3"))
+  )
+
+
+Mer_list <- c("MER61-int","MER61A","MER61B",
+              "MER61C","MER61D","MER61E","MER61F")
+
+results <- lapply(Mer_list, function(m) {
+
+  df_sub <- df_S1n3 %>%
+    mutate(is_family = repName == m)
+
+  tab <- table(df_sub$is_family, df_sub$cluster)
+
+  ft <- fisher.test(tab)
+
+  data.frame(
+    repName = m,
+    odds_ratio = unname(ft$estimate),
+    conf_low = ft$conf.int[1],
+    conf_high = ft$conf.int[2],
+    p_value = ft$p.value,
+    n_family = sum(df_sub$is_family),
+    n_total = nrow(df_sub)
+  )
+})
+
+enrichment_df <- bind_rows(results)
+```
+
+
+```{r}
+# enrichment_df
+
+ggplot(enrichment_df, aes(x = repName, y = odds_ratio)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = conf_low, ymax = conf_high), width = 0.2) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  # scale_y_log10() +
+  theme_classic() +
+  labs(
+    y = "Odds ratio (Set3 vs Set1,  not log scale)",
+    x = "MER61 subfamily",
+    title = "Odds Ratio of MER61 element having a p53 site in Set 3 to Set 1"
+  )+
+  coord_flip()
+
+
+ggplot(enrichment_df, aes(x = repName, y = odds_ratio)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = conf_low, ymax = conf_high), width = 0.2) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  scale_y_log10() +
+  theme_classic() +
+  labs(
+    y = "Odds ratio (Set3 vs Set1,  log scale)",
+    x = "MER61 subfamily",
+    title = "Odds Ratio of MER61 element having a p53 site in Set 3 to Set 1"
+  )+
+  coord_flip()
 ```
 
