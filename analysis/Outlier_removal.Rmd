@@ -227,7 +227,7 @@ H3K9me3_merged<- H3K9me3_merged %>%
 
 
 ### H3K27ac Count Analysis
-```{r H3K27ac HeatMap 1,eval=FALSE, fig.width=14,fig.height=14}
+```{r H3K27ac HeatMap 1, fig.width=14,fig.height=14}
 H3K27ac_merged_raw <- H3K27ac_merged %>% 
   dplyr::select(Geneid,contains("Ind")) %>% 
   column_to_rownames("Geneid") %>% 
@@ -253,7 +253,7 @@ Heatmap(H3K27ac_merged_cor,
 ```
 
 ### H3K27me3 Count Analysis
-```{r H3K27me3 HeatMap 1,eval=FALSE, fig.width=14,fig.height=14}
+```{r H3K27me3 HeatMap 1, fig.width=14,fig.height=14}
 H3K27me3_merged_raw <- H3K27me3_merged %>% 
   dplyr::select(Geneid,contains("Ind")) %>% 
   column_to_rownames("Geneid") %>% 
@@ -336,13 +336,13 @@ Heatmap(H3K9me3_merged_cor,
 
 Removing chrX and chrY
 ```{r filtering x and Y}
-# H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_lcpm)>0,]
-# H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrY",rownames(H3K27ac_merged_raw)),]
-# H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrX",rownames(H3K27ac_merged_raw)),]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_lcpm)>0,]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrY",rownames(H3K27ac_merged_raw)),]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrX",rownames(H3K27ac_merged_raw)),]
 
-# H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_lcpm)>0,]
-# H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrY",rownames(H3K27me3_merged_raw)),]
-# H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrX",rownames(H3K27me3_merged_raw)),]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[rowMeans(H3K27me3_merged_lcpm)>0,]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrY",rownames(H3K27me3_merged_raw)),]
+H3K27me3_merged_raw <- H3K27me3_merged_raw[!grepl("chrX",rownames(H3K27me3_merged_raw)),]
 
 
 H3K36me3_merged_raw <- H3K36me3_merged_raw[rowMeans(H3K36me3_merged_lcpm)>0,]
@@ -398,37 +398,37 @@ Heatmap(H3K9me3_merged_filt_cor,
 
 #### Setting up Matrix
 ```{r matrix}
-# H3K27ac_annomat <- data.frame(timeset=colnames(H3K27ac_merged_raw)) %>%
-#   mutate(sample=timeset) %>%
-#   separate(timeset, into = c("ind","tx","time")) %>%
-#   mutate(tx=factor(tx, levels = c("VEH", "DOX")),
-#          time=factor(time, levels =c("24T","24R","144R"))) %>%
-#   mutate(ind = gsub("Ind", "", ind)) %>%
-#   mutate(txtime = paste0(tx, "_", time)) %>%
-#   mutate(group = txtime)
-# H3K27ac_annomat$group <- H3K27ac_annomat$group %>%
-#   gsub("DOX_24T", "1", .) %>%
-#   gsub("DOX_24R", "2", .) %>%
-#   gsub("DOX_144R", "3", .) %>%
-#   gsub("VEH_24T", "4", .) %>%
-#   gsub("VEH_24R", "5", .) %>%
-#   gsub("VEH_144R", "6", .)
-# 
-# H3K27me3_annomat <- data.frame(timeset=colnames(H3K27me3_merged_raw)) %>%
-#   mutate(sample=timeset) %>%
-#   separate(timeset, into = c("ind","tx","time")) %>%
-#   mutate(tx=factor(tx, levels = c("VEH", "DOX")),
-#          time=factor(time, levels =c("24T","24R","144R"))) %>%
-#   mutate(ind = gsub("Ind", "", ind)) %>%
-#   mutate(txtime = paste0(tx, "_", time)) %>%
-#   mutate(group = txtime)
-# H3K27me3_annomat$group <- H3K27me3_annomat$group %>%
-#   gsub("DOX_24T", "1", .) %>%
-#   gsub("DOX_24R", "2", .) %>%
-#   gsub("DOX_144R", "3", .) %>%
-#   gsub("VEH_24T", "4", .) %>%
-#   gsub("VEH_24R", "5", .) %>%
-#   gsub("VEH_144R", "6", .)
+H3K27ac_annomat <- data.frame(timeset=colnames(H3K27ac_merged_raw)) %>%
+  mutate(sample=timeset) %>%
+  separate(timeset, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(ind = gsub("Ind", "", ind)) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>%
+  mutate(group = txtime)
+H3K27ac_annomat$group <- H3K27ac_annomat$group %>%
+  gsub("DOX_24T", "1", .) %>%
+  gsub("DOX_24R", "2", .) %>%
+  gsub("DOX_144R", "3", .) %>%
+  gsub("VEH_24T", "4", .) %>%
+  gsub("VEH_24R", "5", .) %>%
+  gsub("VEH_144R", "6", .)
+
+H3K27me3_annomat <- data.frame(timeset=colnames(H3K27me3_merged_raw)) %>%
+  mutate(sample=timeset) %>%
+  separate(timeset, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(ind = gsub("Ind", "", ind)) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>%
+  mutate(group = txtime)
+H3K27me3_annomat$group <- H3K27me3_annomat$group %>%
+  gsub("DOX_24T", "1", .) %>%
+  gsub("DOX_24R", "2", .) %>%
+  gsub("DOX_144R", "3", .) %>%
+  gsub("VEH_24T", "4", .) %>%
+  gsub("VEH_24R", "5", .) %>%
+  gsub("VEH_144R", "6", .)
 
 H3K36me3_annomat <- data.frame(timeset=colnames(H3K36me3_merged_raw)) %>% 
   mutate(sample=timeset) %>% 
@@ -462,21 +462,21 @@ H3K9me3_annomat$group <- H3K9me3_annomat$group %>%
   gsub("VEH_24R", "5", .) %>%
   gsub("VEH_144R", "6", .)
 
-# dge_H3K27ac <- edgeR::DGEList(counts = H3K27ac_merged_raw, group = H3K27ac_annomat$group, genes = row.names(H3K27ac_merged_raw))
-# dge_H3K27me3 <- edgeR::DGEList(counts = H3K27me3_merged_raw, group = H3K27me3_annomat$group, genes = row.names(H3K27me3_merged_raw))
+dge_H3K27ac <- edgeR::DGEList(counts = H3K27ac_merged_raw, group = H3K27ac_annomat$group, genes = row.names(H3K27ac_merged_raw))
+dge_H3K27me3 <- edgeR::DGEList(counts = H3K27me3_merged_raw, group = H3K27me3_annomat$group, genes = row.names(H3K27me3_merged_raw))
 dge_H3K36me3 <- edgeR::DGEList(counts = H3K36me3_merged_raw, group = H3K36me3_annomat$group, genes = row.names(H3K36me3_merged_raw))
 dge_H3K9me3 <- edgeR::DGEList(counts = H3K9me3_merged_raw, group = H3K9me3_annomat$group, genes = row.names(H3K9me3_merged_raw))
 
-# dge_H3K27ac <- edgeR::calcNormFactors(dge_H3K27ac)
-# dge_H3K27me3 <- edgeR::calcNormFactors(dge_H3K27me3)
+dge_H3K27ac <- edgeR::calcNormFactors(dge_H3K27ac)
+dge_H3K27me3 <- edgeR::calcNormFactors(dge_H3K27me3)
 dge_H3K36me3 <- edgeR::calcNormFactors(dge_H3K36me3)
 dge_H3K9me3 <- edgeR::calcNormFactors(dge_H3K9me3)
 
-# mm_H3K27ac <- model.matrix(~0 + H3K27ac_annomat$txtime)
-# colnames(mm_H3K27ac) <- H3K27ac_annomat$txtime %>% unique()
+mm_H3K27ac <- model.matrix(~0 + H3K27ac_annomat$txtime)
+colnames(mm_H3K27ac) <- H3K27ac_annomat$txtime %>% unique()
 
-# mm_H3K27me3 <- model.matrix(~0 + H3K27me3_annomat$txtime)
-# colnames(mm_H3K27me3) <- H3K27me3_annomat$txtime %>% unique()
+mm_H3K27me3 <- model.matrix(~0 + H3K27me3_annomat$txtime)
+colnames(mm_H3K27me3) <- H3K27me3_annomat$txtime %>% unique()
 
 mm_H3K36me3 <- model.matrix(~0 + H3K36me3_annomat$txtime)
 colnames(mm_H3K36me3) <- H3K36me3_annomat$txtime %>% unique()
@@ -487,22 +487,24 @@ colnames(mm_H3K9me3) <- H3K9me3_annomat$txtime %>% unique()
 ### PCA Plots
 
 #### H3K27ac
-```{r H3K27ac PCA_var,eval=FALSE}
+```{r H3K27ac PCA_var}
 pca_H3K27ac <- calc_pca(t(H3K27ac_merged_lcpm))
 pca_var_plot(pca_H3K27ac)
 ```
 
-```{r H3K27ac PCA,eval=FALSE}
+```{r H3K27ac PCA}
 # pca_H3K27ac <- pca_H3K27ac$x %>% cbind(., H3K27ac_annomat)
 pca_H3K27ac_df <- data.frame(pca_H3K27ac$x , H3K27ac_annomat)
+pca_H3K27ac_df$PC1 <- -pca_H3K27ac_df$PC1
+pca_H3K27ac_df$PC2 <- -pca_H3K27ac_df$PC2### plots differently than first time
 pca_plot(
   pca_H3K27ac,
   pca_H3K27ac_df,
   col_var = "time",
   shape_var = "tx",
   text_var = "ind",   # <-- string, not vector
-  title = "H3K27ac filtered lcpm PCA"
-)      +theme_bw()
+  title = "H3K27me3 filtered lcpm PCA"
+)   +theme_bw() 
 ```
 
 ```{r H3K27ac HeatMap 2,eval=FALSE ,fig.width=14,fig.height=14}
@@ -526,12 +528,12 @@ Heatmap(H3K27ac_merged_filt_cor,
         column_title="Filtered log2cpm H3K27ac with Standard Merging")
 ```
 #### H3K27me3
-```{r H3K27me3 PCA_var,eval=FALSE}
+```{r H3K27me3 PCA_var}
 pca_H3K27me3 <- calc_pca(t(H3K27me3_merged_lcpm))
 pca_var_plot(pca_H3K27me3)
 ```
 
-```{r H3K27me3 PCA,eval=FALSE}
+```{r H3K27me3 PCA}
 pca_H3K27me3_df <- data.frame(pca_H3K27me3$x , H3K27me3_annomat)
 pca_plot(
   pca_H3K27me3,
