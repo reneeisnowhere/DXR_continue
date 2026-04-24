@@ -115,10 +115,6 @@ DNA_split_df <- split(DNA_df, DNA_df$repFamily)
 
 ```
 
-
-
-
-
 Pulling in ROI granges for H3K27ac and H3K9me3
 ```{r loading H3K9me3 data}
 
@@ -139,6 +135,16 @@ H3K9me3_sets_gr <- lapply(peakAnnoList_H3K9me3, function(df) {
 H3K27ac_sets_gr <- lapply(peakAnnoList_H3K27ac, function(df) {
   as_granges(df)
 })
+
+annotated_H3K27ac_ext200 <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+
+annotated_H3K9me3_ext200 <- readRDS("data/TE_annotation/annotated_H3K9me3_ext200_TE_overlaps.RDS")
+all_H3K27ac_peaks <- annotated_H3K27ac_ext200 %>%
+  dplyr::select(Peakid, cluster) %>%
+  dplyr::distinct()
+all_H3K9me3_peaks <- annotated_H3K9me3_ext200 %>%
+  dplyr::select(Peakid, cluster) %>%
+  dplyr::distinct()
 ```
 
 ```{r toplist data}
@@ -164,731 +170,305 @@ cluster_colors <- c("Set_1" = "#d93e40","Set_2" = "#1c9f50","Set_3" = "#3570b3",
 
 
 
-### SINE
-Overlapping SINE family with ROIs
+getting counts of TE repFamilies between each data set:
 
-```{r SINE Overlapping}
-sine_hits_H3K9me3 <- findOverlaps(H3K9me3_sets_gr$all_H3K9me3_regions, SINE_gr, ignore.strand = TRUE)
-
-SINE_overlap_df_H3K9me3 <- tibble(
-  peak_row = queryHits(sine_hits_H3K9me3),
-  Peakid   = H3K9me3_sets_gr$all_H3K9me3$Peakid[queryHits(sine_hits_H3K9me3)],
-  cluster  = H3K9me3_sets_gr$all_H3K9me3$cluster[queryHits(sine_hits_H3K9me3)],
-  
-  repClass = SINE_gr$repClass[subjectHits(sine_hits_H3K9me3)],
-  repName  = SINE_gr$repName[subjectHits(sine_hits_H3K9me3)],
-  RM_id  = SINE_gr$RM_id[subjectHits(sine_hits_H3K9me3)],
-  
-  TE_type  = ifelse(
-    SINE_gr$repFamily[subjectHits(sine_hits_H3K9me3)] == "SVA",
-    SINE_gr$repName[subjectHits(sine_hits_H3K9me3)],
-    SINE_gr$repFamily[subjectHits(sine_hits_H3K9me3)]
-  ),
-  
-  milliDiv = SINE_gr$milliDiv[subjectHits(sine_hits_H3K9me3)],
-  milliDel = SINE_gr$milliDel[subjectHits(sine_hits_H3K9me3)],
-  milliIns = SINE_gr$milliIns[subjectHits(sine_hits_H3K9me3)]
-)
-
-sine_hits_H3K27ac <- findOverlaps(H3K27ac_sets_gr$all_H3K27ac, SINE_gr, ignore.strand = TRUE)
-
-SINE_overlap_df_H3K27ac <- tibble(
-  peak_row = queryHits(sine_hits_H3K27ac),
-  Peakid   = H3K27ac_sets_gr$all_H3K27ac$Peakid[queryHits(sine_hits_H3K27ac)],
-  cluster  = H3K27ac_sets_gr$all_H3K27ac$cluster[queryHits(sine_hits_H3K27ac)],
-  
-  repClass = SINE_gr$repClass[subjectHits(sine_hits_H3K27ac)],
-  repName  = SINE_gr$repName[subjectHits(sine_hits_H3K27ac)],
-  RM_id  = SINE_gr$RM_id[subjectHits(sine_hits_H3K27ac)],
-  
-  TE_type  = ifelse(
-    SINE_gr$repFamily[subjectHits(sine_hits_H3K27ac)] == "SVA",
-    SINE_gr$repName[subjectHits(sine_hits_H3K27ac)],
-    SINE_gr$repFamily[subjectHits(sine_hits_H3K27ac)]
-  ),
-  
-  milliDiv = SINE_gr$milliDiv[subjectHits(sine_hits_H3K27ac)],
-  milliDel = SINE_gr$milliDel[subjectHits(sine_hits_H3K27ac)],
-  milliIns = SINE_gr$milliIns[subjectHits(sine_hits_H3K27ac)]
-)
-
-common_sine_RMs <- intersect(
-  SINE_overlap_df_H3K27ac$RM_id,
-  SINE_overlap_df_H3K9me3$RM_id
-)
-
-length(unique(common_sine_RMs))
+```{r getting Rep families}
+H3K27ac_family_count <- annotated_H3K27ac_ext200 %>% 
+  dplyr::select(Peakid, repFamily,cluster) %>% 
+  na.omit(repFamily) %>% 
+  separate_longer_delim(repFamily,delim = ";") %>% 
+ dplyr::distinct(Peakid, repFamily) %>%   # 🔑 KEY STEP
+  dplyr::count(repFamily, name = "n_H3K27ac")
 
 
+H3K9me3_family_count <- annotated_H3K9me3_ext200 %>% 
+  dplyr::select(Peakid, repFamily,cluster) %>% 
+  na.omit(repFamily) %>% 
+  separate_longer_delim(repFamily,delim = ";") %>% 
+ dplyr::distinct(Peakid, repFamily) %>%   # 🔑 KEY STEP
+  dplyr::count(repFamily, name = "n_H3K9me3")
+
+
+
+length(intersect(H3K27ac_family_count$repFamily,H3K9me3_family_count$repFamily))
+all_families <- union(H3K27ac_family_count$repFamily,H3K9me3_family_count$repFamily)
 ```
-
-Visualizing the overlapping SINE families
-
-```{r}
-H3K27ac_SINE_peakid <- SINE_overlap_df_H3K27ac %>% 
-  dplyr::filter(RM_id %in% common_sine_RMs) %>% 
-  left_join(., H3K27ac_lookup) %>% 
-  distinct(Peakid)
-
-H3K9me3_SINE_peakid <- SINE_overlap_df_H3K9me3 %>% 
-  dplyr::filter(RM_id %in% common_sine_RMs) %>% 
-  left_join(., H3K9me3_lookup) %>% 
-  distinct(Peakid)
-  
-```
-
-I struggled with figuring out whether a TE is unique to a peak.
-I do have some SINE elements mapping to multiple peaks, but not a whole lot.
 
 
 ```{r}
-SINE_overlap_df_H3K9me3 %>%
-  count(RM_id, name = "n_peaks") %>%
-  count(n_peaks)
+family_counts <- full_join(
+  H3K27ac_family_count,
+  H3K9me3_family_count,
+  by = "repFamily"
+) %>%
+  tidyr::replace_na(list(n_H3K27ac = 0, n_H3K9me3 = 0))
 
-SINE_overlap_df_H3K9me3 %>%
-  count(RM_id) %>%
-  summarise(
-    min = min(n),
-    median = median(n),
-    mean = mean(n),
-    max = max(n)
-  )
+### adding in totals and totals without
+total_H3K27ac <- n_distinct(annotated_H3K27ac_ext200$Peakid)
+total_H3K9me3 <- n_distinct(annotated_H3K9me3_ext200$Peakid)
 
-SINE_overlap_df_H3K27ac %>%
-  count(RM_id, name = "n_peaks") %>%
-  count(n_peaks)
+family_counts <- family_counts %>% 
+  mutate(not_H3K27ac=total_H3K27ac - n_H3K27ac,
+         not_H3K9me3=total_H3K9me3 - n_H3K9me3)
 
-SINE_overlap_df_H3K27ac %>%
-  count(RM_id) %>%
-  summarise(
-    min = min(n),
-    median = median(n),
-    mean = mean(n),
-    max = max(n)
-  )
-```
-
-
-Because of this many to many situation, I chose to average the log fold changes of the SINE elements overlapping multiple peaks.
-```{r}
-### linking shared RM_id to Peakid by histone ROI for LFC plotting
-##
-
-SINE_K27ac_rmid_lfc <- data_frame(RM_id=common_sine_RMs) %>% 
-  left_join(.,(SINE_overlap_df_H3K27ac %>% 
-    dplyr::filter(RM_id %in% common_sine_RMs) %>% 
-    distinct(RM_id,Peakid, .keep_all = TRUE) %>% 
-    mutate(K27ac_Peakid=Peakid) %>% 
-    dplyr::select(RM_id, K27ac_Peakid))) %>% 
-  left_join(K27ac_lfctable, by =c("K27ac_Peakid"="genes")) %>% 
-  group_by(RM_id) %>% 
-  summarize(K27ac_24T=mean(H3K27ac_24T, na.rm=TRUE),
-             K27ac_24R=mean(H3K27ac_24R,na.rm=TRUE),
-             K27ac_144R=mean(H3K27ac_144R, na.rm=TRUE),
-            n_K27_peaks = dplyr::n(),
-            .groups="drop")
-
-SINE_K9me3_rmid_lfc <- data_frame(RM_id=common_sine_RMs) %>% 
-  left_join(.,(SINE_overlap_df_H3K9me3 %>% 
-    dplyr::filter(RM_id %in% common_sine_RMs) %>% 
-    distinct(RM_id,Peakid, .keep_all = TRUE) %>% 
-    mutate(K9me3_Peakid=Peakid) %>% 
-    dplyr::select(RM_id, K9me3_Peakid))) %>% 
-  left_join(K9me3_lfctable, by =c("K9me3_Peakid"="genes")) %>% 
-  group_by(RM_id) %>% 
-  summarize(K9me3_24T=mean(H3K9me3_24T, na.rm=TRUE),
-             K9me3_24R=mean(H3K9me3_24R,na.rm=TRUE),
-             K9me3_144R=mean(H3K9me3_144R, na.rm=TRUE),
-            n_K27_peaks = dplyr::n(),
-            .groups="drop")
-
-
-
-SINE_RM_lfc_concordance <- tibble(RM_id = common_sine_RMs) %>%
-  left_join(SINE_K27ac_rmid_lfc, by = "RM_id") %>%
-  left_join(SINE_K9me3_rmid_lfc,  by = "RM_id")
-
-```
-
-
-Now to try to visualize this concordance.  I am specifically looking at TEs that up in one and down in another.
-
-
-```{r SINE K9K27ac plot}
-SINE_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24T, y=K9me3_24T))+
-  geom_point(, alpha=0.2, size=1)+
-  geom_density_2d(color= "black")+
-  sm_statCorr(corr_method="spearman")+
-   geom_hline(yintercept = 0, linetype = "dashed", color="red") +
-  geom_vline(xintercept = 0, linetype = "dashed", color="red") +
-  labs(
-    x = "H3K27ac logFC (24T)",
-    y = "H3K9me3 logFC (24T)",
-    title = "Concordance of chromatin changes at shared SINEs for 24T"
-  ) +
-  theme_classic()
-
-SINE_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24R, y=K9me3_24R))+
-  geom_point(, alpha=0.2, size=1)+
-  geom_density_2d(color= "black")+
-   sm_statCorr(corr_method="spearman")+
-   geom_hline(yintercept = 0, linetype = "dashed", color="red") +
-  geom_vline(xintercept = 0, linetype = "dashed", color="red") +
-  labs(
-    x = "H3K27ac logFC (24R)",
-    y = "H3K9me3 logFC (24R)",
-    title = "Concordance of chromatin changes at shared SINEs for 24R"
-  ) +
-  theme_classic()
-
-
-SINE_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_144R, y=K9me3_144R))+
-  geom_point(, alpha=0.2, size=1)+
-  geom_density_2d(color= "black")+
-   sm_statCorr(corr_method="spearman")+
-   geom_hline(yintercept = 0, linetype = "dashed", color="red") +
-  geom_vline(xintercept = 0, linetype = "dashed", color="red") +
-  labs(
-    x = "H3K27ac logFC (144R)",
-    y = "H3K9me3 logFC (144R)",
-    title = "Concordance of chromatin changes at shared SINEs for 144R"
-  ) +
-  theme_classic()
-
-```
-
-
-### LTR
-Overlapping LTR family with ROIs
-
-```{r LTR Overlapping}
-LTR_hits_H3K9me3 <- findOverlaps(H3K9me3_sets_gr$all_H3K9me3_regions, LTR_gr, ignore.strand = TRUE)
-
-LTR_overlap_df_H3K9me3 <- tibble(
-  peak_row = queryHits(LTR_hits_H3K9me3),
-  Peakid   = H3K9me3_sets_gr$all_H3K9me3$Peakid[queryHits(LTR_hits_H3K9me3)],
-  cluster  = H3K9me3_sets_gr$all_H3K9me3$cluster[queryHits(LTR_hits_H3K9me3)],
-  
-  repClass = LTR_gr$repClass[subjectHits(LTR_hits_H3K9me3)],
-  repName  = LTR_gr$repName[subjectHits(LTR_hits_H3K9me3)],
-  RM_id  = LTR_gr$RM_id[subjectHits(LTR_hits_H3K9me3)],
-  
-  TE_type  = ifelse(
-    LTR_gr$repFamily[subjectHits(LTR_hits_H3K9me3)] == "SVA",
-    LTR_gr$repName[subjectHits(LTR_hits_H3K9me3)],
-    LTR_gr$repFamily[subjectHits(LTR_hits_H3K9me3)]
-  ),
-  
-  milliDiv = LTR_gr$milliDiv[subjectHits(LTR_hits_H3K9me3)],
-  milliDel = LTR_gr$milliDel[subjectHits(LTR_hits_H3K9me3)],
-  milliIns = LTR_gr$milliIns[subjectHits(LTR_hits_H3K9me3)]
-)
-
-LTR_hits_H3K27ac <- findOverlaps(H3K27ac_sets_gr$all_H3K27ac, LTR_gr, ignore.strand = TRUE)
-
-LTR_overlap_df_H3K27ac <- tibble(
-  peak_row = queryHits(LTR_hits_H3K27ac),
-  Peakid   = H3K27ac_sets_gr$all_H3K27ac$Peakid[queryHits(LTR_hits_H3K27ac)],
-  cluster  = H3K27ac_sets_gr$all_H3K27ac$cluster[queryHits(LTR_hits_H3K27ac)],
-  
-  repClass = LTR_gr$repClass[subjectHits(LTR_hits_H3K27ac)],
-  repName  = LTR_gr$repName[subjectHits(LTR_hits_H3K27ac)],
-  RM_id  = LTR_gr$RM_id[subjectHits(LTR_hits_H3K27ac)],
-  
-  TE_type  = ifelse(
-    LTR_gr$repFamily[subjectHits(LTR_hits_H3K27ac)] == "SVA",
-    LTR_gr$repName[subjectHits(LTR_hits_H3K27ac)],
-    LTR_gr$repFamily[subjectHits(LTR_hits_H3K27ac)]
-  ),
-  
-  milliDiv = LTR_gr$milliDiv[subjectHits(LTR_hits_H3K27ac)],
-  milliDel = LTR_gr$milliDel[subjectHits(LTR_hits_H3K27ac)],
-  milliIns = LTR_gr$milliIns[subjectHits(LTR_hits_H3K27ac)]
-)
-
-common_LTR_RMs <- intersect(
-  LTR_overlap_df_H3K27ac$RM_id,
-  LTR_overlap_df_H3K9me3$RM_id
-)
-
-length(unique(common_LTR_RMs))
 
 
 ```
-
-Visualizing the overlapping LTR families
-
-```{r}
-H3K27ac_LTR_peakid <- LTR_overlap_df_H3K27ac %>% 
-  dplyr::filter(RM_id %in% common_LTR_RMs) %>% 
-  left_join(., H3K27ac_lookup) %>% 
-  distinct(Peakid)
-
-H3K9me3_LTR_peakid <- LTR_overlap_df_H3K9me3 %>% 
-  dplyr::filter(RM_id %in% common_LTR_RMs) %>% 
-  left_join(., H3K9me3_lookup) %>% 
-  distinct(Peakid)
-  
-
-```
-
-I struggled with figuring out whether a TE is unique to a peak.
-I do have some LTR elements mapping to multiple peaks, and more than SINEs most likely due to the increased TE lengths.
 
 
 ```{r}
-LTR_overlap_df_H3K9me3 %>%
-  count(RM_id, name = "n_peaks") %>%
-  count(n_peaks)
+run_family_fisher <- function(df,
+                              a = "n_H3K27ac",
+                              b = "not_H3K27ac",
+                              c = "n_H3K9me3",
+                              d = "not_H3K9me3",
+                              family_col = "repFamily") {
 
-LTR_overlap_df_H3K9me3 %>%
-  count(RM_id) %>%
-  summarise(
-    min = min(n),
-    median = median(n),
-    mean = mean(n),
-    max = max(n)
-  )
+  res <- lapply(seq_len(nrow(df)), function(i) {
 
-LTR_overlap_df_H3K27ac %>%
-  count(RM_id, name = "n_peaks") %>%
-  count(n_peaks)
+    x <- df[i, ]
 
-LTR_overlap_df_H3K27ac %>%
-  count(RM_id) %>%
-  summarise(
-    min = min(n),
-    median = median(n),
-    mean = mean(n),
-    max = max(n)
-  )
-```
-
-
-Because of this many to many situation, I chose to average the log fold changes of the LTR elements overlapping multiple peaks.
-```{r}
-### linking shared RM_id to Peakid by histone ROI for LFC plotting
-##
-
-K27ac_rmid_lfc <- data_frame(RM_id=common_LTR_RMs) %>%
-  left_join(.,(LTR_overlap_df_H3K27ac %>% 
-    dplyr::filter(RM_id %in% common_LTR_RMs) %>% 
-    distinct(RM_id,Peakid, .keep_all = TRUE))) %>% 
-    mutate(K27ac_Peakid=Peakid) %>% 
-    dplyr::select(RM_id, K27ac_Peakid) %>% 
-  left_join(K27ac_lfctable, by =c("K27ac_Peakid"="genes")) %>%
-  left_join(., H3K27ac_lookup, by =c("K27ac_Peakid"="Peakid")) %>% 
-  group_by(RM_id) %>% 
-  summarize(K27ac_24T=mean(H3K27ac_24T, na.rm=TRUE),
-             K27ac_24R=mean(H3K27ac_24R,na.rm=TRUE),
-             K27ac_144R=mean(H3K27ac_144R, na.rm=TRUE),
-            n_K27ac_peaks = dplyr::n(),
-            cluster=dplyr::first(cluster),
-            .groups="drop") %>% 
-   tidyr::replace_na(list(cluster = "NA"))
-
-K9me3_rmid_lfc <-
-data_frame(RM_id=common_LTR_RMs) %>% 
-  left_join(.,(LTR_overlap_df_H3K9me3 %>% 
-    dplyr::filter(RM_id %in% common_LTR_RMs) %>% 
-    distinct(RM_id,Peakid, .keep_all = TRUE) %>% 
-    mutate(K9me3_Peakid=Peakid) %>% 
-    dplyr::select(RM_id, K9me3_Peakid))) %>% 
-  left_join(K9me3_lfctable, by =c("K9me3_Peakid"="genes")) %>% 
-  left_join(., H3K9me3_lookup,by =c("K9me3_Peakid"="Peakid")) %>% 
-  group_by(RM_id) %>% 
-  summarize(K9me3_24T=mean(H3K9me3_24T, na.rm=TRUE),
-             K9me3_24R=mean(H3K9me3_24R,na.rm=TRUE),
-             K9me3_144R=mean(H3K9me3_144R, na.rm=TRUE),
-            cluster=dplyr::first(cluster),
-            n_K9me3_peaks = dplyr::n(),
-            .groups="drop") %>% 
-   tidyr::replace_na(list(cluster = "NA"))
-
-
-
-LTR_RM_lfc_concordance <- tibble(RM_id = common_LTR_RMs) %>%
-  left_join(K27ac_rmid_lfc, by = "RM_id") %>%
-  left_join(K9me3_rmid_lfc,  by = "RM_id") 
-  
-
-```
-
-
-Now to try to visualize this concordance.  I am specifically looking at TEs that up in one and down in another.
-
-
-```{r LTR K9K27ac plot}
-LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24T, y=K9me3_24T, color=cluster.x))+
-  geom_point(, alpha=0.2, size=2)+
-  geom_density_2d(color= "black")+
-   # sm_statCorr(corr_method="spearman")+
-   geom_hline(yintercept = 0, linetype = "dashed", color="red") +
-  geom_vline(xintercept = 0, linetype = "dashed", color="red") +
-  labs(
-    x = "H3K27ac logFC (24T)",
-    y = "H3K9me3 logFC (24T)",
-    title = "Concordance of chromatin changes at shared LTRs for 24T"
-  ) +
-  theme_classic()+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-
-LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24R, y=K9me3_24R, color=cluster.x))+
-  geom_point(, alpha=0.2, size=2)+
-  geom_density_2d(color= "black")+
-   # sm_statCorr(corr_method="spearman")+
-   geom_hline(yintercept = 0, linetype = "dashed", color="red") +
-  geom_vline(xintercept = 0, linetype = "dashed", color="red") +
-  labs(
-    x = "H3K27ac logFC (24R)",
-    y = "H3K9me3 logFC (24R)",
-    title = "Concordance of chromatin changes at shared LTRs for 24R"
-  ) +
-  theme_classic()+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-
-
-LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_144R, y=K9me3_144R, color=cluster.x))+
-  geom_point(, alpha=0.2, size=2)+
-  geom_density_2d(color= "black")+
-     # sm_statCorr(corr_method="spearman")+
-  
-   geom_hline(yintercept = 0, linetype = "dashed", color="red") +
-  geom_vline(xintercept = 0, linetype = "dashed", color="red") +
-  labs(
-    x = "H3K27ac logFC (144R)",
-    y = "H3K9me3 logFC (144R)",
-    title = "Concordance of chromatin changes at shared LTRs for 144R"
-  ) +
-  theme_classic()+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-
-LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24T, y=K27ac_24R, color=cluster.x))+
-  geom_point(, alpha=0.2, size=2)+
-  geom_density_2d(color= "black")+
-   # sm_statCorr(corr_method="spearman")+
-   geom_hline(yintercept = 0, linetype = "dashed", color="red") +
-  geom_vline(xintercept = 0, linetype = "dashed", color="red") +
-  labs(
-    x = "H3K27ac logFC (24T)",
-    y = "H3K27ac logFC (24R)",
-    title = "Concordance of chromatin changes at shared LTRs for 24T v 24R H3K27ac"
-  ) +
-  theme_classic()+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-
-LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24T, y=K27ac_144R, color=cluster.x))+
-  geom_point(, alpha=0.2, size=2)+
-  geom_density_2d(color= "black")+
-   # sm_statCorr(corr_method="spearman")+
-   geom_hline(yintercept = 0, linetype = "dashed", color="red") +
-  geom_vline(xintercept = 0, linetype = "dashed", color="red") +
-  labs(
-    x = "H3K27ac logFC (24T)",
-    y = "H3K27ac logFC (144R)",
-    title = "Concordance of chromatin changes at shared LTRs for 24T v 144R H3K27ac"
-  ) +
-  theme_classic()+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-
-LTR_RM_lfc_concordance %>% 
-  ggplot(., aes(x=K27ac_24R, y=K27ac_144R, color=cluster.x))+
-  geom_point(, alpha=0.2, size=2)+
-  geom_density_2d(color= "black")+
-   sm_statCorr(corr_method="spearman")+
-   geom_hline(yintercept = 0, linetype = "dashed", color="red") +
-  geom_vline(xintercept = 0, linetype = "dashed", color="red") +
-  labs(
-    x = "H3K27ac logFC (24R)",
-    y = "H3K27ac logFC (144)",
-    title = "Concordance of chromatin changes at shared LTRs for 24R v 144R H3K27ac"
-  ) +
-  theme_classic()+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-```
-
-
-
-```{r}
-
-K27ac_unfiltered_long <- K27ac_lfctable %>% 
-  left_join(H3K27ac_lookup, by = c("genes" = "Peakid")) %>% 
-  tidyr::replace_na(list(cluster = "NA")) %>% 
-  dplyr::filter(cluster != "NA") %>% 
-  pivot_longer(
-    cols = c("H3K27ac_24T", "H3K27ac_24R", "H3K27ac_144R"),
-    names_to = "group",
-    values_to = "LFC") %>% 
-  mutate(group = factor(group, levels = c("H3K27ac_24T", "H3K27ac_24R", "H3K27ac_144R")))
-
-K9me3_unfiltered_long <- K9me3_lfctable %>% 
-  left_join(H3K9me3_lookup, by = c("genes" = "Peakid")) %>% 
-  tidyr::replace_na(list(cluster = "NA")) %>% 
-  dplyr::filter(cluster != "NA") %>% 
-  pivot_longer(
-    cols = c("H3K9me3_24T", "H3K9me3_24R", "H3K9me3_144R"),
-    names_to = "group",
-    values_to = "LFC") %>% 
-  mutate(group = factor(group, levels = c("H3K9me3_24T", "H3K9me3_24R", "H3K9me3_144R")))
-  
-K27ac_median_unfilt_lfc <- K27ac_unfiltered_long %>%
-  group_by(cluster, group) %>%
-  summarise(median_abs_LFC = median(abs(LFC), na.rm = TRUE),
-            .groups = "drop")%>% 
-  mutate(time=str_remove(group,"H3K27ac"))%>% 
-  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))
-
-K9me3_median_unfilt_lfc <- K9me3_unfiltered_long %>%
-  group_by(cluster, group) %>%
-  summarise(median_abs_LFC = median(abs(LFC), na.rm = TRUE),
-            .groups = "drop")%>% 
-  mutate(time=str_remove(group,"H3K9me3")) %>% 
-  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))
-
-K9me3_median_unfilt_lfc %>% 
-  ggplot(., aes(x=group, y=median_abs_LFC, group=cluster, color=cluster))+
-  geom_point(size=4)+
-  geom_line(aes(alpha = 0.8, linewidth = 4))+
-  theme_bw()+
-  ggtitle("LFC across time for H3K9me3 sets")+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-
-
-K27ac_median_LTR_lfc <- K27ac_unfiltered_long %>%
-  dplyr::filter(genes %in% H3K27ac_LTR_peakid$Peakid) %>% 
-  group_by(cluster, group) %>%
-  summarise(median_abs_LFC = median(abs(LFC), na.rm = TRUE),
-            .groups = "drop") %>% 
-  mutate(time=str_remove(group,"H3K27ac"))%>% 
-  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))
-K9me3_median_LTR_lfc <- K9me3_unfiltered_long %>%
-  dplyr::filter(genes %in% H3K9me3_LTR_peakid$Peakid) %>% 
-  group_by(cluster, group) %>%
-  summarise(median_abs_LFC = median(abs(LFC), na.rm = TRUE),
-            .groups = "drop") %>% 
-  mutate(time=str_remove(group,"H3K9me3"))%>% 
-  mutate(time=factor(time, levels=c("_24T","_24R","_144R")))
-
-K9me3_median_unfilt_lfc %>% 
-ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
-  geom_point(size=4)+
-  geom_line(aes(alpha = 0.8, linewidth = 4))+
-  
-  geom_line(data=K27ac_median_unfilt_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
-   geom_point(data=K27ac_median_unfilt_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
-  theme_bw()+
-  ggtitle("H3K9me3 unfiltered solid line\nH3K27ac dotted line absolute LFC All regions")+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-
-K9me3_median_LTR_lfc %>% 
-ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
-  geom_point(size=4)+
-  geom_line(aes(alpha = 0.8, linewidth = 4))+
-  
-  geom_line(data=K27ac_median_LTR_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
-   geom_point(data=K27ac_median_LTR_lfc, aes(x=time,y=median_abs_LFC, group=cluster,color=cluster), linetype=2, size = 1)+
-  theme_bw()+
-  ggtitle("H3K9me3 solid line\nH3K27ac dotted line absolute LFC overlapping LTR regions")+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-
-
-
-```  
-
-Now I am trying to break down by LTR families:
-
-```{r ERV1}
-LTR_overlap_df_H3K27ac %>% 
-  group_by(TE_type) %>% 
-  tally() %>% 
-   ungroup() %>% 
-  DT::datatable(
-    rownames = FALSE,
-    caption = htmltools::tags$caption(
-      style = "caption-side: top; text-align: left;",
-      "H3K27ac LTR specific overlap counts by TE familiy"),
-    options = list(pageLength = 10,
-      autoWidth = TRUE,
-      dom = "tip"))
-
-# now I want to breakup common_LTR_RMs and plot by family of LTR.
- 
-
-
-K27_family_plot <- function(lfc_df,
-                            split_list, 
-                            grp="K27ac",
-                            repFamily,
-                            repName){
-
-  rm_ids <- split_list[[repName]]$RM_id
-  
-  lfc_df %>% 
-  dplyr::filter(RM_id %in% rm_ids) %>%
-  dplyr::filter(cluster != "NA") %>% 
-  pivot_longer(.,cols=c(starts_with(grp)), names_to="group", values_to = "LFC") %>% 
-  group_by(cluster, group) %>%
-  summarise(median_abs_LFC = median(abs(LFC), na.rm = TRUE),
-            .groups = "drop")%>% 
-  mutate(time=str_remove(group,grp))%>% 
-  mutate(time=factor(time, levels=c("_24T","_24R","_144R"))) %>% 
-  ggplot(., aes(x=time, y=median_abs_LFC, group=cluster, color=cluster))+
-  geom_point(size=4)+
-  geom_line(aes(alpha = 0.8, linewidth = 4))+
-  theme_bw()+
-  ggtitle(paste0(grp," absolute LFC overlapping ",repFamily,":",repName))
-}
-```
-
-```{r}
-names(LTR_split_df)
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERV1")+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERVK")+
-  scale_color_manual(values = cluster_colors, drop = FALSE)+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERVL")+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","ERVL-MaLR")+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","Gypsy")+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-K27_family_plot(K27ac_rmid_lfc, LTR_split_df,"K27ac","LTR","LTR")+
-  scale_color_manual(values = cluster_colors, drop = FALSE)
-
-
-```
-
-
-```{r function to map H3K9me3 over H3K27ac }
-
-
-
-K27_K9_family_plot <- function(lfc_df,
-                            split_list, 
-                            marks=c("K27ac","K9me3"),
-                            time_levels = c("_24T", "_24R", "_144R"),
-                            repClass,
-                            repFam){
-
-  if (!repFam %in% names(split_list)) {
-  stop("repFam not found in split_list: ", repFam)}
-  
-  rm_ids <- split_list[[repFam]]$RM_id
-  
-  lfc_df %>% 
-    dplyr::filter(RM_id %in% rm_ids) %>% 
-    dplyr::rename(
-    cluster_K27ac = tidyselect::any_of("cluster.x"),
-    cluster_K9me3 = tidyselect::any_of("cluster.y")) %>% 
-      tidyr::pivot_longer(
-      cols = tidyselect::matches(paste0("^(", paste(marks, collapse = "|"), ")")),
-      names_to = "group",
-      values_to = "LFC"
-    ) %>%
-    dplyr::mutate(
-      mark = stringr::str_extract(group, paste(marks, collapse = "|")),
-      time = stringr::str_remove(group, paste(marks, collapse = "|")),
-      time = factor(time, levels = time_levels),
-
-      cluster = dplyr::case_when(
-        mark == "K27ac" ~ cluster_K27ac,
-        mark == "K9me3" ~ cluster_K9me3
-      )
-    ) %>%
-    dplyr::filter(!is.na(cluster)) %>%
-    dplyr::group_by(cluster, mark, time) %>%
-    dplyr::summarise(
-      median_abs_LFC = median(abs(LFC), na.rm = TRUE),
-      n_RM = dplyr::n_distinct(RM_id),
-      .groups = "drop") %>% 
-  ggplot(., aes(x = time,
-      y = median_abs_LFC,
-      color = cluster,
-      linetype = mark,
-      shape = mark,
-      group = interaction(cluster, mark))) +
-    geom_line(linewidth = 1.1, alpha = 0.85) +
-    geom_point(size = 3) +
-    scale_linetype_manual(
-  values = c("K9me3"  = "solid","K27ac" = "dotted"))+
-    scale_color_manual(values = cluster_colors, drop = FALSE)+
-    theme_bw() +
-    labs(
-      y = "Median |LFC|",
-      x = "Time",
-      title = paste0("Both histones, absolute LFC overlapping ",repClass,":",repFam))
-}
-
-
-```
-```{r}
-
-
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="ERVL")
-
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="ERVK")
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="ERV1")
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="ERVL-MaLR")
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="Gypsy")
-K27_K9_family_plot(LTR_RM_lfc_concordance, LTR_split_df,marks=c("K27ac","K9me3"),time_levels = c("_24T", "_24R", "_144R"), "LTR",repFam="LTR")
-
-
-```
-```{r, eval=FALSE}
-rm_id_test <- LTR_split_df$ERV1$RM_id
-LTR_RM_lfc_concordance %>% 
-  dplyr::filter(RM_id %in% rm_id_test) %>% 
-                
-    dplyr::rename("cluster_K27ac"=cluster.x,
-                  "cluster_K9me3"=cluster.y) %>% 
-pivot_longer(
-    cols = tidyselect::matches("^(K27ac|K9me3)"),
-    names_to = "group",
-    values_to = "LFC"
-  ) %>% 
-  mutate(
-    mark = stringr::str_extract(group, "K27ac|K9me3"),
-    time = stringr::str_remove(group, "K27ac|K9me3"),
-    time = factor(time, levels = c("_24T","_24R","_144R")),
-
-    ## mark-aware cluster assignment
-    cluster = dplyr::case_when(
-      mark == "K27ac" ~ cluster_K27ac,
-      mark == "K9me3" ~ cluster_K9me3
+    tab <- matrix(
+      c(x[[a]], x[[b]],
+        x[[c]], x[[d]]),
+      nrow = 2,
+      byrow = TRUE
     )
-  ) %>% 
-  filter(!is.na(cluster)) %>%   # only drop when THAT mark has no cluster
-  group_by(cluster, mark, time) %>%
-  summarise(
-    median_abs_LFC = median(abs(LFC), na.rm = TRUE),
-    n_RM = dplyr::n_distinct(RM_id),
-    .groups = "drop"
-  ) %>% 
-   ggplot(.,  aes(
-    x = time,
-    y = median_abs_LFC,
-    color = cluster,
-    linetype = mark,
-    shape = mark,
-    group = interaction(cluster, mark))) +
-  geom_line(linewidth = 1.1, alpha = 0.85) +
-  geom_point(size = 3) +
-  theme_bw() +
+
+    ft <- fisher.test(tab)
+
+    data.frame(
+      repFamily = x[[family_col]],
+      odds_ratio = as.numeric(ft$estimate),
+      conf_low = ft$conf.int[1],
+      conf_high = ft$conf.int[2],
+      p_value = ft$p.value
+    )
+  })
+
+  out <- do.call(rbind, res)
+
+  out$FDR <- p.adjust(out$p_value, method = "BH")
+
+  out
+}
+run_name_fisher <- function(df,
+                              a = "n_H3K27ac",
+                              b = "not_H3K27ac",
+                              c = "n_H3K9me3",
+                              d = "not_H3K9me3",
+                              family_col = "repName") {
+
+  res <- lapply(seq_len(nrow(df)), function(i) {
+
+    x <- df[i, ]
+
+    tab <- matrix(
+      c(x[[a]], x[[b]],
+        x[[c]], x[[d]]),
+      nrow = 2,
+      byrow = TRUE
+    )
+
+    ft <- fisher.test(tab)
+
+    data.frame(
+      repName = x[[family_col]],
+      odds_ratio = as.numeric(ft$estimate),
+      conf_low = ft$conf.int[1],
+      conf_high = ft$conf.int[2],
+      p_value = ft$p.value
+    )
+  })
+
+  out <- do.call(rbind, res)
+
+  out$FDR <- p.adjust(out$p_value, method = "BH")
+
+  out
+}
+```
+
+
+```{r}
+ enrichment_ratio_results <- run_family_fisher(family_counts)
+```
+
+
+```{r}
+ggplot(enrichment_ratio_results, aes(x = (odds_ratio), y = -log10(FDR),label = repFamily)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
   labs(
-    y = "Median |LFC|",
-    x = "Time",
-    title = "Shared LTR:ERV1: mark-specific cluster behavior"
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "H3K27ac v H3K9me3 enrichment"
+  ) +
+  theme_classic() 
+```
+```{r}
+results_display <- enrichment_ratio_results %>%
+ 
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %>%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio > 1 ~ "enriched",
+    odds_ratio < 1 ~ "depleted",
+    TRUE           ~ "neutral"
+  )) %>%
+  
+  # 4. Flag significant
+  mutate(significant = FDR < 0.05) %>%
+  
+  # Optional: arrange for readability
+  arrange(desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  results_display,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
   )
+) %>%
+  # Conditional coloring by direction
+  formatStyle(
+    'direction',
+    target = 'row',
+    backgroundColor = styleEqual(
+      c('enriched', 'depleted'),
+      c('#FFDD99', '#99CCFF')  # enriched = light orange, depleted = light blue
+    )
+  ) %>%
+  # Bold significant rows
+  formatStyle(
+    'significant',
+    fontWeight = styleEqual(TRUE, 'bold')
+  ) %>%
+  # Round numeric columns for readability
+  formatRound(columns = c('odds_ratio','log2OR','FDR'), digits = 2)
+```
+
+### Rep Name
+
+
+```{r}
+
+H3K27ac_name_count <- annotated_H3K27ac_ext200 %>% 
+  dplyr::select(Peakid, repName,cluster) %>% 
+  na.omit(repName) %>% 
+  separate_longer_delim(repName,delim = ";") %>% 
+ dplyr::distinct(Peakid, repName) %>%   # 🔑 KEY STEP
+  dplyr::count(repName, name = "n_H3K27ac")
+
+
+H3K9me3_name_count <- annotated_H3K9me3_ext200 %>% 
+  dplyr::select(Peakid, repName,cluster) %>% 
+  na.omit(repName) %>% 
+  separate_longer_delim(repName,delim = ";") %>% 
+ dplyr::distinct(Peakid, repName) %>%   # 🔑 KEY STEP
+  dplyr::count(repName, name = "n_H3K9me3")
+
+
+
+name_counts <- full_join(
+  H3K27ac_name_count,
+  H3K9me3_name_count,
+  by = "repName"
+) %>%
+  tidyr::replace_na(list(n_H3K27ac = 0, n_H3K9me3 = 0))
+
+### adding in totals and totals without
+total_H3K27ac <- n_distinct(annotated_H3K27ac_ext200$Peakid)
+total_H3K9me3 <- n_distinct(annotated_H3K9me3_ext200$Peakid)
+
+name_counts <- name_counts %>% 
+  mutate(not_H3K27ac=total_H3K27ac - n_H3K27ac,
+         not_H3K9me3=total_H3K9me3 - n_H3K9me3) %>% 
+  dplyr::filter(n_H3K27ac + n_H3K9me3>15)
+
+
+
 
 ```
+
+
+```{r}
+ Name_enrichment_ratio_results <- run_name_fisher(name_counts)
+```
+
+
+
+```{r plot name}
+ggplot(Name_enrichment_ratio_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   geom_text_repel(data = subset(Name_enrichment_ratio_results, FDR < 0.01)) +
+  # geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "H3K27ac v H3K9me3 enrichment"
+  ) +
+  theme_classic() 
+```
+
+
+```{r table name}
+results_display <- Name_enrichment_ratio_results %>%
+ 
+  # 2. Add log2 odds ratio
+  mutate(log2OR = log2(odds_ratio)) %>%
+  
+  # 3. Add enrichment/depletion direction
+  mutate(direction = case_when(
+    odds_ratio > 1 ~ "enriched",
+    odds_ratio < 1 ~ "depleted",
+    TRUE           ~ "neutral"
+  )) %>%
+  
+  # 4. Flag significant
+  mutate(significant = FDR < 0.05) %>%
+  
+  # Optional: arrange for readability
+  arrange(desc(log2OR))
+
+# ---- Create interactive datatable ----
+datatable(
+  results_display,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE
+  )
+) %>%
+  # Conditional coloring by direction
+  formatStyle(
+    'direction',
+    target = 'row',
+    backgroundColor = styleEqual(
+      c('enriched', 'depleted'),
+      c('#FFDD99', '#99CCFF')  # enriched = light orange, depleted = light blue
+    )
+  ) %>%
+  # Bold significant rows
+  formatStyle(
+    'significant',
+    fontWeight = styleEqual(TRUE, 'bold')
+  ) %>%
+  # Round numeric columns for readability
+  formatRound(columns = c('odds_ratio','log2OR','FDR'), digits = 2)
+```
+
+
+
 
