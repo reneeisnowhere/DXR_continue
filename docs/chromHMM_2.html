@@ -1,0 +1,2218 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Renee Matthews" />
+
+<meta name="date" content="2026-04-24" />
+
+<title>ChromHMM_2</title>
+
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DXR_project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/reneeisnowhere/DXR_continue">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">ChromHMM_2</h1>
+<h4 class="author">Renee Matthews</h4>
+<h4 class="date">2026-04-24</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-04-24
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>DXR_continue/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250701code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250701)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250701code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250701)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree20c4fdfdbb2b64aebe131105e218630896aeda9btargetblank20c4fdfa">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/20c4fdfdbb2b64aebe131105e218630896aeda9b" target="_blank">20c4fdf</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree20c4fdfdbb2b64aebe131105e218630896aeda9btargetblank20c4fdfa"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/20c4fdfdbb2b64aebe131105e218630896aeda9b" target="_blank">20c4fdf</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/Bed_exports/
+    Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
+    Ignored:    data/Cormotif_data/
+    Ignored:    data/DER_data/
+    Ignored:    data/Other_paper_data/
+    Ignored:    data/RDS_files/
+    Ignored:    data/TE_annotation/
+    Ignored:    data/alignment_summary.txt
+    Ignored:    data/all_peak_final_dataframe.txt
+    Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/motif_lists/
+    Ignored:    data/number_frag_peaks_summary.txt
+
+Untracked files:
+    Untracked:  H3K27ac_all_regions_test.bed
+    Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  MER61C_ERV1_LTR.fa
+    Untracked:  analysis/GREAT_H3K27ac.Rmd
+    Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_TE_investigation_200bp.Rmd
+    Untracked:  analysis/H3K27me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K36me3_TE_investigation.Rmd
+    Untracked:  analysis/Top2a_Top2b_expression.Rmd
+    Untracked:  analysis/maps_and_plots.Rmd
+    Untracked:  analysis/protein_checks.Rmd
+    Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/FASTA_conversion.R
+    Untracked:  code/For_john.R
+    Untracked:  code/Liftover_code.R
+    Untracked:  other_analysis/
+
+Unstaged changes:
+    Modified:   analysis/ATAC_integration_data1.Rmd
+    Modified:   analysis/H3K27_TE_overlap_extend.Rmd
+    Modified:   analysis/H3K27ac_TF_motifs.Rmd
+    Modified:   analysis/H3K9me3_TE_overlap_extend.Rmd
+    Modified:   analysis/TP53_motif_interrogation.Rmd
+    Modified:   analysis/chromHMM.Rmd
+    Modified:   analysis/memesuite_TE_enrichment.Rmd
+    Modified:   analysis/summit_files_processing.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/chromHMM_2.Rmd</code>) and HTML
+(<code>docs/chromHMM_2.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/20c4fdfdbb2b64aebe131105e218630896aeda9b/analysis/chromHMM_2.Rmd" target="_blank">20c4fdf</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-24
+</td>
+<td>
+wflow_publish("analysis/chromHMM_2.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 400px;
+}
+</style>
+<pre class="r"><code>library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(readxl)
+library(ChIPseeker)
+# library(regioneR)
+library(cowplot)
+library(GenomeInfoDb)
+library(ggforce)
+library(ggalluvial)</code></pre>
+<div id="adding-annotation-to-states" class="section level3">
+<h3>Adding annotation to states</h3>
+<pre class="r"><code>States_anno &lt;- data.frame(&quot;State&quot;=c(paste0(&quot;E&quot;,1:16)),
+&quot;Name&quot;=c(&quot;Heterochromatin_1&quot;,
+&quot;Quiescent_Low_Coverage&quot;,
+&quot;Repressed_Heterochromatin&quot;,
+&quot;Repressed_ZFP_genes&quot;,
+&quot;Strong_Polycomb_Repressed&quot;,
+ &quot;Bivalent_Enhancer&quot;,
+&quot;Heterochromatin_2&quot;,
+&quot;Polycomb_Repressed&quot;,
+ &quot;Weak_Genic_Enhancer&quot;,
+ &quot;Bivalent_Poised_TSS&quot;,
+ &quot;Active_Enhancer&quot;,
+  &quot;Strong_Genic_Enhancer&quot;,
+ &quot;Active_TSS&quot;,
+ &quot;Very_Weak_Transcription&quot;,
+ &quot;Genic_Strong_Transcription&quot;,
+ &quot;Genic_Weak_Transcription&quot;), &quot;recode&quot;=c(&quot;N&quot;,&quot;P&quot;,&quot;M&quot;,&quot;L&quot;,&quot;J&quot;,&quot;I&quot;,&quot;O&quot;,&quot;K&quot;,&quot;G&quot;,&quot;H&quot;,&quot;E&quot;,&quot;F&quot;,&quot;A&quot;,&quot;D&quot;,&quot;B&quot;,&quot;C&quot;)) %&gt;% 
+  mutate(recode=factor(recode,levels=c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;,&quot;F&quot;,&quot;G&quot;,&quot;H&quot;,&quot;I&quot;,&quot;J&quot;,&quot;K&quot;,&quot;L&quot;,&quot;M&quot;,&quot;N&quot;,&quot;O&quot;,&quot;P&quot;)))
+
+state_colors &lt;- c(
+  # Promoters (strong → weak)
+  &quot;Active_TSS&quot;  = &quot;#d73027&quot;,  # strong red
+    # Changed
+  &quot;Strong_Genic_Enhancer&quot;  = &quot;#ffff60&quot;,  
+  
+  # Enhancers
+  &quot;Active_Enhancer&quot;  = &quot;#ffff01&quot;,  # bright yellow
+  &quot;Weak_Genic_Enhancer&quot;  = &quot;#ffeda0&quot;,  # soft yellow
+  
+  # Transcribed regions
+  &quot;Genic_Strong_Transcription&quot;  = &quot;#1a9850&quot;,  # dark green
+  &quot;Genic_Weak_Transcription&quot;  = &quot;#66bd63&quot;,
+  &quot;Very_Weak_Transcription&quot;  = &quot;#a6d96a&quot;,
+  
+  # Bivalent / regulatory
+  &quot;Bivalent_Poised_TSS&quot;  = &quot;#c51b7d&quot;,
+  &quot;Bivalent_Enhancer&quot;= &quot;#de77ae&quot;,
+  
+  # Polycomb / repressed
+  &quot;Strong_Polycomb_Repressed&quot; = &quot;#762a83&quot;,  # deep purple
+  &quot;Polycomb_Repressed&quot; = &quot;#af8dc3&quot;,
+  
+  # Heterochromatin / ZNF/repeats
+  &quot;Repressed_ZFP_genes&quot; = &quot;#2c7bb6&quot;,  # blue
+  &quot;Repressed_Heterochromatin&quot; = &quot;#74abe1&quot;,
+  &quot;Heterochromatin_1&quot;=&quot;#abd9e9&quot;,
+  &quot;Heterochromatin_2&quot;=&quot;#abf9f9&quot;,
+  
+  # Quiescent / low signal
+  &quot;Quiescent_Low_Coverage&quot; = &quot;#bdbdbd&quot;
+ )
+
+name_order &lt;- States_anno %&gt;%
+  arrange(recode) %&gt;%
+  pull(Name)</code></pre>
+</div>
+<div id="loading-interested-regions-for-overlap" class="section level3">
+<h3>Loading interested regions for overlap</h3>
+<pre class="r"><code>MER61E_regions &lt;- import(&quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;)
+
+annotated_H3K27ac_ext200 &lt;- readRDS(&quot;data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS&quot;)
+H3K27ac_ROI &lt;- import(&quot;data/Bed_exportsH3K27ac_summit_gr_ext200.bed&quot;)
+
+cluster_lookup &lt;- annotated_H3K27ac_ext200 %&gt;% 
+  dplyr::select(Peakid, cluster)
+
+# H3K27ac_ROI %&gt;% as.data.frame()
+
+# annotated_H3K27ac_ext200 %&gt;% 
+#   dplyr::filter(str_detect(repName,&quot;^HERVIP&quot;))</code></pre>
+</div>
+<div id="loading-state-segment-files" class="section level3">
+<h3>Loading State segment files</h3>
+<pre class="r"><code>chrom_24T_VEH &lt;- import(&quot;C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24T_VEH_16_segments.bed&quot;)
+chrom_24R_VEH &lt;- import(&quot;C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24R_VEH_16_segments.bed&quot;)
+chrom_144R_VEH &lt;- import(&quot;C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/144R_VEH_16_segments.bed&quot;)
+chrom_24T_DOX &lt;- import(&quot;C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24T_DOX_16_segments.bed&quot;)
+chrom_24R_DOX &lt;- import(&quot;C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24R_DOX_16_segments.bed&quot;)
+chrom_144R_DOX &lt;- import(&quot;C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/144R_DOX_16_segments.bed&quot;)
+
+
+colnames(mcols(chrom_24T_VEH))</code></pre>
+<pre><code>[1] &quot;name&quot;</code></pre>
+</div>
+<div id="global-mer61e" class="section level3">
+<h3>Global MER61E</h3>
+<pre class="r"><code>global_hits &lt;- findOverlaps(H3K27ac_ROI, chrom_24T_VEH, ignore.strand = TRUE)
+
+peak_states &lt;- data.frame(
+  peak_id = queryHits(global_hits),
+  Peak_name = mcols(H3K27ac_ROI)$name[queryHits(global_hits)],
+  state = mcols(chrom_24T_VEH)$name[subjectHits(global_hits)],
+  width   = width(pintersect(
+    H3K27ac_ROI[queryHits(global_hits)],
+    chrom_24T_VEH[subjectHits(global_hits)]
+  ))
+)
+peak_states_summed &lt;- peak_states %&gt;%
+  group_by(Peak_name, state) %&gt;%
+  summarize(total_width = sum(width), .groups = &quot;drop&quot;)
+
+
+# Instead of collapsing to one state per peak, keep the proportions:
+peak_states_props &lt;- peak_states_summed %&gt;%
+  mutate(frac = total_width / 401)</code></pre>
+<pre class="r"><code>peak_states_complete &lt;- peak_states_props %&gt;%
+  complete(Peak_name, state, fill = list(frac = 0)) %&gt;%
+  left_join(cluster_lookup, by=c(&quot;Peak_name&quot;=&quot;Peakid&quot;)) %&gt;% 
+  left_join(States_anno, by=c(&quot;state&quot;=&quot;State&quot;)) %&gt;% 
+   mutate(Name = factor(Name, levels = name_order))
+
+plot_df &lt;- peak_states_complete %&gt;% 
+  group_by(cluster, Name) %&gt;%
+  summarize(mean_frac = mean(frac), .groups = &quot;drop&quot;)
+  
+ggplot(plot_df, aes(x = cluster, y = mean_frac, fill = Name)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  ylab(&quot;Mean fraction of peak&quot;) +
+  theme_classic()+
+  scale_fill_manual(values = state_colors) </code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-6-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(plot_df ,aes(x = Name, y = cluster, fill = mean_frac)) +
+  geom_tile() +
+  scale_fill_viridis_c(name = &quot;Mean fraction&quot;) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-6-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>process_chromhmm_raw &lt;- function(chrom_gr, roi_gr) {
+
+  hits &lt;- findOverlaps(roi_gr, chrom_gr, ignore.strand = TRUE)
+
+  peak_states &lt;- data.frame(
+    peak_id   = queryHits(hits),
+    Peak_name = mcols(roi_gr)$name[queryHits(hits)],
+    state     = mcols(chrom_gr)$name[subjectHits(hits)],
+    width     = width(pintersect(
+      roi_gr[queryHits(hits)],
+      chrom_gr[subjectHits(hits)]
+    ))
+  )
+
+  peak_states_summed &lt;- peak_states %&gt;%
+    group_by(Peak_name, state) %&gt;%
+    summarize(total_width = sum(width), .groups = &quot;drop&quot;)
+
+  peak_states_props &lt;- peak_states_summed %&gt;%
+    mutate(frac = total_width / 401)
+  
+  return(peak_states_props)
+}
+
+annotate_states &lt;- function(df) {
+
+  df %&gt;%
+    complete(Peak_name, state = unique(States_anno$State),
+             fill = list(frac = 0)) %&gt;%
+    left_join(cluster_lookup, by = c(&quot;Peak_name&quot; = &quot;Peakid&quot;)) %&gt;%
+    left_join(States_anno, by = c(&quot;state&quot; = &quot;State&quot;)) %&gt;%
+    mutate(Name = factor(Name, levels = name_order))
+}</code></pre>
+<pre class="r"><code>chrom_list &lt;- list(
+  VEH_24T = chrom_24T_VEH,
+  VEH_24R  = chrom_24R_VEH,
+  VEH_144R  = chrom_144R_VEH,
+  DOX_24T  = chrom_24T_DOX,
+  DOX_24R  = chrom_24R_DOX,
+  DOX_144R  = chrom_144R_DOX
+)
+results_list &lt;- lapply(chrom_list, function(x)
+  annotate_states(process_chromhmm_raw(x, H3K27ac_ROI))
+)
+
+all_results &lt;- bind_rows(
+  lapply(names(results_list), function(nm) {
+    results_list[[nm]] %&gt;%
+      mutate(Set = nm)
+  })
+)
+all_results_df &lt;- all_results %&gt;% 
+  group_by(Set,cluster, Name) %&gt;%
+  summarize(mean_frac = mean(frac), .groups = &quot;drop&quot;)
+
+
+ggplot(all_results_df, aes(x = cluster, y = mean_frac, fill = Name)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  ylab(&quot;Mean fraction of peak&quot;) +
+  theme_classic()+
+  facet_wrap(~Set)+
+  scale_fill_manual(values = state_colors) </code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-7-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(all_results_df ,aes(x = Name, y = cluster, fill = mean_frac)) +
+  geom_tile() +
+  scale_fill_viridis_c(name = &quot;Mean fraction&quot;) +
+  theme_minimal() +
+  facet_wrap(~Set)+
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-7-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="isolating-mer61e" class="section level3">
+<h3>Isolating MER61E</h3>
+<pre class="r"><code>### getting PeakIDs of regions that overlap MER61E
+MER61E_Peaks &lt;- annotated_H3K27ac_ext200 %&gt;% 
+  dplyr::filter(str_detect(repName, &quot;MER61E&quot;)) %&gt;% 
+  distinct(Peakid)
+###Filtering out peakids that do not overlap MER61E elements
+MER61E_only_df &lt;- all_results %&gt;% 
+  dplyr::filter(Peak_name %in% MER61E_Peaks$Peakid) %&gt;% 
+  group_by(Set,cluster, Name) %&gt;%
+  summarize(mean_frac = mean(frac), .groups = &quot;drop&quot;) %&gt;% 
+  mutate(Condition = ifelse(str_detect(Set, &quot;DOX&quot;), &quot;DOX&quot;, &quot;VEH&quot;),
+         Timepoint = case_when(
+           str_detect(Set, &quot;24T&quot;)  ~ &quot;24T&quot;,
+           str_detect(Set, &quot;24R&quot;)  ~ &quot;24R&quot;,
+           str_detect(Set, &quot;144R&quot;) ~ &quot;144R&quot;)) %&gt;% 
+  mutate(Timepoint = factor(Timepoint, levels = c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;)))
+
+### states I want to keep which contain data
+states_to_keep &lt;- MER61E_only_df %&gt;%
+  group_by(Name) %&gt;%
+  summarize(max_frac = max(mean_frac)) %&gt;%
+  filter(max_frac &gt; 0.05) %&gt;%
+  pull(Name)
+### also filter out not_assigned sets here
+MER61E_only_df_filt &lt;- MER61E_only_df %&gt;%
+  filter(Name %in% states_to_keep) %&gt;% 
+  dplyr::filter(cluster!=&quot;not_assigned&quot;)
+
+ggplot(MER61E_only_df, aes(x = cluster, y = mean_frac, fill = Name)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  ylab(&quot;Mean fraction of peak&quot;) +
+  theme_classic()+
+  facet_wrap(~Set)+
+  scale_fill_manual(values = state_colors) </code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-8-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(MER61E_only_df ,aes(x = Name, y = cluster, fill = mean_frac)) +
+  geom_tile() +
+  scale_fill_viridis_c(name = &quot;Mean fraction&quot;) +
+  theme_minimal() +
+  facet_wrap(~Set)+
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-8-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(MER61E_only_df_filt,
+       aes(x = Timepoint,
+           y = mean_frac,
+           group = Condition,
+           color = Condition,
+           linetype = Condition)) +
+  geom_line(size = 1) +
+  geom_point() +
+  facet_grid(cluster ~ Name) +
+  scale_linetype_manual(values = c(&quot;DOX&quot; = &quot;solid&quot;, &quot;VEH&quot; = &quot;dotted&quot;)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-8-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>delta_df &lt;- MER61E_only_df_filt %&gt;%
+  select(Condition, Timepoint, cluster, Name, mean_frac) %&gt;%
+   tidyr::complete(Timepoint, cluster, Name, Condition,
+                  fill = list(mean_frac = 0)) %&gt;% 
+  pivot_wider(names_from = Condition, values_from = mean_frac) %&gt;% 
+  mutate(delta= DOX-VEH)
+
+summary(delta_df$DOX - delta_df$VEH)</code></pre>
+<pre><code>      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+-0.5404613  0.0000000  0.0000000 -0.0006687  0.0000000  0.4733791 </code></pre>
+<pre class="r"><code>ggplot(delta_df,
+       aes(x = Timepoint, y = delta, group = Name, color = Name)) +
+  geom_hline(yintercept = 0, linetype = &quot;dashed&quot;) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~cluster) +
+  theme_minimal()+
+  scale_color_manual(values = state_colors) </code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-9-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>### To look at MER61E only, filter out and reduce down to dominant state per region This is done without respect to cluster relationship
+peak_state_calls &lt;- all_results %&gt;%
+  filter(Peak_name %in% MER61E_Peaks$Peakid) %&gt;%
+  group_by(Peak_name, Set, Name) %&gt;%
+  summarize(frac = sum(frac), .groups = &quot;drop&quot;) %&gt;%
+  group_by(Peak_name, Set) %&gt;%
+  slice_max(frac, n = 1, with_ties = FALSE) %&gt;%
+  ungroup() %&gt;%
+  left_join(
+    distinct(all_results[, c(&quot;Peak_name&quot;, &quot;cluster&quot;)]),
+    by = &quot;Peak_name&quot;
+  ) %&gt;%
+  mutate(
+    Condition = ifelse(grepl(&quot;DOX&quot;, Set), &quot;DOX&quot;, &quot;VEH&quot;),
+    Timepoint = case_when(
+      grepl(&quot;24T&quot;, Set) ~ &quot;24T&quot;,
+      grepl(&quot;24R&quot;, Set) ~ &quot;24R&quot;,
+      grepl(&quot;144R&quot;, Set) ~ &quot;144R&quot;))
+
+state_transitions &lt;- peak_state_calls %&gt;%
+  select(Peak_name, Condition, Timepoint, Name, cluster) %&gt;%
+  pivot_wider(names_from = Timepoint, values_from = Name) 
+
+
+ggplot(peak_state_calls,
+       aes(x = Timepoint, y = Name, fill = Condition)) +
+  geom_tile() +
+  facet_wrap(~cluster) +
+  theme_minimal()</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-10-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(state_transitions,
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`), alpha = 0.5) +
+  geom_stratum() +
+  geom_text(stat = &quot;stratum&quot;, aes(label = after_stat(stratum))) +
+  facet_wrap(~Condition) +
+  theme_minimal()</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-10-2.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>state_map &lt;- c(
+  &quot;Active_TSS&quot; = &quot;Active&quot;,
+  &quot;Very_Weak_Transcription&quot;=&quot;Active&quot;,
+  &quot;Strong_Genic_Enhancer&quot; = &quot;Enhancer&quot;,
+  &quot;Repressed_ZFP_genes&quot; = &quot;Repressed&quot;,
+  &quot;Active_Enhancer&quot; = &quot;Enhancer&quot;,
+  &quot;Weak_Genic_Enhancer&quot; = &quot;Enhancer&quot;,
+  &quot;Bivalent_Poised_TSS&quot; = &quot;Poised&quot;,
+  &quot;Polycomb_Repressed&quot; = &quot;Repressed&quot;,
+  &quot;Strong_Polycomb_Repressed&quot; = &quot;Repressed&quot;,
+  &quot;Repressed_Heterochromatin&quot; = &quot;Repressed&quot;,
+  &quot;Heterochromatin_1&quot; = &quot;Repressed&quot;,
+  &quot;Heterochromatin_2&quot; = &quot;Repressed&quot;,
+  &quot;Quiescent_Low_Coverage&quot; = &quot;Quiescent&quot;
+)
+
+peak_states &lt;- all_results %&gt;%
+  filter(Peak_name %in% MER61E_Peaks$Peakid) %&gt;%
+  group_by(Peak_name, Set) %&gt;%
+  slice_max(frac, n = 1, with_ties = FALSE) %&gt;%
+  ungroup() %&gt;%
+  mutate(
+    Condition = ifelse(grepl(&quot;DOX&quot;, Set), &quot;DOX&quot;, &quot;VEH&quot;),
+    Timepoint = case_when(
+      grepl(&quot;24T&quot;, Set) ~ &quot;24T&quot;,
+      grepl(&quot;24R&quot;, Set) ~ &quot;24R&quot;,
+      grepl(&quot;144R&quot;, Set) ~ &quot;144R&quot;))
+trajectory &lt;- peak_states %&gt;%
+  select(Peak_name, Condition, Timepoint, Name, cluster) %&gt;%
+  tidyr::pivot_wider(names_from = Timepoint, values_from = Name) %&gt;% 
+  mutate(across(c(`24T`,`24R`,`144R`),
+                ~ unname(state_map[.x])))
+ggplot(filter(trajectory, Condition == &quot;DOX&quot;),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`), alpha = 0.6) +
+  geom_stratum(width = 0.2) +
+  geom_text(stat = &quot;stratum&quot;, aes(label = after_stat(stratum)), size = 3) +
+  ggtitle(&quot;MER61E state transitions (DOX)&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-11-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(filter(trajectory, Condition == &quot;VEH&quot;),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`), alpha = 0.6) +
+  geom_stratum(width = 0.2) +
+  geom_text(stat = &quot;stratum&quot;, aes(label = after_stat(stratum)), size = 3) +
+  ggtitle(&quot;MER61E state transitions (VEH)&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-11-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>Cases are incomplete. Time to filter out. note there are 68 MER61E
+overlapping regions in my data. For quantification purposes, 16 are not
+assigned a cluster, 40 are assigned Acute cluster (set 3) and 12 are
+assigned non response cluster (set 1)</p>
+<p>Why are they incomplete: maybe there is reduced chromatin state
+confidence? I have tested to make sure that there is</p>
+<pre class="r"><code>trajectory_clean &lt;- trajectory %&gt;%
+  filter(complete.cases(.))
+
+ggplot(filter(trajectory_clean, Condition == &quot;DOX&quot;),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`), alpha = 0.6) +
+  geom_stratum(width = 0.2) +
+  geom_text(stat = &quot;stratum&quot;, aes(label = after_stat(stratum)), size = 3) +
+  ggtitle(&quot;MER61E state transitions (DOX)&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/clean-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(filter(trajectory_clean, Condition == &quot;VEH&quot;),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`), alpha = 0.6) +
+  geom_stratum(width = 0.2) +
+  geom_text(stat = &quot;stratum&quot;, aes(label = after_stat(stratum)), size = 3) +
+  ggtitle(&quot;MER61E state transitions (VEH)&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/clean-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>qc_df &lt;- trajectory %&gt;%
+  mutate(status = case_when(
+    if_all(c(`24T`, `24R`, `144R`), ~ !is.na(.)) ~ &quot;complete&quot;,
+    if_all(c(`24T`, `24R`, `144R`), is.na) ~ &quot;missing&quot;,
+    TRUE ~ &quot;partial&quot;
+  ))
+
+qc_df %&gt;% group_by(Condition,status) %&gt;% tally</code></pre>
+<pre><code># A tibble: 5 × 3
+# Groups:   Condition [2]
+  Condition status       n
+  &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;
+1 DOX       complete    66
+2 DOX       partial      2
+3 VEH       complete    55
+4 VEH       missing      1
+5 VEH       partial     12</code></pre>
+<pre class="r"><code>qc_peak &lt;- trajectory %&gt;%
+  mutate(status = case_when(
+    if_all(c(`24T`, `24R`, `144R`), ~ !is.na(.)) ~ &quot;complete&quot;,
+    if_all(c(`24T`, `24R`, `144R`), is.na) ~ &quot;missing&quot;,
+    TRUE ~ &quot;partial&quot;
+  )) %&gt;%
+  distinct(Peak_name, status)
+
+qc_counts &lt;- qc_peak %&gt;%
+  count(status)
+trajectory %&gt;%
+  summarise(
+    n_peaks = dplyr::n(),
+    complete = sum(complete.cases(.)),
+    partially_missing = sum(!complete.cases(.))
+  )</code></pre>
+<pre><code># A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1     136      121                15</code></pre>
+<pre class="r"><code>ggplot(qc_counts, aes(x = status, y = n, fill = status)) +
+  geom_col(width = 0.6) +
+  theme_minimal() +
+  labs(
+    x = NULL,
+    y = &quot;Number of MER61E peaks&quot;,
+    title = &quot;ChromHMM state coverage completeness&quot;
+  ) +
+  theme(
+    legend.position = &quot;none&quot;
+  )</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-12-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>traj &lt;- trajectory %&gt;%
+  mutate(status = case_when(
+    if_all(c(`24T`,`24R`,`144R`), ~ !is.na(.)) ~ &quot;complete&quot;,
+    TRUE ~ &quot;partial&quot;
+  ))
+traj_complete &lt;- trajectory %&gt;%
+  filter(if_all(c(`24T`,`24R`,`144R`), ~ !is.na(.)))
+
+ggplot(traj_complete,
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`)) +
+  geom_stratum() +
+  facet_wrap(~Condition) +
+  theme_minimal()</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-13-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_trajectory_TE_spec &lt;- function(anno_df,results_df, TE) {
+  state_colors &lt;- c(
+  &quot;Active&quot; = &quot;#D73027&quot;,
+  &quot;Enhancer&quot; = &quot;#FC8D59&quot;,
+  &quot;Poised&quot; = &quot;#FEE08B&quot;,
+  &quot;Repressed&quot; = &quot;#4575B4&quot;,
+  &quot;Quiescent&quot; = &quot;#D9D9D9&quot;)
+  
+  ## retrieve the peakIDs with associated TE repName
+  
+  peak_ids &lt;- anno_df %&gt;% 
+  dplyr::filter(str_detect(repName, TE)) %&gt;% 
+  pull(Peakid)
+  
+  ## filter results with peak_ids and break into Timepoint and Condition
+  peak_states &lt;- results_df %&gt;%
+  filter(Peak_name %in% peak_ids) %&gt;%
+  group_by(Peak_name, Set, Name) %&gt;%
+  summarize(frac = sum(frac), .groups = &quot;drop&quot;) %&gt;%
+  group_by(Peak_name, Set) %&gt;%
+  arrange(desc(frac), .by_group = TRUE) %&gt;%
+  slice(1) %&gt;%
+  ungroup() %&gt;%
+  left_join(
+    distinct(results_df %&gt;% select(Peak_name, cluster)),
+    by = &quot;Peak_name&quot;
+  ) %&gt;%
+  mutate(
+    Condition = ifelse(grepl(&quot;DOX&quot;, Set), &quot;DOX&quot;, &quot;VEH&quot;),
+    Timepoint = case_when(
+      grepl(&quot;24T&quot;, Set) ~ &quot;24T&quot;,
+      grepl(&quot;24R&quot;, Set) ~ &quot;24R&quot;,
+      grepl(&quot;144R&quot;, Set) ~ &quot;144R&quot;))
+  
+  ## make trajectory dataframe
+trajectory &lt;- peak_states %&gt;%
+  select(Peak_name, Condition, Timepoint, Name, cluster) %&gt;%
+  pivot_wider(
+    id_cols = c(Peak_name, Condition, cluster),
+    names_from = Timepoint,
+    values_from = Name
+  ) %&gt;%
+  mutate(across(c(`24T`,`24R`,`144R`),
+                ~ unname(state_map[.x])))
+
+
+DOX_plot &lt;- ggplot(filter(trajectory, Condition == &quot;DOX&quot;),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+ geom_alluvium(aes(fill = after_stat(stratum)), alpha = 0.4)+
+  geom_stratum(aes(fill = after_stat(stratum))) + # color changes per axis
+  geom_text(stat = &quot;stratum&quot;,
+            aes(label = after_stat(stratum)),
+            size = 3) +
+  ggtitle(paste0(TE,&quot; state transitions (DOX)&quot;)) +
+  theme_minimal()+
+  scale_fill_manual(values = state_colors)
+
+VEH_plot &lt;- ggplot(filter(trajectory, Condition == &quot;VEH&quot;),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = after_stat(stratum)), alpha = 0.4)+
+  geom_stratum(aes(fill = after_stat(stratum))) + # color changes per axis
+  geom_text(stat = &quot;stratum&quot;,
+            aes(label = after_stat(stratum)),
+            size = 3) +
+  ggtitle(paste0(TE,&quot; state transitions (VEH)&quot;)) +
+  theme_minimal()+
+  scale_fill_manual(values = state_colors)
+#### clean plots:
+trajectory_clean &lt;- trajectory %&gt;%
+  filter(complete.cases(.))
+
+DOX_clean &lt;- ggplot(filter(trajectory_clean, Condition == &quot;DOX&quot;),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = after_stat(stratum)), alpha = 0.4)+
+  geom_stratum(aes(fill = after_stat(stratum))) + # color changes per axis
+  geom_text(stat = &quot;stratum&quot;, aes(label = after_stat(stratum)), size = 3) +
+   ggtitle(paste0(TE,&quot; state transitions (DOX)&quot;)) +
+  theme_minimal()+
+  scale_fill_manual(values = state_colors)
+
+VEH_clean &lt;- ggplot(filter(trajectory_clean, Condition == &quot;VEH&quot;),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = after_stat(stratum)), alpha = 0.4)+
+  geom_stratum(aes(fill = after_stat(stratum))) + # color changes per axis
+  geom_text(stat = &quot;stratum&quot;, aes(label = after_stat(stratum)), size = 3) +
+   ggtitle(paste0(TE,&quot; state transitions (VEH)&quot;)) +
+  theme_minimal()+
+  scale_fill_manual(values = state_colors)
+
+
+
+#### calculating incompletes and QC
+traj &lt;- trajectory %&gt;%
+  mutate(status = case_when(
+    if_all(c(`24T`,`24R`,`144R`), ~ !is.na(.)) ~ &quot;complete&quot;,
+    TRUE ~ &quot;partial&quot;
+  ))
+
+traj_complete &lt;- traj %&gt;%
+  filter(status == &quot;complete&quot;)
+
+completion_plot &lt;- ggplot(traj_complete,
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = after_stat(stratum)), alpha = 0.4)+
+  geom_stratum(aes(fill = after_stat(stratum))) + # color changes per axis
+  geom_text(stat = &quot;stratum&quot;,
+            aes(label = after_stat(stratum)),
+            size = 3) +
+  facet_wrap(~Condition) +
+  theme_minimal()+
+  ggtitle(paste0(&quot;Complete cases of &quot;,TE))+
+  scale_fill_manual(values = state_colors)
+#### MORE QC
+
+qc_df &lt;- trajectory %&gt;%
+  mutate(status = case_when(
+    complete.cases(across(c(`24T`,`24R`,`144R`))) ~ &quot;complete&quot;,
+    rowSums(is.na(across(c(`24T`,`24R`,`144R`)))) == 3 ~ &quot;missing&quot;,
+    TRUE ~ &quot;partial&quot;
+  ))
+
+qc_counts &lt;- qc_df %&gt;%
+  distinct(Peak_name, status) %&gt;%
+  count(status)
+
+traj_incomp &lt;- trajectory %&gt;%
+  summarise(
+    n_peaks = dplyr::n(),
+    complete = sum(complete.cases(.)),
+    partially_missing = sum(!complete.cases(.))
+  )
+
+completeness_plot &lt;- ggplot(qc_counts, aes(x = status, y = n, fill = status)) +
+  geom_col(width = 0.6) +
+  theme_minimal() +
+  labs(
+    x = NULL,
+    y = paste0(&quot;Number of &quot;,TE,&quot; peaks&quot;),
+    title =paste0(&quot;ChromHMM state coverage completeness for &quot;,TE)
+  ) +
+  theme(
+    legend.position = &quot;none&quot;
+  )
+
+
+return(list(
+  DOX_plot = DOX_plot,
+  VEH_plot = VEH_plot,
+  DOX_clean = DOX_clean,
+  VEH_clean = VEH_clean,
+  completion_plot = completion_plot,
+  QC_data= qc_df,
+  QC_data_2=qc_counts,
+  QC_missing=traj_incomp,
+  qc_plot=completeness_plot))
+}</code></pre>
+<pre class="r"><code>MER61A_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;MER61A&quot;)
+
+MER61B_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;MER61B&quot;)
+
+MER61C_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;MER61C&quot;)
+MER61D_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;MER61D&quot;)
+
+MER61E_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;MER61E&quot;)
+
+MER61F_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;MER61F&quot;)
+MER61_int_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;MER61-int&quot;)</code></pre>
+<pre class="r"><code>MER61A_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 36 × 7
+   Peak_name               Condition cluster      `144R`   `24R`    `24T` status
+   &lt;chr&gt;                   &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; 
+ 1 chr10:65570136-65570985 DOX       not_assigned Enhancer &lt;NA&gt;     &lt;NA&gt;  parti…
+ 2 chr10:65570136-65570985 VEH       not_assigned Enhancer Enhancer Enha… compl…
+ 3 chr10:86598261-86600883 DOX       Set_1        Enhancer Enhancer Enha… compl…
+ 4 chr10:86598261-86600883 VEH       Set_1        Active   Enhancer Enha… compl…
+ 5 chr12:1212228-1213096   DOX       not_assigned Enhancer Enhancer Repr… compl…
+ 6 chr12:1212228-1213096   VEH       not_assigned Enhancer Enhancer Enha… compl…
+ 7 chr16:75420823-75421468 DOX       not_assigned Enhancer Enhancer Repr… compl…
+ 8 chr16:75420823-75421468 VEH       not_assigned Enhancer Enhancer Enha… compl…
+ 9 chr17:29433239-29434092 DOX       not_assigned Enhancer Repress… Repr… compl…
+10 chr17:29433239-29434092 VEH       not_assigned Enhancer Enhancer Repr… compl…
+# ℹ 26 more rows
+
+$QC_data_2
+# A tibble: 2 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete    18
+2 partial      7
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      36       29                 7
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>MER61B_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 16 × 7
+   Peak_name                Condition cluster      `144R`    `24R`  `24T` status
+   &lt;chr&gt;                    &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; 
+ 1 chr11:12172153-12173790  DOX       Set_1        Enhancer  Enhan… Enha… compl…
+ 2 chr11:12172153-12173790  VEH       Set_1        Enhancer  Enhan… Enha… compl…
+ 3 chr13:98105763-98107131  DOX       Set_1        Repressed Repre… Quie… compl…
+ 4 chr13:98105763-98107131  VEH       Set_1        Active    Repre… Repr… compl…
+ 5 chr2:219684466-219686820 DOX       not_assigned Enhancer  Enhan… Acti… compl…
+ 6 chr2:219684466-219686820 VEH       not_assigned Repressed Enhan… Enha… compl…
+ 7 chr3:32313384-32314451   DOX       not_assigned Enhancer  Repre… Pois… compl…
+ 8 chr3:32313384-32314451   VEH       not_assigned Poised    &lt;NA&gt;   &lt;NA&gt;  parti…
+ 9 chr5:41437783-41438605   DOX       Set_1        Enhancer  Repre… Repr… compl…
+10 chr5:41437783-41438605   VEH       Set_1        Repressed Repre… Enha… compl…
+11 chr6:27078688-27079247   DOX       Set_1        Repressed Repre… Repr… compl…
+12 chr6:27078688-27079247   VEH       Set_1        Poised    Poised Pois… compl…
+13 chr7:29299984-29300336   DOX       Set_1        Enhancer  Repre… Enha… compl…
+14 chr7:29299984-29300336   VEH       Set_1        Repressed Enhan… Repr… compl…
+15 chr8:99888517-99888903   DOX       not_assigned Active    Enhan… Acti… compl…
+16 chr8:99888517-99888903   VEH       not_assigned Enhancer  Enhan… Acti… compl…
+
+$QC_data_2
+# A tibble: 2 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete     8
+2 partial      1
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      16       15                 1
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>MER61C_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-14.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-15.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-16.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-17.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 84 × 7
+   Peak_name               Condition cluster      `144R`    `24R`   `24T` status
+   &lt;chr&gt;                   &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; 
+ 1 chr10:13756605-13759713 DOX       not_assigned Enhancer  Active  Acti… compl…
+ 2 chr10:13756605-13759713 VEH       not_assigned Enhancer  Active  Enha… compl…
+ 3 chr10:29444223-29444893 DOX       Set_3        Repressed Enhanc… Enha… compl…
+ 4 chr10:29444223-29444893 VEH       Set_3        &lt;NA&gt;      &lt;NA&gt;    Repr… parti…
+ 5 chr10:53619565-53620145 DOX       not_assigned Enhancer  Enhanc… Enha… compl…
+ 6 chr10:53619565-53620145 VEH       not_assigned Enhancer  Repres… &lt;NA&gt;  parti…
+ 7 chr10:67280464-67280892 DOX       not_assigned Repressed Enhanc… Enha… compl…
+ 8 chr10:67280464-67280892 VEH       not_assigned Repressed Repres… Repr… compl…
+ 9 chr12:59357673-59358404 DOX       Set_1        Enhancer  Enhanc… Enha… compl…
+10 chr12:59357673-59358404 VEH       Set_1        Active    Enhanc… Repr… compl…
+# ℹ 74 more rows
+
+$QC_data_2
+# A tibble: 2 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete    39
+2 partial     11
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      84       70                14
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-18.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>MER61D_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-19.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-20.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-21.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-22.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-23.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 48 × 7
+   Peak_name                 Condition cluster      `144R`    `24R` `24T` status
+   &lt;chr&gt;                     &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 
+ 1 chr10:653575-655404       DOX       Set_1        Enhancer  Enha… Acti… compl…
+ 2 chr10:653575-655404       VEH       Set_1        Enhancer  Enha… Enha… compl…
+ 3 chr11:98561351-98561734   DOX       not_assigned Repressed Enha… Enha… compl…
+ 4 chr11:98561351-98561734   VEH       not_assigned &lt;NA&gt;      Enha… &lt;NA&gt;  parti…
+ 5 chr12:101854651-101855730 DOX       Set_1        Repressed Acti… Repr… compl…
+ 6 chr12:101854651-101855730 VEH       Set_1        Poised    Pois… Repr… compl…
+ 7 chr12:32248559-32249526   DOX       not_assigned Enhancer  Enha… Enha… compl…
+ 8 chr12:32248559-32249526   VEH       not_assigned Quiescent Enha… Enha… compl…
+ 9 chr12:50928089-50929032   DOX       Set_3        Enhancer  Enha… Enha… compl…
+10 chr12:50928089-50929032   VEH       Set_3        Repressed Enha… Repr… compl…
+# ℹ 38 more rows
+
+$QC_data_2
+# A tibble: 3 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete    22
+2 missing      1
+3 partial      9
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      48       37                11
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-24.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>MER61E_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-25.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-26.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-27.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-28.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-29.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 136 × 7
+   Peak_name               Condition cluster      `144R`    `24R`   `24T` status
+   &lt;chr&gt;                   &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; 
+ 1 chr10:17247110-17248128 DOX       Set_3        Repressed Enhanc… Acti… compl…
+ 2 chr10:17247110-17248128 VEH       Set_3        Repressed Quiesc… Repr… compl…
+ 3 chr10:84524864-84526144 DOX       not_assigned Enhancer  Enhanc… Acti… compl…
+ 4 chr10:84524864-84526144 VEH       not_assigned Active    Enhanc… Acti… compl…
+ 5 chr10:9824602-9826127   DOX       not_assigned Enhancer  Active  Acti… compl…
+ 6 chr10:9824602-9826127   VEH       not_assigned Enhancer  Enhanc… Enha… compl…
+ 7 chr11:17369780-17370885 DOX       Set_3        Repressed Active  Acti… compl…
+ 8 chr11:17369780-17370885 VEH       Set_3        Repressed Repres… Repr… compl…
+ 9 chr11:27635470-27636384 DOX       Set_3        Repressed Repres… Enha… compl…
+10 chr11:27635470-27636384 VEH       Set_3        Repressed Repres… Repr… compl…
+# ℹ 126 more rows
+
+$QC_data_2
+# A tibble: 3 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete    68
+2 missing      1
+3 partial     14
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1     136      121                15
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-30.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>MER61F_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-31.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-32.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-33.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-34.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-35.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 38 × 7
+   Peak_name                 Condition cluster `144R`    `24R`     `24T`  status
+   &lt;chr&gt;                     &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; 
+ 1 chr10:121854648-121855325 DOX       Set_1   Enhancer  Enhancer  Enhan… compl…
+ 2 chr10:121854648-121855325 VEH       Set_1   Repressed Enhancer  Repre… compl…
+ 3 chr10:83545735-83546263   DOX       Set_1   &lt;NA&gt;      Repressed &lt;NA&gt;   parti…
+ 4 chr10:83545735-83546263   VEH       Set_1   &lt;NA&gt;      &lt;NA&gt;      &lt;NA&gt;   missi…
+ 5 chr12:55500026-55500395   DOX       Set_1   Repressed &lt;NA&gt;      Repre… parti…
+ 6 chr12:55500026-55500395   VEH       Set_1   Repressed Poised    Repre… compl…
+ 7 chr12:90858149-90858656   DOX       Set_1   Enhancer  Enhancer  Repre… compl…
+ 8 chr12:90858149-90858656   VEH       Set_1   Poised    Repressed &lt;NA&gt;   parti…
+ 9 chr14:73663400-73664324   DOX       Set_1   Enhancer  Enhancer  Enhan… compl…
+10 chr14:73663400-73664324   VEH       Set_1   Enhancer  Enhancer  Enhan… compl…
+# ℹ 28 more rows
+
+$QC_data_2
+# A tibble: 3 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete    16
+2 missing      1
+3 partial      8
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      38       27                11
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-36.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>MER61_int_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-37.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-38.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-39.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-40.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-41.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 42 × 7
+   Peak_name                Condition cluster      `144R`    `24R`  `24T` status
+   &lt;chr&gt;                    &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; 
+ 1 chr13:48070606-48073144  DOX       not_assigned Active    Active Acti… compl…
+ 2 chr13:48070606-48073144  VEH       not_assigned Active    Active Acti… compl…
+ 3 chr14:70399293-70399711  DOX       Set_1        Active    Active Acti… compl…
+ 4 chr14:70399293-70399711  VEH       Set_1        Repressed Repre… Repr… compl…
+ 5 chr17:29433239-29434092  DOX       not_assigned Enhancer  Repre… Repr… compl…
+ 6 chr17:29433239-29434092  VEH       not_assigned Enhancer  Enhan… Repr… compl…
+ 7 chr18:33560462-33562667  DOX       not_assigned Enhancer  Active Acti… compl…
+ 8 chr18:33560462-33562667  VEH       not_assigned Active    Enhan… Enha… compl…
+ 9 chr1:176099524-176100171 DOX       Set_1        Enhancer  Quies… Acti… compl…
+10 chr1:176099524-176100171 VEH       Set_1        Repressed Enhan… Enha… compl…
+# ℹ 32 more rows
+
+$QC_data_2
+# A tibble: 3 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete    18
+2 missing      2
+3 partial      7
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      42       30                12
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61B-42.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR10E_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;LTR10E&quot;)
+
+LTR10E_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-16-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-16-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-16-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-16-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-16-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 56 × 7
+   Peak_name                 Condition cluster      `144R`    `24R` `24T` status
+   &lt;chr&gt;                     &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 
+ 1 chr10:120504027-120504985 DOX       Set_1        Repressed &lt;NA&gt;  Enha… parti…
+ 2 chr10:120504027-120504985 VEH       Set_1        Repressed &lt;NA&gt;  &lt;NA&gt;  parti…
+ 3 chr11:61998635-61999609   DOX       Set_3        Repressed Enha… Acti… compl…
+ 4 chr11:61998635-61999609   VEH       Set_3        Repressed Quie… Quie… compl…
+ 5 chr11:97742787-97743624   DOX       Set_3        Repressed Enha… Enha… compl…
+ 6 chr11:97742787-97743624   VEH       Set_3        Repressed Repr… &lt;NA&gt;  parti…
+ 7 chr12:25710931-25711538   DOX       Set_3        Repressed Repr… Enha… compl…
+ 8 chr12:25710931-25711538   VEH       Set_3        Repressed Repr… &lt;NA&gt;  parti…
+ 9 chr14:22100326-22100537   DOX       not_assigned Repressed Repr… Repr… compl…
+10 chr14:22100326-22100537   VEH       not_assigned Repressed Repr… Repr… compl…
+# ℹ 46 more rows
+
+$QC_data_2
+# A tibble: 2 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete    27
+2 partial      6
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      56       49                 7
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-16-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR10B1_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;LTR10B1&quot;)
+
+LTR10B1_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 30 × 7
+   Peak_name               Condition cluster      `144R`    `24R`   `24T` status
+   &lt;chr&gt;                   &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; 
+ 1 chr13:23399307-23399813 DOX       not_assigned Repressed Enhanc… Enha… compl…
+ 2 chr13:23399307-23399813 VEH       not_assigned Repressed Repres… Repr… compl…
+ 3 chr14:20751847-20753040 DOX       not_assigned Repressed Repres… Acti… compl…
+ 4 chr14:20751847-20753040 VEH       not_assigned Repressed Repres… Repr… compl…
+ 5 chr15:49625524-49626367 DOX       Set_3        Active    Enhanc… Acti… compl…
+ 6 chr15:49625524-49626367 VEH       Set_3        Enhancer  Enhanc… Enha… compl…
+ 7 chr16:10504108-10505269 DOX       Set_1        Enhancer  Enhanc… Enha… compl…
+ 8 chr16:10504108-10505269 VEH       Set_1        Enhancer  Enhanc… Enha… compl…
+ 9 chr17:77174390-77176480 DOX       Set_1        Active    Active  Acti… compl…
+10 chr17:77174390-77176480 VEH       Set_1        Active    Enhanc… Enha… compl…
+# ℹ 20 more rows
+
+$QC_data_2
+# A tibble: 1 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete    15
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      30       30                 0
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR10B2_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;LTR10B2&quot;)
+
+LTR10B2_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 34 × 7
+   Peak_name                 Condition cluster      `144R`    `24R` `24T` status
+   &lt;chr&gt;                     &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 
+ 1 chr12:9902566-9903100     DOX       not_assigned Repressed Acti… Acti… compl…
+ 2 chr12:9902566-9903100     VEH       not_assigned Repressed Repr… Repr… compl…
+ 3 chr12:9910598-9911984     DOX       not_assigned Active    Acti… Acti… compl…
+ 4 chr12:9910598-9911984     VEH       not_assigned Repressed Acti… Acti… compl…
+ 5 chr14:103243610-103244723 DOX       Set_1        Repressed Enha… Enha… compl…
+ 6 chr14:103243610-103244723 VEH       Set_1        Repressed Repr… Repr… compl…
+ 7 chr15:99263609-99265031   DOX       Set_1        Enhancer  Enha… Enha… compl…
+ 8 chr15:99263609-99265031   VEH       Set_1        Enhancer  Enha… Enha… compl…
+ 9 chr16:24381344-24382191   DOX       Set_1        Repressed Acti… Repr… compl…
+10 chr16:24381344-24382191   VEH       Set_1        Repressed Repr… Repr… compl…
+# ℹ 24 more rows
+
+$QC_data_2
+# A tibble: 2 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete    17
+2 partial      1
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      34       33                 1
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>HERVIP10B3_int_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;HERVIP10B3-int&quot;)
+
+HERVIP10B3_int_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-14.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-15.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-16.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-17.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 28 × 7
+   Peak_name                Condition cluster `144R`    `24R`     `24T`   status
+   &lt;chr&gt;                    &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt; 
+ 1 chr17:30040235-30041219  DOX       Set_3   Repressed Enhancer  Enhanc… compl…
+ 2 chr17:30040235-30041219  VEH       Set_3   Repressed Repressed Repres… compl…
+ 3 chr17:77169384-77169936  DOX       Set_1   Repressed Repressed Quiesc… compl…
+ 4 chr17:77169384-77169936  VEH       Set_1   Repressed Repressed Repres… compl…
+ 5 chr1:171220707-171220966 DOX       Set_1   Enhancer  &lt;NA&gt;      &lt;NA&gt;    parti…
+ 6 chr1:171220707-171220966 VEH       Set_1   Enhancer  Poised    Enhanc… compl…
+ 7 chr1:173637066-173638684 DOX       Set_3   Active    Active    Active  compl…
+ 8 chr1:173637066-173638684 VEH       Set_3   Enhancer  Enhancer  Repres… compl…
+ 9 chr1:173638916-173641956 DOX       Set_3   Enhancer  Enhancer  Active  compl…
+10 chr1:173638916-173641956 VEH       Set_3   Enhancer  Active    Enhanc… compl…
+# ℹ 18 more rows
+
+$QC_data_2
+# A tibble: 2 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete    14
+2 partial      1
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      28       27                 1
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-18.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>HERV1_LTRa_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;HERV1_LTRa&quot;)
+
+HERV1_LTRa_results</code></pre>
+<pre><code>$DOX_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-19.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-20.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$DOX_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-21.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$VEH_clean</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-22.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$completion_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-23.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$QC_data
+# A tibble: 18 × 7
+   Peak_name                Condition cluster      `144R`    `24R`  `24T` status
+   &lt;chr&gt;                    &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; 
+ 1 chr10:15027723-15028409  DOX       not_assigned Enhancer  Quies… Enha… compl…
+ 2 chr10:15027723-15028409  VEH       not_assigned Poised    Enhan… &lt;NA&gt;  parti…
+ 3 chr10:42644791-42645735  DOX       Set_1        Enhancer  Repre… Quie… compl…
+ 4 chr10:42644791-42645735  VEH       Set_1        Enhancer  Enhan… Repr… compl…
+ 5 chr11:4658466-4659364    DOX       not_assigned Enhancer  &lt;NA&gt;   Repr… parti…
+ 6 chr11:4658466-4659364    VEH       not_assigned Enhancer  Enhan… Acti… compl…
+ 7 chr15:40590671-40591726  DOX       Set_1        Repressed Enhan… Repr… compl…
+ 8 chr15:40590671-40591726  VEH       Set_1        Repressed Enhan… Enha… compl…
+ 9 chr15:68983784-68984974  DOX       Set_1        Enhancer  Enhan… Enha… compl…
+10 chr15:68983784-68984974  VEH       Set_1        Enhancer  Enhan… Enha… compl…
+11 chr15:81330981-81331663  DOX       Set_3        Enhancer  Enhan… Quie… compl…
+12 chr15:81330981-81331663  VEH       Set_3        Poised    Enhan… Enha… compl…
+13 chr1:173602864-173603889 DOX       Set_3        Active    &lt;NA&gt;   Quie… parti…
+14 chr1:173602864-173603889 VEH       Set_3        Enhancer  Enhan… Enha… compl…
+15 chr8:38080081-38082893   DOX       Set_3        Enhancer  Enhan… Enha… compl…
+16 chr8:38080081-38082893   VEH       Set_3        Enhancer  Enhan… Enha… compl…
+17 chr8:38090427-38092784   DOX       Set_3        Enhancer  Enhan… Enha… compl…
+18 chr8:38090427-38092784   VEH       Set_3        Enhancer  Enhan… Enha… compl…
+
+$QC_data_2
+# A tibble: 2 × 2
+  status       n
+  &lt;chr&gt;    &lt;int&gt;
+1 complete     9
+2 partial      3
+
+$QC_missing
+# A tibble: 1 × 3
+  n_peaks complete partially_missing
+    &lt;int&gt;    &lt;int&gt;             &lt;int&gt;
+1      18       15                 3
+
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-17-24.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26200)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] ggalluvial_0.12.6    ggforce_0.5.0        cowplot_1.2.0       
+ [4] ChIPseeker_1.42.1    readxl_1.4.5         DT_0.34.0           
+ [7] ggrepel_0.9.8        rtracklayer_1.66.0   genomation_1.38.0   
+[10] plyranges_1.26.0     GenomicRanges_1.58.0 GenomeInfoDb_1.42.3 
+[13] IRanges_2.40.1       S4Vectors_0.44.0     BiocGenerics_0.52.0 
+[16] lubridate_1.9.5      forcats_1.0.1        stringr_1.6.0       
+[19] dplyr_1.2.0          purrr_1.2.1          readr_2.2.0         
+[22] tidyr_1.3.2          tibble_3.3.1         ggplot2_4.0.2       
+[25] tidyverse_2.0.0      workflowr_1.7.2     
+
+loaded via a namespace (and not attached):
+  [1] splines_4.4.2                          
+  [2] later_1.4.8                            
+  [3] BiocIO_1.16.0                          
+  [4] bitops_1.0-9                           
+  [5] ggplotify_0.1.3                        
+  [6] R.oo_1.27.1                            
+  [7] cellranger_1.1.0                       
+  [8] polyclip_1.10-7                        
+  [9] XML_3.99-0.23                          
+ [10] lifecycle_1.0.5                        
+ [11] rprojroot_2.1.1                        
+ [12] processx_3.8.7                         
+ [13] lattice_0.22-9                         
+ [14] MASS_7.3-65                            
+ [15] magrittr_2.0.4                         
+ [16] sass_0.4.10                            
+ [17] rmarkdown_2.31                         
+ [18] jquerylib_0.1.4                        
+ [19] yaml_2.3.12                            
+ [20] plotrix_3.8-14                         
+ [21] httpuv_1.6.17                          
+ [22] otel_0.2.0                             
+ [23] ggtangle_0.1.1                         
+ [24] DBI_1.3.0                              
+ [25] RColorBrewer_1.1-3                     
+ [26] abind_1.4-8                            
+ [27] zlibbioc_1.52.0                        
+ [28] R.utils_2.13.0                         
+ [29] RCurl_1.98-1.18                        
+ [30] yulab.utils_0.2.4                      
+ [31] tweenr_2.0.3                           
+ [32] rappdirs_0.3.4                         
+ [33] git2r_0.36.2                           
+ [34] GenomeInfoDbData_1.2.13                
+ [35] enrichplot_1.26.6                      
+ [36] tidytree_0.4.7                         
+ [37] codetools_0.2-20                       
+ [38] DelayedArray_0.32.0                    
+ [39] DOSE_4.0.1                             
+ [40] tidyselect_1.2.1                       
+ [41] aplot_0.2.9                            
+ [42] UCSC.utils_1.2.0                       
+ [43] farver_2.1.2                           
+ [44] matrixStats_1.5.0                      
+ [45] GenomicAlignments_1.42.0               
+ [46] jsonlite_2.0.0                         
+ [47] tools_4.4.2                            
+ [48] treeio_1.30.0                          
+ [49] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+ [50] Rcpp_1.1.1                             
+ [51] glue_1.8.0                             
+ [52] SparseArray_1.6.2                      
+ [53] xfun_0.57                              
+ [54] qvalue_2.38.0                          
+ [55] MatrixGenerics_1.18.1                  
+ [56] withr_3.0.2                            
+ [57] fastmap_1.2.0                          
+ [58] boot_1.3-32                            
+ [59] callr_3.7.6                            
+ [60] caTools_1.18.3                         
+ [61] digest_0.6.39                          
+ [62] timechange_0.4.0                       
+ [63] R6_2.6.1                               
+ [64] gridGraphics_0.5-1                     
+ [65] seqPattern_1.38.0                      
+ [66] colorspace_2.1-2                       
+ [67] GO.db_3.20.0                           
+ [68] gtools_3.9.5                           
+ [69] dichromat_2.0-0.1                      
+ [70] RSQLite_2.4.6                          
+ [71] R.methodsS3_1.8.2                      
+ [72] utf8_1.2.6                             
+ [73] generics_0.1.4                         
+ [74] data.table_1.18.2.1                    
+ [75] httr_1.4.8                             
+ [76] htmlwidgets_1.6.4                      
+ [77] S4Arrays_1.6.0                         
+ [78] whisker_0.4.1                          
+ [79] pkgconfig_2.0.3                        
+ [80] gtable_0.3.6                           
+ [81] blob_1.3.0                             
+ [82] S7_0.2.1                               
+ [83] impute_1.80.0                          
+ [84] XVector_0.46.0                         
+ [85] htmltools_0.5.9                        
+ [86] fgsea_1.32.4                           
+ [87] scales_1.4.0                           
+ [88] Biobase_2.66.0                         
+ [89] png_0.1-9                              
+ [90] ggfun_0.2.0                            
+ [91] knitr_1.51                             
+ [92] rstudioapi_0.18.0                      
+ [93] tzdb_0.5.0                             
+ [94] reshape2_1.4.5                         
+ [95] rjson_0.2.23                           
+ [96] nlme_3.1-169                           
+ [97] curl_7.0.0                             
+ [98] cachem_1.1.0                           
+ [99] KernSmooth_2.23-26                     
+[100] parallel_4.4.2                         
+[101] AnnotationDbi_1.68.0                   
+[102] restfulr_0.0.16                        
+[103] pillar_1.11.1                          
+[104] vctrs_0.7.2                            
+[105] gplots_3.3.0                           
+[106] promises_1.5.0                         
+[107] evaluate_1.0.5                         
+[108] GenomicFeatures_1.58.0                 
+[109] cli_3.6.5                              
+[110] compiler_4.4.2                         
+[111] Rsamtools_2.22.0                       
+[112] rlang_1.1.7                            
+[113] crayon_1.5.3                           
+[114] labeling_0.4.3                         
+[115] getPass_0.2-4                          
+[116] plyr_1.8.9                             
+[117] fs_2.0.1                               
+[118] stringi_1.8.7                          
+[119] viridisLite_0.4.3                      
+[120] gridBase_0.4-7                         
+[121] BiocParallel_1.40.2                    
+[122] Biostrings_2.74.1                      
+[123] lazyeval_0.2.2                         
+[124] GOSemSim_2.32.0                        
+[125] Matrix_1.7-5                           
+[126] BSgenome_1.74.0                        
+[127] hms_1.1.4                              
+[128] patchwork_1.3.2                        
+[129] bit64_4.6.0-1                          
+[130] KEGGREST_1.46.0                        
+[131] SummarizedExperiment_1.36.0            
+[132] igraph_2.2.2                           
+[133] memoise_2.0.1                          
+[134] bslib_0.10.0                           
+[135] ggtree_3.14.0                          
+[136] fastmatch_1.1-8                        
+[137] bit_4.6.0                              
+[138] ape_5.8-1                              </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
