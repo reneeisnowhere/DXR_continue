@@ -104,6 +104,8 @@ Contains Overlapping TE elements and full ROI, including information about TE ov
 ### Examining ChromHMM states and ROIs
 [ChromHMM states and other plots](https://reneeisnowhere.github.io/DXR_continue/chromHMM.html)
 
+[ChromHMM states and newer plots plots](https://reneeisnowhere.github.io/DXR_continue/chromHMM_2.html)
+
 
 ### ATAC integration
 [First integration of ATAC data with H3K27ac](https://reneeisnowhere.github.io/DXR_continue/ATAC_integration_data1.html)
