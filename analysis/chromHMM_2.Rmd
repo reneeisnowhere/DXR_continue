@@ -1,0 +1,778 @@
+---
+title: "ChromHMM_2"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 400px;
+}
+```
+
+
+```{r}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(readxl)
+library(ChIPseeker)
+# library(regioneR)
+library(cowplot)
+library(GenomeInfoDb)
+library(ggforce)
+library(ggalluvial)
+```
+
+
+
+
+### Adding annotation to states
+
+```{r annotation}
+
+States_anno <- data.frame("State"=c(paste0("E",1:16)),
+"Name"=c("Heterochromatin_1",
+"Quiescent_Low_Coverage",
+"Repressed_Heterochromatin",
+"Repressed_ZFP_genes",
+"Strong_Polycomb_Repressed",
+ "Bivalent_Enhancer",
+"Heterochromatin_2",
+"Polycomb_Repressed",
+ "Weak_Genic_Enhancer",
+ "Bivalent_Poised_TSS",
+ "Active_Enhancer",
+  "Strong_Genic_Enhancer",
+ "Active_TSS",
+ "Very_Weak_Transcription",
+ "Genic_Strong_Transcription",
+ "Genic_Weak_Transcription"), "recode"=c("N","P","M","L","J","I","O","K","G","H","E","F","A","D","B","C")) %>% 
+  mutate(recode=factor(recode,levels=c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P")))
+
+state_colors <- c(
+  # Promoters (strong → weak)
+  "Active_TSS"  = "#d73027",  # strong red
+    # Changed
+  "Strong_Genic_Enhancer"  = "#ffff60",  
+  
+  # Enhancers
+  "Active_Enhancer"  = "#ffff01",  # bright yellow
+  "Weak_Genic_Enhancer"  = "#ffeda0",  # soft yellow
+  
+  # Transcribed regions
+  "Genic_Strong_Transcription"  = "#1a9850",  # dark green
+  "Genic_Weak_Transcription"  = "#66bd63",
+  "Very_Weak_Transcription"  = "#a6d96a",
+  
+  # Bivalent / regulatory
+  "Bivalent_Poised_TSS"  = "#c51b7d",
+  "Bivalent_Enhancer"= "#de77ae",
+  
+  # Polycomb / repressed
+  "Strong_Polycomb_Repressed" = "#762a83",  # deep purple
+  "Polycomb_Repressed" = "#af8dc3",
+  
+  # Heterochromatin / ZNF/repeats
+  "Repressed_ZFP_genes" = "#2c7bb6",  # blue
+  "Repressed_Heterochromatin" = "#74abe1",
+  "Heterochromatin_1"="#abd9e9",
+  "Heterochromatin_2"="#abf9f9",
+  
+  # Quiescent / low signal
+  "Quiescent_Low_Coverage" = "#bdbdbd"
+ )
+
+name_order <- States_anno %>%
+  arrange(recode) %>%
+  pull(Name)
+```
+### Loading interested regions for overlap
+
+```{r}
+MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
+
+annotated_H3K27ac_ext200 <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+H3K27ac_ROI <- import("data/Bed_exportsH3K27ac_summit_gr_ext200.bed")
+
+cluster_lookup <- annotated_H3K27ac_ext200 %>% 
+  dplyr::select(Peakid, cluster)
+
+# H3K27ac_ROI %>% as.data.frame()
+
+# annotated_H3K27ac_ext200 %>% 
+#   dplyr::filter(str_detect(repName,"^HERVIP"))
+```
+
+
+### Loading State segment files
+```{r}
+chrom_24T_VEH <- import("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24T_VEH_16_segments.bed")
+chrom_24R_VEH <- import("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24R_VEH_16_segments.bed")
+chrom_144R_VEH <- import("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/144R_VEH_16_segments.bed")
+chrom_24T_DOX <- import("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24T_DOX_16_segments.bed")
+chrom_24R_DOX <- import("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24R_DOX_16_segments.bed")
+chrom_144R_DOX <- import("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/144R_DOX_16_segments.bed")
+
+
+colnames(mcols(chrom_24T_VEH))
+```
+###  Global MER61E
+
+```{r}
+global_hits <- findOverlaps(H3K27ac_ROI, chrom_24T_VEH, ignore.strand = TRUE)
+
+peak_states <- data.frame(
+  peak_id = queryHits(global_hits),
+  Peak_name = mcols(H3K27ac_ROI)$name[queryHits(global_hits)],
+  state = mcols(chrom_24T_VEH)$name[subjectHits(global_hits)],
+  width   = width(pintersect(
+    H3K27ac_ROI[queryHits(global_hits)],
+    chrom_24T_VEH[subjectHits(global_hits)]
+  ))
+)
+peak_states_summed <- peak_states %>%
+  group_by(Peak_name, state) %>%
+  summarize(total_width = sum(width), .groups = "drop")
+
+
+# Instead of collapsing to one state per peak, keep the proportions:
+peak_states_props <- peak_states_summed %>%
+  mutate(frac = total_width / 401)
+
+```
+
+```{r}
+peak_states_complete <- peak_states_props %>%
+  complete(Peak_name, state, fill = list(frac = 0)) %>%
+  left_join(cluster_lookup, by=c("Peak_name"="Peakid")) %>% 
+  left_join(States_anno, by=c("state"="State")) %>% 
+   mutate(Name = factor(Name, levels = name_order))
+
+plot_df <- peak_states_complete %>% 
+  group_by(cluster, Name) %>%
+  summarize(mean_frac = mean(frac), .groups = "drop")
+  
+ggplot(plot_df, aes(x = cluster, y = mean_frac, fill = Name)) +
+  geom_bar(stat = "identity") +
+  ylab("Mean fraction of peak") +
+  theme_classic()+
+  scale_fill_manual(values = state_colors) 
+
+ggplot(plot_df ,aes(x = Name, y = cluster, fill = mean_frac)) +
+  geom_tile() +
+  scale_fill_viridis_c(name = "Mean fraction") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+```
+
+```{r chromhmm function}
+process_chromhmm_raw <- function(chrom_gr, roi_gr) {
+
+  hits <- findOverlaps(roi_gr, chrom_gr, ignore.strand = TRUE)
+
+  peak_states <- data.frame(
+    peak_id   = queryHits(hits),
+    Peak_name = mcols(roi_gr)$name[queryHits(hits)],
+    state     = mcols(chrom_gr)$name[subjectHits(hits)],
+    width     = width(pintersect(
+      roi_gr[queryHits(hits)],
+      chrom_gr[subjectHits(hits)]
+    ))
+  )
+
+  peak_states_summed <- peak_states %>%
+    group_by(Peak_name, state) %>%
+    summarize(total_width = sum(width), .groups = "drop")
+
+  peak_states_props <- peak_states_summed %>%
+    mutate(frac = total_width / 401)
+  
+  return(peak_states_props)
+}
+
+annotate_states <- function(df) {
+
+  df %>%
+    complete(Peak_name, state = unique(States_anno$State),
+             fill = list(frac = 0)) %>%
+    left_join(cluster_lookup, by = c("Peak_name" = "Peakid")) %>%
+    left_join(States_anno, by = c("state" = "State")) %>%
+    mutate(Name = factor(Name, levels = name_order))
+}
+```
+
+```{r}
+chrom_list <- list(
+  VEH_24T = chrom_24T_VEH,
+  VEH_24R  = chrom_24R_VEH,
+  VEH_144R  = chrom_144R_VEH,
+  DOX_24T  = chrom_24T_DOX,
+  DOX_24R  = chrom_24R_DOX,
+  DOX_144R  = chrom_144R_DOX
+)
+results_list <- lapply(chrom_list, function(x)
+  annotate_states(process_chromhmm_raw(x, H3K27ac_ROI))
+)
+
+all_results <- bind_rows(
+  lapply(names(results_list), function(nm) {
+    results_list[[nm]] %>%
+      mutate(Set = nm)
+  })
+)
+all_results_df <- all_results %>% 
+  group_by(Set,cluster, Name) %>%
+  summarize(mean_frac = mean(frac), .groups = "drop")
+
+
+ggplot(all_results_df, aes(x = cluster, y = mean_frac, fill = Name)) +
+  geom_bar(stat = "identity") +
+  ylab("Mean fraction of peak") +
+  theme_classic()+
+  facet_wrap(~Set)+
+  scale_fill_manual(values = state_colors) 
+
+
+ggplot(all_results_df ,aes(x = Name, y = cluster, fill = mean_frac)) +
+  geom_tile() +
+  scale_fill_viridis_c(name = "Mean fraction") +
+  theme_minimal() +
+  facet_wrap(~Set)+
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+
+### Isolating MER61E
+
+```{r}
+
+### getting PeakIDs of regions that overlap MER61E
+MER61E_Peaks <- annotated_H3K27ac_ext200 %>% 
+  dplyr::filter(str_detect(repName, "MER61E")) %>% 
+  distinct(Peakid)
+###Filtering out peakids that do not overlap MER61E elements
+MER61E_only_df <- all_results %>% 
+  dplyr::filter(Peak_name %in% MER61E_Peaks$Peakid) %>% 
+  group_by(Set,cluster, Name) %>%
+  summarize(mean_frac = mean(frac), .groups = "drop") %>% 
+  mutate(Condition = ifelse(str_detect(Set, "DOX"), "DOX", "VEH"),
+         Timepoint = case_when(
+           str_detect(Set, "24T")  ~ "24T",
+           str_detect(Set, "24R")  ~ "24R",
+           str_detect(Set, "144R") ~ "144R")) %>% 
+  mutate(Timepoint = factor(Timepoint, levels = c("24T","24R","144R")))
+
+### states I want to keep which contain data
+states_to_keep <- MER61E_only_df %>%
+  group_by(Name) %>%
+  summarize(max_frac = max(mean_frac)) %>%
+  filter(max_frac > 0.05) %>%
+  pull(Name)
+### also filter out not_assigned sets here
+MER61E_only_df_filt <- MER61E_only_df %>%
+  filter(Name %in% states_to_keep) %>% 
+  dplyr::filter(cluster!="not_assigned")
+
+ggplot(MER61E_only_df, aes(x = cluster, y = mean_frac, fill = Name)) +
+  geom_bar(stat = "identity") +
+  ylab("Mean fraction of peak") +
+  theme_classic()+
+  facet_wrap(~Set)+
+  scale_fill_manual(values = state_colors) 
+
+ggplot(MER61E_only_df ,aes(x = Name, y = cluster, fill = mean_frac)) +
+  geom_tile() +
+  scale_fill_viridis_c(name = "Mean fraction") +
+  theme_minimal() +
+  facet_wrap(~Set)+
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+
+ggplot(MER61E_only_df_filt,
+       aes(x = Timepoint,
+           y = mean_frac,
+           group = Condition,
+           color = Condition,
+           linetype = Condition)) +
+  geom_line(size = 1) +
+  geom_point() +
+  facet_grid(cluster ~ Name) +
+  scale_linetype_manual(values = c("DOX" = "solid", "VEH" = "dotted")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+```
+
+
+```{r}
+delta_df <- MER61E_only_df_filt %>%
+  select(Condition, Timepoint, cluster, Name, mean_frac) %>%
+   tidyr::complete(Timepoint, cluster, Name, Condition,
+                  fill = list(mean_frac = 0)) %>% 
+  pivot_wider(names_from = Condition, values_from = mean_frac) %>% 
+  mutate(delta= DOX-VEH)
+
+summary(delta_df$DOX - delta_df$VEH)
+
+ggplot(delta_df,
+       aes(x = Timepoint, y = delta, group = Name, color = Name)) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~cluster) +
+  theme_minimal()+
+  scale_color_manual(values = state_colors) 
+
+```
+
+```{r, fig.width=10}
+
+### To look at MER61E only, filter out and reduce down to dominant state per region This is done without respect to cluster relationship
+peak_state_calls <- all_results %>%
+  filter(Peak_name %in% MER61E_Peaks$Peakid) %>%
+  group_by(Peak_name, Set, Name) %>%
+  summarize(frac = sum(frac), .groups = "drop") %>%
+  group_by(Peak_name, Set) %>%
+  slice_max(frac, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
+  left_join(
+    distinct(all_results[, c("Peak_name", "cluster")]),
+    by = "Peak_name"
+  ) %>%
+  mutate(
+    Condition = ifelse(grepl("DOX", Set), "DOX", "VEH"),
+    Timepoint = case_when(
+      grepl("24T", Set) ~ "24T",
+      grepl("24R", Set) ~ "24R",
+      grepl("144R", Set) ~ "144R"))
+
+state_transitions <- peak_state_calls %>%
+  select(Peak_name, Condition, Timepoint, Name, cluster) %>%
+  pivot_wider(names_from = Timepoint, values_from = Name) 
+
+
+ggplot(peak_state_calls,
+       aes(x = Timepoint, y = Name, fill = Condition)) +
+  geom_tile() +
+  facet_wrap(~cluster) +
+  theme_minimal()
+
+
+ggplot(state_transitions,
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`), alpha = 0.5) +
+  geom_stratum() +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum))) +
+  facet_wrap(~Condition) +
+  theme_minimal()
+```
+
+```{r}
+state_map <- c(
+  "Active_TSS" = "Active",
+  "Very_Weak_Transcription"="Active",
+  "Strong_Genic_Enhancer" = "Enhancer",
+  "Repressed_ZFP_genes" = "Repressed",
+  "Active_Enhancer" = "Enhancer",
+  "Weak_Genic_Enhancer" = "Enhancer",
+  "Bivalent_Poised_TSS" = "Poised",
+  "Polycomb_Repressed" = "Repressed",
+  "Strong_Polycomb_Repressed" = "Repressed",
+  "Repressed_Heterochromatin" = "Repressed",
+  "Heterochromatin_1" = "Repressed",
+  "Heterochromatin_2" = "Repressed",
+  "Quiescent_Low_Coverage" = "Quiescent"
+)
+
+peak_states <- all_results %>%
+  filter(Peak_name %in% MER61E_Peaks$Peakid) %>%
+  group_by(Peak_name, Set) %>%
+  slice_max(frac, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
+  mutate(
+    Condition = ifelse(grepl("DOX", Set), "DOX", "VEH"),
+    Timepoint = case_when(
+      grepl("24T", Set) ~ "24T",
+      grepl("24R", Set) ~ "24R",
+      grepl("144R", Set) ~ "144R"))
+trajectory <- peak_states %>%
+  select(Peak_name, Condition, Timepoint, Name, cluster) %>%
+  tidyr::pivot_wider(names_from = Timepoint, values_from = Name) %>% 
+  mutate(across(c(`24T`,`24R`,`144R`),
+                ~ unname(state_map[.x])))
+ggplot(filter(trajectory, Condition == "DOX"),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`), alpha = 0.6) +
+  geom_stratum(width = 0.2) +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 3) +
+  ggtitle("MER61E state transitions (DOX)") +
+  theme_minimal()
+
+ggplot(filter(trajectory, Condition == "VEH"),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`), alpha = 0.6) +
+  geom_stratum(width = 0.2) +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 3) +
+  ggtitle("MER61E state transitions (VEH)") +
+  theme_minimal()
+```
+
+
+Cases are incomplete.  Time to filter out. note there are 68 MER61E overlapping regions in my data.  For quantification purposes, 16 are not assigned a cluster, 40 are assigned Acute cluster (set 3) and 12 are assigned non response cluster (set 1)
+
+Why are they incomplete:  maybe there is reduced chromatin state confidence?  I have tested to make sure that there is
+```{r, clean}
+
+trajectory_clean <- trajectory %>%
+  filter(complete.cases(.))
+
+ggplot(filter(trajectory_clean, Condition == "DOX"),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`), alpha = 0.6) +
+  geom_stratum(width = 0.2) +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 3) +
+  ggtitle("MER61E state transitions (DOX)") +
+  theme_minimal()
+
+ggplot(filter(trajectory_clean, Condition == "VEH"),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`), alpha = 0.6) +
+  geom_stratum(width = 0.2) +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 3) +
+  ggtitle("MER61E state transitions (VEH)") +
+  theme_minimal()
+```
+
+```{r}
+qc_df <- trajectory %>%
+  mutate(status = case_when(
+    if_all(c(`24T`, `24R`, `144R`), ~ !is.na(.)) ~ "complete",
+    if_all(c(`24T`, `24R`, `144R`), is.na) ~ "missing",
+    TRUE ~ "partial"
+  ))
+
+qc_df %>% group_by(Condition,status) %>% tally
+
+qc_peak <- trajectory %>%
+  mutate(status = case_when(
+    if_all(c(`24T`, `24R`, `144R`), ~ !is.na(.)) ~ "complete",
+    if_all(c(`24T`, `24R`, `144R`), is.na) ~ "missing",
+    TRUE ~ "partial"
+  )) %>%
+  distinct(Peak_name, status)
+
+qc_counts <- qc_peak %>%
+  count(status)
+trajectory %>%
+  summarise(
+    n_peaks = dplyr::n(),
+    complete = sum(complete.cases(.)),
+    partially_missing = sum(!complete.cases(.))
+  )
+
+ggplot(qc_counts, aes(x = status, y = n, fill = status)) +
+  geom_col(width = 0.6) +
+  theme_minimal() +
+  labs(
+    x = NULL,
+    y = "Number of MER61E peaks",
+    title = "ChromHMM state coverage completeness"
+  ) +
+  theme(
+    legend.position = "none"
+  )
+```
+
+```{r}
+traj <- trajectory %>%
+  mutate(status = case_when(
+    if_all(c(`24T`,`24R`,`144R`), ~ !is.na(.)) ~ "complete",
+    TRUE ~ "partial"
+  ))
+traj_complete <- trajectory %>%
+  filter(if_all(c(`24T`,`24R`,`144R`), ~ !is.na(.)))
+
+ggplot(traj_complete,
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = `24T`)) +
+  geom_stratum() +
+  facet_wrap(~Condition) +
+  theme_minimal()
+```
+```{r}
+plot_trajectory_TE_spec <- function(anno_df,results_df, TE) {
+  state_colors <- c(
+  "Active" = "#D73027",
+  "Enhancer" = "#FC8D59",
+  "Poised" = "#FEE08B",
+  "Repressed" = "#4575B4",
+  "Quiescent" = "#D9D9D9")
+  
+  ## retrieve the peakIDs with associated TE repName
+  
+  peak_ids <- anno_df %>% 
+  dplyr::filter(str_detect(repName, TE)) %>% 
+  pull(Peakid)
+  
+  ## filter results with peak_ids and break into Timepoint and Condition
+  peak_states <- results_df %>%
+  filter(Peak_name %in% peak_ids) %>%
+  group_by(Peak_name, Set, Name) %>%
+  summarize(frac = sum(frac), .groups = "drop") %>%
+  group_by(Peak_name, Set) %>%
+  arrange(desc(frac), .by_group = TRUE) %>%
+  slice(1) %>%
+  ungroup() %>%
+  left_join(
+    distinct(results_df %>% select(Peak_name, cluster)),
+    by = "Peak_name"
+  ) %>%
+  mutate(
+    Condition = ifelse(grepl("DOX", Set), "DOX", "VEH"),
+    Timepoint = case_when(
+      grepl("24T", Set) ~ "24T",
+      grepl("24R", Set) ~ "24R",
+      grepl("144R", Set) ~ "144R"))
+  
+  ## make trajectory dataframe
+trajectory <- peak_states %>%
+  select(Peak_name, Condition, Timepoint, Name, cluster) %>%
+  pivot_wider(
+    id_cols = c(Peak_name, Condition, cluster),
+    names_from = Timepoint,
+    values_from = Name
+  ) %>%
+  mutate(across(c(`24T`,`24R`,`144R`),
+                ~ unname(state_map[.x])))
+
+
+DOX_plot <- ggplot(filter(trajectory, Condition == "DOX"),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+ geom_alluvium(aes(fill = after_stat(stratum)), alpha = 0.4)+
+  geom_stratum(aes(fill = after_stat(stratum))) + # color changes per axis
+  geom_text(stat = "stratum",
+            aes(label = after_stat(stratum)),
+            size = 3) +
+  ggtitle(paste0(TE," state transitions (DOX)")) +
+  theme_minimal()+
+  scale_fill_manual(values = state_colors)
+
+VEH_plot <- ggplot(filter(trajectory, Condition == "VEH"),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = after_stat(stratum)), alpha = 0.4)+
+  geom_stratum(aes(fill = after_stat(stratum))) + # color changes per axis
+  geom_text(stat = "stratum",
+            aes(label = after_stat(stratum)),
+            size = 3) +
+  ggtitle(paste0(TE," state transitions (VEH)")) +
+  theme_minimal()+
+  scale_fill_manual(values = state_colors)
+#### clean plots:
+trajectory_clean <- trajectory %>%
+  filter(complete.cases(.))
+
+DOX_clean <- ggplot(filter(trajectory_clean, Condition == "DOX"),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = after_stat(stratum)), alpha = 0.4)+
+  geom_stratum(aes(fill = after_stat(stratum))) + # color changes per axis
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 3) +
+   ggtitle(paste0(TE," state transitions (DOX)")) +
+  theme_minimal()+
+  scale_fill_manual(values = state_colors)
+
+VEH_clean <- ggplot(filter(trajectory_clean, Condition == "VEH"),
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = after_stat(stratum)), alpha = 0.4)+
+  geom_stratum(aes(fill = after_stat(stratum))) + # color changes per axis
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 3) +
+   ggtitle(paste0(TE," state transitions (VEH)")) +
+  theme_minimal()+
+  scale_fill_manual(values = state_colors)
+
+
+
+#### calculating incompletes and QC
+traj <- trajectory %>%
+  mutate(status = case_when(
+    if_all(c(`24T`,`24R`,`144R`), ~ !is.na(.)) ~ "complete",
+    TRUE ~ "partial"
+  ))
+
+traj_complete <- traj %>%
+  filter(status == "complete")
+
+completion_plot <- ggplot(traj_complete,
+       aes(axis1 = `24T`,
+           axis2 = `24R`,
+           axis3 = `144R`,
+           y = 1)) +
+  geom_alluvium(aes(fill = after_stat(stratum)), alpha = 0.4)+
+  geom_stratum(aes(fill = after_stat(stratum))) + # color changes per axis
+  geom_text(stat = "stratum",
+            aes(label = after_stat(stratum)),
+            size = 3) +
+  facet_wrap(~Condition) +
+  theme_minimal()+
+  ggtitle(paste0("Complete cases of ",TE))+
+  scale_fill_manual(values = state_colors)
+#### MORE QC
+
+qc_df <- trajectory %>%
+  mutate(status = case_when(
+    complete.cases(across(c(`24T`,`24R`,`144R`))) ~ "complete",
+    rowSums(is.na(across(c(`24T`,`24R`,`144R`)))) == 3 ~ "missing",
+    TRUE ~ "partial"
+  ))
+
+qc_counts <- qc_df %>%
+  distinct(Peak_name, status) %>%
+  count(status)
+
+traj_incomp <- trajectory %>%
+  summarise(
+    n_peaks = dplyr::n(),
+    complete = sum(complete.cases(.)),
+    partially_missing = sum(!complete.cases(.))
+  )
+
+completeness_plot <- ggplot(qc_counts, aes(x = status, y = n, fill = status)) +
+  geom_col(width = 0.6) +
+  theme_minimal() +
+  labs(
+    x = NULL,
+    y = paste0("Number of ",TE," peaks"),
+    title =paste0("ChromHMM state coverage completeness for ",TE)
+  ) +
+  theme(
+    legend.position = "none"
+  )
+
+
+return(list(
+  DOX_plot = DOX_plot,
+  VEH_plot = VEH_plot,
+  DOX_clean = DOX_clean,
+  VEH_clean = VEH_clean,
+  completion_plot = completion_plot,
+  QC_data= qc_df,
+  QC_data_2=qc_counts,
+  QC_missing=traj_incomp,
+  qc_plot=completeness_plot))
+}
+```
+
+```{r}
+MER61A_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "MER61A")
+
+MER61B_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "MER61B")
+
+MER61C_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "MER61C")
+MER61D_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "MER61D")
+
+MER61E_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "MER61E")
+
+MER61F_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "MER61F")
+MER61_int_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "MER61-int")
+
+
+
+```
+```{r MER61B}
+MER61A_results
+MER61B_results
+MER61C_results
+MER61D_results
+MER61E_results
+MER61F_results
+MER61_int_results
+```
+
+```{r}
+
+LTR10E_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "LTR10E")
+
+LTR10E_results
+```
+
+```{r}
+LTR10B1_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "LTR10B1")
+
+LTR10B1_results
+
+LTR10B2_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "LTR10B2")
+
+LTR10B2_results
+
+HERVIP10B3_int_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "HERVIP10B3-int")
+
+HERVIP10B3_int_results
+
+HERV1_LTRa_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "HERV1_LTRa")
+
+HERV1_LTRa_results
+
+
+```
+
