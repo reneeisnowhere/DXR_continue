@@ -535,15 +535,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree38a2ef214d4a2cac801f934a920c36963aed00e0targetblank38a2ef2a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree417be642bb1d53b0f7adeb015b2f4fe526a66dd7targetblank417be64a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/38a2ef214d4a2cac801f934a920c36963aed00e0" target="_blank">38a2ef2</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/417be642bb1d53b0f7adeb015b2f4fe526a66dd7" target="_blank">417be64</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree38a2ef214d4a2cac801f934a920c36963aed00e0targetblank38a2ef2a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree417be642bb1d53b0f7adeb015b2f4fe526a66dd7targetblank417be64a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -553,7 +553,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/38a2ef214d4a2cac801f934a920c36963aed00e0" target="_blank">38a2ef2</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/417be642bb1d53b0f7adeb015b2f4fe526a66dd7" target="_blank">417be64</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -607,7 +607,6 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/ATAC_integration_data1.Rmd
     Modified:   analysis/H3K27_TE_overlap.Rmd
-    Modified:   analysis/H3K27_TE_overlap_extend.Rmd
     Modified:   analysis/H3K27ac_TF_motifs.Rmd
     Modified:   analysis/TP53_motif_interrogation.Rmd
     Modified:   analysis/chromHMM.Rmd
@@ -658,6 +657,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/417be642bb1d53b0f7adeb015b2f4fe526a66dd7/analysis/H3K9me3_TE_overlap_extend.Rmd" target="_blank">417be64</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-28
+</td>
+<td>
+wflow_publish("analysis/H3K9me3_TE_overlap_extend.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/cc56e98e7afd4481d3966dafab2ffab3576d5162/docs/H3K9me3_TE_overlap_extend.html" target="_blank">cc56e98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -3019,6 +3052,43 @@ anno_H3K9me3_ext200 %&gt;%
     strip.text = element_text(face = &quot;bold&quot;)
   )</code></pre>
 <p><img src="figure/H3K9me3_TE_overlap_extend.Rmd/unnamed-chunk-9-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cc56e98e7afd4481d3966dafab2ffab3576d5162/docs/figure/H3K9me3_TE_overlap_extend.Rmd/unnamed-chunk-9-1.png" target="_blank">cc56e98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K9me3_te_summary &lt;- anno_H3K9me3_ext200 %&gt;% 
    mutate(repClass = na_if(repClass, &quot;&quot;),   # treat empty as NA
     n_TE_class = case_when(
@@ -3047,8 +3117,48 @@ ggplot(pie_df, aes(x = &quot;&quot;, y = percent, fill = category)) +
   labs(
     title = &quot;ROI summit-ext overlap with transposable elements&quot;
   )</code></pre>
-<p><img src="figure/H3K9me3_TE_overlap_extend.Rmd/pie%20overlap%20of%20number%20of%20elements-1.png" alt="" width="672" style="display: block; margin: auto;" />
-### TE class distribution</p>
+<p><img src="figure/H3K9me3_TE_overlap_extend.Rmd/pie%20overlap%20of%20number%20of%20elements-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-pie-overlap-of-number-of-elements-1">
+Past versions of "pie overlap of number of elements-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-pie-overlap-of-number-of-elements-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cc56e98e7afd4481d3966dafab2ffab3576d5162/docs/figure/H3K9me3_TE_overlap_extend.Rmd/pie overlap of number of elements-1.png" target="_blank">cc56e98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="te-class-distribution" class="section level3">
+<h3>TE class distribution</h3>
 <p>of ROIs that overlap TEs, what is the distribution across TE
 families?</p>
 <pre class="r"><code>H3K9me3_te_family_long &lt;- H3K9me3_te_summary %&gt;% 
@@ -3081,6 +3191,43 @@ ggplot(fam_pie_df, aes(x = &quot;&quot;, y = percent, fill = repClass)) +
     title = &quot;TE Class composition among summit-ext TE-overlapping H3K9me3 ROIs&quot;,
     fill = &quot;TE Class&quot;)</code></pre>
 <p><img src="figure/H3K9me3_TE_overlap_extend.Rmd/classROI-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-classROI-1">
+Past versions of classROI-1.png
+</button>
+</p>
+<div id="fig-classROI-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cc56e98e7afd4481d3966dafab2ffab3576d5162/docs/figure/H3K9me3_TE_overlap_extend.Rmd/classROI-1.png" target="_blank">cc56e98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># unique(rpt_split_gr_list$LTR$repFamily)</code></pre>
 <pre class="r"><code>rpt_genome &lt;- repeatmasker_clean %&gt;% 
  mutate(cluster = &quot;hg38&quot;) %&gt;% 
@@ -3138,6 +3285,43 @@ ggplot(H3K9me3_te_family_clust, aes(x = cluster, y=percent, fill=repClass))+
     fill = &quot;TE family&quot;
   )</code></pre>
 <p><img src="figure/H3K9me3_TE_overlap_extend.Rmd/bar%20overlap%20data-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-bar-overlap-data-1">
+Past versions of "bar overlap data-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-bar-overlap-data-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cc56e98e7afd4481d3966dafab2ffab3576d5162/docs/figure/H3K9me3_TE_overlap_extend.Rmd/bar overlap data-1.png" target="_blank">cc56e98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>  ggplot(H3K9me3_te_family_clust, aes(x = cluster, y=percent, fill=repClass))+
    geom_col(width = 0.8, color = &quot;white&quot;) +
   # geom_text(
@@ -3151,6 +3335,43 @@ ggplot(H3K9me3_te_family_clust, aes(x = cluster, y=percent, fill=repClass))+
     fill = &quot;TE family&quot;
   )</code></pre>
 <p><img src="figure/H3K9me3_TE_overlap_extend.Rmd/bar%20overlap%20data-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-bar-overlap-data-2">
+Past versions of "bar overlap data-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-bar-overlap-data-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cc56e98e7afd4481d3966dafab2ffab3576d5162/docs/figure/H3K9me3_TE_overlap_extend.Rmd/bar overlap data-2.png" target="_blank">cc56e98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div id="relative-ltr-abundance" class="section level4">
 <h4>relative LTR abundance</h4>
 <pre class="r"><code>H3K9me3_long_repFamily &lt;-
@@ -3236,6 +3457,43 @@ ggplot(LTR_bar_df, aes(x = repFamily, y = n, fill = cluster)) +
   ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 <p><img src="figure/H3K9me3_TE_overlap_extend.Rmd/LTR%20barplot-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR-barplot-1">
+Past versions of "LTR barplot-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR-barplot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cc56e98e7afd4481d3966dafab2ffab3576d5162/docs/figure/H3K9me3_TE_overlap_extend.Rmd/LTR barplot-1.png" target="_blank">cc56e98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="calculating-all-subfamilies" class="section level3">
@@ -3243,6 +3501,7 @@ ggplot(LTR_bar_df, aes(x = repFamily, y = n, fill = cluster)) +
 <pre class="r"><code>annotated_H3K9me3_ext200 &lt;- readRDS(&quot;data/TE_annotation/annotated_H3K9me3_ext200_TE_overlaps.RDS&quot;)
 
 repName_counts &lt;- annotated_H3K9me3_ext200 %&gt;%
+   separate_rows(repName, sep = &quot;;&quot;) %&gt;% 
   count(cluster, repName, name = &quot;count&quot;) %&gt;%
   mutate(status = &quot;TE&quot;)
 
@@ -3304,6 +3563,43 @@ repName_results &lt;- comparisons %&gt;%
   theme_classic() +
   facet_wrap(~comparison)</code></pre>
 <p><img src="figure/H3K9me3_TE_overlap_extend.Rmd/unnamed-chunk-11-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/cc56e98e7afd4481d3966dafab2ffab3576d5162/docs/figure/H3K9me3_TE_overlap_extend.Rmd/unnamed-chunk-11-1.png" target="_blank">cc56e98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>annotated_H3K9me3_ext200 %&gt;% 
   dplyr::filter(repName==&quot;MLT1H&quot;)</code></pre>
 <pre><code>                       Peakid
