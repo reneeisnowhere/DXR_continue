@@ -1943,6 +1943,7 @@ ggplot(LTR_bar_df, aes(x = repFamily, y = n, fill = cluster)) +
 annotated_H3K9me3_ext200 <- readRDS("data/TE_annotation/annotated_H3K9me3_ext200_TE_overlaps.RDS")
 
 repName_counts <- annotated_H3K9me3_ext200 %>%
+   separate_rows(repName, sep = ";") %>% 
   count(cluster, repName, name = "count") %>%
   mutate(status = "TE")
 
