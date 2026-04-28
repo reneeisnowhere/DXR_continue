@@ -692,7 +692,7 @@ Overlapping LINE family with summits to get a count
 LINE_hits <- findOverlaps(H3K27ac_summit_gr_ext, LINE_gr, ignore.strand = TRUE)
 LINE_overlap_df <- tibble(
   summit_id = queryHits(LINE_hits),
-  cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(LINE_hits)],
+  cluster   = mcols(H3K27ac_summit_gr_ext)$cluster[queryHits(LINE_hits)],
   TE_type   = mcols(LINE_gr)$repFamily[subjectHits(LINE_hits)])
 
 LINE_counts <- LINE_overlap_df %>%
@@ -1544,7 +1544,327 @@ ggplot(TcMarTigger_DNA_results, aes(x = (odds_ratio), y = -log10(FDR),label = re
 ```
 
 
+### Investigating proportions
 
+
+```{r}
+
+anno_H3K27ac_ext200 <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+anno_H3K27ac_ext200 %>% 
+  
+  group_by(cluster) %>% 
+  count() %>%
+  ungroup() %>% 
+  mutate(percent = n / sum(n)) %>% 
+  
+  ggplot(.,aes(x=cluster, y=percent, fill=cluster)) +
+  geom_col() +
+    geom_text(
+    aes(label = sprintf("%.3f", percent)),
+    vjust = -0.3,
+    size = 3
+  ) +
+  ylab("proportion")+
+  ggtitle("Proportion of ROIs by cluster")+
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+```{r pie overlap of number of elements}
+H3K27ac_te_summary <- anno_H3K27ac_ext200 %>% 
+   mutate(repClass = na_if(repClass, ""),   # treat empty as NA
+    n_TE_class = case_when(
+      is.na(repClass) ~ 0L,
+      TRUE ~ lengths(strsplit(repClass, ";")))) %>% 
+  mutate( category = case_when(n_TE_class == 0 ~ "No TE overlap",
+                               n_TE_class == 1 ~ "Single TE class",
+                               n_TE_class > 1  ~ "Multiple TE classes"))
+
+
+pie_df <- H3K27ac_te_summary %>% 
+  count(category) %>% 
+  mutate(
+    percent = n / sum(n) * 100
+  )
+
+ggplot(pie_df, aes(x = "", y = percent, fill = category)) +
+  geom_col(width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(
+    aes(label = sprintf("%.1f%%", percent)),
+    position = position_stack(vjust = 0.5),
+    size = 4
+  ) +
+  labs(
+    title = "ROI summit-ext overlap with transposable elements"
+  )
+```
+### TE class distribution  
+
+of  ROIs that overlap TEs, what is the distribution across TE families?
+```{r classROI}
+H3K27ac_te_family_long <- H3K27ac_te_summary %>% 
+  filter(!is.na(repClass), repClass != "") %>%   # TE-positive only
+  separate_rows(repClass,repFamily,repName, repID, sep = ";") %>% 
+  distinct(Peakid, repClass,cluster)
+
+
+fam_pie_df <- H3K27ac_te_family_long %>% 
+  count(repClass, name = "n") %>% 
+  mutate(percent = n / sum(n)*100) %>% 
+  mutate(
+    repClass = if_else(percent < 2, "Other", repClass)
+  ) %>% 
+  group_by(repClass) %>% 
+  summarise(n = sum(n), .groups = "drop") %>% 
+  mutate(percent = n / sum(n) * 100)
+  
+
+ggplot(fam_pie_df, aes(x = "", y = percent, fill = repClass)) +
+  geom_col(width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  geom_text(
+    aes(label = sprintf("%s\n%.1f%%", repClass, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(
+    title = "TE Class composition among summit-ext TE-overlapping H3K27ac ROIs",
+    fill = "TE Class")
+# unique(rpt_split_gr_list$LTR$repFamily)
+```
+```{r bar overlap data}
+rpt_genome <- repeatmasker_clean %>% 
+ mutate(cluster = "hg38") %>% 
+  group_by(cluster, repClass) %>% 
+  summarise(n = n(), .groups = "drop") %>% 
+  mutate(percent = n / sum(n) * 100) %>% 
+  mutate(
+    repClass = if_else(percent < 1.2, "Other", repClass)
+  ) %>% 
+  group_by(repClass) %>% 
+  summarise(n = sum(n), .groups = "drop") %>% 
+  mutate(percent = n / sum(n) * 100)
+
+
+H3K27ac_te_family_clust <- H3K27ac_te_family_long %>% 
+  dplyr::filter(cluster != "not_assigned") %>%
+   distinct(Peakid, cluster, repClass) %>%
+    count(cluster, repClass, name = "n") %>% 
+  group_by(cluster) %>% 
+  mutate(percent = n / sum(n)*100) %>% 
+  mutate(
+    repClass = if_else(percent < 2, "Other", repClass)
+  ) %>% 
+  group_by(cluster,repClass) %>% 
+  summarise(n = sum(n), .groups = "drop") %>% 
+  group_by(cluster) %>% 
+  mutate(percent = n / sum(n) * 100) %>% 
+  rbind((rpt_genome %>% mutate(cluster="hg38")))
+
+# ggplot(H3K27ac_te_family_clust, aes(x = "", y=percent, fill=repClass))+
+#   geom_col(width =1, color="white")+
+#   coord_polar(theta = "y")+
+#   geom_text(
+#     aes(x= 1.5,label = sprintf("%s\n%.1f%%", repClass, percent)),
+#     position = position_stack(vjust = 0.5),
+#     size = 3
+#   ) +
+#   facet_wrap(~cluster)+
+#   theme_void()+
+#   labs(
+#     title = "TE Class composition among TE-overlapping ROIs per set",
+#     fill = "TE family"
+#   )
+
+ggplot(H3K27ac_te_family_clust, aes(x = cluster, y=percent, fill=repClass))+
+   geom_col(width = 0.8, color = "white") +
+  geom_text(
+    aes(label = sprintf("%s\n%.1f%%", repClass, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  theme_bw() +
+  labs(
+    title = "TE Class composition among H3K27ac summit-exit TEs per set",
+    fill = "TE family"
+  )
+  ggplot(H3K27ac_te_family_clust, aes(x = cluster, y=percent, fill=repClass))+
+   geom_col(width = 0.8, color = "white") +
+  # geom_text(
+  #   aes(label = sprintf("%s\n%.1f%%", repClass, percent)),
+  #   position = position_stack(vjust = 0.5),
+  #   size = 3
+  # ) +
+  theme_bw() +
+  labs(
+    title = "TE Class composition among TE-overlapping ROIs per set",
+    fill = "TE family"
+  )
+```
+
+#### relative LTR abundance
+```{r rel abundance LTR families}
+H3K27ac_long_repFamily <-
+H3K27ac_te_summary %>% 
+   dplyr::filter(cluster != "not_assigned") %>%
+  filter(!is.na(repFamily), repFamily != "") %>%   # TE-positive only
+  separate_rows(repFamily, sep = ";") %>% 
+  distinct(cluster,Peakid, repFamily) %>% 
+  dplyr::filter(repFamily %in% c("ERV1", "ERVK","ERVL", "ERVL-MaLR","Gypsy","LTR")) %>%
+  count(cluster,repFamily, name = "n") %>% 
+  group_by(cluster) %>% 
+  mutate(percent = n / sum(n)*100) %>% 
+  # mutate(
+  #   repFamily = if_else(percent < 2, "Other", repFamily)
+  # ) %>% 
+  group_by(cluster,repFamily) %>% 
+  summarise(n = sum(n), .groups = "drop") %>% 
+  group_by(cluster) %>% 
+  mutate(percent = n / sum(n) * 100)
+
+
+# ggplot(H3K27ac_long_repFamily, aes(x = "", y=percent, fill=repFamily))+
+#   geom_col(width =1, color="white")+
+#   coord_polar(theta = "y")+
+#     geom_text_repel(
+#     aes(label = sprintf("%s\n%.1f%%", repFamily, percent)),
+#     position = position_stack(vjust = 0.5),
+#     size = 3,
+#     show.legend = FALSE
+#   ) +
+#   facet_wrap(~cluster)+
+#   theme_void()+
+#   labs(
+#     title = "TE family relative abundance among ROIs by set",
+#     fill = "TE family"
+#   )
+
+
+```
+
+```{r rel abundance summit LTR families}
+LTR_genome <-
+repeatmasker_clean %>% 
+  dplyr::filter(repFamily %in% c("ERV1", "ERVK","ERVL", "ERVL-MaLR","Gypsy","LTR"))%>%
+  group_by(repFamily) %>% 
+  summarise(n = dplyr::n(), .groups = "drop") %>% 
+  mutate(percent = n / sum(n) * 100) %>% 
+   mutate(cluster = "hg38") 
+ 
+
+H3K27ac_long_repFamily_ext <-H3K27ac_long_repFamily %>% 
+  rbind((LTR_genome %>% mutate(cluster="hg38")))
+
+H3K27ac_long_repFamily_ext
+```
+
+```{r LTR barplot}
+
+LTR_bar_df <-H3K27ac_te_summary %>%
+  filter(!is.na(repFamily), repFamily != "")  %>%   # TE-positive only
+  separate_rows(repFamily, sep = ";") %>% 
+  distinct(cluster,Peakid, repFamily) %>% 
+  dplyr::filter(repFamily %in% c("ERV1", "ERVK","ERVL", "ERVL-MaLR","Gypsy","LTR")) %>%
+  group_by(repFamily, cluster) %>% 
+  summarise(n = dplyr::n(), .groups = "drop") %>% 
+  # optionally convert NA to a string
+  mutate(cluster = if_else(is.na(cluster), "NA", cluster))
+
+ggplot(LTR_bar_df, aes(x = repFamily, y = n, fill = cluster)) +
+  geom_col(position = "fill") +
+  theme_classic() +
+  labs(
+    x = "LTR Family",
+    y = "Proportion of ROIs",
+    fill = "Cluster",
+    title = "Proportion of ROI clusters for each LTR family"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+### calculating all subfamilies
+
+```{r}
+annotated_H3K27ac_ext200 <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+
+repName_counts <- annotated_H3K27ac_ext200 %>%
+   separate_rows(repName, sep = ";") %>% 
+  count(cluster, repName, name = "count") %>%
+  mutate(status = "TE")
+
+total_cluster_counts <- tibble(
+  cluster = mcols(H3K27ac_summit_gr_ext)$cluster
+) %>% count(cluster, name = "total")
+
+not_repName_counts <- repName_counts %>%
+  left_join(total_cluster_counts, by = "cluster") %>%
+  mutate(count = total - count,
+         status = "not_TE") %>%
+  dplyr::select(cluster, repName, status, count)
+
+repName_df_long <- bind_rows(repName_counts %>%
+                            dplyr::select(cluster, repName, status, count),
+                          not_repName_counts) %>% 
+  filter(!is.na(cluster))
+
+repName_totals <- repName_df_long %>%
+  filter(status == "TE") %>%
+  group_by(repName) %>%
+  summarize(total_TE = sum(count), .groups = "drop")
+
+repName_df_long <- repName_df_long %>%
+  filter(!is.na(repName)) %>%                      # remove NA repNames
+  group_by(repName) %>%
+  filter(sum(count[status == "TE"]) >= 10) %>%    # keep only sufficiently abundant TEs
+  ungroup()
+
+repName_results <- comparisons %>%
+  mutate(results = map2(cluster2, cluster1, function(c2, c1) {
+
+      repName_df_long %>%
+        distinct(repName) %>%
+        pull() %>%
+        map_dfr(function(te) {
+          test_pair_TE_repName(
+            repName_df_long,
+            rep_name  = te,
+            cluster1 = c1,
+            cluster2 = c2
+          )
+        })
+
+    })
+  ) %>%
+  unnest(results) %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+```
+
+
+```{r}
+
+ggplot(repName_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   geom_text_repel(data = subset(repName_results, FDR < 0.05)) +
+  # geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "all repName enrichment at extended ROI summits"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
+
+annotated_H3K27ac_ext200 %>% 
+  dplyr::filter(repName=="MLT1H")
+```
 
 
 ```{r making named bedfiles, eval=FALSE}
