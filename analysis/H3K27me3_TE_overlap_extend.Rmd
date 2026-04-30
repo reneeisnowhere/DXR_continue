@@ -90,6 +90,10 @@ rmskr_std_gr <- GRanges(
   milliIns  = repeatmasker_clean$milliIns,
   id        = repeatmasker_clean$RM_id
 )
+# sat_lowc_simrpt_list <- repeatmasker_clean %>% dplyr::filter(repClass %in% c("Simple_repeat","	Low_complexity","Satellite")) %>% 
+#   group_by(repName) %>% pull(repName) %>% unique()
+# 
+# saveRDS(sat_lowc_simrpt_list, "data/RDS_files/sat_lowc_simrpt_repNames.RDS")
 ```
 
 ```{r subset rpt_split_gr_list}
@@ -1527,11 +1531,15 @@ ggplot(LTR_bar_df, aes(x = repFamily, y = n, fill = cluster)) +
 
 ### calculating all subfamilies
 
+later calculations required removing certain groups (satellites and simple repeats)
+
 ```{r}
 annotated_H3K27me3_ext200 <- readRDS("data/TE_annotation/annotated_H3K27me3_ext200_TE_overlaps.RDS")
 
+sat_lowc_simrpt_repNames <- readRDS("data/RDS_files/sat_lowc_simrpt_repNames.RDS")
 repName_counts <- annotated_H3K27me3_ext200 %>%
    separate_rows(repName, sep = ";") %>% 
+  dplyr::filter(!repName %in% sat_lowc_simrpt_repNames) %>% 
   count(cluster, repName, name = "count") %>%
   mutate(status = "TE")
 
@@ -1587,13 +1595,21 @@ repName_results <- comparisons %>%
 
 ggplot(repName_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
   geom_point(aes(color = odds_ratio > 1), size = 3) +
-   geom_text_repel(data = subset(repName_results, FDR < 0.05)) +
+  geom_text_repel(data = subset(repName_results, FDR < 0.05),
+    size = 3,
+    force = 3,
+    box.padding = 0.6,
+    point.padding = 0.4,
+    max.overlaps = Inf,
+    segment.color = "grey50",
+    segment.size = 0.3
+  ) +
   # geom_text_repel(size=3, max.overlaps = Inf)+
   geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "all repName enrichment at extended ROI summits"
+    title = "all repName enrichment at H3K27me3 extended ROI summits"
   ) +
   theme_classic() +
   facet_wrap(~comparison)

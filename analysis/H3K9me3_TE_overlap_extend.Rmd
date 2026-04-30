@@ -98,7 +98,8 @@ rmskr_std_gr <- GRanges(
   milliIns  = repeatmasker_clean$milliIns,
   id        = repeatmasker_clean$RM_id
 )
-
+# saveRDS(rmskr_std_gr,"data/RDS_files/rmsker_std_gr.RDS")
+# saveRDS(repeatmasker_clean,"data/RDS_files/repeatmasker_clean.RDS")
 ```
 
 ```{r subset rpt_split_gr_list}
@@ -1942,8 +1943,10 @@ ggplot(LTR_bar_df, aes(x = repFamily, y = n, fill = cluster)) +
 ```{r}
 annotated_H3K9me3_ext200 <- readRDS("data/TE_annotation/annotated_H3K9me3_ext200_TE_overlaps.RDS")
 
+sat_lowc_simrpt_repNames <- readRDS("data/RDS_files/sat_lowc_simrpt_repNames.RDS")
 repName_counts <- annotated_H3K9me3_ext200 %>%
    separate_rows(repName, sep = ";") %>% 
+  dplyr::filter(!repName %in% sat_lowc_simrpt_repNames) %>% 
   count(cluster, repName, name = "count") %>%
   mutate(status = "TE")
 
@@ -1998,13 +2001,22 @@ repName_results <- comparisons %>%
 ```{r}
 ggplot(repName_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
   geom_point(aes(color = odds_ratio > 1), size = 3) +
-   geom_text_repel(data = subset(repName_results, FDR < 0.05)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   geom_text_repel(data = subset(repName_results, FDR < 0.05),
+    size = 3,
+    force = 3,
+    box.padding = 0.6,
+    point.padding = 0.4,
+    max.overlaps = Inf,
+    segment.color = "grey50",
+    segment.size = 0.3
+  ) +
   # geom_text_repel(size=3, max.overlaps = Inf)+
   geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
-    title = "all repName enrichment at extended ROI summits, H3K9me3"
+    title = "all repName enrichment at H3K9me3 extended ROI summits, H3K9me3"
   ) +
   theme_classic() +
   facet_wrap(~comparison)
@@ -2045,8 +2057,11 @@ for (group_name in set_list) {
 
 
 ```{r making named bedfiles 1, eval=FALSE}
-peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
 
+H3K9me3_summit_gr_ext
+# peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
+
+H3K9me3_Set_1 <- 
 out_dir <- "data/Bed_exports/repeatmasker_sets"
 set_list <- names(peakAnnoList_H3K9me3)
 
