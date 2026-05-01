@@ -246,7 +246,7 @@ assign_best_summit_to_ROI_parallel <- function(consensus_gr, ROIs_gr, max_dist =
 
 ```
 
-```{r apply the function, eval=FALSE}
+```{r apply the function, eval=TRUE}
 # options(future.globals.maxSize = 10 * 1024^3)
 # workers <- parallel::detectCores() - 1
 ### Step 1
@@ -256,9 +256,9 @@ assign_best_summit_to_ROI_parallel <- function(consensus_gr, ROIs_gr, max_dist =
                                                          min_gap_within = 100,
                                                          workers = workers)
 # saveRDS(temp_highest_per_group,"data/RDS_files/H3K27ac_temp_highest_per_group.RDS")
-
+temp_highest_per_group <- readRDS("data/RDS_files/H3K27ac_temp_highest_per_group.RDS")
 # Concatenate into one GRanges (Step 1.2)
-# flat_highest_gr <- (c(temp_highest_per_group$DOX_144R, temp_highest_per_group$DOX_24R,temp_highest_per_group$DOX_24T,temp_highest_per_group$VEH_144R,temp_highest_per_group$VEH_24R,temp_highest_per_group$VEH_24T))
+flat_highest_gr <- (c(temp_highest_per_group$DOX_144R, temp_highest_per_group$DOX_24R,temp_highest_per_group$DOX_24T,temp_highest_per_group$VEH_144R,temp_highest_per_group$VEH_24R,temp_highest_per_group$VEH_24T))
 
 ### STep 2
 # consensus_summits <- get_consensus_summits_parallel(
@@ -297,66 +297,78 @@ cat("ROIs lacking any summit within max_dist:", n_missing, "\n")
 ```
 
 ```{r assigning missing}
-na_rois <- final_df %>% filter(is.na(summit_pos)) 
+roi_df <- final_df %>%
+  filter(is.na(summit_pos)) %>%
+  mutate(
+    roi_seqname = roi_seqname,
+    roi_start = roi_start,
+    roi_end = roi_end,
+    Peakid = Peakid
+  ) %>%
+  filter(!is.na(roi_seqname), !is.na(roi_start), !is.na(roi_end))
 
-na_rois_gr <- GRanges(
-  seqnames = na_rois$roi_seqname,
-  ranges = IRanges(start = na_rois$roi_start, end = na_rois$roi_end),
-  Peakid = na_rois$Peakid
+roi_gr <- GRanges(
+  seqnames = roi_df$roi_seqname,
+  ranges = IRanges(roi_df$roi_start, roi_df$roi_end)
 )
-ov <- findOverlaps(na_rois_gr, flat_highest_gr)
+
+peak_gr <- flat_highest_gr
+
+ov <- findOverlaps(roi_gr, peak_gr)
 
 overlap_df <- tibble(
   roi_idx = queryHits(ov),
   summit_idx = subjectHits(ov),
-  summit_pos = start(all_H3K27ac_summits_gr)[subjectHits(ov)],
-  summit_score = mcols(all_H3K27ac_summits_gr)$score[subjectHits(ov)]
+
+  # ROI identity (NEVER re-index GRanges)
+  Peakid = roi_df$Peakid[queryHits(ov)],
+  roi_seqname = roi_df$roi_seqname[queryHits(ov)],
+  roi_start = roi_df$roi_start[queryHits(ov)],
+  roi_end = roi_df$roi_end[queryHits(ov)],
+
+  # summit info
+  summit_pos = start(peak_gr)[subjectHits(ov)],
+  summit_score = mcols(peak_gr)$score[subjectHits(ov)]
 )
 
 best_summits <- overlap_df %>%
-  group_by(roi_idx) %>%
-  slice_max(summit_score, with_ties = FALSE) %>%
+  group_by(Peakid) %>%
+  slice_max(summit_score, n = 1, with_ties = FALSE) %>%
   ungroup()
 
-assigned_df <- tibble(
-  roi_idx = seq_along(na_rois_gr),
-  Peakid = na_rois_gr$Peakid,
-  roi_seqname = as.character(seqnames(na_rois_gr)),
-  roi_start = start(na_rois_gr),
-  roi_end = end(na_rois_gr)
-) %>%
-  left_join(best_summits, by = "roi_idx")
+assigned_df_calc <- best_summits %>%
+  mutate(
+    dist_center = summit_pos - (roi_start + (roi_end - roi_start)/2),
+    rel_pos = (summit_pos - roi_start) / (roi_end - roi_start)
+  )
 
-assigned_df_calc <- assigned_df %>% mutate(
-        dist_center = summit_pos - (roi_start + (roi_end - roi_start)/2),
-        rel_pos = (summit_pos - roi_start)/(roi_end - roi_start)
-        
-      )
-complete_summit_df <- final_df %>% 
-  dplyr::select(!distance) %>% 
-   dplyr::filter(!is.na(summit_pos)) %>% 
-  bind_rows(.,assigned_df_calc) %>% 
-  left_join(., H3K27ac_lookup, by = "Peakid") %>% 
-  dplyr::select(!summit_idx) %>% 
-  dplyr::select(!cons_idx) %>% 
-   group_by(Peakid) %>% 
-  slice_min(order_by = abs(dist_center), n = 1) %>% 
-  distinct
+
+complete_summit_df <- final_df %>%
+  filter(!is.na(summit_pos)) %>%
+  bind_rows(assigned_df_calc) %>% 
+  left_join(H3K27ac_lookup)
 # saveRDS(complete_summit_df,"data/RDS_files/H3K27ac_complete_summit_df.RDS")
+
+only_complete <- complete_summit_df %>% filter(!is.na(summit_pos))
+
+## sanity check
+# only_complete %>% 
+#   dplyr::filter(is.na(roi_seqname))
 complete_summit_gr <- GRanges(
-  seqnames=complete_summit_df$roi_seqname,
-  ranges=IRanges(start= complete_summit_df$summit_pos, 
-                 end= complete_summit_df$summit_pos)
-)
+  seqnames = complete_summit_df$roi_seqname,
+  ranges = IRanges(
+    start = complete_summit_df$summit_pos,
+    end   = complete_summit_df$summit_pos))
 
-# Columns to exclude from metadata (used to define GRanges)
-exclude_cols <- c("roi_seqname", "summit_pos")
-
-# Only keep columns that exist in df
-meta_cols <- intersect(setdiff(colnames(complete_summit_df), exclude_cols), colnames(complete_summit_df))
-
-# Assign metadata
-mcols(complete_summit_gr) <- complete_summit_df[, meta_cols, drop = FALSE]
+mcols(complete_summit_gr) <- complete_summit_df %>%
+  dplyr::select(
+    Peakid,
+    roi_start,
+    roi_end,
+    summit_score,
+    dist_center,
+    rel_pos,
+    cluster)
 # saveRDS(complete_summit_gr,"data/RDS_files/H3K27ac_complete_summit_gr.RDS")
 ```
 
@@ -422,7 +434,7 @@ rtracklayer::export(H3K27ac_set3_400, "data/Bed_exports/H3K27ac_Set_3_400.bed")
 
 rtracklayer::export(complete_summit_gr, "data/Bed_exports/H3K27ac_complete_final_summits.bed")
 
-outdir <- "data/Bed_exports/summit_groups/"
+outdir <- "data/Bed_exports/summit_groups"
 dir.create(outdir, showWarnings = FALSE)
 
 group_gr_list <- names(H3K27ac_sets_gr)
@@ -452,7 +464,7 @@ genome <- BSgenome.Hsapiens.UCSC.hg38
 seqlengths(complete_summit_gr) <- seqlengths(genome)[names(seqlengths(complete_summit_gr))]
 
 
-resize_and_trim <- function(gr, flank = 300, genome = BSgenome.Hsapiens.UCSC.hg38) {
+resize_and_trim <- function(gr, flank = 200, genome = BSgenome.Hsapiens.UCSC.hg38) {
 
   # enforce valid input
   gr <- gr[!is.na(start(gr)) & !is.na(end(gr))]
@@ -461,7 +473,7 @@ resize_and_trim <- function(gr, flank = 300, genome = BSgenome.Hsapiens.UCSC.hg3
   gr <- resize(gr, width = 1 + 2*flank, fix = "center")
 
   # assign genome bounds
-  seqlengths(gr) <- seqlengths(genome)[seqlevels(gr)]
+  seqlengths(gr) <- seqlengths(genome)[intersect(seqlevels(gr), seqlevels(genome))]
 
   # trim to chromosome boundaries
   gr <- trim(gr)
@@ -563,4 +575,7 @@ rtracklayer::export(H3K27ac_set3_B_400, "data/Bed_exports/H3K27ac_set3_B_400.bed
 #   outfile <- file.path(outdir, paste0(nm, "_H3K27ac_ROI.bed"))
 #   export(gr, outfile, format = "BED")
 # }
+  
+  # for_saving <- resize_and_trim(complete_summit_gr, flank=200)
+  # rtracklayer::export(for_saving,"data/Bed_exports/H3K27ac_summit_gr_ext200.bed")
 ```
