@@ -11,11 +11,11 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-01-15" />
+<meta name="date" content="2026-05-01" />
 
 <title>H3K27ac summit processing</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -361,7 +361,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">H3K27ac summit processing</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-01-15</h4>
+<h4 class="date">2026-05-01</h4>
 
 </div>
 
@@ -369,7 +369,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -380,8 +380,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -390,13 +390,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-01-15
+<strong>Last updated:</strong> 2026-05-01
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>DXR_continue/</code> <span
@@ -408,7 +408,7 @@ title="This is the local directory in which the code in this file was executed."
 This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
 analysis was created with <a
   href="https://github.com/workflowr/workflowr">workflowr</a> (version
-1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
 that were applied when the results were created. The <em>Past
 versions</em> tab lists the development history.
 </p>
@@ -419,18 +419,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -521,15 +524,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree4f7414a6d2820d2dfa9fd474bd555f54efff3c21targetblank4f7414aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5a2afdf735be42c37fde5d5d93801c8b63b691fftargetblank5a2afdfa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/4f7414a6d2820d2dfa9fd474bd555f54efff3c21" target="_blank">4f7414a</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5a2afdf735be42c37fde5d5d93801c8b63b691ff" target="_blank">5a2afdf</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree4f7414a6d2820d2dfa9fd474bd555f54efff3c21targetblank4f7414aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree5a2afdf735be42c37fde5d5d93801c8b63b691fftargetblank5a2afdfa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +542,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/4f7414a6d2820d2dfa9fd474bd555f54efff3c21" target="_blank">4f7414a</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/5a2afdf735be42c37fde5d5d93801c8b63b691ff" target="_blank">5a2afdf</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -557,6 +560,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/Bed_exports/
+    Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
     Ignored:    data/Other_paper_data/
@@ -572,21 +576,34 @@ Ignored files:
 Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
     Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  MER61C_ERV1_LTR.fa
     Untracked:  analysis/GREAT_H3K27ac.Rmd
+    Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_KZFP_motifs.Rmd
+    Untracked:  analysis/H3K27ac_TE_investigation_200bp.Rmd
+    Untracked:  analysis/H3K27me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K36me3_TE_investigation.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
-    Untracked:  analysis/chromHMM.Rmd
-    Untracked:  analysis/human_genome_composition.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
+    Untracked:  analysis/protein_checks.Rmd
     Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/For_john.R
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K9me3_summit_processing.Rmd
-    Modified:   analysis/Motif_cluster_analysis.Rmd
-    Modified:   analysis/Outlier_removal.Rmd
-    Modified:   analysis/final_analysis.Rmd
-    Modified:   analysis/multiQC_cut_tag.Rmd
+    Modified:   analysis/ATAC_integration_data1.Rmd
+    Modified:   analysis/H3K27_TE_overlap.Rmd
+    Modified:   analysis/H3K27ac_TE_investigation.Rmd
+    Modified:   analysis/H3K27ac_TF_motifs.Rmd
+    Modified:   analysis/H3K27ac_summit_processing.Rmd
+    Modified:   analysis/H3K9me3_TE_investigation.Rmd
+    Modified:   analysis/H3K9me3_TE_overlap_extend.Rmd
+    Modified:   analysis/TP53_motif_interrogation.Rmd
+    Modified:   analysis/chromHMM.Rmd
+    Modified:   analysis/computeMatrixplots.Rmd
+    Modified:   analysis/memesuite_TE_enrichment.Rmd
     Modified:   analysis/summit_files_processing.Rmd
+    Modified:   code/KZFP_promotor_pull.R
 
 </code></pre>
 <p>
@@ -632,6 +649,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/5a2afdf735be42c37fde5d5d93801c8b63b691ff/analysis/H3K27ac_summit_processing.Rmd" target="_blank">5a2afdf</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-01
+</td>
+<td>
+checks on summits
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/217dea86ea58a1ac0b685b0ddd414ac08c1b320e/analysis/H3K27ac_summit_processing.Rmd" target="_blank">217dea8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-04-16
+</td>
+<td>
+wflow_git_commit("analysis/H3K27ac_summit_processing.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/c498e88bb9a1c3332761126cb2b2e3cbe79ce110/analysis/H3K27ac_summit_processing.Rmd" target="_blank">c498e88</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-02-05
+</td>
+<td>
+updates to case bed files
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/9a4c9d55d6e03552fbd480805d724bbdf1b382b6/docs/H3K27ac_summit_processing.html" target="_blank">9a4c9d5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-01-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -905,44 +990,45 @@ assign_best_summit_to_ROI_parallel &lt;- function(consensus_gr, ROIs_gr, max_dis
   
   list(df = final_df, gr = assigned_gr)
 }</code></pre>
-<pre class="r"><code>options(future.globals.maxSize = 10 * 1024^3)
-workers &lt;- parallel::detectCores() - 1
+<pre class="r"><code># options(future.globals.maxSize = 10 * 1024^3)
+# workers &lt;- parallel::detectCores() - 1
 ### Step 1
-temp_highest_per_group &lt;- get_highest_per_group_parallel(all_H3K27ac_summits_gr,
-                                                         group_col = &quot;group&quot;,
-                                                         score_col = &quot;score&quot;,
-                                                         min_gap_within = 100,
-                                                         workers = workers)
+# temp_highest_per_group &lt;- get_highest_per_group_parallel(all_H3K27ac_summits_gr,
+                                                         # group_col = &quot;group&quot;,
+                                                         # score_col = &quot;score&quot;,
+                                                         # min_gap_within = 100,
+                                                         # workers = workers)
 # saveRDS(temp_highest_per_group,&quot;data/RDS_files/H3K27ac_temp_highest_per_group.RDS&quot;)
-
+temp_highest_per_group &lt;- readRDS(&quot;data/RDS_files/H3K27ac_temp_highest_per_group.RDS&quot;)
 # Concatenate into one GRanges (Step 1.2)
 flat_highest_gr &lt;- (c(temp_highest_per_group$DOX_144R, temp_highest_per_group$DOX_24R,temp_highest_per_group$DOX_24T,temp_highest_per_group$VEH_144R,temp_highest_per_group$VEH_24R,temp_highest_per_group$VEH_24T))
 
 ### STep 2
-consensus_summits &lt;- get_consensus_summits_parallel(
-  flat_highest_gr,
-  score_col = &quot;score&quot;,
-  min_gap_across = 400,
-  workers = workers
-)
+# consensus_summits &lt;- get_consensus_summits_parallel(
+  # flat_highest_gr,
+#   score_col = &quot;score&quot;,
+#   min_gap_across = 400,
+#   workers = workers
+# )
 
 ####Concatenate into one GRanges
-consensus_summits_gr &lt;- (c(consensus_summits$chr1,consensus_summits$chr2,
-                           consensus_summits$chr3,consensus_summits$chr4,
-                           consensus_summits$chr5,consensus_summits$chr6,
-                           consensus_summits$chr7,consensus_summits$chr8,
-                           consensus_summits$chr9,consensus_summits$chr10,
-                           consensus_summits$chr11,consensus_summits$chr12,
-                           consensus_summits$chr13,consensus_summits$chr14,
-                           consensus_summits$chr15,consensus_summits$chr16,
-                           consensus_summits$chr17,consensus_summits$chr18,
-                           consensus_summits$chr19,consensus_summits$chr20,
-                           consensus_summits$chr21,consensus_summits$chr22))
+# consensus_summits_gr &lt;- (c(consensus_summits$chr1,consensus_summits$chr2,
+#                            consensus_summits$chr3,consensus_summits$chr4,
+#                            consensus_summits$chr5,consensus_summits$chr6,
+#                            consensus_summits$chr7,consensus_summits$chr8,
+#                            consensus_summits$chr9,consensus_summits$chr10,
+#                            consensus_summits$chr11,consensus_summits$chr12,
+#                            consensus_summits$chr13,consensus_summits$chr14,
+#                            consensus_summits$chr15,consensus_summits$chr16,
+#                            consensus_summits$chr17,consensus_summits$chr18,
+#                            consensus_summits$chr19,consensus_summits$chr20,
+#                            consensus_summits$chr21,consensus_summits$chr22))
 # saveRDS(consensus_summits_gr,&quot;data/RDS_files/H3K27ac_consensus_summits_gr.RDS&quot;)
 
-final_data &lt;- assign_best_summit_to_ROI_parallel(consensus_summits_gr, ROIs,max_dist = 500,workers = workers)
+# final_data &lt;- assign_best_summit_to_ROI_parallel(consensus_summits_gr, ROIs,max_dist = 500,workers = workers)
 # saveRDS(final_data,&quot;data/RDS_files/H3K27ac_final_data.RDS&quot;)
 # data.frame with one row per ROI (assigned or NA)
+final_data &lt;- readRDS(&quot;data/RDS_files/H3K27ac_final_data.RDS&quot;)
 final_df &lt;- final_data$df
 
 # GRanges of ROIs that received an assigned summit (with metadata)
@@ -952,69 +1038,81 @@ assigned_summits_gr &lt;- final_data$gr
 n_missing &lt;- sum(is.na(final_df$summit_pos))
 cat(&quot;ROIs lacking any summit within max_dist:&quot;, n_missing, &quot;\n&quot;)</code></pre>
 <pre><code>ROIs lacking any summit within max_dist: 13015 </code></pre>
-<pre class="r"><code>na_rois &lt;- final_df %&gt;% filter(is.na(summit_pos)) 
+<pre class="r"><code>roi_df &lt;- final_df %&gt;%
+  filter(is.na(summit_pos)) %&gt;%
+  mutate(
+    roi_seqname = roi_seqname,
+    roi_start = roi_start,
+    roi_end = roi_end,
+    Peakid = Peakid
+  ) %&gt;%
+  filter(!is.na(roi_seqname), !is.na(roi_start), !is.na(roi_end))
 
-na_rois_gr &lt;- GRanges(
-  seqnames = na_rois$roi_seqname,
-  ranges = IRanges(start = na_rois$roi_start, end = na_rois$roi_end),
-  Peakid = na_rois$Peakid
+roi_gr &lt;- GRanges(
+  seqnames = roi_df$roi_seqname,
+  ranges = IRanges(roi_df$roi_start, roi_df$roi_end)
 )
-ov &lt;- findOverlaps(na_rois_gr, flat_highest_gr)
+
+peak_gr &lt;- flat_highest_gr
+
+ov &lt;- findOverlaps(roi_gr, peak_gr)
 
 overlap_df &lt;- tibble(
   roi_idx = queryHits(ov),
   summit_idx = subjectHits(ov),
-  summit_pos = start(all_H3K27ac_summits_gr)[subjectHits(ov)],
-  summit_score = mcols(all_H3K27ac_summits_gr)$score[subjectHits(ov)]
+
+  # ROI identity (NEVER re-index GRanges)
+  Peakid = roi_df$Peakid[queryHits(ov)],
+  roi_seqname = roi_df$roi_seqname[queryHits(ov)],
+  roi_start = roi_df$roi_start[queryHits(ov)],
+  roi_end = roi_df$roi_end[queryHits(ov)],
+
+  # summit info
+  summit_pos = start(peak_gr)[subjectHits(ov)],
+  summit_score = mcols(peak_gr)$score[subjectHits(ov)]
 )
 
 best_summits &lt;- overlap_df %&gt;%
-  group_by(roi_idx) %&gt;%
-  slice_max(summit_score, with_ties = FALSE) %&gt;%
+  group_by(Peakid) %&gt;%
+  slice_max(summit_score, n = 1, with_ties = FALSE) %&gt;%
   ungroup()
 
-assigned_df &lt;- tibble(
-  roi_idx = seq_along(na_rois_gr),
-  Peakid = na_rois_gr$Peakid,
-  roi_seqname = as.character(seqnames(na_rois_gr)),
-  roi_start = start(na_rois_gr),
-  roi_end = end(na_rois_gr)
-) %&gt;%
-  left_join(best_summits, by = &quot;roi_idx&quot;)
+assigned_df_calc &lt;- best_summits %&gt;%
+  mutate(
+    dist_center = summit_pos - (roi_start + (roi_end - roi_start)/2),
+    rel_pos = (summit_pos - roi_start) / (roi_end - roi_start)
+  )
 
-assigned_df_calc &lt;- assigned_df %&gt;% mutate(
-        dist_center = summit_pos - (roi_start + (roi_end - roi_start)/2),
-        rel_pos = (summit_pos - roi_start)/(roi_end - roi_start)
-        
-      )
-complete_summit_df &lt;- final_df %&gt;% 
-  dplyr::select(!distance) %&gt;% 
-   dplyr::filter(!is.na(summit_pos)) %&gt;% 
-  bind_rows(.,assigned_df_calc) %&gt;% 
-  left_join(., H3K27ac_lookup, by = &quot;Peakid&quot;) %&gt;% 
-  dplyr::select(!summit_idx) %&gt;% 
-  dplyr::select(!cons_idx) %&gt;% 
-   group_by(Peakid) %&gt;% 
-  slice_min(order_by = abs(dist_center), n = 1) %&gt;% 
-  distinct
+
+complete_summit_df &lt;- final_df %&gt;%
+  filter(!is.na(summit_pos)) %&gt;%
+  bind_rows(assigned_df_calc) %&gt;% 
+  left_join(H3K27ac_lookup)
 # saveRDS(complete_summit_df,&quot;data/RDS_files/H3K27ac_complete_summit_df.RDS&quot;)
+
+only_complete &lt;- complete_summit_df %&gt;% filter(!is.na(summit_pos))
+
+## sanity check
+# only_complete %&gt;% 
+#   dplyr::filter(is.na(roi_seqname))
 complete_summit_gr &lt;- GRanges(
-  seqnames=complete_summit_df$roi_seqname,
-  ranges=IRanges(start= complete_summit_df$summit_pos, 
-                 end= complete_summit_df$summit_pos)
-)
+  seqnames = complete_summit_df$roi_seqname,
+  ranges = IRanges(
+    start = complete_summit_df$summit_pos,
+    end   = complete_summit_df$summit_pos))
 
-# Columns to exclude from metadata (used to define GRanges)
-exclude_cols &lt;- c(&quot;roi_seqname&quot;, &quot;summit_pos&quot;)
-
-# Only keep columns that exist in df
-meta_cols &lt;- intersect(setdiff(colnames(complete_summit_df), exclude_cols), colnames(complete_summit_df))
-
-# Assign metadata
-mcols(complete_summit_gr) &lt;- complete_summit_df[, meta_cols, drop = FALSE]
+mcols(complete_summit_gr) &lt;- complete_summit_df %&gt;%
+  dplyr::select(
+    Peakid,
+    roi_start,
+    roi_end,
+    summit_score,
+    dist_center,
+    rel_pos,
+    cluster)
 # saveRDS(complete_summit_gr,&quot;data/RDS_files/H3K27ac_complete_summit_gr.RDS&quot;)</code></pre>
 <pre class="r"><code>### adding in cluster membership for export
-
+complete_summit_gr &lt;- readRDS(&quot;data/RDS_files/H3K27ac_complete_summit_gr.RDS&quot;)
 library(BSgenome.Hsapiens.UCSC.hg38)
 genome &lt;- BSgenome.Hsapiens.UCSC.hg38
 seqlengths(complete_summit_gr) &lt;- seqlengths(genome)[names(seqlengths(complete_summit_gr))]
@@ -1073,7 +1171,7 @@ rtracklayer::export(H3K27ac_set3_400, &quot;data/Bed_exports/H3K27ac_Set_3_400.b
 
 rtracklayer::export(complete_summit_gr, &quot;data/Bed_exports/H3K27ac_complete_final_summits.bed&quot;)
 
-outdir &lt;- &quot;data/Bed_exports/summit_groups/&quot;
+outdir &lt;- &quot;data/Bed_exports/summit_groups&quot;
 dir.create(outdir, showWarnings = FALSE)
 
 group_gr_list &lt;- names(H3K27ac_sets_gr)
@@ -1090,6 +1188,130 @@ for (nm in names(H3K27ac_sets_gr)) {
   outfile &lt;- file.path(outdir, paste0(nm, &quot;_H3K27ac_ROI.bed&quot;))
   export(gr, outfile, format = &quot;BED&quot;)
 }</code></pre>
+<pre class="r"><code>### adding in cluster membership for export
+complete_summit_gr &lt;- readRDS(&quot;data/RDS_files/H3K27ac_complete_summit_gr.RDS&quot;)
+H3K27ac_set_case_lfc &lt;- readRDS(&quot;data/RDS_files/H3K27ac_set_case_lfc.RDS&quot;)
+H3K27ac_set_case_lfc$Set_2_A
+
+library(BSgenome.Hsapiens.UCSC.hg38)
+genome &lt;- BSgenome.Hsapiens.UCSC.hg38
+seqlengths(complete_summit_gr) &lt;- seqlengths(genome)[names(seqlengths(complete_summit_gr))]
+
+
+resize_and_trim &lt;- function(gr, flank = 200, genome = BSgenome.Hsapiens.UCSC.hg38) {
+
+  # enforce valid input
+  gr &lt;- gr[!is.na(start(gr)) &amp; !is.na(end(gr))]
+
+  # resize to fixed window
+  gr &lt;- resize(gr, width = 1 + 2*flank, fix = &quot;center&quot;)
+
+  # assign genome bounds
+  seqlengths(gr) &lt;- seqlengths(genome)[intersect(seqlevels(gr), seqlevels(genome))]
+
+  # trim to chromosome boundaries
+  gr &lt;- trim(gr)
+
+  # FINAL SAFETY FILTER (this is what you were missing)
+  gr &lt;- gr[width(gr) &gt; 0 &amp; start(gr) &lt; end(gr)]
+
+  return(gr)
+}
+
+SET_1_gr &lt;-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &amp;
+  mcols(complete_summit_gr)$cluster == &quot;Set_1&quot;
+]
+SET_2_gr &lt;-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &amp;
+  mcols(complete_summit_gr)$cluster == &quot;Set_2&quot;
+]
+SET_3_gr &lt;-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &amp;
+  mcols(complete_summit_gr)$cluster == &quot;Set_3&quot;
+]
+
+
+# H3K27ac_set1_600 &lt;- resize_and_trim(SET_1_gr,flank = 300)
+H3K27ac_set1_400 &lt;- resize_and_trim(SET_1_gr,flank = 200)
+# 
+# rtracklayer::export(SET_1_gr, &quot;data/Bed_exports/H3K27ac_Set_1_summits.bed&quot;)
+# rtracklayer::export(H3K27ac_set1_600, &quot;data/Bed_exports/H3K27ac_Set_1_600.bed&quot;)
+rtracklayer::export(H3K27ac_set1_400, &quot;data/Bed_exports/H3K27ac_Set_1_400.bed&quot;)
+
+SET_2_A_gr &lt;-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &amp;
+  mcols(complete_summit_gr)$cluster == &quot;Set_2&quot;&amp;
+    mcols(complete_summit_gr)$Peakid %in% H3K27ac_set_case_lfc$Set_2_A$Peakid
+]
+SET_2_B_gr &lt;- complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &amp;
+  mcols(complete_summit_gr)$cluster == &quot;Set_2&quot;&amp;
+    mcols(complete_summit_gr)$Peakid %in% H3K27ac_set_case_lfc$Set_2_B$Peakid
+]
+
+H3K27ac_set2_400 &lt;- resize_and_trim(SET_2_gr,flank = 200)
+H3K27ac_set3_400 &lt;- resize_and_trim(SET_3_gr,flank = 200)
+H3K27ac_set2_A_400 &lt;- resize_and_trim(SET_2_A_gr, flank=200)
+
+H3K27ac_set2_B_400 &lt;- resize_and_trim(SET_2_B_gr, flank=200)
+
+
+rtracklayer::export(SET_2_gr, &quot;data/Bed_exports/H3K27ac_Set_2_summits.bed&quot;)
+rtracklayer::export(H3K27ac_set2_A_400, &quot;data/Bed_exports/H3K27ac_set2_A_400.bed&quot;)
+rtracklayer::export(H3K27ac_set2_B_400, &quot;data/Bed_exports/H3K27ac_set2_B_400.bed&quot;)
+
+
+SET_3_gr &lt;-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &amp;
+  mcols(complete_summit_gr)$cluster == &quot;Set_3&quot;
+]
+
+
+SET_3_A_gr &lt;-   complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &amp;
+  mcols(complete_summit_gr)$cluster == &quot;Set_3&quot;&amp;
+    mcols(complete_summit_gr)$Peakid %in% H3K27ac_set_case_lfc$Set_3_A$Peakid
+]
+SET_3_B_gr &lt;- complete_summit_gr[
+  !is.na(mcols(complete_summit_gr)$cluster) &amp;
+  mcols(complete_summit_gr)$cluster == &quot;Set_3&quot;&amp;
+    mcols(complete_summit_gr)$Peakid %in% H3K27ac_set_case_lfc$Set_3_B$Peakid
+]
+
+H3K27ac_set3_A_400 &lt;- resize_and_trim(SET_3_A_gr, SET_2_A_gr, flank=200)
+
+H3K27ac_set3_B_400 &lt;- resize_and_trim(SET_3_B_gr, SET_2_A_gr, flank=200)
+
+
+rtracklayer::export(SET_3_gr, &quot;data/Bed_exports/H3K27ac_Set_3_summits.bed&quot;)
+rtracklayer::export(H3K27ac_set3_A_400, &quot;data/Bed_exports/H3K27ac_set3_A_400.bed&quot;)
+rtracklayer::export(H3K27ac_set3_B_400, &quot;data/Bed_exports/H3K27ac_set3_B_400.bed&quot;)
+  rtracklayer::export(H3K27ac_set2_400, &quot;data/Bed_exports/H3K27ac_Set_2_400.bed&quot;)
+  rtracklayer::export(H3K27ac_set3_400, &quot;data/Bed_exports/H3K27ac_Set_3_400.bed&quot;)
+
+# rtracklayer::export(complete_summit_gr, &quot;data/Bed_exports/H3K27ac_complete_final_summits.bed&quot;)
+# 
+# outdir &lt;- &quot;data/Bed_exports/summit_groups/&quot;
+# dir.create(outdir, showWarnings = FALSE)
+# 
+# group_gr_list &lt;- names(H3K27ac_sets_gr)
+# 
+# ### code below is how I exported the full ROIs to bed files
+# outdir &lt;- &quot;data/Bed_exports/H3K27ac_sets/&quot;
+# dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
+# 
+# for (nm in names(H3K27ac_sets_gr)) {
+#   gr &lt;- H3K27ac_sets_gr[[nm]]
+# 
+#   if (length(gr) == 0) next   # skip empty sets safely
+# 
+#   outfile &lt;- file.path(outdir, paste0(nm, &quot;_H3K27ac_ROI.bed&quot;))
+#   export(gr, outfile, format = &quot;BED&quot;)
+# }
+  
+  # for_saving &lt;- resize_and_trim(complete_summit_gr, flank=200)
+  # rtracklayer::export(for_saving,&quot;data/Bed_exports/H3K27ac_summit_gr_ext200.bed&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1121,149 +1343,150 @@ attached base packages:
  [8] datasets  methods   base     
 
 other attached packages:
- [1] ChIPseeker_1.42.1    future.apply_1.20.0  future_1.67.0       
+ [1] ChIPseeker_1.42.1    future.apply_1.20.2  future_1.70.0       
  [4] BiocParallel_1.40.2  rtracklayer_1.66.0   genomation_1.38.0   
  [7] plyranges_1.26.0     GenomicRanges_1.58.0 GenomeInfoDb_1.42.3 
 [10] IRanges_2.40.1       S4Vectors_0.44.0     BiocGenerics_0.52.0 
-[13] lubridate_1.9.4      forcats_1.0.0        stringr_1.5.1       
-[16] dplyr_1.1.4          purrr_1.1.0          readr_2.1.5         
-[19] tidyr_1.3.1          tibble_3.3.0         ggplot2_3.5.2       
-[22] tidyverse_2.0.0      workflowr_1.7.1     
+[13] lubridate_1.9.5      forcats_1.0.1        stringr_1.6.0       
+[16] dplyr_1.2.1          purrr_1.2.2          readr_2.2.0         
+[19] tidyr_1.3.2          tibble_3.3.1         ggplot2_4.0.3       
+[22] tidyverse_2.0.0      workflowr_1.7.2     
 
 loaded via a namespace (and not attached):
   [1] RColorBrewer_1.1-3                     
-  [2] rstudioapi_0.17.1                      
+  [2] rstudioapi_0.18.0                      
   [3] jsonlite_2.0.0                         
-  [4] magrittr_2.0.3                         
-  [5] ggtangle_0.0.7                         
+  [4] magrittr_2.0.5                         
+  [5] ggtangle_0.1.2                         
   [6] GenomicFeatures_1.58.0                 
   [7] farver_2.1.2                           
-  [8] rmarkdown_2.29                         
-  [9] fs_1.6.6                               
+  [8] rmarkdown_2.31                         
+  [9] fs_2.1.0                               
  [10] BiocIO_1.16.0                          
  [11] zlibbioc_1.52.0                        
- [12] vctrs_0.6.5                            
+ [12] vctrs_0.7.3                            
  [13] memoise_2.0.1                          
  [14] Rsamtools_2.22.0                       
- [15] RCurl_1.98-1.17                        
+ [15] RCurl_1.98-1.18                        
  [16] ggtree_3.14.0                          
- [17] htmltools_0.5.8.1                      
+ [17] htmltools_0.5.9                        
  [18] S4Arrays_1.6.0                         
  [19] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
- [20] plotrix_3.8-4                          
- [21] curl_7.0.0                             
+ [20] plotrix_3.8-14                         
+ [21] curl_7.1.0                             
  [22] gridGraphics_0.5-1                     
  [23] SparseArray_1.6.2                      
  [24] sass_0.4.10                            
- [25] parallelly_1.45.1                      
+ [25] parallelly_1.47.0                      
  [26] KernSmooth_2.23-26                     
- [27] bslib_0.9.0                            
+ [27] bslib_0.10.0                           
  [28] plyr_1.8.9                             
  [29] impute_1.80.0                          
  [30] cachem_1.1.0                           
  [31] GenomicAlignments_1.42.0               
- [32] igraph_2.1.4                           
+ [32] igraph_2.3.0                           
  [33] whisker_0.4.1                          
- [34] lifecycle_1.0.4                        
+ [34] lifecycle_1.0.5                        
  [35] pkgconfig_2.0.3                        
- [36] Matrix_1.7-3                           
+ [36] Matrix_1.7-5                           
  [37] R6_2.6.1                               
  [38] fastmap_1.2.0                          
  [39] GenomeInfoDbData_1.2.13                
  [40] MatrixGenerics_1.18.1                  
  [41] enrichplot_1.26.6                      
- [42] digest_0.6.37                          
- [43] aplot_0.2.8                            
- [44] colorspace_2.1-1                       
+ [42] digest_0.6.39                          
+ [43] aplot_0.2.9                            
+ [44] colorspace_2.1-2                       
  [45] patchwork_1.3.2                        
  [46] AnnotationDbi_1.68.0                   
- [47] ps_1.9.1                               
- [48] rprojroot_2.1.1                        
- [49] RSQLite_2.4.3                          
- [50] timechange_0.3.0                       
- [51] httr_1.4.7                             
- [52] abind_1.4-8                            
- [53] compiler_4.4.2                         
- [54] bit64_4.6.0-1                          
- [55] withr_3.0.2                            
- [56] DBI_1.2.3                              
- [57] gplots_3.2.0                           
+ [47] rprojroot_2.1.1                        
+ [48] RSQLite_2.4.6                          
+ [49] timechange_0.4.0                       
+ [50] httr_1.4.8                             
+ [51] abind_1.4-8                            
+ [52] compiler_4.4.2                         
+ [53] bit64_4.8.0                            
+ [54] withr_3.0.2                            
+ [55] S7_0.2.2                               
+ [56] DBI_1.3.0                              
+ [57] gplots_3.3.0                           
  [58] R.utils_2.13.0                         
- [59] rappdirs_0.3.3                         
+ [59] rappdirs_0.3.4                         
  [60] DelayedArray_0.32.0                    
  [61] rjson_0.2.23                           
  [62] caTools_1.18.3                         
  [63] gtools_3.9.5                           
  [64] tools_4.4.2                            
- [65] ape_5.8-1                              
- [66] httpuv_1.6.16                          
- [67] R.oo_1.27.1                            
- [68] glue_1.8.0                             
- [69] restfulr_0.0.16                        
- [70] callr_3.7.6                            
- [71] nlme_3.1-168                           
- [72] GOSemSim_2.32.0                        
- [73] promises_1.3.3                         
- [74] getPass_0.2-4                          
- [75] gridBase_0.4-7                         
- [76] reshape2_1.4.4                         
- [77] fgsea_1.32.4                           
- [78] generics_0.1.4                         
- [79] gtable_0.3.6                           
- [80] BSgenome_1.74.0                        
- [81] tzdb_0.5.0                             
- [82] R.methodsS3_1.8.2                      
- [83] seqPattern_1.38.0                      
- [84] data.table_1.17.8                      
- [85] hms_1.1.3                              
- [86] XVector_0.46.0                         
- [87] ggrepel_0.9.6                          
- [88] pillar_1.11.0                          
- [89] yulab.utils_0.2.1                      
- [90] vroom_1.6.5                            
- [91] later_1.4.2                            
- [92] splines_4.4.2                          
- [93] treeio_1.30.0                          
- [94] lattice_0.22-7                         
- [95] bit_4.6.0                              
- [96] tidyselect_1.2.1                       
- [97] GO.db_3.20.0                           
- [98] Biostrings_2.74.1                      
- [99] knitr_1.50                             
-[100] git2r_0.36.2                           
-[101] SummarizedExperiment_1.36.0            
-[102] xfun_0.52                              
-[103] Biobase_2.66.0                         
-[104] matrixStats_1.5.0                      
-[105] stringi_1.8.7                          
-[106] UCSC.utils_1.2.0                       
-[107] lazyeval_0.2.2                         
-[108] boot_1.3-32                            
-[109] ggfun_0.2.0                            
-[110] yaml_2.3.10                            
-[111] evaluate_1.0.5                         
-[112] codetools_0.2-20                       
-[113] qvalue_2.38.0                          
-[114] ggplotify_0.1.2                        
-[115] cli_3.6.5                              
-[116] processx_3.8.6                         
-[117] jquerylib_0.1.4                        
-[118] dichromat_2.0-0.1                      
-[119] Rcpp_1.1.0                             
-[120] globals_0.18.0                         
-[121] png_0.1-8                              
-[122] XML_3.99-0.18                          
-[123] blob_1.2.4                             
-[124] DOSE_4.0.1                             
-[125] bitops_1.0-9                           
-[126] listenv_0.9.1                          
-[127] tidytree_0.4.6                         
-[128] scales_1.4.0                           
-[129] crayon_1.5.3                           
-[130] rlang_1.1.6                            
-[131] fastmatch_1.1-6                        
-[132] cowplot_1.2.0                          
-[133] KEGGREST_1.46.0                        </code></pre>
+ [65] otel_0.2.0                             
+ [66] ape_5.8-1                              
+ [67] httpuv_1.6.17                          
+ [68] R.oo_1.27.1                            
+ [69] glue_1.8.1                             
+ [70] restfulr_0.0.16                        
+ [71] callr_3.7.6                            
+ [72] nlme_3.1-169                           
+ [73] GOSemSim_2.32.0                        
+ [74] promises_1.5.0                         
+ [75] getPass_0.2-4                          
+ [76] gridBase_0.4-7                         
+ [77] reshape2_1.4.5                         
+ [78] fgsea_1.32.4                           
+ [79] generics_0.1.4                         
+ [80] gtable_0.3.6                           
+ [81] BSgenome_1.74.0                        
+ [82] tzdb_0.5.0                             
+ [83] R.methodsS3_1.8.2                      
+ [84] seqPattern_1.38.0                      
+ [85] data.table_1.18.2.1                    
+ [86] hms_1.1.4                              
+ [87] XVector_0.46.0                         
+ [88] ggrepel_0.9.8                          
+ [89] pillar_1.11.1                          
+ [90] yulab.utils_0.2.4                      
+ [91] vroom_1.7.1                            
+ [92] later_1.4.8                            
+ [93] splines_4.4.2                          
+ [94] treeio_1.30.0                          
+ [95] lattice_0.22-9                         
+ [96] bit_4.6.0                              
+ [97] tidyselect_1.2.1                       
+ [98] GO.db_3.20.0                           
+ [99] Biostrings_2.74.1                      
+[100] knitr_1.51                             
+[101] git2r_0.36.2                           
+[102] SummarizedExperiment_1.36.0            
+[103] xfun_0.57                              
+[104] Biobase_2.66.0                         
+[105] matrixStats_1.5.0                      
+[106] stringi_1.8.7                          
+[107] UCSC.utils_1.2.0                       
+[108] lazyeval_0.2.3                         
+[109] boot_1.3-32                            
+[110] ggfun_0.2.0                            
+[111] yaml_2.3.12                            
+[112] evaluate_1.0.5                         
+[113] codetools_0.2-20                       
+[114] qvalue_2.38.0                          
+[115] ggplotify_0.1.3                        
+[116] cli_3.6.6                              
+[117] processx_3.9.0                         
+[118] jquerylib_0.1.4                        
+[119] dichromat_2.0-0.1                      
+[120] Rcpp_1.1.1-1.1                         
+[121] globals_0.19.1                         
+[122] png_0.1-9                              
+[123] XML_3.99-0.23                          
+[124] blob_1.3.0                             
+[125] DOSE_4.0.1                             
+[126] bitops_1.0-9                           
+[127] listenv_0.10.1                         
+[128] tidytree_0.4.7                         
+[129] scales_1.4.0                           
+[130] crayon_1.5.3                           
+[131] rlang_1.2.0                            
+[132] fastmatch_1.1-8                        
+[133] cowplot_1.2.0                          
+[134] KEGGREST_1.46.0                        </code></pre>
 </div>
 </div>
 </div>
