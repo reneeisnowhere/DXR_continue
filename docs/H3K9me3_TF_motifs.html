@@ -11,11 +11,11 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-03-11" />
+<meta name="date" content="2026-05-04" />
 
 <title>H3K9me3 TF enrichment</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -361,7 +361,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">H3K9me3 TF enrichment</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-03-11</h4>
+<h4 class="date">2026-05-04</h4>
 
 </div>
 
@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-03-11
+<strong>Last updated:</strong> 2026-05-04
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -408,7 +408,7 @@ title="This is the local directory in which the code in this file was executed."
 This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
 analysis was created with <a
   href="https://github.com/workflowr/workflowr">workflowr</a> (version
-1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
 that were applied when the results were created. The <em>Past
 versions</em> tab lists the development history.
 </p>
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree1d9141b307bf07489ed74a069cee2f51afa3914ftargetblank1d9141ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree34738322e360e2c835396629a054a2b85da6443dtargetblank3473832a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/1d9141b307bf07489ed74a069cee2f51afa3914f" target="_blank">1d9141b</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/34738322e360e2c835396629a054a2b85da6443d" target="_blank">3473832</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree1d9141b307bf07489ed74a069cee2f51afa3914ftargetblank1d9141ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree34738322e360e2c835396629a054a2b85da6443dtargetblank3473832a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/1d9141b307bf07489ed74a069cee2f51afa3914f" target="_blank">1d9141b</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/34738322e360e2c835396629a054a2b85da6443d" target="_blank">3473832</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -557,6 +557,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    data/Bed_exports/
+    Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
     Ignored:    data/Other_paper_data/
@@ -572,22 +573,33 @@ Ignored files:
 Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
     Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  MER61C_ERV1_LTR.fa
     Untracked:  analysis/GREAT_H3K27ac.Rmd
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_KZFP_motifs.Rmd
+    Untracked:  analysis/H3K27ac_TE_investigation_200bp.Rmd
     Untracked:  analysis/H3K27me3_TE_investigation.Rmd
     Untracked:  analysis/H3K36me3_TE_investigation.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
+    Untracked:  analysis/protein_checks.Rmd
     Untracked:  analysis/proteomics.Rmd
     Untracked:  code/For_john.R
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27ac_cisRE.Rmd
+    Modified:   analysis/ATAC_integration_data1.Rmd
+    Modified:   analysis/H3K27ac_TE_investigation.Rmd
+    Modified:   analysis/H3K27ac_TF_motifs.Rmd
     Modified:   analysis/H3K27ac_summit_processing.Rmd
     Modified:   analysis/H3K9me3_TE_investigation.Rmd
-    Modified:   analysis/dual_histone_TE_investigation.Rmd
+    Modified:   analysis/H3K9me3_TE_overlap_extend.Rmd
+    Modified:   analysis/TP53_motif_interrogation.Rmd
+    Modified:   analysis/chromHMM.Rmd
+    Modified:   analysis/computeMatrixplots.Rmd
+    Modified:   analysis/memesuite_TE_enrichment.Rmd
     Modified:   analysis/summit_files_processing.Rmd
+    Modified:   code/KZFP_promotor_pull.R
 
 </code></pre>
 <p>
@@ -632,6 +644,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/34738322e360e2c835396629a054a2b85da6443d/analysis/H3K9me3_TF_motifs.Rmd" target="_blank">3473832</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-04
+</td>
+<td>
+wflow_publish("analysis/H3K9me3_TF_motifs.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/H3K9me3_TF_motifs.html" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -741,7 +787,8 @@ library(plyranges)
 library(genomation)
 library(readr)
 library(rtracklayer)
-library(stringr)</code></pre>
+library(stringr)
+library(readxl)</code></pre>
 <pre class="r"><code>H3K9me3_Set2_sea_disc_out &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/H3K9me3/H3K9me3_set2_400/sea_disc_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;disc&quot;) %&gt;% slice_head(n = length(.$ID)-3)
 
 H3K9me3_Set2_sea_known &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/H3K9me3/H3K9me3_set2_400/sea_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;known&quot;) %&gt;% slice_head(n = length(.$ID)-3)
@@ -816,7 +863,7 @@ H3K9me3_Set2_data %&gt;%
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET2 enrichment over SET1,Top20, Enrichment ratio &gt;1.2&quot;))+
   facet_wrap(~Facets)</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
 Past versions of unnamed-chunk-2-1.png
@@ -839,6 +886,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-1.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/47a409ffebfcab790e2ff5ac2cf7970bedc600e0/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-1.png" target="_blank">47a409f</a>
@@ -872,7 +930,7 @@ reneeisnowhere
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET2 enrichment over SET1 Enrichment ratio &gt;1.2&quot;))+
   facet_wrap(~Facets)</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-2">
 Past versions of unnamed-chunk-2-2.png
@@ -895,6 +953,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-2.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/47a409ffebfcab790e2ff5ac2cf7970bedc600e0/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-2.png" target="_blank">47a409f</a>
@@ -928,7 +997,7 @@ reneeisnowhere
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET2 enrichment over SET1 Enrichment ratio &gt;1.2&quot;))+
   facet_wrap(~Facets)</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-3">
 Past versions of unnamed-chunk-2-3.png
@@ -951,6 +1020,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-3.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/47a409ffebfcab790e2ff5ac2cf7970bedc600e0/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-3.png" target="_blank">47a409f</a>
@@ -986,7 +1066,7 @@ H3K9me3_Set3_data %&gt;%
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET3 enrichment over SET1, Enrichment ratio &gt; 1.2&quot;))+
   facet_wrap(~Facets)</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-4">
 Past versions of unnamed-chunk-2-4.png
@@ -1009,6 +1089,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-4.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/47a409ffebfcab790e2ff5ac2cf7970bedc600e0/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-4.png" target="_blank">47a409f</a>
@@ -1042,7 +1133,7 @@ reneeisnowhere
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET3 enrichment over SET1, Enrichment ratio &gt; 1.2&quot;))+
   facet_wrap(~Facets)</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-5">
 Past versions of unnamed-chunk-2-5.png
@@ -1065,6 +1156,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-5.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/47a409ffebfcab790e2ff5ac2cf7970bedc600e0/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-5.png" target="_blank">47a409f</a>
@@ -1098,7 +1200,7 @@ reneeisnowhere
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET3 enrichment over SET1, Enrichment ratio &gt; 1.2&quot;))+
   facet_wrap(~Facets)</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-6">
 Past versions of unnamed-chunk-2-6.png
@@ -1123,6 +1225,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-6.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/47a409ffebfcab790e2ff5ac2cf7970bedc600e0/docs/figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-2-6.png" target="_blank">47a409f</a>
 </td>
 <td>
@@ -1144,7 +1257,7 @@ reneeisnowhere
   theme_classic()+
   # ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;Span of enrichment ratios for Set2&quot;))</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/enrichment%20ratio%20dispersion-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/enrichment%20ratio%20dispersion-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-enrichment-ratio-dispersion-1">
 Past versions of "enrichment ratio dispersion-1.png"
@@ -1169,6 +1282,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/enrichment ratio dispersion-1.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/47a409ffebfcab790e2ff5ac2cf7970bedc600e0/docs/figure/H3K9me3_TF_motifs.Rmd/enrichment ratio dispersion-1.png" target="_blank">47a409f</a>
 </td>
 <td>
@@ -1187,7 +1311,7 @@ reneeisnowhere
   geom_density()+
   theme_classic()+
   ggtitle(paste(&quot;Span of enrichment ratios for Set3&quot;))</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/enrichment%20ratio%20dispersion-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/enrichment%20ratio%20dispersion-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-enrichment-ratio-dispersion-2">
 Past versions of "enrichment ratio dispersion-2.png"
@@ -1210,6 +1334,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/enrichment ratio dispersion-2.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/47a409ffebfcab790e2ff5ac2cf7970bedc600e0/docs/figure/H3K9me3_TF_motifs.Rmd/enrichment ratio dispersion-2.png" target="_blank">47a409f</a>
@@ -1250,7 +1385,7 @@ dplyr::filter(EVALUE&lt;0.05) %&gt;%
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET2 enrichment over SET1\n top Enrichment Ratio by Cluster H3K9me3&quot;))</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%202%20by%20facet-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%202%20by%20facet-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-set-2-by-facet-1">
 Past versions of "set 2 by facet-1.png"
@@ -1273,6 +1408,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/set 2 by facet-1.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/91e7d68402b96bb7ffde50d5fe65703e61034cc7/docs/figure/H3K9me3_TF_motifs.Rmd/set 2 by facet-1.png" target="_blank">91e7d68</a>
@@ -1314,7 +1460,7 @@ dplyr::filter(EVALUE&lt;0.05) %&gt;%
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET2 enrichment over SET1\n top Enrichment Ratio by Cluster H3K9me3&quot;))</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%202%20by%20facet-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%202%20by%20facet-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-set-2-by-facet-2">
 Past versions of "set 2 by facet-2.png"
@@ -1337,6 +1483,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/set 2 by facet-2.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/91e7d68402b96bb7ffde50d5fe65703e61034cc7/docs/figure/H3K9me3_TF_motifs.Rmd/set 2 by facet-2.png" target="_blank">91e7d68</a>
@@ -1376,7 +1533,7 @@ dplyr::filter(EVALUE&lt;0.05) %&gt;%
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET2 enrichment over SET1\n top Enrichment Ratio by Cluster H3K9me3&quot;))</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%202%20by%20facet-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%202%20by%20facet-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-set-2-by-facet-3">
 Past versions of "set 2 by facet-3.png"
@@ -1399,6 +1556,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/set 2 by facet-3.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/91e7d68402b96bb7ffde50d5fe65703e61034cc7/docs/figure/H3K9me3_TF_motifs.Rmd/set 2 by facet-3.png" target="_blank">91e7d68</a>
@@ -1440,7 +1608,7 @@ dplyr::filter(EVALUE&lt;0.05) %&gt;%
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET3 enrichment over SET1\n top Enrichment Ratio by Cluster H3K9me3&quot;))</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%203%20by%20facet-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%203%20by%20facet-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-set-3-by-facet-1">
 Past versions of "set 3 by facet-1.png"
@@ -1463,6 +1631,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/set 3 by facet-1.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/91e7d68402b96bb7ffde50d5fe65703e61034cc7/docs/figure/H3K9me3_TF_motifs.Rmd/set 3 by facet-1.png" target="_blank">91e7d68</a>
@@ -1504,7 +1683,7 @@ reneeisnowhere
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET3 enrichment over SET1\n top Enrichment Ratio by Cluster H3K9me3&quot;))</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%203%20by%20facet-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%203%20by%20facet-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-set-3-by-facet-2">
 Past versions of "set 3 by facet-2.png"
@@ -1527,6 +1706,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/set 3 by facet-2.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/91e7d68402b96bb7ffde50d5fe65703e61034cc7/docs/figure/H3K9me3_TF_motifs.Rmd/set 3 by facet-2.png" target="_blank">91e7d68</a>
@@ -1569,7 +1759,7 @@ dplyr::filter(EVALUE&lt;0.05) %&gt;%
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET3 enrichment over SET1\n top Enrichment Ratio by Cluster H3K9me3&quot;))</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%203%20by%20facet-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%203%20by%20facet-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-set-3-by-facet-3">
 Past versions of "set 3 by facet-3.png"
@@ -1592,6 +1782,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/set 3 by facet-3.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/91e7d68402b96bb7ffde50d5fe65703e61034cc7/docs/figure/H3K9me3_TF_motifs.Rmd/set 3 by facet-3.png" target="_blank">91e7d68</a>
@@ -1634,7 +1835,7 @@ dplyr::filter(EVALUE&lt;0.05) %&gt;%
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET3 enrichment over SET1\n top Enrichment Ratio by Cluster H3K9me3&quot;))</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%203%20by%20facet-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/set%203%20by%20facet-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-set-3-by-facet-4">
 Past versions of "set 3 by facet-4.png"
@@ -1657,6 +1858,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/set 3 by facet-4.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/91e7d68402b96bb7ffde50d5fe65703e61034cc7/docs/figure/H3K9me3_TF_motifs.Rmd/set 3 by facet-4.png" target="_blank">91e7d68</a>
@@ -1720,6 +1932,7 @@ reneeisnowhere
 <h3>RNA filtering</h3>
 <pre class="r"><code>RNA_full_toptable &lt;-  readRDS(&quot;data/Other_paper_data/RNA_full_toptable.RDS&quot;)
 
+
 RNA_expressed &lt;- RNA_full_toptable %&gt;% 
   dplyr::select(Entrez_ID, SYMBOL)
 
@@ -1754,7 +1967,110 @@ global_limits &lt;-  quantile(global_combo$ENR_RATIO, probs = c(0.05, 0.95), na.
 cowplot::plot_grid(aligned_filt_plots[[1]],
           aligned_filt_plots[[2]],
           ncol = 2)</code></pre>
-<p><img src="figure/H3K9me3_TF_motifs.Rmd/RNA%20filtering-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/RNA%20filtering-1.png" alt="" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-RNA-filtering-1">
+Past versions of "RNA filtering-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-RNA-filtering-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6190e96fa9de25ad597459e7e79ef86840050dd9/docs/figure/H3K9me3_TF_motifs.Rmd/RNA filtering-1.png" target="_blank">6190e96</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-03-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>KZFP_2026_list &lt;- read_excel(&quot;data/Other_paper_data/human_protein_coding_KZFPs_Davis_natgen_2026.xlsx&quot;)
+
+filtered_H3K9me3_Set2_data &lt;- filtered_H3K9me3_Set2_data %&gt;% 
+  mutate(KZFP=if_else(motif_name %in%KZFP_2026_list$Label,&quot;KZFP&quot;,&quot;not_KZFP&quot;))
+filtered_H3K9me3_Set3_data &lt;- filtered_H3K9me3_Set3_data %&gt;% 
+  mutate(KZFP=if_else(motif_name %in%KZFP_2026_list$Label,&quot;KZFP&quot;,&quot;not_KZFP&quot;))
+
+plot_topnum_ratio_KZFP &lt;- function(df, title = NULL, signif.num = 0.05,top_num=20, color_limits = NULL){
+  
+  ### getting the name of the data frame for plotting
+ if (is.null(title)) {
+    title &lt;- deparse(substitute(df))
+ }
+  
+   
+
+  ### Getting the data ready
+  plot_df &lt;- df %&gt;%
+    dplyr::filter(EVALUE &lt; signif.num) %&gt;%
+    group_by(CLUSTER) %&gt;%
+    slice_min(RANK, with_ties = FALSE) %&gt;%
+    ungroup() %&gt;%
+    mutate(log10Evalue = -log10(EVALUE)) %&gt;%
+    arrange(desc(log10Evalue)) %&gt;%
+    mutate(motif_name_wrapped = stringr::str_wrap(motif_name, width = 10)) %&gt;% 
+     mutate(
+    enr_shape = ifelse(ENR_RATIO &gt; 1, &quot;Enriched&quot;, &quot;Depleted&quot;)) %&gt;% 
+    slice_head(., n=top_num)
+#   
+  scaler &lt;- max(plot_df$log10Evalue) / max(plot_df$ENR_RATIO)
+
+  ##plotting the data
+   ggplot(plot_df, aes(y = reorder(motif_name_wrapped, log10Evalue))) +
+    geom_col(aes(x = log10Evalue, fill=KZFP)) +
+    geom_point(aes(x = ENR_RATIO* scaler, color = ENR_RATIO, shape = enr_shape), size = 4)+
+    scale_x_continuous(
+      expand = c(0, .125),
+      sec.axis = sec_axis(~ . / scaler, name = &quot;Enrichment Ratio&quot;)
+    ) +
+   scale_color_viridis_c(
+  name = &quot;Enrichment Ratio&quot;,
+  option = &quot;plasma&quot;,
+  limits = color_limits,
+  oob = scales::squish
+)+
+    scale_y_discrete(labels = function(x) stringr::str_wrap(gsub(&quot;__.*$&quot;, &quot;&quot;, x), width = 10)) +
+     scale_shape_manual(values = c(&quot;Enriched&quot; = 16, &quot;Depleted&quot; = 17))+
+    theme_classic() +
+    ylab(&quot;Enriched TF motif&quot;) +
+    ggtitle(paste(title, &quot;-&quot;, top_num))
+}</code></pre>
+<pre class="r"><code>## binding both together to get them to set a global limit on the secondary axis using quantiles so color range is identical
+global_combo2 &lt;- bind_rows(filtered_H3K9me3_Set2_data, filtered_H3K9me3_Set3_data)
+
+global_limits2 &lt;-  quantile(global_combo2$ENR_RATIO, probs = c(0.05, 0.95), na.rm = TRUE)
+### plot seperately
+  filt_A2 &lt;- plot_topnum_ratio_KZFP(filtered_H3K9me3_Set3_data,signif.num = 0.05, top_num = 10,color_limits = global_limits2)
+  
+  filt_B2 &lt;- plot_topnum_ratio_KZFP(filtered_H3K9me3_Set2_data,signif.num = 0.05, top_num = 10,color_limits = global_limits2)
+ ## Good ole cowplot to align plots vertically 
+  aligned_filt_plots &lt;- cowplot::align_plots(filt_B2, filt_A2, align = &quot;v&quot;, axis = &quot;l&quot;)
+
+cowplot::plot_grid(aligned_filt_plots[[1]],
+          aligned_filt_plots[[2]],
+          ncol = 2)</code></pre>
+<p><img src="figure/H3K9me3_TF_motifs.Rmd/unnamed-chunk-5-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1786,64 +2102,65 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] rtracklayer_1.66.0   genomation_1.38.0    plyranges_1.26.0    
- [4] GenomicRanges_1.58.0 GenomeInfoDb_1.42.3  IRanges_2.40.1      
- [7] S4Vectors_0.44.0     BiocGenerics_0.52.0  lubridate_1.9.4     
-[10] forcats_1.0.0        stringr_1.5.1        dplyr_1.1.4         
-[13] purrr_1.1.0          readr_2.1.5          tidyr_1.3.1         
-[16] tibble_3.3.0         ggplot2_3.5.2        tidyverse_2.0.0     
-[19] workflowr_1.7.1     
+ [1] readxl_1.4.5         rtracklayer_1.66.0   genomation_1.38.0   
+ [4] plyranges_1.26.0     GenomicRanges_1.58.0 GenomeInfoDb_1.42.3 
+ [7] IRanges_2.40.1       S4Vectors_0.44.0     BiocGenerics_0.52.0 
+[10] lubridate_1.9.5      forcats_1.0.1        stringr_1.6.0       
+[13] dplyr_1.2.1          purrr_1.2.2          readr_2.2.0         
+[16] tidyr_1.3.2          tibble_3.3.1         ggplot2_4.0.3       
+[19] tidyverse_2.0.0      workflowr_1.7.2     
 
 loaded via a namespace (and not attached):
- [1] bitops_1.0-9                rlang_1.1.6                
- [3] magrittr_2.0.3              git2r_0.36.2               
- [5] gridBase_0.4-7              tidytext_0.4.3             
- [7] matrixStats_1.5.0           compiler_4.4.2             
- [9] getPass_0.2-4               callr_3.7.6                
-[11] vctrs_0.6.5                 reshape2_1.4.4             
-[13] pkgconfig_2.0.3             crayon_1.5.3               
-[15] fastmap_1.2.0               XVector_0.46.0             
-[17] labeling_0.4.3              Rsamtools_2.22.0           
-[19] promises_1.3.3              rmarkdown_2.29             
-[21] tzdb_0.5.0                  UCSC.utils_1.2.0           
-[23] ps_1.9.1                    bit_4.6.0                  
-[25] xfun_0.52                   zlibbioc_1.52.0            
-[27] cachem_1.1.0                jsonlite_2.0.0             
-[29] SnowballC_0.7.1             later_1.4.2                
-[31] DelayedArray_0.32.0         BiocParallel_1.40.2        
-[33] parallel_4.4.2              R6_2.6.1                   
-[35] bslib_0.9.0                 stringi_1.8.7              
-[37] RColorBrewer_1.1-3          jquerylib_0.1.4            
-[39] Rcpp_1.1.0                  SummarizedExperiment_1.36.0
-[41] knitr_1.50                  httpuv_1.6.16              
-[43] Matrix_1.7-3                timechange_0.3.0           
-[45] tidyselect_1.2.1            rstudioapi_0.17.1          
-[47] dichromat_2.0-0.1           abind_1.4-8                
-[49] yaml_2.3.10                 seqPattern_1.38.0          
-[51] codetools_0.2-20            curl_7.0.0                 
-[53] processx_3.8.6              lattice_0.22-7             
-[55] plyr_1.8.9                  Biobase_2.66.0             
-[57] withr_3.0.2                 evaluate_1.0.5             
-[59] Biostrings_2.74.1           pillar_1.11.0              
-[61] janeaustenr_1.0.0           MatrixGenerics_1.18.1      
-[63] whisker_0.4.1               KernSmooth_2.23-26         
-[65] generics_0.1.4              vroom_1.6.5                
-[67] rprojroot_2.1.1             RCurl_1.98-1.17            
-[69] hms_1.1.3                   scales_1.4.0               
-[71] glue_1.8.0                  tools_4.4.2                
-[73] BiocIO_1.16.0               tokenizers_0.3.0           
-[75] data.table_1.17.8           BSgenome_1.74.0            
-[77] GenomicAlignments_1.42.0    fs_1.6.6                   
-[79] XML_3.99-0.18               cowplot_1.2.0              
-[81] impute_1.80.0               plotrix_3.8-4              
-[83] colorspace_2.1-1            GenomeInfoDbData_1.2.13    
-[85] restfulr_0.0.16             cli_3.6.5                  
-[87] viridisLite_0.4.2           S4Arrays_1.6.0             
-[89] gtable_0.3.6                sass_0.4.10                
-[91] digest_0.6.37               SparseArray_1.6.2          
-[93] rjson_0.2.23                farver_2.1.2               
-[95] htmltools_0.5.8.1           lifecycle_1.0.4            
-[97] httr_1.4.7                  bit64_4.6.0-1              </code></pre>
+  [1] bitops_1.0-9                rlang_1.2.0                
+  [3] magrittr_2.0.5              git2r_0.36.2               
+  [5] gridBase_0.4-7              tidytext_0.4.3             
+  [7] otel_0.2.0                  matrixStats_1.5.0          
+  [9] compiler_4.4.2              getPass_0.2-4              
+ [11] callr_3.7.6                 vctrs_0.7.3                
+ [13] reshape2_1.4.5              pkgconfig_2.0.3            
+ [15] crayon_1.5.3                fastmap_1.2.0              
+ [17] XVector_0.46.0              labeling_0.4.3             
+ [19] Rsamtools_2.22.0            promises_1.5.0             
+ [21] rmarkdown_2.31              tzdb_0.5.0                 
+ [23] UCSC.utils_1.2.0            bit_4.6.0                  
+ [25] xfun_0.57                   zlibbioc_1.52.0            
+ [27] cachem_1.1.0                jsonlite_2.0.0             
+ [29] SnowballC_0.7.1             later_1.4.8                
+ [31] DelayedArray_0.32.0         BiocParallel_1.40.2        
+ [33] parallel_4.4.2              R6_2.6.1                   
+ [35] bslib_0.10.0                stringi_1.8.7              
+ [37] RColorBrewer_1.1-3          cellranger_1.1.0           
+ [39] jquerylib_0.1.4             Rcpp_1.1.1-1.1             
+ [41] SummarizedExperiment_1.36.0 knitr_1.51                 
+ [43] httpuv_1.6.17               Matrix_1.7-5               
+ [45] timechange_0.4.0            tidyselect_1.2.1           
+ [47] rstudioapi_0.18.0           dichromat_2.0-0.1          
+ [49] abind_1.4-8                 yaml_2.3.12                
+ [51] seqPattern_1.38.0           codetools_0.2-20           
+ [53] curl_7.1.0                  processx_3.9.0             
+ [55] lattice_0.22-9              plyr_1.8.9                 
+ [57] Biobase_2.66.0              withr_3.0.2                
+ [59] S7_0.2.2                    evaluate_1.0.5             
+ [61] Biostrings_2.74.1           pillar_1.11.1              
+ [63] janeaustenr_1.0.0           MatrixGenerics_1.18.1      
+ [65] whisker_0.4.1               KernSmooth_2.23-26         
+ [67] generics_0.1.4              vroom_1.7.1                
+ [69] rprojroot_2.1.1             RCurl_1.98-1.18            
+ [71] hms_1.1.4                   scales_1.4.0               
+ [73] glue_1.8.1                  tools_4.4.2                
+ [75] BiocIO_1.16.0               tokenizers_0.3.0           
+ [77] data.table_1.18.2.1         BSgenome_1.74.0            
+ [79] GenomicAlignments_1.42.0    fs_2.1.0                   
+ [81] XML_3.99-0.23               cowplot_1.2.0              
+ [83] impute_1.80.0               plotrix_3.8-14             
+ [85] colorspace_2.1-2            GenomeInfoDbData_1.2.13    
+ [87] restfulr_0.0.16             cli_3.6.6                  
+ [89] viridisLite_0.4.3           S4Arrays_1.6.0             
+ [91] gtable_0.3.6                sass_0.4.10                
+ [93] digest_0.6.39               SparseArray_1.6.2          
+ [95] rjson_0.2.23                farver_2.1.2               
+ [97] htmltools_0.5.9             lifecycle_1.0.5            
+ [99] httr_1.4.8                  bit64_4.8.0                </code></pre>
 </div>
 </div>
 </div>
