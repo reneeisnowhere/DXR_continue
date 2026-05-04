@@ -33,6 +33,7 @@ library(genomation)
 library(readr)
 library(rtracklayer)
 library(stringr)
+library(readxl)
 
 ```
 
@@ -509,6 +510,7 @@ plot_topnum_ratio_full <- function(df, title = NULL, signif.num = 0.05,top_num=2
 ```{r RNA filtering, fig.width=15}
 RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
 
+
 RNA_expressed <- RNA_full_toptable %>% 
   dplyr::select(Entrez_ID, SYMBOL)
 
@@ -544,5 +546,81 @@ cowplot::plot_grid(aligned_filt_plots[[1]],
           aligned_filt_plots[[2]],
           ncol = 2)
 
+```
+
+
+
+```{r}
+KZFP_2026_list <- read_excel("data/Other_paper_data/human_protein_coding_KZFPs_Davis_natgen_2026.xlsx")
+
+filtered_H3K9me3_Set2_data <- filtered_H3K9me3_Set2_data %>% 
+  mutate(KZFP=if_else(motif_name %in%KZFP_2026_list$Label,"KZFP","not_KZFP"))
+filtered_H3K9me3_Set3_data <- filtered_H3K9me3_Set3_data %>% 
+  mutate(KZFP=if_else(motif_name %in%KZFP_2026_list$Label,"KZFP","not_KZFP"))
+
+plot_topnum_ratio_KZFP <- function(df, title = NULL, signif.num = 0.05,top_num=20, color_limits = NULL){
+  
+  ### getting the name of the data frame for plotting
+ if (is.null(title)) {
+    title <- deparse(substitute(df))
+ }
+  
+   
+
+  ### Getting the data ready
+  plot_df <- df %>%
+    dplyr::filter(EVALUE < signif.num) %>%
+    group_by(CLUSTER) %>%
+    slice_min(RANK, with_ties = FALSE) %>%
+    ungroup() %>%
+    mutate(log10Evalue = -log10(EVALUE)) %>%
+    arrange(desc(log10Evalue)) %>%
+    mutate(motif_name_wrapped = stringr::str_wrap(motif_name, width = 10)) %>% 
+     mutate(
+    enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted")) %>% 
+    slice_head(., n=top_num)
+#   
+  scaler <- max(plot_df$log10Evalue) / max(plot_df$ENR_RATIO)
+
+  ##plotting the data
+   ggplot(plot_df, aes(y = reorder(motif_name_wrapped, log10Evalue))) +
+    geom_col(aes(x = log10Evalue, fill=KZFP)) +
+    geom_point(aes(x = ENR_RATIO* scaler, color = ENR_RATIO, shape = enr_shape), size = 4)+
+    scale_x_continuous(
+      expand = c(0, .125),
+      sec.axis = sec_axis(~ . / scaler, name = "Enrichment Ratio")
+    ) +
+   scale_color_viridis_c(
+  name = "Enrichment Ratio",
+  option = "plasma",
+  limits = color_limits,
+  oob = scales::squish
+)+
+    scale_y_discrete(labels = function(x) stringr::str_wrap(gsub("__.*$", "", x), width = 10)) +
+     scale_shape_manual(values = c("Enriched" = 16, "Depleted" = 17))+
+    theme_classic() +
+    ylab("Enriched TF motif") +
+    ggtitle(paste(title, "-", top_num))
+}
+```
+
+
+```{r}
+
+
+## binding both together to get them to set a global limit on the secondary axis using quantiles so color range is identical
+global_combo2 <- bind_rows(filtered_H3K9me3_Set2_data, filtered_H3K9me3_Set3_data)
+
+global_limits2 <-  quantile(global_combo2$ENR_RATIO, probs = c(0.05, 0.95), na.rm = TRUE)
+### plot seperately
+  filt_A2 <- plot_topnum_ratio_KZFP(filtered_H3K9me3_Set3_data,signif.num = 0.05, top_num = 10,color_limits = global_limits2)
+  
+  filt_B2 <- plot_topnum_ratio_KZFP(filtered_H3K9me3_Set2_data,signif.num = 0.05, top_num = 10,color_limits = global_limits2)
+ ## Good ole cowplot to align plots vertically 
+  aligned_filt_plots <- cowplot::align_plots(filt_B2, filt_A2, align = "v", axis = "l")
+
+cowplot::plot_grid(aligned_filt_plots[[1]],
+          aligned_filt_plots[[2]],
+          ncol = 2)
 ```
 
