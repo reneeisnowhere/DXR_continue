@@ -156,7 +156,7 @@ H3K9me3_sets_gr <- lapply(peakAnnoList_H3K9me3, function(df) {
   cluster1 = c("Set_1", "Set_1")
 )
 
- H3K9me3_summit_gr_ext <- resize(H3K9me3_summit_gr, width(H3K9me3_summit_gr)+400, fix = "center")
+ H3K9me3_summit_gr_ext <- resize(H3K9me3_summit_gr, width=width(H3K9me3_summit_gr)+400, fix = "center")
 ```
 
 ```{r Fisher test information}
@@ -2052,7 +2052,7 @@ for (group_name in set_list) {
   
   cat("Exported:", bed_file, "\n")
 }
-
+export(H3K9me3_summit_gr_ext,"data/Bed_exports/H3K9me3_summit_gr_ext200.bed")
 ```
 
 
@@ -2086,6 +2086,14 @@ for (group_name in set_list) {
   cat("Exported:", bed_file, "\n")
 }
 
+
+
 ```
 
+
+```{r}
+# annotated_H3K9me3_ext200 %>% dplyr::filter(cluster =="Set_3") %>% 
+  # dplyr::filter(grepl("chr5",Peakid)) %>% 
+  # dplyr::filter(grepl("LTR",repClass))#%>% dplyr::filter(repClass=str_detect(repClass,"LINE"))
+```
 
