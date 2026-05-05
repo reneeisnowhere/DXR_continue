@@ -1,0 +1,337 @@
+---
+title: "ATAC_seq_integration"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(readxl)
+```
+
+
+```{r loading data}
+ 
+DOX_24_ATAC <- readRDS("data/Other_paper_data/Matthews_2025_DOX_24h_ATAC.RDS")
+
+DOX_24_DAR_gr <- DOX_24_ATAC %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(peak) %>% 
+  separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %>% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand="*")
+DOX_24_CAR_gr <- DOX_24_ATAC %>% 
+  dplyr::filter(adj.P.Val>0.05) %>% 
+  dplyr::select(peak) %>% 
+  separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %>% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand="*")
+mcols(DOX_24_CAR_gr)$name <- mcols(DOX_24_CAR_gr)$peak
+mcols(DOX_24_DAR_gr)$name <- mcols(DOX_24_DAR_gr)$peak
+
+H3K9me3_summit_gr <- readRDS("data/RDS_files/H3K9me3_complete_summit_gr.RDS")
+ H3K9me3_summit_gr_ext <- resize(H3K9me3_summit_gr, width(H3K9me3_summit_gr)+400, fix = "center")
+
+peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
+
+H3K9me3_lookup <- imap_dfr(peakAnnoList_H3K9me3[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+
+H3K9me3_sets_gr <- lapply(peakAnnoList_H3K9me3, function(df) {
+  as_granges(df)
+})
+
+##assigning Peakid as name of summit region
+ mcols(H3K9me3_summit_gr)$name <- mcols(H3K9me3_summit_gr)$Peakid
+ 
+ 
+
+```
+
+```{r export DARs and CARs bedlist, eval=FALSE}
+
+library(GenomeInfoDb)
+library(BSgenome.Hsapiens.UCSC.hg38)
+
+export(DOX_24_DAR_gr, "data/Bed_exports/ATAC_DOX_24h_DAR.bed", format = "BED")
+export(DOX_24_CAR_gr, "data/Bed_exports/ATAC_DOX_24h_CAR.bed", format = "BED")
+genome_sl <- seqlengths(BSgenome.Hsapiens.UCSC.hg38)
+
+genome_sl <- genome_sl[seqlevels(H3K9me3_summit_gr)]
+
+seqlengths(H3K9me3_summit_gr) <-genome_sl
+H3K9me3_summit_gr <- trim(H3K9me3_summit_gr)
+H3K9me3_summit_gr_ext <- promoters(
+  H3K9me3_summit_gr,
+  upstream = 200,
+  downstream = 200
+)
+export(H3K9me3_summit_gr_ext,
+  "data/Bed_exports/H3K9me3_summit_gr_ext200.bed",
+  format = "bed"
+)
+
+```
+
+```{r CAR hits}
+
+CAR_H3K9me3_hits <- findOverlaps(H3K9me3_sets_gr$all_H3K9me3, DOX_24_CAR_gr, ignore.strand = TRUE)
+H3K9me3_CAR_overlap <- tibble(
+  hit_id = queryHits(CAR_H3K9me3_hits),
+  ROI_ID=mcols(H3K9me3_sets_gr$all_H3K9me3)$Peakid[queryHits((CAR_H3K9me3_hits))],
+  cluster   = mcols(H3K9me3_sets_gr$all_H3K9me3)$cluster[queryHits(CAR_H3K9me3_hits)],
+  CAR_ROI   = mcols(DOX_24_CAR_gr)$peak[subjectHits(CAR_H3K9me3_hits)])
+
+H3K9me3_CAR_peakid <- H3K9me3_CAR_overlap %>% 
+  group_by(ROI_ID) %>% 
+  distinct(ROI_ID)
+
+CAR_H3K9me3_hits_ext <- findOverlaps(H3K9me3_summit_gr_ext, DOX_24_CAR_gr, ignore.strand = TRUE)
+H3K9me3_ext_CAR_overlap <- tibble(
+  hit_id = queryHits(CAR_H3K9me3_hits_ext),
+  ROI_ID=mcols(H3K9me3_summit_gr_ext)$Peakid[queryHits((CAR_H3K9me3_hits_ext))],
+  cluster   = mcols(H3K9me3_summit_gr_ext)$cluster[queryHits(CAR_H3K9me3_hits_ext)],
+  CAR_ROI   = mcols(DOX_24_CAR_gr)$peak[subjectHits(CAR_H3K9me3_hits_ext)])
+
+H3K9me3_ext_CAR_peakid <- H3K9me3_ext_CAR_overlap %>% 
+  group_by(ROI_ID) %>% 
+  distinct(ROI_ID)
+
+```
+
+
+
+```{r DAR hits}
+
+DAR_H3K9me3_hits <- findOverlaps(H3K9me3_sets_gr$all_H3K9me3, DOX_24_DAR_gr, ignore.strand = TRUE)
+H3K9me3_DAR_overlap <- tibble(
+  hit_id = queryHits(DAR_H3K9me3_hits),
+  ROI_ID=mcols(H3K9me3_sets_gr$all_H3K9me3)$Peakid[queryHits((DAR_H3K9me3_hits))],
+  cluster   = mcols(H3K9me3_sets_gr$all_H3K9me3)$cluster[queryHits(DAR_H3K9me3_hits)],
+  DAR_ROI   = mcols(DOX_24_DAR_gr)$peak[subjectHits(DAR_H3K9me3_hits)])
+
+H3K9me3_DAR_peakid <- H3K9me3_DAR_overlap %>% 
+  group_by(ROI_ID) %>% 
+  distinct(ROI_ID) 
+
+
+DAR_H3K9me3_hits_ext <- findOverlaps(H3K9me3_summit_gr_ext, DOX_24_DAR_gr, ignore.strand = TRUE)
+H3K9me3_ext_DAR_overlap <- tibble(
+  hit_id = queryHits(DAR_H3K9me3_hits_ext),
+  ROI_ID=mcols(H3K9me3_summit_gr_ext)$Peakid[queryHits((DAR_H3K9me3_hits_ext))],
+  cluster   = mcols(H3K9me3_summit_gr_ext)$cluster[queryHits(DAR_H3K9me3_hits_ext)],
+  CAR_ROI   = mcols(DOX_24_DAR_gr)$peak[subjectHits(DAR_H3K9me3_hits_ext)])
+
+H3K9me3_ext_DAR_peakid <- H3K9me3_ext_DAR_overlap %>% 
+  group_by(ROI_ID) %>% 
+  distinct(ROI_ID)
+
+
+```
+
+```{r}
+joint_H3K9me3 <- intersect(H3K9me3_DAR_peakid$ROI_ID, H3K9me3_CAR_peakid$ROI_ID)
+
+prop_ATAC_df <- peakAnnoList_H3K9me3$all_H3K9me3 %>%
+  as.data.frame() %>% 
+  dplyr::select(Peakid) %>% 
+  left_join(H3K9me3_lookup) %>% 
+  mutate(cluster = if_else(is.na(cluster), "NA", cluster)) %>% 
+  mutate(
+    ATAC_type = case_when(Peakid %in% joint_H3K9me3 ~ "joint",
+      Peakid %in% H3K9me3_CAR_peakid$ROI_ID ~ "CAR",
+      Peakid %in% H3K9me3_DAR_peakid$ROI_ID ~ "DAR",
+      TRUE ~ "not_atac"
+    )
+  ) %>%
+  count(cluster, ATAC_type, name = "n") %>%
+  group_by(cluster) %>%
+  mutate(
+    percent = n / sum(n) * 100
+  ) %>%
+  ungroup()
+
+ggplot(prop_ATAC_df, aes(x = cluster, y = percent, fill = ATAC_type)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  geom_text(
+    aes(label = sprintf("%.1f%%", percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(y = "Proportion")+
+  theme_bw()+
+  ggtitle("Proportion of CARs and DARs in each H3K9me3 set")
+  
+
+prop_ATAC_df %>% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = percent) %>% 
+   datatable(.,rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE)) %>% 
+  DT::formatRound(columns = c("CAR", "DAR", "joint", "not_atac"), # explicitly name the numeric columns
+    digits = 2)
+  
+
+prop_ATAC_df %>% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = n) %>%
+  rowwise() %>% 
+  mutate(total=sum(c_across(any_of(c("CAR", "DAR","joint","not_atac"))))) %>% 
+  datatable(.,rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE), caption = "counts of H3K9me3 ROIs")
+```
+```{r}
+joint_H3K9me3_ext <- intersect(H3K9me3_ext_DAR_peakid$ROI_ID, H3K9me3_ext_CAR_peakid$ROI_ID)
+
+prop_ATAC_df_ext <- peakAnnoList_H3K9me3$all_H3K9me3 %>%
+  as.data.frame() %>% 
+  dplyr::select(Peakid) %>% 
+  left_join(H3K9me3_lookup) %>%
+  mutate(cluster = if_else(is.na(cluster), "NA", cluster)) %>% 
+  mutate(
+    ATAC_type = case_when(Peakid %in% joint_H3K9me3 ~ "joint",
+      Peakid %in% H3K9me3_CAR_peakid$ROI_ID ~ "CAR",
+      Peakid %in% H3K9me3_DAR_peakid$ROI_ID ~ "DAR",
+      TRUE ~ "not_atac"
+    )
+  ) %>%
+  count(cluster, ATAC_type, name = "n") %>%
+  group_by(cluster) %>%
+  mutate(
+    percent = n / sum(n) * 100
+  ) %>%
+  ungroup()
+
+ggplot(prop_ATAC_df_ext, aes(x = cluster, y = percent, fill = ATAC_type)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  geom_text(
+    aes(label = sprintf("%.1f%%", percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(y = "Proportion")+
+  theme_bw()+
+  ggtitle("Proportion of CARs and DARs in each H3K9me3 ext_200 set")
+  
+
+prop_ATAC_df_ext %>% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = percent) %>% 
+   datatable(.,rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE)) %>% 
+  DT::formatRound(columns = c("CAR", "DAR", "joint", "not_atac"), # explicitly name the numeric columns
+    digits = 2)
+  
+
+prop_ATAC_df_ext %>% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = n) %>%
+  rowwise() %>% 
+  mutate(total=sum(c_across(any_of(c("CAR", "DAR","joint","not_atac"))))) %>% 
+  datatable(.,rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE), caption = "counts of H3K9me3 ext ROIs")
+```
+```{r}
+Peakid_df <- data.frame(
+  Peakid = H3K9me3_summit_gr_ext$Peakid,
+  cluster = H3K9me3_summit_gr_ext$cluster
+)
+
+Peakid_df$is_CAR <-Peakid_df$Peakid %in% H3K9me3_ext_CAR_peakid$ROI_ID
+Peakid_df$is_DAR <-Peakid_df$Peakid %in% H3K9me3_ext_DAR_peakid$ROI_ID
+```
+
+
+```{r testing set2vset1 car}
+df_sub_set2v1 <- Peakid_df %>%
+  dplyr::filter(cluster %in% c("Set_1", "Set_2"))
+table(df_sub_set2v1$cluster, df_sub_set2v1$is_CAR)
+
+fisher.test(table(df_sub_set2v1$cluster, df_sub_set2v1$is_CAR))
+
+
+```
+so SEt2 is enriched in CARs compared to SEt1
+
+```{r}
+df_sub_set3v1 <- Peakid_df %>%
+  dplyr::filter(cluster %in% c("Set_1", "Set_2"))
+table(df_sub_set3v1$cluster, df_sub_set3v1$is_CAR)
+
+fisher.test(table(df_sub_set3v1$cluster, df_sub_set3v1$is_CAR))
+```
+
+Set 3 is also significantly enriched in CARs compared to SET 1
+
+```{r}
+DAR_sub_set2v1 <- Peakid_df %>%
+  dplyr::filter(cluster %in% c("Set_1", "Set_2"))
+table(DAR_sub_set2v1$cluster, DAR_sub_set2v1$is_DAR)
+
+fisher.test(table(DAR_sub_set2v1$cluster, DAR_sub_set2v1$is_DAR))
+```
+
+SEt 2 significantly enriched in DARs compared to set 1
+
+```{r}
+DAR_sub_set3v1 <- Peakid_df %>%
+  dplyr::filter(cluster %in% c("Set_1", "Set_3"))
+table(DAR_sub_set3v1$cluster, DAR_sub_set3v1$is_DAR)
+
+fisher.test(table(DAR_sub_set3v1$cluster, DAR_sub_set3v1$is_DAR))
+```
+
+Set 3 is significantly enriched in DARs vs Set 1
+
+
