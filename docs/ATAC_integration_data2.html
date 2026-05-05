@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Renee Matthews" />
+
+<meta name="date" content="2026-05-05" />
+
+<title>ATAC_seq_integration</title>
+
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.34.0/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="site_libs/nouislider-7.0.10/jquery.nouislider.min.js"></script>
+<link href="site_libs/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="site_libs/selectize-0.12.0/selectize.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DXR_project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/reneeisnowhere/DXR_continue">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">ATAC_seq_integration</h1>
+<h4 class="author">Renee Matthews</h4>
+<h4 class="date">2026-05-05</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-05-05
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>DXR_continue/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250701code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250701)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250701code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250701)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree190f70413c8720aec7ec2fc8da2eb1effd1fd409targetblank190f704a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/190f70413c8720aec7ec2fc8da2eb1effd1fd409" target="_blank">190f704</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree190f70413c8720aec7ec2fc8da2eb1effd1fd409targetblank190f704a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/190f70413c8720aec7ec2fc8da2eb1effd1fd409" target="_blank">190f704</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/Bed_exports/
+    Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
+    Ignored:    data/Cormotif_data/
+    Ignored:    data/DER_data/
+    Ignored:    data/Other_paper_data/
+    Ignored:    data/RDS_files/
+    Ignored:    data/TE_annotation/
+    Ignored:    data/alignment_summary.txt
+    Ignored:    data/all_peak_final_dataframe.txt
+    Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/motif_lists/
+    Ignored:    data/number_frag_peaks_summary.txt
+
+Untracked files:
+    Untracked:  H3K27ac_all_regions_test.bed
+    Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  MER61C_ERV1_LTR.fa
+    Untracked:  analysis/GREAT_H3K27ac.Rmd
+    Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_KZFP_motifs.Rmd
+    Untracked:  analysis/H3K27ac_TE_investigation_200bp.Rmd
+    Untracked:  analysis/H3K27me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K36me3_TE_investigation.Rmd
+    Untracked:  analysis/LFC_regions_with_TEs.Rmd
+    Untracked:  analysis/Top2a_Top2b_expression.Rmd
+    Untracked:  analysis/maps_and_plots.Rmd
+    Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/For_john.R
+    Untracked:  other_analysis/
+
+Unstaged changes:
+    Modified:   analysis/ATAC_integration_data1.Rmd
+    Modified:   analysis/H3K27_TE_overlap_extend.Rmd
+    Modified:   analysis/H3K27ac_TE_investigation.Rmd
+    Modified:   analysis/H3K27ac_TF_motifs.Rmd
+    Modified:   analysis/H3K27ac_summit_processing.Rmd
+    Modified:   analysis/H3K9me3_TE_investigation.Rmd
+    Modified:   analysis/H3K9me3_TE_overlap_extend.Rmd
+    Modified:   analysis/TP53_motif_interrogation.Rmd
+    Modified:   analysis/chromHMM.Rmd
+    Modified:   analysis/computeMatrixplots.Rmd
+    Modified:   analysis/memesuite_TE_enrichment.Rmd
+    Modified:   analysis/protein_checks.Rmd
+    Modified:   analysis/summit_files_processing.Rmd
+    Modified:   code/KZFP_promotor_pull.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/ATAC_integration_data2.Rmd</code>) and HTML
+(<code>docs/ATAC_integration_data2.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/190f70413c8720aec7ec2fc8da2eb1effd1fd409/analysis/ATAC_integration_data2.Rmd" target="_blank">190f704</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-05
+</td>
+<td>
+first commit
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+</style>
+<pre class="r"><code>library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(readxl)</code></pre>
+<pre class="r"><code>DOX_24_ATAC &lt;- readRDS(&quot;data/Other_paper_data/Matthews_2025_DOX_24h_ATAC.RDS&quot;)
+
+DOX_24_DAR_gr &lt;- DOX_24_ATAC %&gt;% 
+  dplyr::filter(adj.P.Val&lt;0.05) %&gt;% 
+  dplyr::select(peak) %&gt;% 
+  separate(peak, into = c(&quot;seqnames&quot;,&quot;start&quot;,&quot;stop&quot;),remove = FALSE) %&gt;% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %&gt;% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand=&quot;*&quot;)
+DOX_24_CAR_gr &lt;- DOX_24_ATAC %&gt;% 
+  dplyr::filter(adj.P.Val&gt;0.05) %&gt;% 
+  dplyr::select(peak) %&gt;% 
+  separate(peak, into = c(&quot;seqnames&quot;,&quot;start&quot;,&quot;stop&quot;),remove = FALSE) %&gt;% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %&gt;% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand=&quot;*&quot;)
+mcols(DOX_24_CAR_gr)$name &lt;- mcols(DOX_24_CAR_gr)$peak
+mcols(DOX_24_DAR_gr)$name &lt;- mcols(DOX_24_DAR_gr)$peak
+
+H3K9me3_summit_gr &lt;- readRDS(&quot;data/RDS_files/H3K9me3_complete_summit_gr.RDS&quot;)
+ H3K9me3_summit_gr_ext &lt;- resize(H3K9me3_summit_gr, width(H3K9me3_summit_gr)+400, fix = &quot;center&quot;)
+
+peakAnnoList_H3K9me3 &lt;- readRDS(&quot;data/motif_lists/H3K9me3_annotated_peaks.RDS&quot;)
+
+H3K9me3_lookup &lt;- imap_dfr(peakAnnoList_H3K9me3[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+
+H3K9me3_sets_gr &lt;- lapply(peakAnnoList_H3K9me3, function(df) {
+  as_granges(df)
+})
+
+##assigning Peakid as name of summit region
+ mcols(H3K9me3_summit_gr)$name &lt;- mcols(H3K9me3_summit_gr)$Peakid</code></pre>
+<pre class="r"><code>library(GenomeInfoDb)
+library(BSgenome.Hsapiens.UCSC.hg38)
+
+export(DOX_24_DAR_gr, &quot;data/Bed_exports/ATAC_DOX_24h_DAR.bed&quot;, format = &quot;BED&quot;)
+export(DOX_24_CAR_gr, &quot;data/Bed_exports/ATAC_DOX_24h_CAR.bed&quot;, format = &quot;BED&quot;)
+genome_sl &lt;- seqlengths(BSgenome.Hsapiens.UCSC.hg38)
+
+genome_sl &lt;- genome_sl[seqlevels(H3K9me3_summit_gr)]
+
+seqlengths(H3K9me3_summit_gr) &lt;-genome_sl
+H3K9me3_summit_gr &lt;- trim(H3K9me3_summit_gr)
+H3K9me3_summit_gr_ext &lt;- promoters(
+  H3K9me3_summit_gr,
+  upstream = 200,
+  downstream = 200
+)
+export(H3K9me3_summit_gr_ext,
+  &quot;data/Bed_exports/H3K9me3_summit_gr_ext200.bed&quot;,
+  format = &quot;bed&quot;
+)</code></pre>
+<pre class="r"><code>CAR_H3K9me3_hits &lt;- findOverlaps(H3K9me3_sets_gr$all_H3K9me3, DOX_24_CAR_gr, ignore.strand = TRUE)
+H3K9me3_CAR_overlap &lt;- tibble(
+  hit_id = queryHits(CAR_H3K9me3_hits),
+  ROI_ID=mcols(H3K9me3_sets_gr$all_H3K9me3)$Peakid[queryHits((CAR_H3K9me3_hits))],
+  cluster   = mcols(H3K9me3_sets_gr$all_H3K9me3)$cluster[queryHits(CAR_H3K9me3_hits)],
+  CAR_ROI   = mcols(DOX_24_CAR_gr)$peak[subjectHits(CAR_H3K9me3_hits)])
+
+H3K9me3_CAR_peakid &lt;- H3K9me3_CAR_overlap %&gt;% 
+  group_by(ROI_ID) %&gt;% 
+  distinct(ROI_ID)
+
+CAR_H3K9me3_hits_ext &lt;- findOverlaps(H3K9me3_summit_gr_ext, DOX_24_CAR_gr, ignore.strand = TRUE)
+H3K9me3_ext_CAR_overlap &lt;- tibble(
+  hit_id = queryHits(CAR_H3K9me3_hits_ext),
+  ROI_ID=mcols(H3K9me3_summit_gr_ext)$Peakid[queryHits((CAR_H3K9me3_hits_ext))],
+  cluster   = mcols(H3K9me3_summit_gr_ext)$cluster[queryHits(CAR_H3K9me3_hits_ext)],
+  CAR_ROI   = mcols(DOX_24_CAR_gr)$peak[subjectHits(CAR_H3K9me3_hits_ext)])
+
+H3K9me3_ext_CAR_peakid &lt;- H3K9me3_ext_CAR_overlap %&gt;% 
+  group_by(ROI_ID) %&gt;% 
+  distinct(ROI_ID)</code></pre>
+<pre class="r"><code>DAR_H3K9me3_hits &lt;- findOverlaps(H3K9me3_sets_gr$all_H3K9me3, DOX_24_DAR_gr, ignore.strand = TRUE)
+H3K9me3_DAR_overlap &lt;- tibble(
+  hit_id = queryHits(DAR_H3K9me3_hits),
+  ROI_ID=mcols(H3K9me3_sets_gr$all_H3K9me3)$Peakid[queryHits((DAR_H3K9me3_hits))],
+  cluster   = mcols(H3K9me3_sets_gr$all_H3K9me3)$cluster[queryHits(DAR_H3K9me3_hits)],
+  DAR_ROI   = mcols(DOX_24_DAR_gr)$peak[subjectHits(DAR_H3K9me3_hits)])
+
+H3K9me3_DAR_peakid &lt;- H3K9me3_DAR_overlap %&gt;% 
+  group_by(ROI_ID) %&gt;% 
+  distinct(ROI_ID) 
+
+
+DAR_H3K9me3_hits_ext &lt;- findOverlaps(H3K9me3_summit_gr_ext, DOX_24_DAR_gr, ignore.strand = TRUE)
+H3K9me3_ext_DAR_overlap &lt;- tibble(
+  hit_id = queryHits(DAR_H3K9me3_hits_ext),
+  ROI_ID=mcols(H3K9me3_summit_gr_ext)$Peakid[queryHits((DAR_H3K9me3_hits_ext))],
+  cluster   = mcols(H3K9me3_summit_gr_ext)$cluster[queryHits(DAR_H3K9me3_hits_ext)],
+  CAR_ROI   = mcols(DOX_24_DAR_gr)$peak[subjectHits(DAR_H3K9me3_hits_ext)])
+
+H3K9me3_ext_DAR_peakid &lt;- H3K9me3_ext_DAR_overlap %&gt;% 
+  group_by(ROI_ID) %&gt;% 
+  distinct(ROI_ID)</code></pre>
+<pre class="r"><code>joint_H3K9me3 &lt;- intersect(H3K9me3_DAR_peakid$ROI_ID, H3K9me3_CAR_peakid$ROI_ID)
+
+prop_ATAC_df &lt;- peakAnnoList_H3K9me3$all_H3K9me3 %&gt;%
+  as.data.frame() %&gt;% 
+  dplyr::select(Peakid) %&gt;% 
+  left_join(H3K9me3_lookup) %&gt;% 
+  mutate(cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster)) %&gt;% 
+  mutate(
+    ATAC_type = case_when(Peakid %in% joint_H3K9me3 ~ &quot;joint&quot;,
+      Peakid %in% H3K9me3_CAR_peakid$ROI_ID ~ &quot;CAR&quot;,
+      Peakid %in% H3K9me3_DAR_peakid$ROI_ID ~ &quot;DAR&quot;,
+      TRUE ~ &quot;not_atac&quot;
+    )
+  ) %&gt;%
+  count(cluster, ATAC_type, name = &quot;n&quot;) %&gt;%
+  group_by(cluster) %&gt;%
+  mutate(
+    percent = n / sum(n) * 100
+  ) %&gt;%
+  ungroup()
+
+ggplot(prop_ATAC_df, aes(x = cluster, y = percent, fill = ATAC_type)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  geom_text(
+    aes(label = sprintf(&quot;%.1f%%&quot;, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(y = &quot;Proportion&quot;)+
+  theme_bw()+
+  ggtitle(&quot;Proportion of CARs and DARs in each H3K9me3 set&quot;)</code></pre>
+<p><img src="figure/ATAC_integration_data2.Rmd/unnamed-chunk-2-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_ATAC_df %&gt;% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = percent) %&gt;% 
+   datatable(.,rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE)) %&gt;% 
+  DT::formatRound(columns = c(&quot;CAR&quot;, &quot;DAR&quot;, &quot;joint&quot;, &quot;not_atac&quot;), # explicitly name the numeric columns
+    digits = 2)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-c7fc7fd0704f0fe11c1f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"13.5408647595936\" data-max=\"31.4825414997138\" data-scale=\"14\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"5.95624710038899\" data-max=\"15.2189598712327\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.046393776096499\" data-max=\"0.606673407482306\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"55.2375500858615\" data-max=\"80.4564943639209\" data-scale=\"14\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["NA","Set_1","Set_2","Set_3"],[25.34273186435034,13.54086475959357,31.4825414997138,25.07583417593528],[15.21895987123272,5.956247100388994,13.16542644533486,14.66127401415571],[0.1332075262252317,0.04639377609649906,0.1144819690898683,0.6066734074823054],[59.3051007381917,80.45649436392094,55.23755008586148,59.6562184024267]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>CAR<\/th>\n      <th>DAR<\/th>\n      <th>joint<\/th>\n      <th>not_atac<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4]},{"name":"cluster","targets":0},{"name":"CAR","targets":1},{"name":"DAR","targets":2},{"name":"joint","targets":3},{"name":"not_atac","targets":4}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render"],"jsHooks":[]}</script>
+<pre class="r"><code>prop_ATAC_df %&gt;% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = n) %&gt;%
+  rowwise() %&gt;% 
+  mutate(total=sum(c_across(any_of(c(&quot;CAR&quot;, &quot;DAR&quot;,&quot;joint&quot;,&quot;not_atac&quot;))))) %&gt;% 
+  datatable(.,rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE), caption = &quot;counts of H3K9me3 ROIs&quot;)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1aee943cb026952af47d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"248\" data-max=\"26560\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"145\" data-max=\"11683\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"4\" data-max=\"91\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"590\" data-max=\"157813\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"989\" data-max=\"196147\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","caption":"<caption>counts of H3K9me3 ROIs<\/caption>","data":[["NA","Set_1","Set_2","Set_3"],[4566,26560,1100,248],[2742,11683,460,145],[24,91,4,6],[10685,157813,1930,590],[18017,196147,3494,989]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>CAR<\/th>\n      <th>DAR<\/th>\n      <th>joint<\/th>\n      <th>not_atac<\/th>\n      <th>total<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5]},{"name":"cluster","targets":0},{"name":"CAR","targets":1},{"name":"DAR","targets":2},{"name":"joint","targets":3},{"name":"not_atac","targets":4},{"name":"total","targets":5}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>joint_H3K9me3_ext &lt;- intersect(H3K9me3_ext_DAR_peakid$ROI_ID, H3K9me3_ext_CAR_peakid$ROI_ID)
+
+prop_ATAC_df_ext &lt;- peakAnnoList_H3K9me3$all_H3K9me3 %&gt;%
+  as.data.frame() %&gt;% 
+  dplyr::select(Peakid) %&gt;% 
+  left_join(H3K9me3_lookup) %&gt;%
+  mutate(cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster)) %&gt;% 
+  mutate(
+    ATAC_type = case_when(Peakid %in% joint_H3K9me3 ~ &quot;joint&quot;,
+      Peakid %in% H3K9me3_CAR_peakid$ROI_ID ~ &quot;CAR&quot;,
+      Peakid %in% H3K9me3_DAR_peakid$ROI_ID ~ &quot;DAR&quot;,
+      TRUE ~ &quot;not_atac&quot;
+    )
+  ) %&gt;%
+  count(cluster, ATAC_type, name = &quot;n&quot;) %&gt;%
+  group_by(cluster) %&gt;%
+  mutate(
+    percent = n / sum(n) * 100
+  ) %&gt;%
+  ungroup()
+
+ggplot(prop_ATAC_df_ext, aes(x = cluster, y = percent, fill = ATAC_type)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  geom_text(
+    aes(label = sprintf(&quot;%.1f%%&quot;, percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(y = &quot;Proportion&quot;)+
+  theme_bw()+
+  ggtitle(&quot;Proportion of CARs and DARs in each H3K9me3 ext_200 set&quot;)</code></pre>
+<p><img src="figure/ATAC_integration_data2.Rmd/unnamed-chunk-3-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_ATAC_df_ext %&gt;% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = percent) %&gt;% 
+   datatable(.,rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE)) %&gt;% 
+  DT::formatRound(columns = c(&quot;CAR&quot;, &quot;DAR&quot;, &quot;joint&quot;, &quot;not_atac&quot;), # explicitly name the numeric columns
+    digits = 2)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-15ac70e14e0faa7e6fac" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"13.5408647595936\" data-max=\"31.4825414997138\" data-scale=\"14\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"5.95624710038899\" data-max=\"15.2189598712327\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"0.046393776096499\" data-max=\"0.606673407482306\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"55.2375500858615\" data-max=\"80.4564943639209\" data-scale=\"14\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["NA","Set_1","Set_2","Set_3"],[25.34273186435034,13.54086475959357,31.4825414997138,25.07583417593528],[15.21895987123272,5.956247100388994,13.16542644533486,14.66127401415571],[0.1332075262252317,0.04639377609649906,0.1144819690898683,0.6066734074823054],[59.3051007381917,80.45649436392094,55.23755008586148,59.6562184024267]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>CAR<\/th>\n      <th>DAR<\/th>\n      <th>joint<\/th>\n      <th>not_atac<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":2,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 2, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4]},{"name":"cluster","targets":0},{"name":"CAR","targets":1},{"name":"DAR","targets":2},{"name":"joint","targets":3},{"name":"not_atac","targets":4}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render"],"jsHooks":[]}</script>
+<pre class="r"><code>prop_ATAC_df_ext %&gt;% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = n) %&gt;%
+  rowwise() %&gt;% 
+  mutate(total=sum(c_across(any_of(c(&quot;CAR&quot;, &quot;DAR&quot;,&quot;joint&quot;,&quot;not_atac&quot;))))) %&gt;% 
+  datatable(.,rownames = FALSE,
+  filter = &#39;top&#39;,       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE), caption = &quot;counts of H3K9me3 ext ROIs&quot;)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-686cfa6b0ab6d13cf646" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-686cfa6b0ab6d13cf646">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"248\" data-max=\"26560\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"145\" data-max=\"11683\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"4\" data-max=\"91\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"590\" data-max=\"157813\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none;position: absolute;width: 200px;opacity: 1\">\n      <div data-min=\"989\" data-max=\"196147\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","caption":"<caption>counts of H3K9me3 ext ROIs<\/caption>","data":[["NA","Set_1","Set_2","Set_3"],[4566,26560,1100,248],[2742,11683,460,145],[24,91,4,6],[10685,157813,1930,590],[18017,196147,3494,989]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cluster<\/th>\n      <th>CAR<\/th>\n      <th>DAR<\/th>\n      <th>joint<\/th>\n      <th>not_atac<\/th>\n      <th>total<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5]},{"name":"cluster","targets":0},{"name":"CAR","targets":1},{"name":"DAR","targets":2},{"name":"joint","targets":3},{"name":"not_atac","targets":4},{"name":"total","targets":5}],"order":[],"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>Peakid_df &lt;- data.frame(
+  Peakid = H3K9me3_summit_gr_ext$Peakid,
+  cluster = H3K9me3_summit_gr_ext$cluster
+)
+
+Peakid_df$is_CAR &lt;-Peakid_df$Peakid %in% H3K9me3_ext_CAR_peakid$ROI_ID
+Peakid_df$is_DAR &lt;-Peakid_df$Peakid %in% H3K9me3_ext_DAR_peakid$ROI_ID</code></pre>
+<pre class="r"><code>df_sub_set2v1 &lt;- Peakid_df %&gt;%
+  dplyr::filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;))
+table(df_sub_set2v1$cluster, df_sub_set2v1$is_CAR)</code></pre>
+<pre><code>       
+         FALSE   TRUE
+  Set_1 169834  26296
+  Set_2   2382   1110</code></pre>
+<pre class="r"><code>fisher.test(table(df_sub_set2v1$cluster, df_sub_set2v1$is_CAR))</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  table(df_sub_set2v1$cluster, df_sub_set2v1$is_CAR)
+p-value &lt; 2.2e-16
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 2.796689 3.237083
+sample estimates:
+odds ratio 
+  3.009631 </code></pre>
+<p>so SEt2 is enriched in CARs compared to SEt1</p>
+<pre class="r"><code>df_sub_set3v1 &lt;- Peakid_df %&gt;%
+  dplyr::filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;))
+table(df_sub_set3v1$cluster, df_sub_set3v1$is_CAR)</code></pre>
+<pre><code>       
+         FALSE   TRUE
+  Set_1 169834  26296
+  Set_2   2382   1110</code></pre>
+<pre class="r"><code>fisher.test(table(df_sub_set3v1$cluster, df_sub_set3v1$is_CAR))</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  table(df_sub_set3v1$cluster, df_sub_set3v1$is_CAR)
+p-value &lt; 2.2e-16
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 2.796689 3.237083
+sample estimates:
+odds ratio 
+  3.009631 </code></pre>
+<p>Set 3 is also significantly enriched in CARs compared to SET 1</p>
+<pre class="r"><code>DAR_sub_set2v1 &lt;- Peakid_df %&gt;%
+  dplyr::filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;))
+table(DAR_sub_set2v1$cluster, DAR_sub_set2v1$is_DAR)</code></pre>
+<pre><code>       
+         FALSE   TRUE
+  Set_1 184533  11597
+  Set_2   3026    466</code></pre>
+<pre class="r"><code>fisher.test(table(DAR_sub_set2v1$cluster, DAR_sub_set2v1$is_DAR))</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  table(DAR_sub_set2v1$cluster, DAR_sub_set2v1$is_DAR)
+p-value &lt; 2.2e-16
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 2.213946 2.707584
+sample estimates:
+odds ratio 
+   2.45041 </code></pre>
+<p>SEt 2 significantly enriched in DARs compared to set 1</p>
+<pre class="r"><code>DAR_sub_set3v1 &lt;- Peakid_df %&gt;%
+  dplyr::filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_3&quot;))
+table(DAR_sub_set3v1$cluster, DAR_sub_set3v1$is_DAR)</code></pre>
+<pre><code>       
+         FALSE   TRUE
+  Set_1 184533  11597
+  Set_3    854    135</code></pre>
+<pre class="r"><code>fisher.test(table(DAR_sub_set3v1$cluster, DAR_sub_set3v1$is_DAR))</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  table(DAR_sub_set3v1$cluster, DAR_sub_set3v1$is_DAR)
+p-value &lt; 2.2e-16
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 2.079990 3.022257
+sample estimates:
+odds ratio 
+  2.515352 </code></pre>
+<p>Set 3 is significantly enriched in DARs vs Set 1</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26200)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] ChIPseeker_1.42.1    readxl_1.4.5         DT_0.34.0           
+ [4] ggrepel_0.9.8        rtracklayer_1.66.0   genomation_1.38.0   
+ [7] plyranges_1.26.0     GenomicRanges_1.58.0 GenomeInfoDb_1.42.3 
+[10] IRanges_2.40.1       S4Vectors_0.44.0     BiocGenerics_0.52.0 
+[13] lubridate_1.9.5      forcats_1.0.1        stringr_1.6.0       
+[16] dplyr_1.2.1          purrr_1.2.2          readr_2.2.0         
+[19] tidyr_1.3.2          tibble_3.3.1         ggplot2_4.0.3       
+[22] tidyverse_2.0.0      workflowr_1.7.2     
+
+loaded via a namespace (and not attached):
+  [1] RColorBrewer_1.1-3                     
+  [2] rstudioapi_0.18.0                      
+  [3] jsonlite_2.0.0                         
+  [4] magrittr_2.0.5                         
+  [5] ggtangle_0.1.2                         
+  [6] GenomicFeatures_1.58.0                 
+  [7] farver_2.1.2                           
+  [8] rmarkdown_2.31                         
+  [9] fs_2.1.0                               
+ [10] BiocIO_1.16.0                          
+ [11] zlibbioc_1.52.0                        
+ [12] vctrs_0.7.3                            
+ [13] memoise_2.0.1                          
+ [14] Rsamtools_2.22.0                       
+ [15] RCurl_1.98-1.18                        
+ [16] ggtree_3.14.0                          
+ [17] htmltools_0.5.9                        
+ [18] S4Arrays_1.6.0                         
+ [19] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+ [20] plotrix_3.8-14                         
+ [21] curl_7.1.0                             
+ [22] cellranger_1.1.0                       
+ [23] gridGraphics_0.5-1                     
+ [24] SparseArray_1.6.2                      
+ [25] sass_0.4.10                            
+ [26] KernSmooth_2.23-26                     
+ [27] bslib_0.10.0                           
+ [28] htmlwidgets_1.6.4                      
+ [29] plyr_1.8.9                             
+ [30] impute_1.80.0                          
+ [31] cachem_1.1.0                           
+ [32] GenomicAlignments_1.42.0               
+ [33] igraph_2.3.0                           
+ [34] whisker_0.4.1                          
+ [35] lifecycle_1.0.5                        
+ [36] pkgconfig_2.0.3                        
+ [37] Matrix_1.7-5                           
+ [38] R6_2.6.1                               
+ [39] fastmap_1.2.0                          
+ [40] GenomeInfoDbData_1.2.13                
+ [41] MatrixGenerics_1.18.1                  
+ [42] enrichplot_1.26.6                      
+ [43] digest_0.6.39                          
+ [44] aplot_0.2.9                            
+ [45] colorspace_2.1-2                       
+ [46] patchwork_1.3.2                        
+ [47] AnnotationDbi_1.68.0                   
+ [48] rprojroot_2.1.1                        
+ [49] crosstalk_1.2.2                        
+ [50] RSQLite_2.4.6                          
+ [51] labeling_0.4.3                         
+ [52] timechange_0.4.0                       
+ [53] httr_1.4.8                             
+ [54] abind_1.4-8                            
+ [55] compiler_4.4.2                         
+ [56] bit64_4.8.0                            
+ [57] withr_3.0.2                            
+ [58] S7_0.2.2                               
+ [59] BiocParallel_1.40.2                    
+ [60] DBI_1.3.0                              
+ [61] gplots_3.3.0                           
+ [62] R.utils_2.13.0                         
+ [63] rappdirs_0.3.4                         
+ [64] DelayedArray_0.32.0                    
+ [65] rjson_0.2.23                           
+ [66] caTools_1.18.3                         
+ [67] gtools_3.9.5                           
+ [68] tools_4.4.2                            
+ [69] otel_0.2.0                             
+ [70] ape_5.8-1                              
+ [71] httpuv_1.6.17                          
+ [72] R.oo_1.27.1                            
+ [73] glue_1.8.1                             
+ [74] restfulr_0.0.16                        
+ [75] callr_3.7.6                            
+ [76] nlme_3.1-169                           
+ [77] GOSemSim_2.32.0                        
+ [78] promises_1.5.0                         
+ [79] getPass_0.2-4                          
+ [80] gridBase_0.4-7                         
+ [81] reshape2_1.4.5                         
+ [82] fgsea_1.32.4                           
+ [83] generics_0.1.4                         
+ [84] gtable_0.3.6                           
+ [85] BSgenome_1.74.0                        
+ [86] tzdb_0.5.0                             
+ [87] R.methodsS3_1.8.2                      
+ [88] seqPattern_1.38.0                      
+ [89] data.table_1.18.2.1                    
+ [90] hms_1.1.4                              
+ [91] XVector_0.46.0                         
+ [92] pillar_1.11.1                          
+ [93] yulab.utils_0.2.4                      
+ [94] later_1.4.8                            
+ [95] splines_4.4.2                          
+ [96] treeio_1.30.0                          
+ [97] lattice_0.22-9                         
+ [98] bit_4.6.0                              
+ [99] tidyselect_1.2.1                       
+[100] GO.db_3.20.0                           
+[101] Biostrings_2.74.1                      
+[102] knitr_1.51                             
+[103] git2r_0.36.2                           
+[104] SummarizedExperiment_1.36.0            
+[105] xfun_0.57                              
+[106] Biobase_2.66.0                         
+[107] matrixStats_1.5.0                      
+[108] stringi_1.8.7                          
+[109] UCSC.utils_1.2.0                       
+[110] lazyeval_0.2.3                         
+[111] boot_1.3-32                            
+[112] ggfun_0.2.0                            
+[113] yaml_2.3.12                            
+[114] evaluate_1.0.5                         
+[115] codetools_0.2-20                       
+[116] qvalue_2.38.0                          
+[117] ggplotify_0.1.3                        
+[118] cli_3.6.6                              
+[119] processx_3.9.0                         
+[120] jquerylib_0.1.4                        
+[121] dichromat_2.0-0.1                      
+[122] Rcpp_1.1.1-1.1                         
+[123] png_0.1-9                              
+[124] XML_3.99-0.23                          
+[125] parallel_4.4.2                         
+[126] blob_1.3.0                             
+[127] DOSE_4.0.1                             
+[128] bitops_1.0-9                           
+[129] tidytree_0.4.7                         
+[130] scales_1.4.0                           
+[131] crayon_1.5.3                           
+[132] rlang_1.2.0                            
+[133] fastmatch_1.1-8                        
+[134] cowplot_1.2.0                          
+[135] KEGGREST_1.46.0                        </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
