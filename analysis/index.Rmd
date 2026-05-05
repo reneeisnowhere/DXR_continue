@@ -44,13 +44,17 @@ Looking at finalized assigned cluster sets and characteristics
 
 [Collecting all summits](https://reneeisnowhere.github.io/DXR_continue/summit_files_processing.html)
 
-[Investigating summits H3K27ac](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_summit_processing.html) Uses double reduction method to cluster summits across treatment-time, then across all summits.
+[Investigating summits H3K27ac](https://reneeisnowhere.github.io/DXR_continue/H3K27ac_summit_processing.html) 
+Uses double reduction method to cluster summits across treatment-time, then across all summits.
 
-[Investigating summits H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_summit_processing.html) Uses double reduction method to cluster summits across treatment-time, then across all summits.
+[Investigating summits H3K9me3](https://reneeisnowhere.github.io/DXR_continue/H3K9me3_summit_processing.html) 
+Uses double reduction method to cluster summits across treatment-time, then across all summits.
 
-[Investigating summits H3K36me3](https://reneeisnowhere.github.io/DXR_continue/H3K36me3_summit_processing.html) Uses double reduction method to cluster summits across treatment-time, then across all summits.
+[Investigating summits H3K36me3](https://reneeisnowhere.github.io/DXR_continue/H3K36me3_summit_processing.html) 
+Uses double reduction method to cluster summits across treatment-time, then across all summits.
 
-[Investigating summits H3K27me3](https://reneeisnowhere.github.io/DXR_continue/H3K27me3_summit_processing.html) Uses double reduction method to cluster summits across treatment-time, then across all summits.
+[Investigating summits H3K27me3](https://reneeisnowhere.github.io/DXR_continue/H3K27me3_summit_processing.html) 
+Uses double reduction method to cluster summits across treatment-time, then across all summits.
 
 ### Investigating Transposable Elements
 
@@ -109,6 +113,8 @@ Contains Overlapping TE elements and full ROI, including information about TE ov
 
 ### ATAC integration
 [First integration of ATAC data with H3K27ac](https://reneeisnowhere.github.io/DXR_continue/ATAC_integration_data1.html)
+
+[First integration of ATAC data with H3K9me3](https://reneeisnowhere.github.io/DXR_continue/ATAC_integration_data2.html)
 
 ### Histone signal across TEs
 
