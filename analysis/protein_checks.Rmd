@@ -1,0 +1,691 @@
+---
+title: "Protein_checks"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(readxl)
+library(biomaRt)
+library(ggpubr)
+library(httr)
+library(jsonlite)
+library(org.Hs.eg.db)
+library(AnnotationDbi)
+```
+
+From: 
+Johnson O, Paul S, Gutiérrez J ...
+DNA-damage-associated protein co-expression network in cardiomyocytes informs on tolerance to genetic variation and disease
+iScience, 2025; 28
+
+
+```{r import proteomics data, eval=FALSE}
+mmc3 <- read_excel("C:/Users/renee/Documents/Ward Lab/AC_proteomics/proteins/mmc3.xlsx", skip = 1) %>% 
+  dplyr::select(Protein:Is_CVD_PPI_protein)
+write.table(mmc3,"data/Other_paper_data/protein_LFC_Johnson_2025.tsv",sep = "\t",
+  quote = FALSE,
+  row.names = FALSE)
+
+
+```
+
+### pulling data  
+
+```{r}
+protein_data <- read.delim("data/Other_paper_data/protein_LFC_Johnson_2025.tsv")
+KZFP_2026_list <- read_excel("data/Other_paper_data/human_protein_coding_KZFPs_Davis_natgen_2026.xlsx")
+
+# ids <- as.character(protein_data$Protein)
+# ids <- trimws(ids)
+
+map <- readRDS( "data/RDS_files/uniprot_map.rds")
+map_clean <- map %>%
+  group_by(Entry) %>%
+  summarise(
+    gene = sub(" .*", "", Gene.Names),
+    .groups = "drop"
+  )
+
+H3K27ac_ext200_anno <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+remap <- dplyr::select(org.Hs.eg.db,
+  keys = protein_data$Protein,   # your UniProt IDs
+  keytype = "UNIPROT",
+  columns = c("SYMBOL", "ENTREZID"))
+
+remap_clean <- remap %>%
+  dplyr::group_by(UNIPROT) %>%
+  dplyr::summarise(
+    SYMBOL = dplyr::first(na.omit(SYMBOL)),
+    ENTREZID = dplyr::first(na.omit(ENTREZID)),
+    .groups = "drop")
+
+ext200_anno_map <- select(org.Hs.eg.db,
+                          keys=H3K27ac_ext200_anno$geneId,
+                          keytype = "ENTREZID",
+                          columns = c("SYMBOL","UNIPROT")) %>% 
+  distinct()
+
+```
+
+
+```{r, eval=FALSE}
+# human_kzfp <- 
+# KZFP_2017_list %>% 
+#   dplyr::filter(Species == "Homo_sapiens.GRCh38") %>% 
+#   dplyr::select(Label:strand) %>% 
+#   dplyr::filter(Type=="protein_coding") %>% 
+#   distinct(Label,.keep_all = TRUE)
+
+mart <- useMart("ensembl", dataset = "hsapiens_gene_ensembl",host = "useast.ensembl.org")
+listAttributes(mart)
+
+results <- getBM(attributes = c("uniprotswissprot", "hgnc_symbol", "entrezgene_id"),
+  filters = "uniprotswissprot",
+  values = protein_data$Protein,
+  mart = mart)
+
+other_protein_id <- getBM(attributes = c("uniprotswissprot", "hgnc_symbol", "entrezgene_id", "ensembl_gene_id"),
+  filters = "ensembl_gene_id",
+  values = KZFP_2026_list$`Gene ID`,
+  mart = mart)
+
+kzfp_uniprot <- other_protein_id %>% 
+  dplyr::filter(uniprotswissprot!="")
+
+protein_lookup_table <- results %>%
+  ###only keeping protein if has an hgnc_cymbol and entrezid, but keeping the first entrez_id per uniprot id
+  filter(!is.na(entrezgene_id)| hgnc_symbol != "") %>%
+  group_by(uniprotswissprot) %>%
+  slice(1) %>%
+  ungroup()
+KZFP_targets <- read_excel("data/Other_paper_data/KZFP_primary_targests_Supplemental_Table_S3.xlsx", sheet = "Primary_targets")
+
+```
+
+```{r getting accession, eval=FALSE}
+
+
+url <- "https://rest.uniprot.org/uniprotkb/stream?format=tsv&fields=accession,gene_names&query=organism_id:9606"
+map <- read.delim(url)
+
+
+test <- merge(protein_data, map, by.x = "Protein", by.y = "Entry", all.x = TRUE)
+
+saveRDS(map, "data/RDS_files/uniprot_map.rds")
+
+```
+
+
+I am going to check for enrichment of Set 1 Set 2 and Set 3 in the gene groupings of Protein.  First I need to create a list of entrezIDs for each set.  They will have Entrezid, Peakid, cluster for looking up purposes. I will also make a set of genes for each cluster and a "background" gene-i-verse.
+
+```{r}
+Set1_H3K27ac_lookup <- H3K27ac_ext200_anno %>% 
+  dplyr::select(Peakid,cluster, geneId) %>% 
+  dplyr::filter(cluster=="Set_1") 
+
+set1_genes <- H3K27ac_ext200_anno %>% 
+  dplyr::filter(cluster =="Set_1") %>% 
+  dplyr::pull(geneId) %>% 
+  unique()
+
+Set2_H3K27ac_lookup <- H3K27ac_ext200_anno %>% 
+  dplyr::select(Peakid,cluster, geneId) %>% 
+  dplyr::filter(cluster=="Set_2")
+
+set2_genes <- H3K27ac_ext200_anno %>% 
+  dplyr::filter(cluster =="Set_2") %>% 
+  dplyr::pull(geneId) %>% 
+  unique()
+
+
+
+Set3_H3K27ac_lookup <- H3K27ac_ext200_anno %>% 
+  dplyr::select(Peakid,cluster, geneId) %>% 
+  dplyr::filter(cluster=="Set_3")
+
+set3_genes <- H3K27ac_ext200_anno %>% 
+  dplyr::filter(cluster =="Set_3") %>% 
+  dplyr::pull(geneId) %>% 
+  unique()
+
+
+background_genes <- unique(H3K27ac_ext200_anno$geneId)
+```
+
+Next, I am going to take the protein list and cluster by each group:
+```{r}
+module_ids<- merge(protein_data, remap_clean, by.x = "Protein", by.y = "UNIPROT", all.x = TRUE)
+
+protein_module_split <- split(module_ids,module_ids$Module)
+
+```
+
+Now I am going to iterate over the split list and for each module list get a count of module genes/overlaps and background counts and perform a Fisher test for general enrichment over background
+
+### Which modules are enriched in assigned genes of each set?
+
+```{r set2 v background}
+
+enrichment_results_2 <- lapply(names(protein_module_split), function(mod) {
+  
+  mod_df <- protein_module_split[[mod]]
+  
+  # module genes (Entrez)
+  mod_genes <- unique(mod_df$ENTREZID)
+  mod_genes <- mod_genes[!is.na(mod_genes)]
+  
+  # overlaps
+  in_set2 <- sum(mod_genes %in% set2_genes)
+  not_in_set2 <- length(mod_genes) - in_set2
+  
+  # background counts
+  bg_set2 <- sum(background_genes %in% set2_genes)
+  bg_not_set2 <- length(background_genes) - bg_set2
+  
+  # Fisher test matrix
+  mat <- matrix(c(
+    in_set2,
+    not_in_set2,
+    bg_set2 - in_set2,
+    bg_not_set2 - not_in_set2
+  ), nrow = 2)
+  
+  ft <- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = ft$estimate,
+    in_set2 = in_set2,
+    module_size = length(mod_genes)
+  )
+})
+enrichment_df_2 <- do.call(rbind, enrichment_results_2)
+
+enrichment_df_2$FDR <- p.adjust(enrichment_df_2$pvalue, method = "BH")
+```
+
+
+```{r set3 v background}
+
+enrichment_results_3 <- lapply(names(protein_module_split), function(mod) {
+  
+  mod_df <- protein_module_split[[mod]]
+  
+  # module genes (Entrez)
+  mod_genes <- unique(mod_df$ENTREZID)
+  mod_genes <- mod_genes[!is.na(mod_genes)]
+  
+  # overlaps
+  in_set3 <- sum(mod_genes %in% set3_genes)
+  not_in_set3 <- length(mod_genes) - in_set3
+  
+  # background counts
+  bg_set3 <- sum(background_genes %in% set3_genes)
+  bg_not_set3 <- length(background_genes) - bg_set3
+  
+  # Fisher test matrix
+  mat <- matrix(c(
+    in_set3,
+    not_in_set3,
+    bg_set3 - in_set3,
+    bg_not_set3 - not_in_set3
+  ), nrow = 2)
+  
+  ft <- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = ft$estimate,
+    in_set3 = in_set3,
+    module_size = length(mod_genes)
+  )
+})
+enrichment_df_3 <- do.call(rbind, enrichment_results_3)
+
+enrichment_df_3$FDR <- p.adjust(enrichment_df_3$pvalue, method = "BH")
+```
+
+```{r set1 v background}
+
+enrichment_results_1 <- lapply(names(protein_module_split), function(mod) {
+  
+  mod_df <- protein_module_split[[mod]]
+  
+  # module genes (Entrez)
+  mod_genes <- unique(mod_df$ENTREZID)
+  mod_genes <- mod_genes[!is.na(mod_genes)]
+  
+  # overlaps
+  in_set1 <- sum(mod_genes %in% set1_genes)
+  not_in_set1 <- length(mod_genes) - in_set1
+  
+  # background counts
+  bg_set1 <- sum(background_genes %in% set1_genes)
+  bg_not_set1 <- length(background_genes) - bg_set1
+  
+  # Fisher test matrix
+  mat <- matrix(c(
+    in_set1,
+    not_in_set1,
+    bg_set1 - in_set1,
+    bg_not_set1 - not_in_set1
+  ), nrow = 2)
+  
+  ft <- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = ft$estimate,
+    in_set1 = in_set1,
+    module_size = length(mod_genes)
+  )
+})
+enrichment_df_1 <- do.call(rbind, enrichment_results_1)
+
+enrichment_df_1$FDR <- p.adjust(enrichment_df_1$pvalue, method = "BH")
+```
+
+#### Plots of enrichment
+
+```{r Plot for set 1}
+
+ggplot(enrichment_df_1, aes(x=odds_ratio, -log10(FDR), label=Module))+
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "Module Enrichment of assigned nearest genes in Set 1"
+  ) +
+  theme_classic()
+
+```
+
+
+```{r Plot for set 2}
+
+ggplot(enrichment_df_2, aes(x=odds_ratio, -log10(FDR), label=Module))+
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "Module Enrichment of assigned nearest genes in Set 2"
+  ) +
+  theme_classic()
+
+```
+
+```{r Plot for set 3}
+
+ggplot(enrichment_df_3, aes(x=odds_ratio, -log10(FDR), label=Module))+
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "Module Enrichment of assigned nearest genes in Set 3"
+  ) +
+  theme_classic()
+
+```
+
+### now module enrichment in set 2 v set 1
+
+```{r enrich 2v1}
+bg_genes_2v1 <- union(set1_genes,set2_genes)
+enrichment_results_2v1 <- lapply(names(protein_module_split), function(mod) {
+  
+  mod_genes <- unique(protein_module_split[[mod]]$ENTREZID)
+  mod_genes <- mod_genes[!is.na(mod_genes)]
+  
+  a <- sum(set2_genes %in% mod_genes)
+  b <- sum(set2_genes %in% background_genes) - a
+  
+  c <- sum(set1_genes %in% mod_genes)
+  d <- sum(set1_genes %in% background_genes) - c
+  
+  mat <- matrix(c(a, b, c, d), nrow = 2)
+  
+  ft <- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = ft$estimate,
+    set2_in_module = a,
+    set1_in_module = c
+  )
+})
+enrichment_df_2v1 <- do.call(rbind, enrichment_results_2v1)
+
+enrichment_df_2v1$FDR <- p.adjust(enrichment_df_2v1$pvalue, method = "BH")
+
+```
+
+```{r Plot for set 2v1}
+
+ggplot(enrichment_df_2v1, aes(x=odds_ratio, -log10(FDR), label=Module))+
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "Module Enrichment of assigned nearest genes in Set 2 vs set 1"
+  ) +
+  theme_classic()
+
+datatable(enrichment_df_2v1,options = list(
+    pageLength = 10,
+    scrollX = TRUE))
+
+```
+
+### now module enrichment in set 3 v set 1
+
+```{r enrich 3v1}
+bg_genes_3v1 <- union(set1_genes,set3_genes)
+enrichment_results_3v1 <- lapply(names(protein_module_split), function(mod) {
+  
+  mod_genes <- unique(protein_module_split[[mod]]$ENTREZID)
+  mod_genes <- mod_genes[!is.na(mod_genes)]
+  
+  a <- sum(set3_genes %in% mod_genes)
+  b <- sum(set3_genes %in% background_genes) - a
+  
+  c <- sum(set1_genes %in% mod_genes)
+  d <- sum(set1_genes %in% background_genes) - c
+  
+  mat <- matrix(c(a, b, c, d), nrow = 2)
+  
+  ft <- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = ft$estimate,
+    set3_in_module = a,
+    set1_in_module = c
+  )
+})
+enrichment_df_3v1 <- do.call(rbind, enrichment_results_3v1)
+
+enrichment_df_3v1$FDR <- p.adjust(enrichment_df_3v1$pvalue, method = "BH")
+
+```
+
+```{r Plot for set 3v1}
+
+ggplot(enrichment_df_3v1, aes(x=odds_ratio, -log10(FDR), label=Module))+
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "Module Enrichment of assigned nearest genes in Set 3 vs Set 1"
+  ) +
+  theme_classic()
+datatable(enrichment_df_3v1,options = list(
+    pageLength = 10,
+    scrollX = TRUE))
+```
+
+
+
+
+```{r KZFP in protein}
+
+
+conversion_ids %>% 
+  dplyr::filter(!is.na(gene)) %>% 
+  mutate(KZFP_group=case_when(gene %in%KZFP_2026_list$Label~"KZFP",
+                              TRUE ~"not_KZFP")) %>% 
+  ggplot(., aes(x=KZFP_group,y=logFC))+
+  geom_boxplot()+
+   stat_compare_means(method = "wilcox.test") +
+  theme_bw()+
+  ggtitle("LFC of KZFPs in protein data")
+
+conversion_ids %>% 
+  dplyr::filter(!is.na(gene)) %>% 
+   mutate(KZFP_group=case_when(gene %in%KZFP_2026_list$Label~"KZFP",
+                              TRUE ~"not_KZFP")) %>% 
+  group_by(KZFP_group) %>% 
+  tally
+
+
+```
+
+
+
+```{r}
+
+  conversion_ids
+
+H3K27ac_ext200_anno
+
+
+```
+
+```{r pwmpull, eval=FALSE}
+TF_Information <- read_delim("C:/Users/renee/Downloads/F135_3.00_2026_04_10_5_41_pm_allC2H2ZFs/TF_Information.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+
+kzpf_motif_IDs <- TF_Information %>% 
+  dplyr::filter(TF_Species=="Homo_sapiens") %>% 
+  dplyr::filter(TF_Name %in%KZFP_2026_list$Label) %>% 
+  dplyr::filter(Motif_ID != ".") %>% 
+  pull(Motif_ID)
+
+TF_Information %>% 
+  filter(TF_Species == "Homo_sapiens") %>% 
+  filter(TF_Name %in% KZFP_2026_list$Label) %>% 
+  summarise(
+    total = dplyr::n(),
+    with_motif = sum(Motif_ID != "."),
+    missing = sum(Motif_ID == ".")
+  )
+
+KZFP_motif_info <- TF_Information %>% 
+  filter(TF_Species == "Homo_sapiens") %>% 
+  filter(TF_Name %in% KZFP_2026_list$Label) %>% 
+   dplyr::filter(Motif_ID != ".") 
+# saveRDS(KZFP_motif_info,"data/RDS_files/KZFP_motif_info.RDS")
+
+KZFP_no_motif_list <- 
+   TF_Information %>% 
+  filter(TF_Species == "Homo_sapiens") %>% 
+  filter(TF_Name %in% KZFP_2026_list$Label) %>% 
+  filter(Motif_ID == ".") %>% 
+  pull(TF_Name)
+
+KZFP_no_motif_list
+
+files <- list.files(
+  "C:/Users/renee/Downloads/F135_3.00_2026_04_10_5_41_pm_allC2H2ZFs/pwms",
+  full.names = TRUE)
+
+file_ids <- tools::file_path_sans_ext(basename(files))
+
+meta <- TF_Information %>%
+  dplyr::filter(TF_Species == "Homo_sapiens") %>%
+  dplyr::filter(TF_Name %in% KZFP_2026_list$Label) %>%
+  dplyr::filter(Motif_ID != ".") %>%
+  dplyr::select(Motif_ID, TF_Name)
+
+motif_files <- files[file_ids %in% kzpf_motif_IDs]
+motif_names <- tools::file_path_sans_ext(basename(motif_files))
+alt_ids <- meta$TF_Name[match(motif_names, meta$Motif_ID)]
+
+length(kzpf_motif_IDs)
+length(motif_files)
+setdiff(kzpf_motif_IDs,
+        tools::file_path_sans_ext(basename(files)))
+
+library(universalmotif)
+
+get_tf_name <- function(x) {
+  tools::file_path_sans_ext(basename(x))
+}
+
+
+bad <- lapply(motif_files, function(f) {
+
+  df <- read.table(f, header = TRUE, sep = "\t", check.names = FALSE)
+
+  cols <- intersect(c("A","C","G","T"), colnames(df))
+
+  if (length(cols) != 4) {
+    return(f)
+  }
+
+  mat <- df[, cols, drop = FALSE]
+  mat <- data.matrix(mat)
+
+  if (ncol(mat) == 0 || nrow(mat) == 0) {
+    return(f)
+  }
+
+  NULL
+})
+
+bad <- unlist(bad)
+bad
+
+
+motifs <- lapply(motif_files, function(f) {
+  
+   df <- read.table(f, header = TRUE, sep = "\t", check.names = FALSE)
+
+  # robust column matching (ignores whitespace/case issues)
+  col_map <- colnames(df)
+  nuc_cols <- col_map[tolower(col_map) %in% c("a","c","g","t")]
+
+  if (length(nuc_cols) != 4) {
+    warning(paste("Skipping file (bad columns):", f))
+    return(NULL)
+  }
+
+  mat <- df[, nuc_cols, drop = FALSE]
+  mat <- data.matrix(mat)
+
+  if (nrow(mat) < 2 || ncol(mat) != 4) {
+    warning(paste("Skipping file (bad matrix):", f))
+    return(NULL)
+  }
+
+  pwm <- t(mat)
+
+  if (ncol(pwm) == 0) {
+    warning(paste("Skipping file (empty PWM):", f))
+    return(NULL)
+  }
+
+  m <- universalmotif::create_motif(pwm, alphabet = "DNA")
+
+  attr(m, "name") <- tools::file_path_sans_ext(basename(f))
+
+  m
+})
+
+
+write_meme(motifs, file = "data/Other_paper_data/KZFP_motifs.meme", overwrite = TRUE)
+
+motif_annotation <- data.frame(
+  NAME = motif_names,
+  ALT_ID = alt_ids
+)
+readLines("data/Other_paper_data/KZFP_motifs.meme", n = 40)
+```
+wanting to extract all SET1 SEt2 and Set3 regions that contain a MER61E element then test for enrichment.
+```{r import regions} 
+
+mer_gr <- rtracklayer::import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
+H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+
+
+peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+
+H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+
+##assigning Peakid as name of summit region
+ mcols(H3K27ac_summit_gr)$name <- mcols(H3K27ac_summit_gr)$Peakid
+ 
+ H3K27ac_summit_gr_ext <- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
+
+H3K27ac_MER61E <- subsetByOverlaps(H3K27ac_summit_gr_ext, mer_gr)
+
+H3K27ac_MER61E_df <- as.data.frame(H3K27ac_MER61E) 
+
+Set1 <- H3K27ac_MER61E_df %>% filter(cluster == "Set_1")
+Set2 <- H3K27ac_MER61E_df %>% filter(cluster == "Set_2")
+Set3 <- H3K27ac_MER61E_df %>% filter(cluster == "Set_3")
+
+Set1_gr <- makeGRangesFromDataFrame(Set1, keep.extra.columns = TRUE)
+Set2_gr <- makeGRangesFromDataFrame(Set2, keep.extra.columns = TRUE)
+Set3_gr <- makeGRangesFromDataFrame(Set3, keep.extra.columns = TRUE)
+
+width(Set1_gr)
+width(Set3_gr)
+
+
+library(Biostrings)
+library(BSgenome.Hsapiens.UCSC.hg38)
+Hsapiens <- BSgenome.Hsapiens.UCSC.hg38
+
+gc1 <- letterFrequency(getSeq(Hsapiens, Set1_gr), "GC", as.prob=TRUE)
+gc3 <- letterFrequency(getSeq(Hsapiens, Set3_gr), "GC", as.prob=TRUE)
+
+mean(gc1)
+mean(gc3)
+
+export(Set1_gr, "data/Bed_exports/H3K27ac_MER61E_Set_1.bed", format = "BED")
+export(Set3_gr, "data/Bed_exports/H3K27ac_MER61E_Set_3.bed", format = "BED")
+```
+
