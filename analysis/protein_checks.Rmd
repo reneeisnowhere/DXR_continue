@@ -41,6 +41,7 @@ library(httr)
 library(jsonlite)
 library(org.Hs.eg.db)
 library(AnnotationDbi)
+library(MASS)
 ```
 
 From: 
@@ -77,7 +78,7 @@ map_clean <- map %>%
   )
 
 H3K27ac_ext200_anno <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
-remap <- dplyr::select(org.Hs.eg.db,
+remap <- AnnotationDbi::select(org.Hs.eg.db,
   keys = protein_data$Protein,   # your UniProt IDs
   keytype = "UNIPROT",
   columns = c("SYMBOL", "ENTREZID"))
@@ -89,11 +90,42 @@ remap_clean <- remap %>%
     ENTREZID = dplyr::first(na.omit(ENTREZID)),
     .groups = "drop")
 
-ext200_anno_map <- select(org.Hs.eg.db,
+ext200_anno_map <- AnnotationDbi::select(org.Hs.eg.db,
                           keys=H3K27ac_ext200_anno$geneId,
                           keytype = "ENTREZID",
                           columns = c("SYMBOL","UNIPROT")) %>% 
   distinct()
+
+Module_lookup <- protein_data %>% 
+  mutate(greek_module=case_when(Module=="green"~"alpha",
+                                Module=="darkgreen"~"beta",
+                                Module=="midnightblue"~"gamma",
+                                Module=="salmon"~"delta",
+                                Module=="lightyellow"~"epsilon",
+                                Module=="lightgreen"~"zeta",
+                                 Module=="blue"~"eta",
+                                 Module=="magenta"~"theta",
+                                 Module=="darkred"~"iota",
+                                 Module=="brown"~"kappa",
+                                 Module=="yellow"~"lambda",
+                                 Module=="royalblue"~"mu",
+                                Module=="grey"~"Unassigned")) %>% 
+  dplyr::select(Module,greek_module) %>% 
+  distinct()
+
+alpha   <- "\u03B1"  # α
+beta    <- "\u03B2"  # β
+gamma   <- "\u03B3"  # γ
+delta   <- "\u03B4"  # δ
+epsilon <- "\u03B5"  # ε
+zeta    <- "\u03B6"  # ζ
+eta     <- "\u03B7"  # η
+theta   <- "\u03B8"  # θ
+iota    <- "\u03B9"  # ι
+kappa   <- "\u03BA"  # κ
+lambda  <- "\u03BB"  # λ
+mu      <- "\u03BC"  # μ
+
 
 ```
 
@@ -150,7 +182,7 @@ I am going to check for enrichment of Set 1 Set 2 and Set 3 in the gene grouping
 
 ```{r}
 Set1_H3K27ac_lookup <- H3K27ac_ext200_anno %>% 
-  dplyr::select(Peakid,cluster, geneId) %>% 
+  dplyr::select(Peakid,cluster, geneId,distanceToTSS) %>% 
   dplyr::filter(cluster=="Set_1") 
 
 set1_genes <- H3K27ac_ext200_anno %>% 
@@ -159,7 +191,7 @@ set1_genes <- H3K27ac_ext200_anno %>%
   unique()
 
 Set2_H3K27ac_lookup <- H3K27ac_ext200_anno %>% 
-  dplyr::select(Peakid,cluster, geneId) %>% 
+  dplyr::select(Peakid,cluster, geneId,distanceToTSS) %>% 
   dplyr::filter(cluster=="Set_2")
 
 set2_genes <- H3K27ac_ext200_anno %>% 
@@ -170,7 +202,7 @@ set2_genes <- H3K27ac_ext200_anno %>%
 
 
 Set3_H3K27ac_lookup <- H3K27ac_ext200_anno %>% 
-  dplyr::select(Peakid,cluster, geneId) %>% 
+  dplyr::select(Peakid,cluster, geneId,distanceToTSS) %>% 
   dplyr::filter(cluster=="Set_3")
 
 set3_genes <- H3K27ac_ext200_anno %>% 
@@ -188,6 +220,9 @@ module_ids<- merge(protein_data, remap_clean, by.x = "Protein", by.y = "UNIPROT"
 
 protein_module_split <- split(module_ids,module_ids$Module)
 
+gene_universe <- intersect(module_ids$ENTREZID,H3K27ac_ext200_anno$geneId)
+length(intersect(background_genes,gene_universe))
+
 ```
 
 Now I am going to iterate over the split list and for each module list get a count of module genes/overlaps and background counts and perform a Fisher test for general enrichment over background
@@ -200,19 +235,19 @@ enrichment_results_2 <- lapply(names(protein_module_split), function(mod) {
   
   mod_df <- protein_module_split[[mod]]
   
-  # module genes (Entrez)
+  # module genes
   mod_genes <- unique(mod_df$ENTREZID)
   mod_genes <- mod_genes[!is.na(mod_genes)]
+  mod_genes <- intersect(mod_genes, background_genes)
   
   # overlaps
   in_set2 <- sum(mod_genes %in% set2_genes)
   not_in_set2 <- length(mod_genes) - in_set2
   
-  # background counts
+  # background universe constrained
   bg_set2 <- sum(background_genes %in% set2_genes)
   bg_not_set2 <- length(background_genes) - bg_set2
   
-  # Fisher test matrix
   mat <- matrix(c(
     in_set2,
     not_in_set2,
@@ -225,7 +260,7 @@ enrichment_results_2 <- lapply(names(protein_module_split), function(mod) {
   data.frame(
     Module = mod,
     pvalue = ft$p.value,
-    odds_ratio = ft$estimate,
+    odds_ratio = unname(ft$estimate),
     in_set2 = in_set2,
     module_size = length(mod_genes)
   )
@@ -233,6 +268,8 @@ enrichment_results_2 <- lapply(names(protein_module_split), function(mod) {
 enrichment_df_2 <- do.call(rbind, enrichment_results_2)
 
 enrichment_df_2$FDR <- p.adjust(enrichment_df_2$pvalue, method = "BH")
+enrichment_df_2 <-enrichment_df_2 %>% 
+  left_join(Module_lookup)
 ```
 
 
@@ -242,19 +279,19 @@ enrichment_results_3 <- lapply(names(protein_module_split), function(mod) {
   
   mod_df <- protein_module_split[[mod]]
   
-  # module genes (Entrez)
+  # module genes
   mod_genes <- unique(mod_df$ENTREZID)
   mod_genes <- mod_genes[!is.na(mod_genes)]
+  mod_genes <- intersect(mod_genes, background_genes)
   
   # overlaps
   in_set3 <- sum(mod_genes %in% set3_genes)
   not_in_set3 <- length(mod_genes) - in_set3
   
-  # background counts
+  # background universe constrained
   bg_set3 <- sum(background_genes %in% set3_genes)
   bg_not_set3 <- length(background_genes) - bg_set3
   
-  # Fisher test matrix
   mat <- matrix(c(
     in_set3,
     not_in_set3,
@@ -267,7 +304,7 @@ enrichment_results_3 <- lapply(names(protein_module_split), function(mod) {
   data.frame(
     Module = mod,
     pvalue = ft$p.value,
-    odds_ratio = ft$estimate,
+    odds_ratio = unname(ft$estimate),
     in_set3 = in_set3,
     module_size = length(mod_genes)
   )
@@ -275,27 +312,29 @@ enrichment_results_3 <- lapply(names(protein_module_split), function(mod) {
 enrichment_df_3 <- do.call(rbind, enrichment_results_3)
 
 enrichment_df_3$FDR <- p.adjust(enrichment_df_3$pvalue, method = "BH")
+enrichment_df_3 <-enrichment_df_3 %>% 
+  left_join(Module_lookup)
 ```
 
 ```{r set1 v background}
 
 enrichment_results_1 <- lapply(names(protein_module_split), function(mod) {
   
-  mod_df <- protein_module_split[[mod]]
+   mod_df <- protein_module_split[[mod]]
   
-  # module genes (Entrez)
+  # module genes
   mod_genes <- unique(mod_df$ENTREZID)
   mod_genes <- mod_genes[!is.na(mod_genes)]
+  mod_genes <- intersect(mod_genes, background_genes)
   
   # overlaps
   in_set1 <- sum(mod_genes %in% set1_genes)
   not_in_set1 <- length(mod_genes) - in_set1
   
-  # background counts
+  # background universe constrained
   bg_set1 <- sum(background_genes %in% set1_genes)
   bg_not_set1 <- length(background_genes) - bg_set1
   
-  # Fisher test matrix
   mat <- matrix(c(
     in_set1,
     not_in_set1,
@@ -308,7 +347,7 @@ enrichment_results_1 <- lapply(names(protein_module_split), function(mod) {
   data.frame(
     Module = mod,
     pvalue = ft$p.value,
-    odds_ratio = ft$estimate,
+    odds_ratio = unname(ft$estimate),
     in_set1 = in_set1,
     module_size = length(mod_genes)
   )
@@ -316,13 +355,15 @@ enrichment_results_1 <- lapply(names(protein_module_split), function(mod) {
 enrichment_df_1 <- do.call(rbind, enrichment_results_1)
 
 enrichment_df_1$FDR <- p.adjust(enrichment_df_1$pvalue, method = "BH")
+enrichment_df_1 <-enrichment_df_1 %>% 
+  left_join(Module_lookup)
 ```
 
 #### Plots of enrichment
 
 ```{r Plot for set 1}
 
-ggplot(enrichment_df_1, aes(x=odds_ratio, -log10(FDR), label=Module))+
+ggplot(enrichment_df_1, aes(x=odds_ratio, -log10(FDR), label=greek_module))+
   geom_point(aes(color = odds_ratio > 1), size = 3) +
    # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
   geom_text_repel(size=3, max.overlaps = Inf)+
@@ -339,7 +380,7 @@ ggplot(enrichment_df_1, aes(x=odds_ratio, -log10(FDR), label=Module))+
 
 ```{r Plot for set 2}
 
-ggplot(enrichment_df_2, aes(x=odds_ratio, -log10(FDR), label=Module))+
+ggplot(enrichment_df_2, aes(x=odds_ratio, -log10(FDR), label=greek_module))+
   geom_point(aes(color = odds_ratio > 1), size = 3) +
    # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
   geom_text_repel(size=3, max.overlaps = Inf)+
@@ -355,7 +396,7 @@ ggplot(enrichment_df_2, aes(x=odds_ratio, -log10(FDR), label=Module))+
 
 ```{r Plot for set 3}
 
-ggplot(enrichment_df_3, aes(x=odds_ratio, -log10(FDR), label=Module))+
+ggplot(enrichment_df_3, aes(x=odds_ratio, -log10(FDR), label=greek_module))+
   geom_point(aes(color = odds_ratio > 1), size = 3) +
    # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
   geom_text_repel(size=3, max.overlaps = Inf)+
@@ -379,10 +420,10 @@ enrichment_results_2v1 <- lapply(names(protein_module_split), function(mod) {
   mod_genes <- mod_genes[!is.na(mod_genes)]
   
   a <- sum(set2_genes %in% mod_genes)
-  b <- sum(set2_genes %in% background_genes) - a
+  b <- sum(set2_genes %in% bg_genes_2v1) - a
   
   c <- sum(set1_genes %in% mod_genes)
-  d <- sum(set1_genes %in% background_genes) - c
+  d <- sum(set1_genes %in% bg_genes_2v1) - c
   
   mat <- matrix(c(a, b, c, d), nrow = 2)
   
@@ -390,7 +431,7 @@ enrichment_results_2v1 <- lapply(names(protein_module_split), function(mod) {
   
   data.frame(
     Module = mod,
-    pvalue = ft$p.value,
+    pvalue = ft$p.value, 
     odds_ratio = ft$estimate,
     set2_in_module = a,
     set1_in_module = c
@@ -399,7 +440,8 @@ enrichment_results_2v1 <- lapply(names(protein_module_split), function(mod) {
 enrichment_df_2v1 <- do.call(rbind, enrichment_results_2v1)
 
 enrichment_df_2v1$FDR <- p.adjust(enrichment_df_2v1$pvalue, method = "BH")
-
+enrichment_df_2v1 <-enrichment_df_2v1 %>% 
+  left_join(Module_lookup)
 ```
 
 ```{r Plot for set 2v1}
@@ -432,10 +474,10 @@ enrichment_results_3v1 <- lapply(names(protein_module_split), function(mod) {
   mod_genes <- mod_genes[!is.na(mod_genes)]
   
   a <- sum(set3_genes %in% mod_genes)
-  b <- sum(set3_genes %in% background_genes) - a
+  b <- sum(set3_genes %in% bg_genes_3v1) - a
   
   c <- sum(set1_genes %in% mod_genes)
-  d <- sum(set1_genes %in% background_genes) - c
+  d <- sum(set1_genes %in% bg_genes_3v1) - c
   
   mat <- matrix(c(a, b, c, d), nrow = 2)
   
@@ -452,12 +494,13 @@ enrichment_results_3v1 <- lapply(names(protein_module_split), function(mod) {
 enrichment_df_3v1 <- do.call(rbind, enrichment_results_3v1)
 
 enrichment_df_3v1$FDR <- p.adjust(enrichment_df_3v1$pvalue, method = "BH")
-
+enrichment_df_3v1 <-enrichment_df_3v1 %>% 
+  left_join(Module_lookup)
 ```
 
 ```{r Plot for set 3v1}
 
-ggplot(enrichment_df_3v1, aes(x=odds_ratio, -log10(FDR), label=Module))+
+ggplot(enrichment_df_3v1, aes(x=odds_ratio, -log10(FDR), label=paste0(greek_module)))+
   geom_point(aes(color = odds_ratio > 1), size = 3) +
    # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
   geom_text_repel(size=3, max.overlaps = Inf)+
@@ -472,9 +515,247 @@ datatable(enrichment_df_3v1,options = list(
     pageLength = 10,
     scrollX = TRUE))
 ```
+### does distance to TSS change enrichment?
+```{r}
+set1_2kb_genes <- Set1_H3K27ac_lookup %>% 
+  dplyr::filter(distanceToTSS<2000 & distanceToTSS>-2000) %>% 
+  pull(geneId) %>% 
+  unique()
+
+set2_2kb_genes <- Set2_H3K27ac_lookup %>% 
+  dplyr::filter(distanceToTSS<2000 & distanceToTSS>-2000) %>% 
+  pull(geneId) %>% 
+  unique()
+
+set3_2kb_genes <- Set3_H3K27ac_lookup %>% 
+  dplyr::filter(distanceToTSS<2000 & distanceToTSS>-2000) %>% 
+  pull(geneId) %>% 
+  unique()
+```
+
+```{r}
+bg_2v1_2kb <- union(set1_2kb_genes, set2_2kb_genes)
+enrichment_results_2v1_2kb <- lapply(names(protein_module_split), function(mod) {
+  
+  mod_genes <- unique(protein_module_split[[mod]]$ENTREZID)
+  mod_genes <- mod_genes[!is.na(mod_genes)]
+  
+  a <- sum(set2_2kb_genes %in% mod_genes)
+  b <- sum(set2_2kb_genes %in% bg_2v1_2kb) - a
+  
+  c <- sum(set1_2kb_genes %in% mod_genes)
+  d <- sum(set1_2kb_genes %in% bg_2v1_2kb) - c
+  
+  mat <- matrix(c(a, b, c, d), nrow = 2)
+  
+  ft <- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = ft$estimate,
+    set3_in_module = a,
+    set1_in_module = c
+  )
+})
+enrichment_df_2v1_2kb <- do.call(rbind, enrichment_results_2v1_2kb)
+
+enrichment_df_2v1_2kb$FDR <- p.adjust(enrichment_df_2v1_2kb$pvalue, method = "BH")
+
+ggplot(enrichment_df_2v1_2kb, aes(x=odds_ratio, -log10(FDR), label=Module))+
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "Module Enrichment of assigned nearest genes in Set 2 vs set 1"
+  ) +
+  theme_classic()
+
+```
+
+
+```{r}
+bg_3v1_2kb <- union(set1_2kb_genes, set3_2kb_genes)
+enrichment_results_3v1_2kb <- lapply(names(protein_module_split), function(mod) {
+  
+  mod_genes <- unique(protein_module_split[[mod]]$ENTREZID)
+  mod_genes <- mod_genes[!is.na(mod_genes)]
+  
+  a <- sum(set3_2kb_genes %in% mod_genes)
+  b <- sum(set3_2kb_genes %in% bg_3v1_2kb) - a
+  
+  c <- sum(set1_2kb_genes %in% mod_genes)
+  d <- sum(set1_2kb_genes %in% bg_3v1_2kb) - c
+  
+  mat <- matrix(c(a, b, c, d), nrow = 2)
+  
+  ft <- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = ft$estimate,
+    set3_in_module = a,
+    set1_in_module = c
+  )
+})
+enrichment_df_3v1_2kb <- do.call(rbind, enrichment_results_3v1_2kb)
+
+enrichment_df_3v1_2kb$FDR <- p.adjust(enrichment_df_3v1_2kb$pvalue, method = "BH")
+
+ggplot(enrichment_df_3v1_2kb, aes(x=odds_ratio, -log10(FDR), label=Module))+
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "Module Enrichment of assigned nearest genes in Set 3 vs set 1"
+  ) +
+  theme_classic()
+
+```
+
+
+### ordinal model set 1<Set 2< Set 3
+
+```{r}
+set3_clean <- set3_genes
+set2_clean <- setdiff(set2_genes, set3_clean)
+set1_clean <- setdiff(set1_genes, union(set2_clean, set3_clean))
+all_genes <- unique(unlist(lapply(protein_module_split, function(x) x$ENTREZID)))
+all_genes <- all_genes[!is.na(all_genes)]
+gene_df <- data.frame(gene = all_genes)
+
+gene_df$set <- "Set1"
+gene_df$set[gene_df$gene %in% set2_clean] <- "Set2"
+gene_df$set[gene_df$gene %in% set3_clean] <- "Set3"
+
+gene_df$set <- factor(gene_df$set,
+                      levels = c("Set1", "Set2", "Set3"),
+                      ordered = TRUE)
+
+module_list <- lapply(names(protein_module_split), function(mod) {
+  data.frame(
+    gene = protein_module_split[[mod]]$ENTREZID,
+    module = mod
+  )
+})
+names(module_list) <- names(protein_module_split)
+
+module_list <- reshape(
+  transform(module_list, value = 1),
+  timevar = "module",
+  idvar = "gene",
+  direction = "wide"
+)
+module_df <- do.call(rbind, module_list)
+module_df <- module_df[!is.na(module_df$gene), ]
+
+module_wide <- reshape(
+  transform(module_df, value = 1),
+  timevar = "module",
+  idvar = "gene",
+  direction = "wide"
+)
+
+module_wide[is.na(module_wide)] <- 0
+colnames(module_wide) <- sub("value\\.", "", colnames(module_wide))
+
+dat <- merge(gene_df, module_wide, by = "gene", all.x = TRUE)
+dat[is.na(dat)] <- 0
+```
+
+```{r}
+
+
+model <- polr(
+  set ~ . - gene,
+  data = dat,
+  Hess = TRUE
+)
+
+coef_df <- broom::tidy(model)
+
+heatmap_df <- coef_df %>%
+  dplyr::filter(term != "(Intercept)") %>%
+  mutate(effect = estimate) %>%
+  dplyr::select(term, effect)
+colnames(heatmap_df) <- c("Module", "EffectSize")
+pred <- predict(model, type = "probs")
 
 
 
+pred_df <- cbind(dat["gene"], pred)
+
+module_heatmap <- merge(module_df, pred_df, by = "gene")
+
+module_summary <- module_heatmap %>%
+  group_by(module) %>%
+  summarise(
+    Set1 = mean(Set1),
+    Set2 = mean(Set2),
+    Set3 = mean(Set3),
+    .groups = "drop"
+  )
+heatmap_long <- module_summary %>%
+  pivot_longer(cols = c(Set1, Set2, Set3),
+               names_to = "State",
+               values_to = "Probability")
+
+ggplot(heatmap_long, aes(x = State, y = module, fill = Probability)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "red")
+
+# ComplexHeatmap::Heatmap(heatmap_df)
+```
+```{r}
+table(module_df$gene %in% set1_clean,
+      module_df$gene %in% set2_clean,
+      module_df$gene %in% set3_clean)
+all_genes <- unique(module_df$gene)
+
+global_set2_rate <- mean(all_genes %in% set2_clean)
+global_set2_rate
+
+module_enrichment <- module_df %>%
+  filter(!is.na(gene)) %>%
+  group_by(module) %>%
+  summarise(
+    module_size = n_distinct(gene),
+    set2_count = sum(gene %in% set2_clean),
+    set2_rate = set2_count / module_size,
+    .groups = "drop"
+  ) %>%
+  mutate(
+    enrichment = set2_rate / global_set2_rate
+  )
+
+module_enrichment <- module_enrichment %>%
+  rowwise() %>%
+  mutate(
+    pvalue = fisher.test(matrix(c(
+      set2_count,
+      module_size - set2_count,
+      sum(all_genes %in% set2_clean) - set2_count,
+      length(all_genes) - sum(all_genes %in% set2_clean) - (module_size - set2_count)
+    ), nrow = 2))$p.value
+  ) %>%
+  ungroup()
+
+module_enrichment$FDR <- p.adjust(module_enrichment$pvalue, method = "BH")
+
+ggplot(module_enrichment, aes(x = module_size, y = set2_rate)) +
+  geom_point(aes(color = FDR < 0.05)) +
+  geom_text(aes(label = module), vjust = -0.5)+
+  geom_hline(yintercept = global_set2_rate, linetype = "dashed") +
+  scale_y_continuous("Set2 fraction") +
+  theme_minimal()
+```
 
 ```{r KZFP in protein}
 

@@ -251,10 +251,10 @@ assign_best_summit_to_ROI_parallel <- function(consensus_gr, ROIs_gr, max_dist =
 # workers <- parallel::detectCores() - 1
 ### Step 1
 # temp_highest_per_group <- get_highest_per_group_parallel(all_H3K27ac_summits_gr,
-                                                         group_col = "group",
-                                                         score_col = "score",
-                                                         min_gap_within = 100,
-                                                         workers = workers)
+                                                         # group_col = "group",
+                                                         # score_col = "score",
+                                                         # min_gap_within = 100,
+                                                         # workers = workers)
 # saveRDS(temp_highest_per_group,"data/RDS_files/H3K27ac_temp_highest_per_group.RDS")
 temp_highest_per_group <- readRDS("data/RDS_files/H3K27ac_temp_highest_per_group.RDS")
 # Concatenate into one GRanges (Step 1.2)

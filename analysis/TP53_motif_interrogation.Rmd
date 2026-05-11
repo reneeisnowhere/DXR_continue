@@ -69,7 +69,7 @@ colnames(te_df) <- c("chr","start","end","name","score","strand")
 ##checking for NAs
 sum(is.na(te_df$start))
 sum(is.na(te_df$end))
-##cleaning TE dataframe (ususally not need, this is just in case)
+##cleaning TE dataframe (usually not need, this is just in case)
 te_df_clean <- te_df[!is.na(te_df$start) & !is.na(te_df$end), ]
 ##Convert to Granges
 te_gr <- GRanges(
@@ -484,16 +484,66 @@ kable(table_summary, caption = "TP53 motif occupancy per TE family") %>%
 ```
 
 ```{r Getting numbers togther}
+H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+mcols(H3K27ac_summit_gr)$name <- mcols(H3K27ac_summit_gr)$Peakid
+ 
+ H3K27ac_summit_gr_ext <- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
 
-# need to know # of half sites by TE subfamily integrant, number of whole sites, which sequences have which sites, how many overlap p53 ENcode (using HepG2 cells Myers,Experiment: ENCSR980, accession ENCFF673IAB bigbed file)
+# need to know # of half sites by TE subfamily integrant, number of whole sites, which sequences have which sites, how many overlap p53 ENcode (using HepG2 cells Myers,Experiment: ENCSR980, accession ENCFF701DTE  bed narrowpeak file)
+BB_p53_gr <-  import("data/Other_paper_data/ENCFF701DTE.bed", format = "narrowPeak")
+mcols(BB_p53_gr)$peak_id <- paste0("p53_peak_", seq_along(BB_p53_gr))
 
+p53_Crossover_hits <- findOverlaps(H3K27ac_summit_gr_ext,BB_p53_gr)
 
+overlap_df <- data.frame(
+  summit_id = queryHits(p53_Crossover_hits),
+  ext_range= mcols(H3K27ac_summit_gr_ext)$name[queryHits(p53_Crossover_hits)],
+  cluster= mcols(H3K27ac_summit_gr_ext)$cluster[queryHits(p53_Crossover_hits)],
+  p53_peak  = mcols(BB_p53_gr)$peak_id[subjectHits(p53_Crossover_hits)]
+)
+p53bound_region <- overlap_df %>% 
+  dplyr::distinct(ext_range,cluster)
+    
+p53_counts <- p53bound_region %>%
+  count(cluster, name = "p53_bound")
+total_counts <- as.data.frame(table(H3K27ac_summit_gr_ext$cluster))
+colnames(total_counts) <- c("cluster", "total")
+p53_counts
+
+counts_df <- left_join(total_counts, p53_counts, by = "cluster") %>%
+  mutate(p53_bound = ifelse(is.na(p53_bound), 0, p53_bound),
+         not_bound = total - p53_bound)
+
+matrix <- matrix(
+  c(
+    counts_df$p53_bound[counts_df$cluster == "Set_3"],
+    counts_df$not_bound[counts_df$cluster == "Set_3"],
+    counts_df$p53_bound[counts_df$cluster == "Set_1"],
+    counts_df$not_bound[counts_df$cluster == "Set_1"]
+  ),
+  nrow = 2,
+  byrow = TRUE
+)
+
+set2_matrix <- matrix(
+  c(
+    counts_df$p53_bound[counts_df$cluster == "Set_2"],
+    counts_df$not_bound[counts_df$cluster == "Set_2"],
+    counts_df$p53_bound[counts_df$cluster == "Set_1"],
+    counts_df$not_bound[counts_df$cluster == "Set_1"]
+  ),
+  nrow = 2,
+  byrow = TRUE
+)
+
+fisher.test(matrix)
+fisher.test(set2_matrix)
 ```
 
 
 
 
-In order to determine if MER61E integrants are enriched in p53 binding sites compared to MER61 integrants in Set_3, I need to first find all members of MER61 that are in Set_3.
+In order to determine if MER61E integrants are enriched in p53 binding sites compared to MER61 integrants in Set_3 v set1, I need to first find all members of MER61 that are in Set_3.
 ```{r finding}
 p53_TE_ids <- Astorage$detail #contains the TEs that have p53sites
 fimo_MER61int <-   read_delim("C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61-int_ERV1_LTR_fimo/fimo.tsv")
@@ -537,7 +587,7 @@ df_S1n3 <- all_mer_members_clean %>%
 Mer_list <- c("MER61-int","MER61A","MER61B",
               "MER61C","MER61D","MER61E","MER61F")
 
-results <- lapply(Mer_list, function(m) {
+enrich_results <- lapply(Mer_list, function(m) {
 
   df_sub <- df_S1n3 %>%
     mutate(is_family = repName == m)
@@ -557,11 +607,13 @@ results <- lapply(Mer_list, function(m) {
   )
 })
 
-enrichment_df <- bind_rows(results)
+enrichment_df <- bind_rows(enrich_results)
+
+enrichment_df
 ```
 
 
-```{r}
+```{r plot OR of MER61 enrichment}
 # enrichment_df
 
 ggplot(enrichment_df, aes(x = repName, y = odds_ratio)) +
@@ -573,22 +625,461 @@ ggplot(enrichment_df, aes(x = repName, y = odds_ratio)) +
   labs(
     y = "Odds ratio (Set3 vs Set1,  not log scale)",
     x = "MER61 subfamily",
-    title = "Odds Ratio of MER61 element having a p53 site in Set 3 to Set 1"
+    title = "Odds Ratio of MER61 element being in Set 3 v Set 1 compared to rest of Subfamily"
   )+
   coord_flip()
 
 
-ggplot(enrichment_df, aes(x = repName, y = odds_ratio)) +
+
+```
+
+```{r finding p53 enrichment}
+
+results <- lapply(Mer_list, function(m) {
+
+  df_sub <- df_S1n3 %>%
+    filter(repName == m) %>%
+    mutate(has_p53 = p53_bin == 1)
+
+  # skip if not testable
+  if (n_distinct(df_sub$cluster) < 2 || n_distinct(df_sub$has_p53) < 2) {
+    return(data.frame(
+      repName = m,
+      odds_ratio = NA,
+      p_value = NA,
+      note = "insufficient variation"
+    ))
+  }
+
+  tab <- table(df_sub$cluster, df_sub$has_p53)
+
+  ft <- fisher.test(tab)
+
+  data.frame(
+    repName = m,
+    odds_ratio = unname(ft$estimate),
+    conf_low = ft$conf.int[1],
+    conf_high = ft$conf.int[2],
+    p_value = ft$p.value,
+    n_total = nrow(df_sub)
+  )
+})
+
+df_S1n3 %>%
+  group_by(repName, cluster) %>%
+  summarize(
+    n = dplyr::n(),
+    has_p53 = sum(p53_bin == 1)
+  )
+
+p53_enrichment_df <- bind_rows(results)
+
+p53_enrichment_df
+```
+
+
+```{r plot OR of MER61 enrichment}
+# enrichment_df
+
+ggplot(p53_enrichment_df, aes(x = repName, y = odds_ratio)) +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = conf_low, ymax = conf_high), width = 0.2) +
   geom_hline(yintercept = 1, linetype = "dashed") +
   scale_y_log10() +
   theme_classic() +
   labs(
-    y = "Odds ratio (Set3 vs Set1,  log scale)",
+    y = "Odds ratio (Set3 vs Set1, log scale)",
     x = "MER61 subfamily",
     title = "Odds Ratio of MER61 element having a p53 site in Set 3 to Set 1"
   )+
   coord_flip()
+
+
+# ggplot(enrichment_df, aes(x = repName, y = odds_ratio)) +
+#   geom_point(size = 3) +
+#   geom_errorbar(aes(ymin = conf_low, ymax = conf_high), width = 0.2) +
+#   geom_hline(yintercept = 1, linetype = "dashed") +
+#   scale_y_log10() +
+#   theme_classic() +
+#   labs(
+#     y = "Odds ratio (Set3 vs Set1,  log scale)",
+#     x = "MER61 subfamily",
+#     title = "Odds Ratio of MER61 element having a p53 site in Set 3 to Set 1"
+#   )+
+#   coord_flip()
 ```
+now I am building the data frame to test of all PeakIDs that overlap MER61Es and overlap p53 binding regions, is set 3 enriched in both MER61Es and p53 binding regions.
+```{r}
+Peakid_df <- data.frame(Peakid=annotated_H3K27ac_ext200$Peakid,
+                        cluster = annotated_H3K27ac_ext200$cluster)
+
+MER61EPeakIDs <- all_mer_members %>% 
+  dplyr::filter(repName=="MER61E") %>% 
+  distinct(Peakid)
+
+p53bound_region
+
+Peakid_df$has_MER61E <- Peakid_df$Peakid %in% MER61EPeakIDs$Peakid
+
+Peakid_df$has_p53 <- Peakid_df$Peakid %in% p53bound_region$ext_range
+
+Peakid_df$double_hit <- Peakid_df$has_MER61E & Peakid_df$has_p53
+
+table(Peakid_df$cluster, Peakid_df$double_hit)
+```
+
+What about finding if the number of no-p53 sites is enriched in set3 vs set1
+
+```{r}
+
+no_p53_results <- lapply(Mer_list, function(m) {
+
+  df_sub <- df_S1n3 %>%
+    filter(repName == m) %>%
+    mutate(
+      cluster = factor(cluster, levels = c("Set_1","Set_3")),
+      no_p53 = factor(p53_bin == 0, levels = c(FALSE, TRUE))
+    )
+  
+  tab <- table(df_sub$cluster, df_sub$no_p53)
+  
+   # skip if not full 2x2
+  if (any(dim(tab) < 2) || any(rowSums(tab) == 0) || any(colSums(tab) == 0)) {
+    return(data.frame(
+      repName = m,
+      odds_ratio = NA,
+      conf_low = NA,
+      conf_high = NA,
+      p_value = NA,
+      note = "insufficient data"
+    ))
+  }
+
+  ft <- fisher.test(tab)
+
+  data.frame(
+    repName = m,
+    odds_ratio = unname(ft$estimate),
+    conf_low = ft$conf.int[1],
+    conf_high = ft$conf.int[2],
+   p_value = ft$p.value,
+    note = "ok"
+  )
+})
+
+no_p53_enrichment_df <- bind_rows(no_p53_results)
+
+ggplot(no_p53_enrichment_df, aes(x = repName, y = odds_ratio)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = conf_low, ymax = conf_high), width = 0.2) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  scale_y_log10() +
+  theme_classic() +
+  labs(
+    y = "Odds ratio (Set3 vs Set1,  not log scale)",
+    x = "MER61 subfamily",
+    title = "Odds Ratio of MER61 element NOT having a p53 site in Set 3 to Set 1"
+  )+
+  coord_flip()
+df_S1n3 %>%
+  group_by(repName, cluster) %>%
+  summarize(
+    n = dplyr::n(),
+    no_p53 = sum(p53_bin == 0)
+  )
+
+no_p53_enrichment_df
+```
+
+
+### looking at p53 groupings in MER61E elements.
+```{r}
+Astorage$detail %>% 
+  group_by(Peakid, TE_name) %>% tally() %>% 
+  dplyr::filter(n>1) %>% 
+  group_by(TE_name) %>% 
+  count(TE_name)
+
+```
+
+
+
+
+### KZFP motif similarity
+
+```{r}
+KZFP_2026_list <- read_excel("data/Other_paper_data/human_protein_coding_KZFPs_Davis_natgen_2026.xlsx")
+KZFP_motifs <- read_meme("data/Other_paper_data/KZFP_motifs.meme")
+KZFP_motif_info <- readRDS("data/RDS_files/KZFP_motif_info.RDS")
+
+KZFP_target_TEs <-read_excel("data/Other_paper_data/KZFP_primary_targests_Supplemental_Table_S3.xlsx", sheet = "Primary_targets")
+KZFP_motif_names <-KZFP_motif_info %>% 
+  dplyr::select(Motif_ID,TF_Name, MSource_Identifier)
+KZFP_sim <- compare_motifs(
+  KZFP_motifs,
+  method = "PCC")
+
+KZFP_dist_mat <- 1 - KZFP_sim
+na_per_row <- rowSums(is.na(KZFP_dist_mat))
+# KZFP_hc <- hclust(as.dist(KZFP_dist_mat), method = "average")
+
+keep <- na_per_row < (0.2 * ncol(KZFP_dist_mat))  # allow up to 20% NA
+KZFP_dist_mat_filt <- KZFP_dist_mat[keep, keep]
+sum(is.na(KZFP_dist_mat_filt))
+sum(is.nan(KZFP_dist_mat_filt))
+sum(is.infinite(KZFP_dist_mat_filt))
+
+max_val <- max(KZFP_dist_mat_filt, na.rm = TRUE)## adding max distance to NAs
+KZFP_dist_mat_filt[is.na(KZFP_dist_mat_filt)] <- max_val
+diag(KZFP_dist_mat_filt) <- 0  # just to be safe
+
+KZFP_hc <- hclust(as.dist(KZFP_dist_mat_filt), method = "average")
+
+ComplexHeatmap::Heatmap(KZFP_dist_mat_filt,
+        cluster_rows = KZFP_hc,
+        cluster_columns = KZFP_hc,
+        show_row_names = FALSE,
+        show_column_names = FALSE)
+
+plot(KZFP_hc, labels = FALSE)
+for (h in c(0.3, 0.4, 0.5,0.55,0.6)) {
+  cat("h =", h, "clusters =", length(unique(cutree(KZFP_hc, h = h))), "\n")
+}
+```
+```{r}
+clusters <- cutree(KZFP_hc, h = 0.55)
+cluster_df <- data.frame(
+  Motif_ID = names(clusters),
+  cluster = clusters
+)
+
+cluster_annot <- cluster_df %>%
+  dplyr::left_join(KZFP_motif_info, by = "Motif_ID")
+
+# split(cluster_df$motif, cluster_df$cluster)
+
+
+cluster_list <- split(cluster_annot$TF_Name, cluster_annot$cluster)
+
+table(cluster_annot$cluster)
+library(dendextend)
+
+dend <- as.dendrogram(KZFP_hc)
+all(names(clusters) == labels(dend))
+
+dend <- color_branches(dend, h = 0.55)
+
+plot(dend)
+
+
+
+
+```
+
+What are the enriched motifs in KZFPs?
+
+Set 2 v Set 1:
+
+```{r}
+
+KZFP_set2vset1 <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/AME_H3K27ac_set2vset1_output/ame.tsv", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>%  
+  slice_head(n = length(.$ID)-3)
+
+KZFP_set2vset1 <- KZFP_set2vset1 %>% 
+  left_join(., KZFP_motif_names, by=c("motif_ID"="Motif_ID"))
+
+KZFP_set3vset1 <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/AME_H3K27ac_set3vset1_output/ame.tsv", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>%  
+  slice_head(n = length(.$ID)-3)
+
+KZFP_set3vset1 <- KZFP_set3vset1 %>% 
+  left_join(., KZFP_motif_names, by=c("motif_ID"="Motif_ID"))
+
+K3v1_set <- KZFP_set3vset1$motif_ID
+
+K2v1_set <- KZFP_set2vset1$motif_ID
+
+intersect_IDs <- intersect(K2v1_set, rownames(KZFP_dist_mat_filt))### some IDs were filtered out in the na removal stage above
+filt_mat_2v1<- KZFP_dist_mat_filt[intersect_IDs,intersect_IDs]
+
+filt_mat_3v1 <- KZFP_dist_mat_filt[K3v1_set,K3v1_set]
+
+KZFP_hc_2v1 <- hclust(as.dist(filt_mat_2v1), method = "average")
+
+ComplexHeatmap::Heatmap(filt_mat_2v1,
+        cluster_rows = KZFP_hc_2v1,
+        cluster_columns = KZFP_hc_2v1,
+        show_row_names = FALSE,
+        show_column_names = FALSE)
+
+
+```
+
+
+```{r}
+
+KZFP_hc_3v1 <- hclust(as.dist(filt_mat_3v1), method = "average")
+
+ComplexHeatmap::Heatmap(filt_mat_3v1,
+        cluster_rows = KZFP_hc_3v1,
+        cluster_columns = KZFP_hc_3v1,
+        show_row_names = FALSE,
+        show_column_names = FALSE)
+
+
+```
+```{r}
+set2_ids <- rownames(filt_mat_2v1)
+set3_ids <- rownames(filt_mat_3v1)
+
+shared_ids <- Reduce(intersect, list(set2_ids, set3_ids))
+
+
+KZFP_set2vset1 %>% 
+  dplyr::filter(`E-value`<0.05) %>% 
+   mutate(log10Evalue= log(`E-value`, base = 10)*(-1), 
+  TF_name_unique = make.unique(`TF_Name`)) %>% 
+  ggplot(., aes (y= reorder(TF_name_unique,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`%TP`/4), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~.*4,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched KZFP motif")+
+  ggtitle(paste("SET2 enrichment over SET1 KZFP motifs"))
+
+Set2_KZFP_names <- KZFP_set2vset1 %>% 
+  dplyr::filter(`E-value`<0.05) %>% 
+  dplyr::select(TF_Name)
+```
+```{r}
+KZFP_target_TEs %>% 
+  dplyr::filter(KZFP %in%Set2_KZFP_names$TF_Name) %>% 
+  dplyr::select(KZFP:`merged padj.final`,`TE age`,`TE family`) %>% 
+  kable(., caption = "SET 2 KZFP TE targets") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  column_spec(1, bold = TRUE) 
+
+
+```
+```{r SET2 KZFP RNA expression}
+KZFP_set2vset1 %>% 
+  dplyr::filter(`E-value`<0.05) %>% 
+  distinct(TF_Name) %>% 
+  dplyr::filter(TF_Name %in% Symbol_lookup$SYMBOL) %>% 
+  left_join(RNA_full_toptable, by=c("TF_Name"="SYMBOL")) %>%
+  mutate(timepoint=factor(timepoint, levels = c("24T","24R","144R"))) %>% 
+  ggplot(aes(y=logFC,x=timepoint))+
+  geom_boxplot()+
+  geom_point(aes(color=TF_Name))+
+  theme_bw()+
+  ggtitle("Set 2 KZFP LFC of expressed KZFPs")
+```
+
+```{r}
+KZFP_set3vset1 %>% 
+  dplyr::filter(`E-value`<0.05) %>% 
+   mutate(log10Evalue= log(`E-value`, base = 10)*(-1), 
+  TF_name_unique = make.unique(`TF_Name`)) %>% 
+  ggplot(., aes (y= reorder(TF_name_unique,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`%TP`/4), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~.*4,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched KZFP motif")+
+  ggtitle(paste("SET3 enrichment over SET1 KZFP motifs"))
+
+Set3_KZFP_names <- KZFP_set3vset1 %>% 
+  dplyr::filter(`E-value`<0.05) %>% 
+  dplyr::select(TF_Name)
+
+
+```
+
+```{r SET2 KZFP RNA expression}
+KZFP_set3vset1 %>% 
+  dplyr::filter(`E-value`<0.05) %>% 
+  distinct(TF_Name) %>% 
+  dplyr::filter(TF_Name %in% Symbol_lookup$SYMBOL) %>% 
+  left_join(RNA_full_toptable, by=c("TF_Name"="SYMBOL")) %>%
+  mutate(timepoint=factor(timepoint, levels = c("24T","24R","144R"))) %>% 
+  ggplot(aes(y=logFC,x=timepoint))+
+  geom_boxplot()+
+  geom_point(aes(color=TF_Name))+
+  theme_bw()+
+  ggtitle("Set 3 KZFP LFC of expressed KZFPs")
+```
+
+
+
+```{r}
+KZFP_target_TEs %>% 
+  dplyr::filter(KZFP %in%Set3_KZFP_names$TF_Name) %>% 
+  dplyr::select(KZFP:`merged padj.final`,`TE age`,`TE family`) %>% 
+  kable(., caption = "SET 3 KZFP TE targets") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
+  column_spec(1, bold = TRUE) 
+```
+All KZFPs from human found in expressed data
+
+```{r}
+expressed_KZFPs <- KZFP_2026_list %>% 
+  dplyr::filter(Label %in% Symbol_lookup$SYMBOL) %>% 
+  pull(Label)
+# saveRDS(expressed_KZFPs,"data/RDS_files/expressed_KZFPs.RDS")
+
+```
+
+
+
+### KZFP motif binding sites shared with JASPAR TF binding sites
+
+```{r}
+tomtom_share_results <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/JAS_KZFP_compare_results/tomtom.tsv", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+opts <- list(species = 9606)  # human
+pfm_list <- getMatrixSet(JASPAR2022, opts)
+
+jaspar_map <- data.frame(
+  motif_ID = sapply(pfm_list, ID),
+  TF_name  = sapply(pfm_list, function(x) x@name)
+)
+
+tomtom_share_results %>% 
+  left_join(., KZFP_motif_names,by=c("Query_ID"="Motif_ID")) %>% 
+  left_join(.,jaspar_map, by=c("Target_ID"="motif_ID")) %>% 
+  dplyr::filter(`q-value`<0.05) %>% 
+  filter(TF_Name == TF_name) %>% 
+  distinct(TF_Name)
+  
+```
+
+```{r}
+# sim_mat <-
+# tomtom_share_results %>%
+#   left_join(., KZFP_motif_names,by=c("Query_ID"="Motif_ID")) %>% 
+#   left_join(.,jaspar_map, by=c("Target_ID"="motif_ID")) %>% 
+  # mutate(sim=-log10(`q-value`)) %>% 
+  # dplyr::select(Query_ID, Target_ID, sim) %>%
+  # pivot_wider(names_from = Target_ID,
+  #             values_from = sim,values_fill = 0)
+
+
+tomtom_share_results %>%
+  left_join(., KZFP_motif_names,by=c("Query_ID"="Motif_ID")) %>%
+  left_join(.,jaspar_map, by=c("Target_ID"="motif_ID")) %>%
+mutate(sim=-log10(`q-value`)) %>% 
+  filter(Query_consensus == Target_consensus) %>% 
+  distinct(TF_Name)
+
+tomtom_share_results %>%
+  left_join(., KZFP_motif_names,by=c("Query_ID"="Motif_ID")) %>%
+  left_join(.,jaspar_map, by=c("Target_ID"="motif_ID")) %>%
+mutate(sim=-log10(`q-value`)) %>% 
+  filter(Query_consensus == Target_consensus) 
+```
+
 

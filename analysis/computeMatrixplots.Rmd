@@ -305,12 +305,40 @@ matrix_files_cent <- list.files(
   pattern="matcenter_.*gz$",
   full.names=TRUE
 )
-
-plots_cent <- lapply(matrix_files_cent, plot_2hist_deeptools_matrix)
+HERV_set <- matrix_files_cent[str_detect(matrix_files_cent, "HERV")]
+plots_cent <- lapply(matrix_files_cent[1], plot_2hist_deeptools_matrix)
 for (p in plots_cent) {
   print(p)
 }
 ```
+
+
+```{r second set}
+plots_cent_2 <- lapply(HERV_set, plot_2hist_deeptools_matrix)
+for (p in plots_cent_2) {
+  print(p)
+}
+```
+
+
+```{r LTR10Set}
+LTR10_set <- matrix_files_cent[str_detect(matrix_files_cent, "LTR10")]
+
+plots_cent_3 <- lapply(LTR10_set, plot_2hist_deeptools_matrix)
+for (p in plots_cent_3) {
+  print(p)
+}
+```
+
+```{r}
+MIR_set <- matrix_files_cent[str_detect(matrix_files_cent, "MIR")]
+
+plots_cent_4 <- lapply(MIR_set, plot_2hist_deeptools_matrix)
+for (p in plots_cent_4) {
+  print(p)
+}
+```
+
 
 ```{r, eval=FALSE}
 

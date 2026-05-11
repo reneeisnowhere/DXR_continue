@@ -56,4 +56,4 @@ tx_best <- GRangesList(tx_best)
 tx_best_gr <- unlist(tx_best, use.names = FALSE)
 tss <- resize(tx_best_gr, width = 1, fix = "start")
 export(tss, "data/Bed_exports/KZFP_tss_ensembl.bed")
-
+saveRDS(tx_best_gr,"data/RDS_files/KZFP_transcript_ensembl_id.RDS")

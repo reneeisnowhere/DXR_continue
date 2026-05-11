@@ -1074,7 +1074,7 @@ debug_roi <- function(roi_index, ROIs, summits) {
   cat("Nearby summits:", length(nearby), "\n")
 
   # Cluster summits within sets (level 1)
-  lvl1 <- reduce(split(nearby, nearby$set), min.gapwidth = 1)
+  lvl1 <- GenomicRanges::reduce(split(nearby, nearby$set), min.gapwidth = 1)
   lvl1_flat <- unlist(lvl1)
   cat("Level 1 reduced:", length(lvl1_flat), "\n")
 
@@ -1453,7 +1453,7 @@ n_missing <- sum(is.na(final_df$summit_pos))
 cat("ROIs lacking any summit within max_dist:", n_missing, "\n")
 
 
-
+table(final_df$roi_idx)
 ```
 
 Almost done, now to look at the 13,015 ROIs without summits
@@ -1633,5 +1633,65 @@ rtracklayer::export(complete_summit_gr, "data/Bed_exports/H3K27ac_complete_final
 
 # rtracklayer::export(ROIs,"data/Bed_exports/All_ROIs.bed")
 
+
+### Summit Clusters by group:
+outdir <- "data/Bed_exports/summit_groups/"
+dir.create(outdir, showWarnings = FALSE)
+
+group_gr_list <- split(consensus_summits_gr, consensus_summits_gr$group)
+
+for (nm in names(group_gr_list)) {
+    outfile <- file.path(outdir, paste0(nm, "_summits.bed"))
+    export(group_gr_list[[nm]], outfile, format = "BED")
+}
+# mcols(All_Samples.fwp.filter.non_overlapping)
 ```
+
+### Looking at summit score distributions
+
+```{r summit scores}
+all_H3K27ac_summits_gr %>% 
+  as.data.frame() %>%
+  ggplot(., aes(x=group, y=score))+
+  geom_boxplot()+
+  coord_cartesian(ylim=c(0,100))
+
+all_H3K27ac_summits_gr %>% 
+  as.data.frame() %>%
+  ggplot(., aes(x=score))+
+  geom_density()+
+  facet_wrap(~group)+
+  coord_cartesian(xlim=c(0,100))
+```
+
+```{r scores after merging}
+consensus_summits_gr %>% 
+  as.data.frame() %>% 
+  ggplot(., aes(x=group, y=score))+
+  geom_boxplot()#+
+  coord_cartesian(ylim=c(0,100))
+  
+  consensus_summits_gr %>% 
+  as.data.frame() %>% 
+    dplyr::filter(group=="VEH_144R") %>%
+    group_by(Individual) %>% tally
+  ggplot(., aes(x=Individual, y=score))+
+  geom_boxplot()+
+  coord_cartesian(ylim=c(0,100))
+
+doublelist <- complete_summit_gr %>% 
+  as.data.frame() %>% 
+  group_by(Peakid) %>% 
+  tally() %>% 
+  dplyr::filter(n>1)
+
+complete_summit_gr %>% 
+  as.data.frame() %>% 
+  
+  group_by(Peakid) %>% 
+  slice_min(order_by = abs(dist_center), n = 1)  %>% 
+ distinct()
+
+```
+
 

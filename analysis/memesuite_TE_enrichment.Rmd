@@ -117,7 +117,7 @@ ggplot(df, aes(x = rel_pos)) +
   geom_density(fill = "steelblue", alpha = 0.5) +
   labs(x = "Relative position in TE", y = "Motif density") +
   theme_classic() +
-  ggtitle("Motif distribution along TE sequences")
+  ggtitle("Motif of Fimo1 distribution along TE sequences")
 
 
 ```

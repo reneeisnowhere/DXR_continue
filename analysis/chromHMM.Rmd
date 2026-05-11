@@ -1,5 +1,5 @@
 ---
-title: "ChromHMM"
+title: "ChromHMM_1"
 author: "Renee Matthews"
 date: "`r Sys.Date()`"
 output: html_document
@@ -53,9 +53,10 @@ aic_bic_table_TACC <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TAC
 aic_bic_table_TACC %>% 
    pivot_longer(cols=c(AIC,BIC), names_to = "test_type",values_to = "calculation") %>% 
   ggplot(.,aes(x=States,y=calculation))+
-  geom_point()+
+  geom_point(size=4)+
   geom_line()+
-  facet_wrap(~test_type)
+  facet_wrap(~test_type)+
+  theme_bw()
   
 ```
 
@@ -193,6 +194,107 @@ scale_y_discrete(expand = c(0, 0), limits = rev)+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ```
+#### TSS neighborhood
+```{r import TSS neighborhood data}
+DOX_24T_TSS <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24T_DOX_16_RefSeqTSS_neighborhood.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24T")
+
+DOX_24R_TSS <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24R_DOX_16_RefSeqTSS_neighborhood.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24R")
+
+DOX_144R_TSS <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/144R_DOX_16_RefSeqTSS_neighborhood.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>% mutate(group="DOX_144R")
+
+
+VEH_24T_TSS <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24T_VEH_16_RefSeqTSS_neighborhood.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24T")
+
+VEH_24R_TSS <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/24R_VEH_16_RefSeqTSS_neighborhood.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24R")
+
+VEH_144R_TSS <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/Chrom_model_rerun/144R_VEH_16_RefSeqTSS_neighborhood.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_144R") 
+
+all_trt_TSS_states <- 
+  VEH_144R_TSS %>% 
+  bind_rows(DOX_144R_TSS) %>% 
+   bind_rows(DOX_24R_TSS) %>% 
+   bind_rows(VEH_24R_TSS) %>% 
+   bind_rows(DOX_24T_TSS) %>% 
+   bind_rows(VEH_24T_TSS) 
+
+all_trt_TSS_states_long <- all_trt_TSS_states %>%
+  pivot_longer(
+    cols = -c(`State (Emission order)`, group),
+    names_to = "position",
+    values_to = "value"
+  ) %>%
+  mutate(
+    position = as.numeric(position),
+    state = paste0("E",`State (Emission order)`)
+  ) %>% 
+  left_join(States_anno,
+            by = c("state" = "State")) %>% 
+   mutate(Name = factor(Name,
+                       levels = States_anno %>%
+                         arrange(recode) %>%
+                         pull(Name)))
+ 
+
+```
+plotting all TSS neighborhoods
+```{r}
+ggplot(all_trt_TSS_states_long,
+       aes(position, Name, fill = value)) +
+  geom_tile() +
+  facet_wrap(~ group) +
+  # scale_x_discrete(expand = c(0, 0)) +
+scale_y_discrete(expand = c(0, 0), limits = rev)+
+  # coord_fixed()+
+    theme_classic()+
+  scale_fill_gradient(low = "white", high = "#08306B")
+```
+
+“What is the general TSS architecture of each chromatin state, independent of condition?”
+```{r}
+TSS_geom_df <-  all_trt_TSS_states_long %>%
+  group_by( Name, position) %>%
+  summarize(
+    geom_FE = exp(mean(log(value + 1e-6), na.rm = TRUE)),
+    .groups = "drop")
+  
+  
+  
+  
+# TSS_geom_df <-TSS_geom_df %>%
+#   group_by(group) %>%
+#   mutate(
+#     FE_min = min(geom_FE, na.rm = TRUE),
+#     FE_max = max(geom_FE, na.rm = TRUE),
+#     chromhmm_scaled = (geom_FE - FE_min) / (FE_max - FE_min)
+#   ) %>%
+#   ungroup()
+
+ggplot(TSS_geom_df, aes(position, Name, fill = geom_FE)) +
+  geom_tile() +
+  # facet_wrap(~ group) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_fill_gradient(
+    low = "white",
+    high = "#08306B"
+  ) +
+  scale_y_discrete(limits = rev) +
+  theme_classic()+
+  ggtitle("General TSS architecture")
+```
+
+
 
 ### Enrichment across the states:
 looking at enrichment of Features across the states by each group.  This helps with the classification and interpretation of what each state represents.
@@ -225,6 +327,46 @@ VEH_144R_full <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap
  
 ```
 
+```{r loading other features enrichment}
+  DOX_24T_rpt <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/RPTmasker_run/24t_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24T")
+
+DOX_24R_rpt <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/RPTmasker_run/24R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24R")
+
+DOX_144R_rpt <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/RPTmasker_run/144R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>% mutate(group="DOX_144R")
+
+
+VEH_24T_rpt <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/RPTmasker_run/24t_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24T")
+
+VEH_24R_rpt <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/RPTmasker_run/24R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24R")
+
+VEH_144R_rpt <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/RPTmasker_run/144R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_144R") 
+ 
+all_rptclean_states <- 
+  VEH_144R_rpt %>% 
+  bind_rows(DOX_144R_rpt) %>% 
+   bind_rows(DOX_24R_rpt) %>% 
+   bind_rows(VEH_24R_rpt) %>% 
+   bind_rows(DOX_24T_rpt) %>% 
+   bind_rows(VEH_24T_rpt) 
+ 
+ just_rpt <- all_rptclean_states[,c("State (Emission order)","repeatmasker_clean.bed","group")]
+just_rpt_long <- just_rpt %>% 
+   dplyr::filter(`State (Emission order)` !="Base") %>% 
+   left_join(States_anno, by=c(`State (Emission order)`="State")) %>% 
+   pivot_longer(., cols=!c(`State (Emission order)`,group,Name,recode), names_to = "Identity",values_to = "Fold_enrichment")  
+```
 
 ```{r loading gene enrichment}
 DOX_24T_gene <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/16-internal-enrichment/24t_DOX_16.txt", 
@@ -301,6 +443,43 @@ VEH_144R_ZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_
 
 ```
 
+
+```{r loading KZFP_run data}
+DOX_24T_KZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/KZFP_run/24t_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24T")
+
+DOX_24R_KZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/KZFP_run/24R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="DOX_24R")
+
+DOX_144R_KZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/KZFP_run/144R_DOX_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE) %>% mutate(group="DOX_144R")
+
+
+VEH_24T_KZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/KZFP_run/24t_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24T")
+
+VEH_24R_KZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/KZFP_run/24R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_24R")
+
+VEH_144R_KZFP <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/KZFP_run/144R_VEH_16.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)%>% mutate(group="VEH_144R") 
+ all_KZFPs_states <- 
+  VEH_144R_KZFP %>% 
+  bind_rows(DOX_144R_KZFP) %>% 
+   bind_rows(DOX_24R_KZFP) %>% 
+   bind_rows(VEH_24R_KZFP) %>% 
+   bind_rows(DOX_24T_KZFP) %>% 
+   bind_rows(VEH_24T_KZFP) 
+ 
+ just_KZFP <- all_KZFPs_states[,c("State (Emission order)","KZFP.bed","group")]
+ 
+```
 ```{r loading ATAC_run}
 
 DOX_24T_ATAC <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/overlap_enrichment_all/ATAC_run/24t_DOX_16.txt", 
@@ -488,7 +667,8 @@ id_cols <- c("State (Emission order)", "group","Name","recode")
 all_genes_states_long <-
 all_genes_states %>%
   mutate(`State (Emission order)`=paste0("E",`State (Emission order)`)) %>% 
-  left_join(just_ZFP) %>% 
+  left_join(just_ZFP) %>%
+  left_join(just_KZFP) %>% 
   left_join(.,States_anno, by = c(`State (Emission order)`="State")) %>% 
   
   mutate(`State (Emission order)` = factor(`State (Emission order)`,
@@ -501,7 +681,7 @@ all_genes_states %>%
     values_to = "Fold_enrichment"
   ) %>%
   # preserve original order
-  mutate(Identity = factor(Identity, levels =c( names(all_genes_states)[!names(all_genes_states) %in% id_cols],"ZFP_proteins.bed"))) %>% 
+  mutate(Identity = factor(Identity, levels =c( names(all_genes_states)[!names(all_genes_states) %in% id_cols],"ZFP_proteins.bed","KZFP.bed"))) %>% 
          # create cleaned label for plotting
          mutate(Identity_label = case_when(
       str_detect(Identity, "\\.hg38\\.bed\\.gz$") ~ str_remove(Identity, "\\.hg38\\.bed\\.gz$"),
@@ -621,10 +801,12 @@ ggplot(geom_mean_df,
 #### Poster future plots
 
 ```{r poster plot data frame}
-full_states_data_long <- bind_rows(all_genes_states_long,long_file)
+full_states_data_long <- bind_rows(all_genes_states_long,long_file) %>% 
+  bind_rows(.,just_rpt_long)
+
 
 Identity_label_order <- c("Genome %", "CpGIsland","RefSeqGene","RefSeqTSS2kb","RefSeqTSS","RefSeqExon","RefSeqTES",   
-      "ZFP_proteins","PLS","pELS","dELS", "SINE", "LINE","LTR","DNA","Retroposon")
+      "KZFP","PLS","pELS","dELS", "repeatmasker_clean")
 
 geom_df_reorderd <-
 full_states_data_long %>% 
@@ -676,6 +858,64 @@ ggplot(geom_df_reorderd,aes(x=Identity_label,y=Name, fill=chromhmm_scaled))+
   
 ```
 
+```{r}
+
+Identity_label_order_new <-c("Genome %", "CpGIsland","RefSeqGene","RefSeqTSS2kb","RefSeqTSS","RefSeqExon","RefSeqTES",   
+      "KZFP","PLS","pELS","dELS", "repeatmasker_clean","SINE", "LINE","LTR","DNA","Retroposon")
+
+
+# c("Genome %", "CpGIsland","RefSeqGene","RefSeqTSS2kb","RefSeqTSS","RefSeqExon","RefSeqTES", "KZFP","PLS","pELS","dELS", "SINE", "LINE","LTR","DNA","Retroposon")
+
+geom_df_reorderd_new <-
+full_states_data_long %>% 
+  mutate(Identity_label = case_when(
+      str_detect(Identity, "\\.hg38\\.bed\\.gz$") ~ str_remove(Identity, "\\.hg38\\.bed\\.gz$"),
+      str_detect(Identity, "\\.bed$") ~ str_remove(Identity, "\\.bed$"),
+      str_detect(Identity,"^SCREEN_hg38_")~ str_remove(Identity,"^SCREEN_hg38_"),
+       str_detect(Identity,"_rptmasker")~ str_remove(Identity,"_rptmasker"),
+      Identity =="all_H3K27ac_H3K27ac_ROI"~ "all_H3K27ac_regions",
+      TRUE ~ Identity   # keep everything else unchanged
+    ),
+    group = factor(group,
+                        levels = c("VEH_24T","VEH_24R","VEH_144R",
+                                   "DOX_24T","DOX_24R","DOX_144R"))) %>% 
+  dplyr::filter(Identity_label %in% Identity_label_order_new) %>% 
+  arrange(recode) %>%
+  mutate(
+    Name = factor(Name,
+                  levels = unique(Name[order(recode)])),
+    Identity_label=factor(Identity_label,levels=Identity_label_order_new)) %>% 
+   group_by(Identity, Identity_label, Name) %>% 
+  summarize(geom_FE = exp(mean(log(Fold_enrichment + 1e-6), na.rm = TRUE)),
+    .groups = "drop") %>% 
+  group_by(Identity) %>% 
+             mutate(
+    FE_min = min(geom_FE, na.rm = TRUE),
+    FE_max = max(geom_FE, na.rm = TRUE),
+    chromhmm_scaled = (geom_FE - FE_min) / (FE_max - FE_min)) 
+
+
+ggplot(geom_df_reorderd_new,aes(x=Identity_label,y=Name, fill=chromhmm_scaled))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "transformed scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  
+    scale_y_discrete(limits=rev)+
+  ggtitle("Genic annotations relative enrichment")+
+  coord_fixed()
+
+```
+
+
 ```{r suppdata for poster}
 geom_df_reorderd <- geom_df_reorderd %>%  mutate(log2_FE = log2(geom_FE))
 
@@ -704,6 +944,76 @@ ggplot(geom_df_reorderd,
   ggtitle("Geometric Mean ChromHMM Enrichment Across Conditions")+
   coord_fixed()
 ```
+```{r}
+delta_df_reorderd_new <- 
+full_states_data_long %>% 
+  mutate(log2_FE = log2(Fold_enrichment + 1e-6)) %>% 
+        tidyr::separate(group, into=c("trt","time"), remove = FALSE) %>% 
+  mutate(Identity_label = case_when(
+      str_detect(Identity, "\\.hg38\\.bed\\.gz$") ~ str_remove(Identity, "\\.hg38\\.bed\\.gz$"),
+      str_detect(Identity, "\\.bed$") ~ str_remove(Identity, "\\.bed$"),
+      str_detect(Identity,"^SCREEN_hg38_")~ str_remove(Identity,"^SCREEN_hg38_"),
+       str_detect(Identity,"_rptmasker")~ str_remove(Identity,"_rptmasker"),
+      Identity =="all_H3K27ac_H3K27ac_ROI"~ "all_H3K27ac_regions",
+      TRUE ~ Identity   # keep everything else unchanged
+    ),
+    group = factor(group,
+                        levels = c("VEH_24T","VEH_24R","VEH_144R",
+                                   "DOX_24T","DOX_24R","DOX_144R"))) %>%
+  dplyr::filter(Identity_label %in% Identity_label_order_new) %>% 
+  arrange(recode) %>%
+  mutate(
+    Name = factor(Name,
+                  levels = unique(Name[order(recode)])),
+    Identity_label=factor(Identity_label,levels=Identity_label_order_new)) %>% 
+   filter(Identity != "Genome %") %>% 
+  group_by(time, Identity, Identity_label,Name) %>%
+  summarise(
+    delta_log2FE =
+      log2_FE[trt == "DOX"] -
+      log2_FE[trt == "VEH"],
+    .groups = "drop") %>% 
+  
+  mutate(time=factor(time, levels=c("24T","24R","144R")))
+
+```
+
+```{r full range lfe}
+scaled_df_reorderd_new <- delta_df_reorderd_new %>% 
+  dplyr::filter(Identity_label%in% c("repeatmasker_clean","LINE","SINE","LTR","DNA","Retroposon")) %>% 
+  group_by(time) %>%
+  mutate(
+    scale_factor = quantile(abs(delta_log2FE), 0.9, na.rm = TRUE),
+    delta_plot = delta_log2FE / scale_factor,
+    delta_plot = pmax(pmin(delta_plot, 1), -1)  # clamp to [-1, 1]
+  ) %>%
+  ungroup()
+
+ggplot(scaled_df_reorderd_new,
+       aes(x = Identity_label,
+           y = Name,
+           fill = delta_plot)) +
+
+  geom_tile(color = "grey9", linewidth = 0.1) +
+
+  scale_fill_gradient2(
+    low = "#053061",
+    mid = "white",
+    high = "#67001F",
+    midpoint = 0,
+    name = "log2(DOX / VEH)"
+  ) +
+
+  facet_wrap(~time, nrow = 1) +
+
+  scale_y_discrete(limits = rev) +
+
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  ggtitle("Delta of log2(DOX/VEH) at each timepoint, \nscaled to column min max")
+```
+
+
 
 
 Now I want to look at the change of log2 Fold enrichment of DOX -VEH at each timepoint
@@ -850,6 +1160,62 @@ all_ZFPs_states %>%
 
   
 ```
+```{r geometric mean of where sets are located}
+
+all_ZFPs_states %>%
+  mutate(
+    `State (Emission order)` = as.character(`State (Emission order)`),
+    `State (Emission order)` = case_when(
+      `State (Emission order)` %in% as.character(1:16) ~ paste0("E", `State (Emission order)`),
+      TRUE ~ `State (Emission order)`)) %>% 
+  mutate(`State (Emission order)` = factor(`State (Emission order)`,
+                                           levels = c(paste0("E",1:16), "Base"))) %>%
+  filter(`State (Emission order)` != "Base") %>% 
+   left_join(States_anno, by = c("State (Emission order)"="State")) %>% 
+  mutate(Name = factor(Name,
+                     levels = States_anno %>%
+                       arrange(recode) %>%
+                       pull(Name))) %>% 
+ 
+  pivot_longer(., -c(`State (Emission order)`,group, recode, Name), names_to = "Identity", values_to="Fold_enrichment") %>% 
+   mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R"))) %>% 
+  mutate(Identity=factor(Identity, levels=order),
+         ) %>% 
+  dplyr::filter(Identity!="ZFP_proteins.bed") %>% 
+#   dplyr::filter(!Identity %in% c("all_H3K36me3_regions_H3K36me3_ROI.bed",
+# "Set_1_H3K36me3_ROI.bed",
+# "Set_2_H3K36me3_ROI.bed",
+# "all_H3K27me3_regions_H3K27me3_ROI.bed",
+# "Set_1_H3K27me3_ROI.bed",               
+# "Set_2_H3K27me3_ROI.bed")) %>% 
+  mutate(Identity=str_remove("_ROI.bed"))
+  group_by(Identity) %>%   # i.e. per annotation column
+  mutate(
+    FE_min = min(Fold_enrichment, na.rm = TRUE),
+    FE_max = max(Fold_enrichment, na.rm = TRUE),
+    chromhmm_scaled = (Fold_enrichment - FE_min) / (FE_max - FE_min)
+  ) %>% 
+    ggplot(.,aes(x=Identity,y=Name, fill=chromhmm_scaled))+
+  geom_tile(color = "grey9",
+            lwd = .1,
+            linetype = 1)+
+     scale_fill_gradient(
+  low = "white",
+  high = "#08306B",
+  limits = c(0, 1),   # <- KEY
+  oob = scales::squish,
+   na.value = "white",   # <- this sets NAs to white
+  name = "transformed scale"
+)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+    scale_y_discrete(limits=rev)+
+  ggtitle("Cormotif across states")+
+  coord_fixed()
+
+
+
+
+```
 
 ```{r delta lFE regions, fig.width=12}
 plots_ZFP_long <- all_ZFPs_states %>%
@@ -957,6 +1323,11 @@ long_file %>%
 Now using the delta of DOX-VEH (the log2 FE of each) and plotting the states
 
 ```{r fig.height=10}
+
+name_levels <- long_file %>%
+  arrange(recode) %>%
+  pull(Name) %>%
+  unique()
 delta_TE_df <- long_file %>% 
   dplyr::filter(stringr::str_detect(Identity, "_rptmasker")) %>% 
   mutate(rpt=case_when(Identity=="LINE_rptmasker"~"LINE",
@@ -976,6 +1347,13 @@ delta_TE_df <- long_file %>%
       log2_FE[trt == "DOX"] -
       log2_FE[trt == "VEH"],
     .groups = "drop") %>% 
+  group_by(time) %>%
+mutate(
+  scale_factor = quantile(abs(delta_log2FE), 0.9, na.rm = TRUE),
+  delta_plot = delta_log2FE / scale_factor,
+  delta_plot = pmax(pmin(delta_plot, 1), -1)
+) %>%
+ungroup() %>% 
   mutate(time=factor(time, levels=c("24T","24R","144R")))
 
 
@@ -983,7 +1361,7 @@ delta_TE_df <- long_file %>%
 ggplot(delta_TE_df ,
        aes(x = time,
            y = Name,
-           fill = delta_log2FE)) +
+           fill = delta_plot)) +
   geom_tile(color = "grey20", linewidth = 0.2) +
   
   scale_fill_gradient2(
@@ -1009,7 +1387,8 @@ ggplot(delta_TE_df ,
     strip.text = element_text(face = "bold"),
     plot.title = element_text(face = "bold", hjust = 0.5)
   ) +
-  coord_fixed(ratio = 1.2)
+  coord_fixed(ratio = 1.2)+
+  scale_y_discrete(limits=rev)
 
 
 
@@ -1132,6 +1511,64 @@ ggplot(plots_LTR_long,aes(x = ID,
 
 ```
 
+```{r}
+order_LTR_new <- c("All_LTRs","ERV1","ERVL","ERVK","ERVL-MaLR","Gypsy")
+
+
+plots_LTR_long_noLTR <-all_LTR_states %>% 
+  mutate(`State (Emission order)` = as.character(`State (Emission order)`),
+         `State (Emission order)` = case_when(
+           `State (Emission order)` %in% as.character(1:16) ~ paste0("E", `State (Emission order)`),
+      TRUE ~ `State (Emission order)`)) %>% 
+  mutate(`State (Emission order)` = factor(`State (Emission order)`,levels = c(paste0("E",1:16), "Base"))) %>%
+  filter(`State (Emission order)` != "Base")%>% 
+     mutate(Name = factor(Name,
+                  levels = unique(Name[order(recode)]))) %>% 
+  pivot_longer(., -c(`State (Emission order)`,group, recode, Name), names_to = "Identity", values_to="Fold_enrichment") %>% 
+   mutate(group=factor(group,levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T", "DOX_24R", "DOX_144R"))) %>% 
+  mutate(ID = case_when(
+      Identity == "LTR_rptmasker.bed" ~ paste("All_LTRs"),
+      str_detect(Identity, "_rptmasker") ~ str_remove(Identity, "_rptmasker.*$"),
+      TRUE ~ Identity))%>%
+  dplyr::filter(!(ID %in% list("Genome %","ZFP_proteins.bed", "LTR"))) %>%
+  mutate(ID = factor(ID,
+                  levels = order_LTR_new))%>%
+  group_by(ID) %>%   # i.e. per annotation column
+  mutate(log2_FE = log2(Fold_enrichment + 1e-8)) %>% 
+  separate(group, into = c("trt","time"), remove = FALSE) %>% 
+  group_by(time, ID  ,Name) %>%
+  summarise(
+    delta_log2FE =
+    mean(log2_FE[trt == "DOX"], na.rm = TRUE) -
+    mean(log2_FE[trt == "VEH"], na.rm = TRUE),
+    .groups = "drop") %>% 
+  mutate(time=factor(time, levels=c("24T","24R","144R")))
+  
+
+ggplot(plots_LTR_long_noLTR,aes(x = ID,
+           y = Name,
+           fill = delta_log2FE)) +
+  
+  geom_tile(color = "grey9", linewidth = 0.1) +
+
+  scale_fill_gradient2(
+    low = "#053061",
+    mid = "white",
+    high = "#67001F",
+    midpoint = 0,
+    name = "log2(DOX / VEH)"
+  ) +
+
+  facet_wrap(~time, nrow = 1) +
+
+  scale_y_discrete(limits = rev) +
+
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  ggtitle("Delta of log2(DOX/VEH) at each timepoint")
+```
+
+
 
 ```{r LTR:ERV1 familiy, fig.width=13}
 
@@ -1199,10 +1636,38 @@ for (g in groups) {
 
   print(p)
 }
+ groups2 <- c("MER61E_ERV1_LTR","LTR10E_ERV1_LTR","MER61C_ERV1_LTR","MER61D_ERV1_LTR","LTR10B1_ERV1_LTR","LTR10B2_ERV1_LTR", "HERV1_LTRa_ERV1_LTR")
+ ggplot(
+    plots_LTR_ERV1_long %>% dplyr::filter(ID %in% groups2),
+    aes(x = ID, y = Name, fill = delta_log2FE)
+  ) +
+    # geom_tile(color = "grey9", linewidth = 0.1) +
+    # scale_fill_gradient2(
+    #   low = "#053061",
+    #   mid = "white",
+    #   high = "#67001F",
+    #   midpoint = 0,
+    #   name = "log2(DOX / VEH)"
+    # ) +
+   
+    geom_tile(color = "grey9", linewidth = 0.1) +
+  scale_fill_gradient2(
+    low = "#053061",
+    mid = "white",
+    high = "#67001F",
+    midpoint = 0,
+    limits = c(-5, 5),
+    oob = scales::squish,
+    breaks = c(-5, -2.5, 0, 2.5, 5),
+    name = "log2(DOX / VEH)") +
  
+    facet_wrap(~time, nrow = 1) +
+    scale_y_discrete(limits = rev) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggtitle(paste("Delta log2(DOX/VEH) — Group extra"))
 
-enriched_LTRs <- c("")
-
+  
 ```
 
 
@@ -1215,7 +1680,7 @@ filtered_ac_ERV1s <- anno_H3K27ac_summits %>%
   dplyr::filter(repFamily=="ERV1") %>% 
   distinct(repName)
 filtered_plots <- plots_LTR_ERV1_long %>% 
-  mutate(ID=str_remove(ID,"_ERV1_LTR*$")) %>% 
+  mutate(ID=str_remove(ID,"_ERV1_LTR$")) %>% 
   dplyr::filter(ID %in% filtered_ac_ERV1s$repName) 
 
 for (g in groups) {

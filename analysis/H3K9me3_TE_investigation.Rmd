@@ -77,6 +77,23 @@ rpt_split_gr_list <- lapply(rpt_split, function(df) {
   )
 })
 
+rmskr_std_gr <- GRanges(
+  seqnames = repeatmasker_clean$genoName,
+  ranges   = IRanges(
+    start = repeatmasker_clean$start,
+    end   = repeatmasker_clean$end
+  ),
+  strand   = repeatmasker_clean$strand,
+  repName   = repeatmasker_clean$repName,
+  repClass  = repeatmasker_clean$repClass,
+  repFamily = repeatmasker_clean$repFamily,
+  swScore   = repeatmasker_clean$swScore,
+  milliDiv  = repeatmasker_clean$milliDiv,
+  milliDel  = repeatmasker_clean$milliDel,
+  milliIns  = repeatmasker_clean$milliIns,
+  id        = repeatmasker_clean$RM_id
+)
+
 ```
 
 ```{r subset rpt_split_gr_list}
