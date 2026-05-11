@@ -1,0 +1,862 @@
+---
+title: "GOanalysis_TFs"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+
+```{r packages}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(DT)
+library(gprofiler2)
+library(kableExtra)
+library(rrvgo)
+library(org.Hs.eg.db)
+
+```
+
+```{r loading data H3K27ac}
+
+H3K27ac_Set2_data <- readRDS("data/RDS_files/H3K27ac_Set2_enrmotif_data.RDS")
+H3K27ac_Set3_data <- readRDS("data/RDS_files/H3K27ac_Set3_enrmotif_data.RDS")
+
+ggVennDiagram::ggVennDiagram(list("K27ac_2"=H3K27ac_Set2_data$motif_name,"K27ac_3"=H3K27ac_Set3_data$motif_name))+
+  ggtitle("Shared vs unique TF motifs enriched in Set 2 and Set 3 H3K27ac")
+K27ac_acute <- setdiff(H3K27ac_Set3_data$motif_name,H3K27ac_Set2_data$motif_name)
+K27ac_sus <- setdiff(H3K27ac_Set2_data$motif_name,H3K27ac_Set3_data$motif_name)
+```
+
+I am looking at GO enrichment analysis.  I will take the enriched motifs found the MEME suite and do a few stratagies of analysis.
+
+Strat 1:  taking list of enriched motifs names, breaking down pairs like FOS::JUNB into FOS and JUNB and doing GO analysis compared to all genes.
+-maybe filter for expression with RNA data?
+
+Strat 2: Using GOMO analysis.  this takes the enriched meme file of set 2 v set 1 and set 3 v set 1 and searches for the genes they regulate then does GO MF BP and CC for all the genes associtated with being activated by that motif.
+
+Strat 3:  Overlapping Set 2 and Set 3, go analysis on unique TFs
+### H3K27ac  
+
+
+```{r strat1}
+RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
+RNA_lookup <- RNA_full_toptable %>% 
+  dplyr::select(Entrez_ID, SYMBOL) %>% 
+  distinct()
+
+motif_ID_set2H3K27ac <- H3K27ac_Set2_data %>% 
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>% 
+  pull(ID) 
+  
+# writeLines(motif_ID_set2H3K27ac,"data/motif_lists/motif_ID_set2H3K27ac.txt")
+
+motif_names_set2H3K27ac <- H3K27ac_Set2_data %>%
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>%  
+  dplyr::select(motif_name) %>% 
+  separate_longer_delim(motif_name, delim="::") %>% 
+  mutate(motif_name2=toupper(motif_name)) %>% 
+  pull(motif_name2) 
+
+motif_ID_set3H3K27ac <- H3K27ac_Set3_data %>% 
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>% 
+  pull(ID) 
+
+# writeLines(motif_ID_set3H3K27ac,"data/motif_lists/motif_ID_set3H3K27ac.txt")
+
+
+motif_names_set3H3K27ac <- H3K27ac_Set3_data %>%
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>%  
+  dplyr::select(motif_name) %>% 
+  separate_longer_delim(motif_name, delim="::") %>% 
+  mutate(motif_name2=toupper(motif_name)) %>% 
+  pull(motif_name2) 
+
+```
+
+```{r}
+
+
+Set2_list <- RNA_lookup %>% 
+  dplyr::filter(SYMBOL %in% motif_names_set2H3K27ac)
+
+Set3_list <- RNA_lookup %>% 
+  dplyr::filter(SYMBOL %in% motif_names_set3H3K27ac)
+
+```
+
+```{r, eval=FALSE}
+H3K27ac_Set2_gost <- gost(query = Set2_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+H3K27ac_Set3_gost <- gost(query = Set3_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+saveRDS(H3K27ac_Set2_gost,"data/RDS_files/H3K27ac_Set2_gost.RDS")
+saveRDS(H3K27ac_Set3_gost,"data/RDS_files/H3K27ac_Set3_gost.RDS")
+```
+
+```{r}
+H3K27ac_Set2_gost <- readRDS("data/RDS_files/H3K27ac_Set2_gost.RDS")
+H3K27ac_Set3_gost <- readRDS("data/RDS_files/H3K27ac_Set3_gost.RDS")
+
+gostplot(H3K27ac_Set2_gost)
+gostplot(H3K27ac_Set3_gost)
+```
+
+```{r function to map }
+
+GO_KEGG_analysis <- function(df,type, setp_value=1, top_n= NULL){
+ a <- deparse(substitute(df)) %>% 
+  gsub("_gost","",.)
+
+# Prepare the table output
+  filtered_df <-  df$result %>% 
+  dplyr::select(c(source, term_id,
+                  term_name,intersection_size, 
+                   term_size, p_value)) %>% 
+    dplyr::filter(source == type) %>%
+    dplyr::filter(p_value < setp_value) %>%
+    arrange(p_value)
+  
+  # Optional top_n slicing
+  if(!is.null(top_n)){
+    filtered_df <- filtered_df %>%
+      slice_head(n = top_n)
+  }
+
+table <- filtered_df %>%
+  mutate_at(.vars = 6, .funs = scales::scientific_format()) %>%
+  kable(.,caption = paste0("Significant (p < ",setp_value," ) ",type," terms found in ",a," enriched TFs")) %>%
+  kable_paper("striped", full_width = FALSE) %>%
+  kable_styling(
+    full_width = FALSE,
+    position = "left",
+    bootstrap_options = c("striped", "hover")
+  ) %>%
+  scroll_box(width = "100%", height = "400px")
+
+
+# plot the table as ggplot object
+plot <- filtered_df %>%
+   # slice_head(n=10) %>% 
+    dplyr::filter(p_value < setp_value) %>% 
+  mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=log10_p, y=reorder(term_name, log10_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("(p < ",setp_value," ) ",type," terms found in\n ",a," enriched TFs"))
+
+print(table)
+print(plot)
+}
+
+
+
+```
+
+
+```{r}
+GO_KEGG_analysis(H3K27ac_Set2_gost,"GO:BP", 0.01,20)
+
+GO_KEGG_analysis(H3K27ac_Set3_gost,"GO:BP", 0.01,20)
+
+
+```
+
+```{r}
+
+test_df <- H3K27ac_Set2_gost$result %>% 
+  dplyr::filter(p_value<0.05) %>% 
+  dplyr::filter(term_size<1000)
+go_terms <- test_df$term_id
+scores <- -log10(test_df$p_value)
+names(scores) <- go_terms
+
+simMatrix <- readRDS("data/RDS_files/simMatrix_H3K27ac_set2.RDS")
+# simMatrix <- calculateSimMatrix(
+#   go_terms,
+#   orgdb = org.Hs.eg.db,
+#   ont = "BP")
+
+reducedTerms <- reduceSimMatrix(
+  simMatrix,
+  scores,
+  threshold = 0.7,
+  orgdb = org.Hs.eg.db)
+
+treemapPlot(reducedTerms)
+scatterPlot(simMatrix, reducedTerms)
+head(reducedTerms)
+
+reduced_df <- reducedTerms %>%
+  group_by(parent) %>%
+  summarise(
+    best_p = max(score),   # if score = -log10(p)
+    term = dplyr::first(term)
+  ) %>%
+  ungroup()
+reduced_df %>% 
+  arrange( desc(best_p)) %>% 
+  slice_head(n=25) %>% 
+# dplyr::filter(p_value < setp_value) %>% 
+  # mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=best_p, y=reorder(term, best_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("H3K27ac Set 2 enriched TFs"))
+
+
+```
+
+```{r}
+
+
+test_df_3 <- H3K27ac_Set3_gost$result %>% 
+  dplyr::filter(p_value<0.05) %>% 
+  dplyr::filter(term_size<1000)
+go_terms_3 <- test_df_3$term_id
+scores_3 <- -log10(test_df_3$p_value)
+names(scores_3) <- go_terms_3
+
+simMatrix_3 <- readRDS("data/RDS_files/simMatrix_H3K27ac_set3.RDS")
+# simMatrix_3 <- calculateSimMatrix(
+#   go_terms_3,
+#   orgdb = org.Hs.eg.db,
+#   ont = "BP")
+
+reducedTerms_3 <- reduceSimMatrix(
+  simMatrix_3,
+  scores_3,
+  threshold = 0.7,
+  orgdb = org.Hs.eg.db)
+
+treemapPlot(reducedTerms_3)
+scatterPlot(simMatrix_3, reducedTerms_3)
+head(reducedTerms_3)
+
+reduced_df_3 <- reducedTerms_3 %>%
+  group_by(parent) %>%
+  summarise(
+    best_p = max(score),   # if score = -log10(p)
+    term = dplyr::first(term)
+  ) %>%
+  ungroup()
+reduced_df_3 %>% 
+  arrange( desc(best_p)) %>% 
+  slice_head(n=25) %>% 
+# dplyr::filter(p_value < setp_value) %>% 
+  # mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=best_p, y=reorder(term, best_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("H3K27ac Set 3 enriched TFs"))
+
+
+```
+
+#### Strat3 H3K27ac  
+
+Separating enriched TFs by sus only; acute only; and shared.
+```{r}
+K27ac_acute <- setdiff(toupper(H3K27ac_Set3_data$motif_name),toupper(H3K27ac_Set2_data$motif_name))
+
+K27ac_sus <- setdiff(toupper(H3K27ac_Set2_data$motif_name),toupper(H3K27ac_Set3_data$motif_name))
+K27ac_shared <- intersect(toupper(H3K27ac_Set2_data$motif_name),toupper(H3K27ac_Set3_data$motif_name))
+
+K27ac_acute_list <- RNA_lookup %>% 
+  dplyr::filter(SYMBOL %in% (tibble(K27ac_acute) %>% separate_longer_delim(K27ac_acute, delim="::") %>% 
+                               pull(K27ac_acute)))
+
+K27ac_sus_list <- RNA_lookup %>% 
+  dplyr::filter(SYMBOL %in% (tibble(K27ac_sus) %>% separate_longer_delim(K27ac_sus, delim="::") %>% 
+                               pull(K27ac_sus)))
+
+K27ac_shared_list <- RNA_lookup %>% 
+  dplyr::filter(SYMBOL %in% (tibble(K27ac_shared) %>% separate_longer_delim(K27ac_shared, delim="::") %>% 
+                               pull(K27ac_shared)))
+
+```
+
+```{r gost H3K27ac strat3, eval=FALSE}
+H3K27ac_acute_gost <- gost(query = K27ac_acute_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+H3K27ac_sus_gost <- gost(query = K27ac_sus_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+H3K27ac_shared_gost <- gost(query = K27ac_shared_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+saveRDS(H3K27ac_acute_gost,"data/RDS_files/H3K27ac_acute_gost.RDS")
+saveRDS(H3K27ac_sus_gost,"data/RDS_files/H3K27ac_sus_gost.RDS")
+saveRDS(H3K27ac_shared_gost,"data/RDS_files/H3K27ac_shared_gost.RDS")
+```
+
+
+```{r}
+H3K27ac_acute_gost <- readRDS("data/RDS_files/H3K27ac_acute_gost.RDS")
+H3K27ac_sus_gost <- readRDS("data/RDS_files/H3K27ac_sus_gost.RDS")
+H3K27ac_shared_gost <- readRDS("data/RDS_files/H3K27ac_shared_gost.RDS")
+
+
+GO_KEGG_analysis(H3K27ac_acute_gost,"GO:BP", 0.05,20)
+
+GO_KEGG_analysis(H3K27ac_acute_gost,"KEGG", 0.05,20)
+
+```
+
+```{r}
+GO_KEGG_analysis(H3K27ac_sus_gost,"GO:BP", 0.05,20)
+
+GO_KEGG_analysis(H3K27ac_sus_gost,"KEGG", 0.05,20)
+```
+```{r}
+GO_KEGG_analysis(H3K27ac_shared_gost,"GO:BP", 0.05,20)
+
+GO_KEGG_analysis(H3K27ac_shared_gost,"KEGG", 0.05,20)
+```
+
+
+
+
+
+### H3K9me3
+
+```{r loading data H3K9me3}
+
+H3K9me3_Set2_data <- readRDS("data/RDS_files/H3K9me3_Set2_enrmotif_data.RDS")
+H3K9me3_Set3_data <- readRDS("data/RDS_files/H3K9me3_Set3_enrmotif_data.RDS")
+
+ ggVennDiagram::ggVennDiagram(list("K9me3_2"=H3K9me3_Set2_data$motif_name,"K9me3_3"=H3K9me3_Set3_data$motif_name))+
+  ggtitle("Shared vs unique TF motifs enriched in Set 2 and Set 3 H3K9me3")
+
+
+```
+
+
+```{r strat1 set2}
+# RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
+# RNA_lookup <- RNA_full_toptable %>% 
+#   dplyr::select(Entrez_ID, SYMBOL) %>% 
+#   distinct()
+
+motif_ID_set2H3K9me3 <- H3K9me3_Set2_data %>% 
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>% 
+  pull(ID) 
+  
+# writeLines(motif_ID_set2H3K9me3,"data/motif_lists/motif_ID_set2H3K9me3.txt")
+
+motif_names_set2H3K9me3 <- H3K9me3_Set2_data %>%
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>%  
+  dplyr::select(motif_name) %>% 
+  separate_longer_delim(motif_name, delim="::") %>% 
+  mutate(motif_name2=toupper(motif_name)) %>% 
+  pull(motif_name2) 
+
+motif_ID_set3H3K9me3 <- H3K9me3_Set3_data %>% 
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>% 
+  pull(ID) 
+
+# writeLines(motif_ID_set3H3K9me3,"data/motif_lists/motif_ID_set3H3K9me3.txt")
+
+
+motif_names_set3H3K9me3 <- H3K9me3_Set3_data %>%
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>%  
+  dplyr::select(motif_name) %>% 
+  separate_longer_delim(motif_name, delim="::") %>% 
+  mutate(motif_name2=toupper(motif_name)) %>% 
+  pull(motif_name2) 
+
+```
+
+
+```{r}
+
+
+Set2_list <- RNA_lookup %>% 
+  dplyr::filter(SYMBOL %in% motif_names_set2H3K9me3)
+
+Set3_list <- RNA_lookup %>% 
+  dplyr::filter(SYMBOL %in% motif_names_set3H3K9me3)
+
+```
+
+```{r, eval=FALSE}
+H3K9me3_Set2_gost <- gost(query = Set2_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+H3K9me3_Set3_gost <- gost(query = Set3_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+saveRDS(H3K9me3_Set2_gost,"data/RDS_files/H3K9me3_Set2_gost.RDS")
+saveRDS(H3K9me3_Set3_gost,"data/RDS_files/H3K9me3_Set3_gost.RDS")
+```
+
+```{r}
+H3K9me3_Set2_gost <- readRDS("data/RDS_files/H3K9me3_Set2_gost.RDS")
+H3K9me3_Set3_gost <- readRDS("data/RDS_files/H3K9me3_Set3_gost.RDS")
+
+gostplot(H3K9me3_Set2_gost)
+gostplot(H3K9me3_Set3_gost)
+
+```
+
+```{r}
+GO_KEGG_analysis(H3K9me3_Set2_gost,"GO:BP", 0.01,20)
+
+GO_KEGG_analysis(H3K9me3_Set3_gost,"GO:BP", 0.01,20)
+```
+
+```{r}
+
+test_df_k9 <- H3K9me3_Set2_gost$result %>% 
+  dplyr::filter(p_value<0.05) %>% 
+  dplyr::filter(term_size<750)
+go_terms_k9  <- test_df_k9 $term_id
+scores_k9  <- -log10(test_df_k9 $p_value)
+names(scores_k9)  <- go_terms_k9 
+
+simMatrix_k9  <- readRDS("data/RDS_files/simMatrix_H3K9me3_set2.RDS")
+  # saveRDS(simMatrix_k9,"data/RDS_files/simMatrix_H3K9me3_set2.RDS")
+# simMatrix_k9  <- calculateSimMatrix(
+#   go_terms_k9 ,
+#   orgdb = org.Hs.eg.db,
+#   ont = "BP")
+
+reducedTerms_k9  <- reduceSimMatrix(
+  simMatrix_k9 ,
+  scores_k9 ,
+  threshold = 0.7,
+  orgdb = org.Hs.eg.db)
+
+treemapPlot(reducedTerms_k9 )
+scatterPlot(simMatrix_k9 , reducedTerms_k9 )
+head(reducedTerms_k9 )
+
+reduced_df_k9  <- reducedTerms_k9  %>%
+  group_by(parent) %>%
+  summarise(
+    best_p = max(score),   # if score = -log10(p)
+    term = dplyr::first(term)
+  ) %>%
+  ungroup()
+reduced_df_k9  %>% 
+  arrange( desc(best_p)) %>% 
+  slice_head(n=25) %>% 
+# dplyr::filter(p_value < setp_value) %>% 
+  # mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=best_p, y=reorder(term, best_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("H3K9me3 Set 2 enriched TFs"))
+
+
+```
+
+```{r}
+
+
+test_df_3_k9  <- H3K9me3_Set3_gost$result %>% 
+  dplyr::filter(p_value<0.05) %>% 
+  dplyr::filter(term_size<750)
+go_terms_3_k9  <- test_df_3_k9 $term_id
+scores_3_k9  <- -log10(test_df_3_k9 $p_value)
+names(scores_3_k9 ) <- go_terms_3_k9 
+
+simMatrix_3_k9  <- readRDS("data/RDS_files/simMatrix_H3K9me3_set3.RDS")
+# saveRDS(simMatrix_3_k9,"data/RDS_files/simMatrix_H3K9me3_set3.RDS")
+# simMatrix_3_k9  <- calculateSimMatrix(
+#   go_terms_3_k9 ,
+#   orgdb = org.Hs.eg.db,
+#   ont = "BP")
+
+reducedTerms_3_k9  <- reduceSimMatrix(
+  simMatrix_3_k9 ,
+  scores_3_k9 ,
+  threshold = 0.7,
+  orgdb = org.Hs.eg.db)
+
+treemapPlot(reducedTerms_3_k9 )
+scatterPlot(simMatrix_3_k9 , reducedTerms_3_k9 )
+head(reducedTerms_3_k9 )
+
+reduced_df_3_k9  <- reducedTerms_3_k9  %>%
+  group_by(parent) %>%
+  summarise(
+    best_p = max(score),   # if score = -log10(p)
+    term = dplyr::first(term)
+  ) %>%
+  ungroup()
+reduced_df_3_k9 %>% 
+  arrange( desc(best_p)) %>% 
+  slice_head(n=25) %>% 
+# dplyr::filter(p_value < setp_value) %>% 
+  # mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=best_p, y=reorder(term, best_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("H3K9me3 Set 3 enriched TFs"))
+
+
+```
+
+
+#### Strat3 H3K27ac  
+
+Separating enriched TFs by sus only; acute only; and shared.
+```{r}
+K9me3_sus <- setdiff(toupper(H3K9me3_Set3_data$motif_name),toupper(H3K9me3_Set2_data$motif_name))
+
+K9me3_acute <- setdiff(toupper(H3K9me3_Set2_data$motif_name),toupper(H3K9me3_Set3_data$motif_name))
+K9me3_shared <- intersect(toupper(H3K9me3_Set2_data$motif_name),toupper(H3K9me3_Set3_data$motif_name))
+
+K9me3_acute_list <- RNA_lookup %>% 
+  dplyr::filter(SYMBOL %in% (tibble(K9me3_acute) %>% separate_longer_delim(K9me3_acute, delim="::") %>% 
+                               pull(K9me3_acute)))
+
+K9me3_sus_list <- RNA_lookup %>% 
+  dplyr::filter(SYMBOL %in% (tibble(K9me3_sus) %>% separate_longer_delim(K9me3_sus, delim="::") %>% 
+                               pull(K9me3_sus)))
+
+K9me3_shared_list <- RNA_lookup %>% 
+  dplyr::filter(SYMBOL %in% (tibble(K9me3_shared) %>% separate_longer_delim(K9me3_shared, delim="::") %>% 
+                               pull(K9me3_shared)))
+
+```
+
+```{r gost H3K9me3 strat3, eval=FALSE}
+H3K9me3_acute_gost <- gost(query = K9me3_acute_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+H3K9me3_sus_gost <- gost(query = K9me3_sus_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+H3K9me3_shared_gost <- gost(query = K9me3_shared_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+saveRDS(H3K9me3_acute_gost,"data/RDS_files/H3K9me3_acute_gost.RDS")
+saveRDS(H3K9me3_sus_gost,"data/RDS_files/H3K9me3_sus_gost.RDS")
+saveRDS(H3K9me3_shared_gost,"data/RDS_files/H3K9me3_shared_gost.RDS")
+```
+
+
+```{r}
+H3K9me3_acute_gost <- readRDS("data/RDS_files/H3K9me3_acute_gost.RDS")
+H3K9me3_sus_gost <- readRDS("data/RDS_files/H3K9me3_sus_gost.RDS")
+H3K9me3_shared_gost <- readRDS("data/RDS_files/H3K9me3_shared_gost.RDS")
+
+
+GO_KEGG_analysis(H3K9me3_acute_gost,"GO:BP", 0.05,20)
+
+GO_KEGG_analysis(H3K9me3_acute_gost,"KEGG", 0.05,20)
+
+```
+
+```{r}
+GO_KEGG_analysis(H3K9me3_sus_gost,"GO:BP", 0.05,20)
+
+GO_KEGG_analysis(H3K9me3_sus_gost,"KEGG", 0.05,20)
+```
+```{r}
+GO_KEGG_analysis(H3K9me3_shared_gost,"GO:BP", 0.05,20)
+
+GO_KEGG_analysis(H3K9me3_shared_gost,"KEGG", 0.05,20)
+```
+
+#### Reduction of terms
+
+
+
+
+```{r}
+
+test_acute_k9 <- H3K9me3_acute_gost$result %>% 
+  dplyr::filter(p_value<0.05) %>% 
+  dplyr::filter(term_size<750)
+go_terms_acute_k9  <- test_acute_k9$term_id
+scores_acute_k9  <- -log10(test_acute_k9$p_value)
+names(scores_acute_k9)  <- go_terms_acute_k9 
+
+simMatrix_acute_k9  <- readRDS("data/RDS_files/simMatrix_H3K9me3_acute.RDS")
+  # saveRDS(simMatrix_acute_k9,"data/RDS_files/simMatrix_H3K9me3_acute.RDS")
+# simMatrix_acute_k9  <- calculateSimMatrix(
+#   go_terms_acute_k9 ,
+#   orgdb = org.Hs.eg.db,
+#   ont = "BP")
+
+reducedTerms_acute_k9  <- reduceSimMatrix(
+  simMatrix_acute_k9 ,
+  scores_acute_k9 ,
+  threshold = 0.7,
+  orgdb = org.Hs.eg.db)
+
+treemapPlot(reducedTerms_acute_k9 )
+scatterPlot(simMatrix_acute_k9 , reducedTerms_acute_k9 )
+head(reducedTerms_acute_k9 )
+
+reduced_acute_k9  <- reducedTerms_acute_k9  %>%
+  group_by(parent) %>%
+  summarise(
+    best_p = max(score),   # if score = -log10(p)
+    term = dplyr::first(term)
+  ) %>%
+  ungroup()
+reduced_acute_k9  %>% 
+  arrange( desc(best_p)) %>% 
+  slice_head(n=25) %>% 
+# dplyr::filter(p_value < setp_value) %>% 
+  # mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=best_p, y=reorder(term, best_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("H3K9me3 acute only enriched TFs"))
+
+
+```
+
+```{r fig.width=15}
+
+test_sus_k9 <- H3K9me3_sus_gost$result %>% 
+  dplyr::filter(p_value<0.05) %>% 
+  dplyr::filter(term_size<750)
+go_terms_sus_k9  <- test_sus_k9$term_id
+scores_sus_k9  <- -log10(test_sus_k9$p_value)
+names(scores_sus_k9)  <- go_terms_sus_k9 
+
+simMatrix_sus_k9  <- readRDS("data/RDS_files/simMatrix_H3K9me3_sus.RDS")
+# saveRDS(simMatrix_sus_k9,"data/RDS_files/simMatrix_H3K9me3_sus.RDS")
+# simMatrix_sus_k9  <- calculateSimMatrix(
+#   go_terms_sus_k9 ,
+#   orgdb = org.Hs.eg.db,
+#   ont = "BP")
+
+reducedTerms_sus_k9  <- reduceSimMatrix(
+  simMatrix_sus_k9 ,
+  scores_sus_k9 ,
+  threshold = 0.7,
+  orgdb = org.Hs.eg.db)
+
+treemapPlot(reducedTerms_sus_k9 )
+scatterPlot(simMatrix_sus_k9 , reducedTerms_sus_k9 )
+head(reducedTerms_sus_k9 )
+
+reduced_sus_k9  <- reducedTerms_sus_k9  %>%
+  group_by(parent) %>%
+  summarise(
+    best_p = max(score),   # if score = -log10(p)
+    term = dplyr::first(term)
+  ) %>%
+  ungroup()
+reduced_sus_k9  %>% 
+  arrange( desc(best_p)) %>% 
+  slice_head(n=25) %>%
+# dplyr::filter(p_value < setp_value) %>% 
+  # mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=best_p, y=reorder(term, best_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("H3K9me3 sus only enriched TFs"))
+
+
+```
+
+```{r}
+
+test_shared_k9 <- H3K9me3_shared_gost$result %>% 
+  dplyr::filter(p_value<0.05) %>% 
+  dplyr::filter(term_size<750)
+go_terms_shared_k9  <- test_shared_k9$term_id
+scores_shared_k9  <- -log10(test_shared_k9$p_value)
+names(scores_shared_k9)  <- go_terms_shared_k9 
+
+simMatrix_shared_k9  <- readRDS("data/RDS_files/simMatrix_H3K9me3_shared.RDS")
+  # saveRDS(simMatrix_shared_k9,"data/RDS_files/simMatrix_H3K9me3_shared.RDS")
+# simMatrix_shared_k9  <- calculateSimMatrix(
+  # go_terms_shared_k9 ,
+  # orgdb = org.Hs.eg.db,
+  # ont = "BP")
+
+reducedTerms_shared_k9  <- reduceSimMatrix(
+  simMatrix_shared_k9 ,
+  scores_shared_k9 ,
+  threshold = 0.7,
+  orgdb = org.Hs.eg.db)
+
+treemapPlot(reducedTerms_shared_k9 )
+scatterPlot(simMatrix_shared_k9 , reducedTerms_shared_k9 )
+head(reducedTerms_shared_k9 )
+
+reduced_shared_k9  <- reducedTerms_shared_k9  %>%
+  group_by(parent) %>%
+  summarise(
+    best_p = max(score),   # if score = -log10(p)
+    term = dplyr::first(term)
+  ) %>%
+  ungroup()
+reduced_shared_k9  %>% 
+  arrange( desc(best_p)) %>% 
+  slice_head(n=25) %>% 
+# dplyr::filter(p_value < setp_value) %>% 
+  # mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=best_p, y=reorder(term, best_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("H3K9me3 shared only enriched TFs"))
+
+
+```
