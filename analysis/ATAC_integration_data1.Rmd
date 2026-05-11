@@ -37,6 +37,8 @@ library(DT)
 library(readxl)
 ```
 
+#### Data input  
+
 
 ```{r loading data}
  
@@ -66,7 +68,7 @@ mcols(DOX_24_CAR_gr)$name <- mcols(DOX_24_CAR_gr)$peak
 mcols(DOX_24_DAR_gr)$name <- mcols(DOX_24_DAR_gr)$peak
 
 H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
-
+ H3K27ac_summit_gr_ext <- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
 
 peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
 
@@ -81,17 +83,38 @@ H3K27ac_sets_gr <- lapply(peakAnnoList_H3K27ac, function(df) {
 ##assigning Peakid as name of summit region
  mcols(H3K27ac_summit_gr)$name <- mcols(H3K27ac_summit_gr)$Peakid
  
- H3K27ac_set_case_lfc <- readRDS("data/RDS_files/H3K27ac_set_case_lfc.RDS")
+ # H3K27ac_set_case_lfc <- readRDS("data/RDS_files/H3K27ac_set_case_lfc.RDS")
 
 
 ```
 
 ```{r export DARs and CARs bedlist, eval=FALSE}
 
+library(GenomeInfoDb)
+library(BSgenome.Hsapiens.UCSC.hg38)
+
 export(DOX_24_DAR_gr, "data/Bed_exports/ATAC_DOX_24h_DAR.bed", format = "BED")
 export(DOX_24_CAR_gr, "data/Bed_exports/ATAC_DOX_24h_CAR.bed", format = "BED")
+genome_sl <- seqlengths(BSgenome.Hsapiens.UCSC.hg38)
+
+genome_sl <- genome_sl[seqlevels(H3K27ac_summit_gr)]
+
+seqlengths(H3K27ac_summit_gr) <-genome_sl
+H3K27ac_summit_gr <- trim(H3K27ac_summit_gr)
+H3K27ac_summit_gr_ext <- promoters(
+  H3K27ac_summit_gr,
+  upstream = 200,
+  downstream = 200
+)
+export(H3K27ac_summit_gr_ext,
+  "data/Bed_exports/H3K27ac_summit_gr_ext200.bed",
+  format = "bed"
+)
 
 ```
+####  Overlapping CAR and DAR of ATAC data with ext200 ROIs of H3K27ac  
+
+
 
 ```{r CAR hits}
 
@@ -106,6 +129,16 @@ H3K27ac_CAR_peakid <- H3K27ac_CAR_overlap %>%
   group_by(ROI_ID) %>% 
   distinct(ROI_ID)
 
+CAR_H3K27ac_hits_ext <- findOverlaps(H3K27ac_summit_gr_ext, DOX_24_CAR_gr, ignore.strand = TRUE)
+H3K27ac_ext_CAR_overlap <- tibble(
+  hit_id = queryHits(CAR_H3K27ac_hits_ext),
+  ROI_ID=mcols(H3K27ac_summit_gr_ext)$Peakid[queryHits((CAR_H3K27ac_hits_ext))],
+  cluster   = mcols(H3K27ac_summit_gr_ext)$cluster[queryHits(CAR_H3K27ac_hits_ext)],
+  CAR_ROI   = mcols(DOX_24_CAR_gr)$peak[subjectHits(CAR_H3K27ac_hits_ext)])
+
+H3K27ac_ext_CAR_peakid <- H3K27ac_ext_CAR_overlap %>% 
+  group_by(ROI_ID) %>% 
+  distinct(ROI_ID)
 
 ```
 
@@ -124,7 +157,24 @@ H3K27ac_DAR_peakid <- H3K27ac_DAR_overlap %>%
   group_by(ROI_ID) %>% 
   distinct(ROI_ID) 
 
+
+DAR_H3K27ac_hits_ext <- findOverlaps(H3K27ac_summit_gr_ext, DOX_24_DAR_gr, ignore.strand = TRUE)
+H3K27ac_ext_DAR_overlap <- tibble(
+  hit_id = queryHits(DAR_H3K27ac_hits_ext),
+  ROI_ID=mcols(H3K27ac_summit_gr_ext)$Peakid[queryHits((DAR_H3K27ac_hits_ext))],
+  cluster   = mcols(H3K27ac_summit_gr_ext)$cluster[queryHits(DAR_H3K27ac_hits_ext)],
+  CAR_ROI   = mcols(DOX_24_DAR_gr)$peak[subjectHits(DAR_H3K27ac_hits_ext)])
+
+H3K27ac_ext_DAR_peakid <- H3K27ac_ext_DAR_overlap %>% 
+  group_by(ROI_ID) %>% 
+  distinct(ROI_ID)
+
+
 ```
+  
+  
+### Plots of enrichment Full H3K27ac overlap  
+
 
 ```{r}
 joint_H3K27ac <- intersect(H3K27ac_DAR_peakid$ROI_ID, H3K27ac_CAR_peakid$ROI_ID)
@@ -185,3 +235,302 @@ prop_ATAC_df %>%
     scrollX = TRUE), caption = "counts of H3K27ac ROIs")
 ```
 
+### Plots of enrichment 200ext H3K27ac overlap  
+
+
+```{r}
+joint_H3K27ac_ext <- intersect(H3K27ac_ext_DAR_peakid$ROI_ID, H3K27ac_ext_CAR_peakid$ROI_ID)
+
+prop_ATAC_df_ext <- peakAnnoList_H3K27ac$all_H3K27ac %>%
+  as.data.frame() %>% 
+  dplyr::select(Peakid) %>% 
+  left_join(H3K27ac_lookup) %>%
+  mutate(cluster = if_else(is.na(cluster), "NA", cluster)) %>% 
+  mutate(
+    ATAC_type = case_when(Peakid %in% joint_H3K27ac_ext ~ "joint",
+      Peakid %in% H3K27ac_ext_DAR_peakid$ROI_ID ~ "DAR",
+      Peakid %in% H3K27ac_ext_CAR_peakid$ROI_ID ~ "CAR",
+      TRUE ~ "not_atac"
+    )
+  ) %>%
+  count(cluster, ATAC_type, name = "n") %>%
+  group_by(cluster) %>%
+  mutate(
+    percent = n / sum(n) * 100
+  ) %>%
+  ungroup()
+
+ggplot(prop_ATAC_df_ext, aes(x = cluster, y = percent, fill = ATAC_type)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  geom_text(
+    aes(label = sprintf("%.1f%%", percent)),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  labs(y = "Proportion")+
+  theme_bw()+
+  ggtitle("Proportion of CARs and DARs in each H3K27ac ext_200 set")
+  
+
+prop_ATAC_df_ext %>% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = percent) %>% 
+   datatable(.,rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE)) %>% 
+  DT::formatRound(columns = c("CAR", "DAR", "joint", "not_atac"), # explicitly name the numeric columns
+    digits = 2)
+  
+
+prop_ATAC_df_ext %>% 
+  pivot_wider(id_cols = c(cluster), names_from = ATAC_type, values_from = n) %>%
+  rowwise() %>% 
+  mutate(total=sum(c_across(any_of(c("CAR", "DAR","joint","not_atac"))))) %>% 
+  datatable(.,rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE), caption = "counts of H3K27ac ext ROIs")
+```
+```{r}
+Peakid_df <- data.frame(
+  Peakid = H3K27ac_summit_gr_ext$Peakid,
+  cluster = H3K27ac_summit_gr_ext$cluster
+)
+
+Peakid_df$is_CAR <-Peakid_df$Peakid %in% H3K27ac_ext_CAR_peakid$ROI_ID
+Peakid_df$is_DAR <-Peakid_df$Peakid %in% H3K27ac_ext_DAR_peakid$ROI_ID
+```
+
+#### Enrichment statistics  
+
+
+```{r testing set2vset1 car}
+df_sub_set2v1 <- Peakid_df %>%
+  dplyr::filter(cluster %in% c("Set_1", "Set_2"))
+table(df_sub_set2v1$cluster, df_sub_set2v1$is_CAR)
+
+fisher.test(table(df_sub_set2v1$cluster, df_sub_set2v1$is_CAR))
+
+
+```
+so SEt2 is depeleted in CARs compared to SEt1
+
+```{r}
+df_sub_set3v1 <- Peakid_df %>%
+  dplyr::filter(cluster %in% c("Set_1", "Set_3"))
+table(df_sub_set3v1$cluster, df_sub_set3v1$is_CAR)
+
+fisher.test(table(df_sub_set3v1$cluster, df_sub_set3v1$is_CAR))
+```
+
+Set 3 is also significantly depleted in CARs compared to SET 1
+
+```{r}
+DAR_sub_set2v1 <- Peakid_df %>%
+  dplyr::filter(cluster %in% c("Set_1", "Set_2"))
+table(DAR_sub_set2v1$cluster, DAR_sub_set2v1$is_DAR)
+
+fisher.test(table(DAR_sub_set2v1$cluster, DAR_sub_set2v1$is_DAR))
+```
+
+SEt 2 significantly enriched in DARs compared to set 1
+
+```{r}
+DAR_sub_set3v1 <- Peakid_df %>%
+  dplyr::filter(cluster %in% c("Set_1", "Set_3"))
+table(DAR_sub_set3v1$cluster, DAR_sub_set3v1$is_DAR)
+
+fisher.test(table(DAR_sub_set3v1$cluster, DAR_sub_set3v1$is_DAR))
+```
+
+Set 3 is significantly enriched in DARs vs Set 1
+
+###  Evaluation of repName in CAR v DAR
+
+This section is trying to test if the MER61E or any integrants in any repName (the ones I am concerned about in my Set 3 data (Acute response) have are DARs and whether they increase or decrease in ATAC LFC)
+
+To type out what I am thinking a little more, my idea is that if MER61 elements are acting as promotors, I will find increased ATAC accessibility and increased H3K27ac marks of the overlapping integrants at 24T.  I know I already see a decrease of H3K27ac overtime in my other analysis for these integrants, but have not drilled down to specific sites.
+
+```{r}
+sat_lowc_simrpt_list <- readRDS( "data/RDS_files/sat_lowc_simrpt_repNames.RDS")
+
+annotated_H3K27ac_ext200 <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+
+
+split_af_H3K27ac <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName, repID), delim=";") %>% 
+  dplyr::select(Peakid,repClass:repID,cluster) %>% 
+  dplyr::filter(!repName %in% sat_lowc_simrpt_list)
+
+
+anno_check_split_repName_H3K27ac <- split(split_af_H3K27ac,split_af_H3K27ac$repName)
+
+
+rep_counts_H3K27ac <- split_af_H3K27ac %>%
+  distinct(Peakid, repName) %>%   # avoid duplicate counting per peak
+  count(repName, name = "n_peaks") %>%
+  arrange(desc(n_peaks))
+
+### finding higher count repNames
+keep_repNames_H3K27ac <- rep_counts_H3K27ac %>%
+  filter(n_peaks >= 10) %>%
+  pull(repName)
+
+### filter out lower count repNames
+
+
+```
+
+
+
+
+```{r}
+repName_peak_list_H3K27ac <- lapply(anno_check_split_repName, function(df) {
+  unique(df$Peakid)
+})
+
+
+repName_peak_list_filt_H3K27ac <- repName_peak_list_H3K27ac[names(repName_peak_list_H3K27ac) %in% keep_repNames_H3K27ac]
+
+
+all_peaks_H3K27ac <- unique(annotated_H3K27ac_ext200$Peakid)
+
+CAR_H3K27ac <- unique(H3K27ac_ext_CAR_peakid$ROI_ID)
+DAR_H3K27ac <- unique(H3K27ac_ext_DAR_peakid$ROI_ID)
+
+CAR_H3K27ac_only <- setdiff(CAR_H3K27ac, DAR_H3K27ac)
+DAR_H3K27ac_only <- setdiff(DAR_H3K27ac, CAR_H3K27ac)
+
+test_enrichment_H3K27ac <- function(TE_peaks, target_peaks, background) {
+  a <- sum(background %in% TE_peaks & background %in% target_peaks)
+  b <- sum(background %in% TE_peaks & !(background %in% target_peaks))
+  c <- sum(!(background %in% TE_peaks) & background %in% target_peaks)
+  d <- sum(!(background %in% TE_peaks) & !(background %in% target_peaks))
+  
+  mat <- matrix(c(a,b,c,d), nrow = 2)
+  res <- fisher.test(mat)
+  
+  data.frame(
+    overlap = a,
+    odds_ratio = as.numeric(res$estimate),
+    p_value = res$p.value
+  )
+}
+```
+
+```{r CAR H3K27ac repName test}
+CAR_H3K27ac_results <- lapply(names(repName_peak_list_filt_H3K27ac), function(rep) {
+  
+  TE_peaks <- repName_peak_list_filt_H3K27ac[[rep]]
+  
+  res <- test_enrichment_H3K27ac(
+    TE_peaks = TE_peaks,
+    target_peaks = CAR_H3K27ac,
+    background = all_peaks_H3K27ac
+  )
+  
+  res$repName <- rep
+  res$TE_total <- length(TE_peaks)   # add this
+  
+  res
+}) %>% bind_rows()
+```
+
+```{r DAR H3K27ac repName test}
+
+DAR_H3K27ac_results <- lapply(names(repName_peak_list_filt_H3K27ac), function(rep) {
+  
+  TE_peaks <- repName_peak_list_filt_H3K27ac[[rep]]
+  
+  res <- test_enrichment_H3K27ac(
+    TE_peaks = TE_peaks,
+    target_peaks = DAR_H3K27ac,
+    background = all_peaks_H3K27ac
+  )
+  
+  res$repName <- rep
+  res$TE_total <- length(TE_peaks)   # add this
+  
+  res
+}) %>% bind_rows()
+
+```
+
+```{r volcano plots}
+CAR_H3K27ac_results <- CAR_H3K27ac_results %>%
+  filter(!is.na(repName) & repName != "NA") %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+DAR_H3K27ac_results <- DAR_H3K27ac_results %>%
+  filter(!is.na(repName) & repName != "NA") %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+# saveRDS(CAR_H3K27ac_results, "data/RDS_files/CAR_H3K27ac_repName_enrichment_results.RDS")
+# saveRDS(DAR_H3K27ac_results, "data/RDS_files/DAR_H3K27ac_repName_enrichment_results.RDS")
+
+```
+
+
+```{r}
+CAR_H3K27ac_volcano_df <- CAR_H3K27ac_results %>%
+  mutate(
+    log2_OR = log2(odds_ratio),
+    neg_log10_FDR = -log10(FDR),
+    sig = FDR < 0.05
+  ) %>% 
+ mutate(
+    log2_OR = ifelse(is.infinite(log2_OR), NA, log2_OR)
+  )
+
+
+ggplot(CAR_H3K27ac_volcano_df, aes(x = log2_OR, y = neg_log10_FDR)) +
+  geom_point(aes(color = sig), alpha = 0.7) +
+  geom_text_repel(data = subset(CAR_H3K27ac_volcano_df, FDR < 0.05),  # only significant points
+                  aes(label = repName),
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  scale_color_manual(values = c("grey70", "red")) +
+  theme_classic() +
+  labs(
+    x = "log2(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE Enrichment in CAR H3K27ac Peaks"
+  )
+```
+
+```{r}
+DAR_H3K27ac_volcano_df <- DAR_H3K27ac_results %>%
+  mutate(
+    log2_OR = log2(odds_ratio),
+    neg_log10_FDR = -log10(FDR),
+    sig = FDR < 0.05
+  ) %>% 
+ mutate(
+    log2_OR = ifelse(is.infinite(log2_OR), NA, log2_OR)
+  )
+
+ggplot(DAR_H3K27ac_volcano_df, aes(x = log2_OR, y = neg_log10_FDR)) +
+  geom_point(aes(color = sig), alpha = 0.7) +
+  geom_text_repel(data = subset(DAR_H3K27ac_volcano_df, FDR < 0.05),  # only significant points
+                  aes(label = repName),
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  scale_color_manual(values = c("grey70", "red")) +
+  theme_classic() +
+  labs(
+    x = "log2(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE Enrichment in DAR H3K27ac Peaks"
+  )
+```

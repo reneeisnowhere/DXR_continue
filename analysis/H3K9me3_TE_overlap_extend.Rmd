@@ -1995,7 +1995,11 @@ repName_results <- comparisons %>%
   ) %>%
   unnest(results) %>%
   mutate(FDR = p.adjust(p_value, method = "BH"))
+
+saveRDS(repName_results,"data/RDS_files/H3K9me3_repName_results.RDS")
 ```
+
+
 
 
 ```{r}
@@ -2061,7 +2065,7 @@ export(H3K9me3_summit_gr_ext,"data/Bed_exports/H3K9me3_summit_gr_ext200.bed")
 H3K9me3_summit_gr_ext
 # peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
 
-H3K9me3_Set_1 <- 
+# H3K9me3_Set_1 <- 
 out_dir <- "data/Bed_exports/repeatmasker_sets"
 set_list <- names(peakAnnoList_H3K9me3)
 
@@ -2090,6 +2094,9 @@ for (group_name in set_list) {
 
 ```
 
+```{r exporting expanded regions of H3K9me3,eval=FALSE}
+
+```
 
 ```{r}
 # annotated_H3K9me3_ext200 %>% dplyr::filter(cluster =="Set_3") %>% 

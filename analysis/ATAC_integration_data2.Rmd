@@ -233,9 +233,9 @@ prop_ATAC_df_ext <- peakAnnoList_H3K9me3$all_H3K9me3 %>%
   left_join(H3K9me3_lookup) %>%
   mutate(cluster = if_else(is.na(cluster), "NA", cluster)) %>% 
   mutate(
-    ATAC_type = case_when(Peakid %in% joint_H3K9me3 ~ "joint",
-      Peakid %in% H3K9me3_CAR_peakid$ROI_ID ~ "CAR",
-      Peakid %in% H3K9me3_DAR_peakid$ROI_ID ~ "DAR",
+    ATAC_type = case_when(Peakid %in% joint_H3K9me3_ext ~ "joint",
+      Peakid %in% H3K9me3_ext_CAR_peakid$ROI_ID ~ "CAR",
+      Peakid %in% H3K9me3_ext_DAR_peakid$ROI_ID ~ "DAR",
       TRUE ~ "not_atac"
     )
   ) %>%
@@ -283,41 +283,41 @@ prop_ATAC_df_ext %>%
     scrollX = TRUE), caption = "counts of H3K9me3 ext ROIs")
 ```
 ```{r}
-Peakid_df <- data.frame(
+Peakid_df_K9 <- data.frame(
   Peakid = H3K9me3_summit_gr_ext$Peakid,
   cluster = H3K9me3_summit_gr_ext$cluster
 )
 
-Peakid_df$is_CAR <-Peakid_df$Peakid %in% H3K9me3_ext_CAR_peakid$ROI_ID
-Peakid_df$is_DAR <-Peakid_df$Peakid %in% H3K9me3_ext_DAR_peakid$ROI_ID
+Peakid_df_K9$is_CAR <-Peakid_df_K9$Peakid %in% H3K9me3_ext_CAR_peakid$ROI_ID
+Peakid_df_K9$is_DAR <-Peakid_df_K9$Peakid %in% H3K9me3_ext_DAR_peakid$ROI_ID
 ```
 
 
 ```{r testing set2vset1 car}
-df_sub_set2v1 <- Peakid_df %>%
+df_sub_set2v1_K9 <- Peakid_df_K9 %>%
   dplyr::filter(cluster %in% c("Set_1", "Set_2"))
-table(df_sub_set2v1$cluster, df_sub_set2v1$is_CAR)
+table(df_sub_set2v1_K9$cluster, df_sub_set2v1_K9$is_CAR)
 
-fisher.test(table(df_sub_set2v1$cluster, df_sub_set2v1$is_CAR))
+fisher.test(table(df_sub_set2v1_K9$cluster, df_sub_set2v1_K9$is_CAR))
 
 
 ```
 so SEt2 is enriched in CARs compared to SEt1
 
 ```{r}
-df_sub_set3v1 <- Peakid_df %>%
-  dplyr::filter(cluster %in% c("Set_1", "Set_2"))
-table(df_sub_set3v1$cluster, df_sub_set3v1$is_CAR)
+df_sub_set3v1_K9 <- Peakid_df_K9 %>%
+  dplyr::filter(cluster %in% c("Set_1", "Set_3"))
+table(df_sub_set3v1_K9$cluster, df_sub_set3v1_K9$is_CAR)
 
-fisher.test(table(df_sub_set3v1$cluster, df_sub_set3v1$is_CAR))
+fisher.test(table(df_sub_set3v1_K9$cluster, df_sub_set3v1_K9$is_CAR))
 ```
 
 Set 3 is also significantly enriched in CARs compared to SET 1
 
 ```{r}
-DAR_sub_set2v1 <- Peakid_df %>%
+DAR_sub_set2v1_K9 <- Peakid_df_K9 %>%
   dplyr::filter(cluster %in% c("Set_1", "Set_2"))
-table(DAR_sub_set2v1$cluster, DAR_sub_set2v1$is_DAR)
+table(DAR_sub_set2v1_K9$cluster, DAR_sub_set2v1_K9$is_DAR)
 
 fisher.test(table(DAR_sub_set2v1$cluster, DAR_sub_set2v1$is_DAR))
 ```
@@ -325,13 +325,192 @@ fisher.test(table(DAR_sub_set2v1$cluster, DAR_sub_set2v1$is_DAR))
 SEt 2 significantly enriched in DARs compared to set 1
 
 ```{r}
-DAR_sub_set3v1 <- Peakid_df %>%
+DAR_sub_set3v1_K9 <- Peakid_df_K9 %>%
   dplyr::filter(cluster %in% c("Set_1", "Set_3"))
-table(DAR_sub_set3v1$cluster, DAR_sub_set3v1$is_DAR)
+table(DAR_sub_set3v1_K9$cluster, DAR_sub_set3v1_K9$is_DAR)
 
-fisher.test(table(DAR_sub_set3v1$cluster, DAR_sub_set3v1$is_DAR))
+fisher.test(table(DAR_sub_set3v1_K9$cluster, DAR_sub_set3v1_K9$is_DAR))
 ```
 
 Set 3 is significantly enriched in DARs vs Set 1
 
+### Evaluation of CAR and DAR in H3K9me3
 
+```{r}
+sat_lowc_simrpt_list <- readRDS( "data/RDS_files/sat_lowc_simrpt_repNames.RDS")
+
+annotated_H3K9me3_ext200 <- readRDS("data/TE_annotation/annotated_H3K9me3_ext200_TE_overlaps.RDS")
+
+
+split_af_H3K9me3 <- annotated_H3K9me3_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName, repID), delim=";") %>% 
+  dplyr::select(Peakid,repClass:repID,cluster) %>% 
+  dplyr::filter(!repName %in% sat_lowc_simrpt_list)
+
+
+anno_check_split_repName_H3K9me3 <- split(split_af_H3K9me3,split_af_H3K9me3$repName)
+
+
+rep_counts_H3K9me3 <- split_af_H3K9me3 %>%
+  distinct(Peakid, repName) %>%   # avoid duplicate counting per peak
+  count(repName, name = "n_peaks") %>%
+  arrange(desc(n_peaks))
+
+### finding higher count repNames
+keep_repNames_H3K9me3 <- rep_counts_H3K9me3 %>%
+  filter(n_peaks >= 10) %>%
+  pull(repName)
+
+### filter out lower count repNames
+
+
+```
+
+
+
+
+```{r}
+repName_peak_list_H3K9me3 <- lapply(anno_check_split_repName_H3K9me3, function(df) {
+  unique(df$Peakid)
+})
+
+
+repName_peak_list_filt_H3K9me3 <- repName_peak_list_H3K9me3[names(repName_peak_list_H3K9me3) %in% keep_repNames_H3K9me3]
+
+
+all_peaks_H3K9me3 <- unique(annotated_H3K9me3_ext200$Peakid)
+
+CAR_H3K9me3 <- unique(H3K9me3_ext_CAR_peakid$ROI_ID)
+DAR_H3K9me3 <- unique(H3K9me3_ext_DAR_peakid$ROI_ID)
+
+CAR_H3K9me3_only <- setdiff(CAR_H3K9me3, DAR_H3K9me3)
+DAR_H3K9me3_only <- setdiff(DAR_H3K9me3, CAR_H3K9me3)
+
+test_enrichment_H3K9me3 <- function(TE_peaks, target_peaks, background) {
+  a <- sum(background %in% TE_peaks & background %in% target_peaks)
+  b <- sum(background %in% TE_peaks & !(background %in% target_peaks))
+  c <- sum(!(background %in% TE_peaks) & background %in% target_peaks)
+  d <- sum(!(background %in% TE_peaks) & !(background %in% target_peaks))
+  
+  mat <- matrix(c(a,b,c,d), nrow = 2)
+  res <- fisher.test(mat)
+  
+  data.frame(
+    overlap = a,
+    odds_ratio = as.numeric(res$estimate),
+    p_value = res$p.value
+  )
+}
+```
+
+```{r CAR H3K9me3 repName test}
+CAR_H3K9me3_results <- lapply(names(repName_peak_list_filt_H3K9me3), function(rep) {
+  
+  TE_peaks <- repName_peak_list_filt_H3K9me3[[rep]]
+  
+  res <- test_enrichment_H3K9me3(
+    TE_peaks = TE_peaks,
+    target_peaks = CAR_H3K9me3,
+    background = all_peaks_H3K9me3
+  )
+  
+  res$repName <- rep
+  res$TE_total <- length(TE_peaks)   # add this
+  
+  res
+}) %>% bind_rows()
+```
+
+```{r DAR H3K9me3 repName test}
+
+DAR_H3K9me3_results <- lapply(names(repName_peak_list_filt_H3K9me3), function(rep) {
+  
+  TE_peaks <- repName_peak_list_filt_H3K9me3[[rep]]
+  
+  res <- test_enrichment_H3K9me3(
+    TE_peaks = TE_peaks,
+    target_peaks = DAR_H3K9me3,
+    background = all_peaks_H3K9me3
+  )
+  
+  res$repName <- rep
+  res$TE_total <- length(TE_peaks)   # add this
+  
+  res
+}) %>% bind_rows()
+
+```
+
+```{r volcano plots}
+CAR_H3K9me3_results <- CAR_H3K9me3_results %>%
+  filter(!is.na(repName) & repName != "NA") %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+DAR_H3K9me3_results <- DAR_H3K9me3_results %>%
+  filter(!is.na(repName) & repName != "NA") %>%
+  mutate(FDR = p.adjust(p_value, method = "BH"))
+
+# saveRDS(CAR_H3K9me3_results, "data/RDS_files/CAR_H3K9me3_repName_enrichment_results.RDS")
+# saveRDS(DAR_H3K9me3_results, "data/RDS_files/DAR_H3K9me3_repName_enrichment_results.RDS")
+
+```
+
+
+```{r}
+CAR_H3K9me3_volcano_df <- CAR_H3K9me3_results %>%
+  mutate(
+    log2_OR = log2(odds_ratio),
+    neg_log10_FDR = -log10(FDR),
+    sig = FDR < 0.05
+  ) %>% 
+ mutate(
+    log2_OR = ifelse(is.infinite(log2_OR), NA, log2_OR)
+  )
+
+
+ggplot(CAR_H3K9me3_volcano_df, aes(x = log2_OR, y = neg_log10_FDR)) +
+  geom_point(aes(color = sig), alpha = 0.7) +
+  geom_text_repel(data = subset(CAR_H3K9me3_volcano_df, FDR < 0.05),  # only significant points
+                  aes(label = repName),
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  scale_color_manual(values = c("grey70", "red")) +
+  theme_classic() +
+  labs(
+    x = "log2(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE Enrichment in CAR H3K9me3 Peaks"
+  )
+```
+
+```{r}
+DAR_H3K9me3_volcano_df <- DAR_H3K9me3_results %>%
+  mutate(
+    log2_OR = log2(odds_ratio),
+    neg_log10_FDR = -log10(FDR),
+    sig = FDR < 0.05
+  ) %>% 
+ mutate(
+    log2_OR = ifelse(is.infinite(log2_OR), NA, log2_OR)
+  )
+
+ggplot(DAR_H3K9me3_volcano_df, aes(x = log2_OR, y = neg_log10_FDR)) +
+  geom_point(aes(color = sig), alpha = 0.7) +
+  geom_text_repel(data = subset(DAR_H3K9me3_volcano_df, FDR < 0.05 & log2_OR > 0),  # only significant points
+                  aes(label = repName),
+    size = 3,
+    max.overlaps = 100
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  scale_color_manual(values = c("grey70", "red")) +
+  theme_classic() +
+  labs(
+    x = "log2(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "TE Enrichment in DAR H3K9me3 Peaks"
+  )
+```
