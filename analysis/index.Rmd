@@ -126,3 +126,6 @@ Contains Overlapping TE elements and full ROI, including information about TE ov
 
 [Other p53 interrogation](https://reneeisnowhere.github.io/DXR_continue/TP53_motif_interrogation.html)
 
+### Go analysis
+
+[GO/KEGG analysis of Enriched TF motifs by set](https://reneeisnowhere.github.io/DXR_continue/Goanalysis_TFs.html)
