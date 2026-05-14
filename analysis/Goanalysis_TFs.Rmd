@@ -52,7 +52,7 @@ K27ac_acute <- setdiff(H3K27ac_Set3_data$motif_name,H3K27ac_Set2_data$motif_name
 K27ac_sus <- setdiff(H3K27ac_Set2_data$motif_name,H3K27ac_Set3_data$motif_name)
 ```
 
-I am looking at GO enrichment analysis.  I will take the enriched motifs found the MEME suite and do a few stratagies of analysis.
+I am looking at GO enrichment analysis.  I will take the enriched motifs found the MEME suite and do a few strategies of analysis.
 
 Strat 1:  taking list of enriched motifs names, breaking down pairs like FOS::JUNB into FOS and JUNB and doing GO analysis compared to all genes.
 -maybe filter for expression with RNA data?
@@ -510,7 +510,7 @@ GO_KEGG_analysis(H3K9me3_Set2_gost,"GO:BP", 0.01,20)
 GO_KEGG_analysis(H3K9me3_Set3_gost,"GO:BP", 0.01,20)
 ```
 
-```{r}
+```{r H3K9me3 set 2 redux}
 
 test_df_k9 <- H3K9me3_Set2_gost$result %>% 
   dplyr::filter(p_value<0.05) %>% 
@@ -561,7 +561,7 @@ reduced_df_k9  %>%
 
 ```
 
-```{r}
+```{r H3K9me3 set3 redux}
 
 
 test_df_3_k9  <- H3K9me3_Set3_gost$result %>% 
@@ -614,7 +614,7 @@ reduced_df_3_k9 %>%
 ```
 
 
-#### Strat3 H3K27ac  
+#### Strat3 H3K9me3  
 
 Separating enriched TFs by sus only; acute only; and shared.
 ```{r}
@@ -707,6 +707,163 @@ GO_KEGG_analysis(H3K9me3_shared_gost,"KEGG", 0.05,20)
 
 
 
+##### H3K27ac reduction
+```{r}
+
+test_acute_K27 <- H3K27ac_acute_gost$result %>% 
+  dplyr::filter(p_value<0.05) %>% 
+  dplyr::filter(term_size<750)
+go_terms_acute_K27  <- test_acute_K27$term_id
+scores_acute_K27  <- -log10(test_acute_K27$p_value)
+names(scores_acute_K27)  <- go_terms_acute_K27 
+
+simMatrix_acute_K27  <- readRDS("data/RDS_files/simMatrix_H3K27ac_acute.RDS")
+# saveRDS(simMatrix_acute_K27,"data/RDS_files/simMatrix_H3K27ac_acute.RDS")
+# simMatrix_acute_K27  <- calculateSimMatrix(
+#   go_terms_acute_K27 ,
+#   orgdb = org.Hs.eg.db,
+#   ont = "BP")
+
+reducedTerms_acute_K27  <- reduceSimMatrix(
+  simMatrix_acute_K27 ,
+  scores_acute_K27 ,
+  threshold = 0.7,
+  orgdb = org.Hs.eg.db)
+
+treemapPlot(reducedTerms_acute_K27 )
+scatterPlot(simMatrix_acute_K27 , reducedTerms_acute_K27 )
+head(reducedTerms_acute_K27 )
+
+reduced_acute_K27  <- reducedTerms_acute_K27  %>%
+  group_by(parent) %>%
+  summarise(
+    best_p = max(score),   # if score = -log10(p)
+    term = dplyr::first(term)
+  ) %>%
+  ungroup()
+reduced_acute_K27  %>% 
+  arrange( desc(best_p)) %>% 
+  slice_head(n=25) %>% 
+# dplyr::filter(p_value < setp_value) %>% 
+  # mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=best_p, y=reorder(term, best_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("H3K27ac acute only enriched TFs"))
+
+
+```
+
+```{r fig.width=15}
+
+test_sus_K27 <- H3K27ac_sus_gost$result %>% 
+  dplyr::filter(p_value<0.05) %>% 
+  dplyr::filter(term_size<750)
+go_terms_sus_K27  <- test_sus_K27$term_id
+scores_sus_K27  <- -log10(test_sus_K27$p_value)
+names(scores_sus_K27)  <- go_terms_sus_K27 
+
+simMatrix_sus_K27  <- readRDS("data/RDS_files/simMatrix_H3K27ac_sus.RDS")
+# saveRDS(simMatrix_sus_K27,"data/RDS_files/simMatrix_H3K27ac_sus.RDS")
+# simMatrix_sus_K27  <- calculateSimMatrix(
+#   go_terms_sus_K27 ,
+#   orgdb = org.Hs.eg.db,
+#   ont = "BP")
+
+reducedTerms_sus_K27  <- reduceSimMatrix(
+  simMatrix_sus_K27 ,
+  scores_sus_K27 ,
+  threshold = 0.7,
+  orgdb = org.Hs.eg.db)
+
+treemapPlot(reducedTerms_sus_K27 )
+scatterPlot(simMatrix_sus_K27 , reducedTerms_sus_K27 )
+head(reducedTerms_sus_K27 )
+
+reduced_sus_K27  <- reducedTerms_sus_K27  %>%
+  group_by(parent) %>%
+  summarise(
+    best_p = max(score),   # if score = -log10(p)
+    term = dplyr::first(term)
+  ) %>%
+  ungroup()
+reduced_sus_K27  %>% 
+  arrange( desc(best_p)) %>% 
+  slice_head(n=25) %>%
+# dplyr::filter(p_value < setp_value) %>% 
+  # mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=best_p, y=reorder(term, best_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("H3K27ac sus only enriched TFs"))
+
+
+```
+
+```{r}
+
+test_shared_K27 <- H3K27ac_shared_gost$result %>% 
+  dplyr::filter(p_value<0.05) %>% 
+  dplyr::filter(term_size<750)
+go_terms_shared_K27  <- test_shared_K27$term_id
+scores_shared_K27  <- -log10(test_shared_K27$p_value)
+names(scores_shared_K27)  <- go_terms_shared_K27 
+
+simMatrix_shared_K27  <- readRDS("data/RDS_files/simMatrix_H3K27ac_shared.RDS")
+# saveRDS(simMatrix_shared_K27,"data/RDS_files/simMatrix_H3K27ac_shared.RDS")
+# simMatrix_shared_K27  <- calculateSimMatrix(
+# go_terms_shared_K27 ,
+# orgdb = org.Hs.eg.db,
+# ont = "BP")
+
+reducedTerms_shared_K27  <- reduceSimMatrix(
+  simMatrix_shared_K27 ,
+  scores_shared_K27 ,
+  threshold = 0.7,
+  orgdb = org.Hs.eg.db)
+
+treemapPlot(reducedTerms_shared_K27 )
+scatterPlot(simMatrix_shared_K27 , reducedTerms_shared_K27 )
+head(reducedTerms_shared_K27 )
+
+reduced_shared_K27  <- reducedTerms_shared_K27  %>%
+  group_by(parent) %>%
+  summarise(
+    best_p = max(score),   # if score = -log10(p)
+    term = dplyr::first(term)
+  ) %>%
+  ungroup()
+reduced_shared_K27  %>% 
+  arrange( desc(best_p)) %>% 
+  slice_head(n=25) %>% 
+# dplyr::filter(p_value < setp_value) %>% 
+  # mutate(log10_p=(-log(p_value, base=10))) %>% 
+  ggplot(., aes(x=best_p, y=reorder(term, best_p)))+
+    geom_col()+
+  geom_vline(aes(xintercept=-log(0.05,base = 10)), col="red",linetype = 2)+
+  theme_bw()+
+  ylab("")+
+  xlab(paste0("-log10 p-value"))+
+  guides(fill="none")+
+  theme(axis.text.y = element_text(color="black"))+
+  ggtitle(paste0("H3K27ac shared only enriched TFs"))
+
+
+```
+
+
+
+##### H3K9me3 reduction  
 
 ```{r}
 
