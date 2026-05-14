@@ -42,6 +42,11 @@ library(jsonlite)
 library(org.Hs.eg.db)
 library(AnnotationDbi)
 library(MASS)
+library(GenomicFeatures)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(JASPAR2022)
+library(TFBSTools)
+library(universalmotif)
 ```
 
 From: 
@@ -446,7 +451,7 @@ enrichment_df_2v1 <-enrichment_df_2v1 %>%
 
 ```{r Plot for set 2v1}
 
-ggplot(enrichment_df_2v1, aes(x=odds_ratio, -log10(FDR), label=Module))+
+ggplot(enrichment_df_2v1, aes(x=odds_ratio, -log10(FDR), label=greek_module))+
   geom_point(aes(color = odds_ratio > 1), size = 3) +
    # geom_text_repel(data = subset(SVA_results, FDR < 0.05)) +
   geom_text_repel(size=3, max.overlaps = Inf)+
@@ -631,7 +636,9 @@ all_genes <- unique(unlist(lapply(protein_module_split, function(x) x$ENTREZID))
 all_genes <- all_genes[!is.na(all_genes)]
 gene_df <- data.frame(gene = all_genes)
 
-gene_df$set <- "Set1"
+gene_df$set <- NA
+
+gene_df$set[gene_df$gene %in% set1_clean] <- "Set1"
 gene_df$set[gene_df$gene %in% set2_clean] <- "Set2"
 gene_df$set[gene_df$gene %in% set3_clean] <- "Set3"
 
@@ -647,27 +654,35 @@ module_list <- lapply(names(protein_module_split), function(mod) {
 })
 names(module_list) <- names(protein_module_split)
 
-module_list <- reshape(
-  transform(module_list, value = 1),
-  timevar = "module",
-  idvar = "gene",
-  direction = "wide"
-)
-module_df <- do.call(rbind, module_list)
-module_df <- module_df[!is.na(module_df$gene), ]
+module_df <- lapply(names(protein_module_split), function(mod) {
+  data.frame(
+    gene = protein_module_split[[mod]]$ENTREZID,
+    module = mod,
+    value = 1
+  )
+}) %>%
+  bind_rows() %>%
+  distinct(gene, module, .keep_all = TRUE)
 
-module_wide <- reshape(
-  transform(module_df, value = 1),
-  timevar = "module",
-  idvar = "gene",
-  direction = "wide"
-)
-
-module_wide[is.na(module_wide)] <- 0
+module_wide <- module_df %>%
+  pivot_wider(
+    names_from = module,
+    values_from = value,
+    values_fill = 0
+  )
+# module_wide[is.na(module_wide)] <- 0
 colnames(module_wide) <- sub("value\\.", "", colnames(module_wide))
 
+
 dat <- merge(gene_df, module_wide, by = "gene", all.x = TRUE)
-dat[is.na(dat)] <- 0
+module_cols <- setdiff(colnames(dat), c("gene", "set"))
+
+dat[module_cols][is.na(dat[module_cols])] <- 0
+
+### some not assigned a set, remove those for analysis purposes
+dat <- dat %>%
+  filter(!is.na(set))
+# dat[is.na(dat)] <- 0
 ```
 
 ```{r}
@@ -682,9 +697,10 @@ model <- polr(
 coef_df <- broom::tidy(model)
 
 heatmap_df <- coef_df %>%
-  dplyr::filter(term != "(Intercept)") %>%
+  dplyr::filter(!grepl("\\|", term)) %>%
   mutate(effect = estimate) %>%
   dplyr::select(term, effect)
+
 colnames(heatmap_df) <- c("Module", "EffectSize")
 pred <- predict(model, type = "probs")
 
@@ -705,9 +721,10 @@ module_summary <- module_heatmap %>%
 heatmap_long <- module_summary %>%
   pivot_longer(cols = c(Set1, Set2, Set3),
                names_to = "State",
-               values_to = "Probability")
+               values_to = "Probability") %>% 
+  left_join(Module_lookup, by=c("module"="Module"))
 
-ggplot(heatmap_long, aes(x = State, y = module, fill = Probability)) +
+ggplot(heatmap_long, aes(x = State, y = greek_module, fill = Probability)) +
   geom_tile() +
   scale_fill_gradient(low = "white", high = "red")
 
@@ -756,13 +773,76 @@ ggplot(module_enrichment, aes(x = module_size, y = set2_rate)) +
   scale_y_continuous("Set2 fraction") +
   theme_minimal()
 ```
+```{r}
+calc_module_enrichment <- function(module_df, target_set, set_name = "Set") {
+
+  all_genes <- unique(module_df$gene)
+
+  global_rate <- mean(all_genes %in% target_set)
+
+  out <- module_df %>%
+    filter(!is.na(gene)) %>%
+    group_by(module) %>%
+    summarise(
+      module_size = n_distinct(gene),
+      target_count = sum(gene %in% target_set),
+      target_rate = target_count / module_size,
+      .groups = "drop"
+    ) %>%
+    mutate(
+      enrichment = target_rate / global_rate
+    ) %>%
+    rowwise() %>%
+    mutate(
+      pvalue = fisher.test(matrix(c(
+        target_count,
+        module_size - target_count,
+        sum(all_genes %in% target_set) - target_count,
+        length(all_genes) -
+          sum(all_genes %in% target_set) -
+          (module_size - target_count)
+      ), nrow = 2))$p.value
+    ) %>%
+    ungroup()
+
+  out$FDR <- p.adjust(out$pvalue, method = "BH")
+  out$global_rate <- global_rate
+  out
+}
+
+
+
+```
+
+
+```{r}
+set2_enrichment <- calc_module_enrichment(module_df, set2_clean)
+set3_enrichment <- calc_module_enrichment(module_df, set3_clean)
+
+ggplot(set2_enrichment, aes(x = module_size, y = target_rate)) +
+  geom_point(aes(color = FDR < 0.05)) +
+  geom_text(aes(label = module), vjust = -0.5)+
+  geom_hline(yintercept = set2_enrichment$global_rate, linetype = "dashed") +
+  scale_y_continuous("Set2 fraction") +
+  theme_minimal()+
+  ggtitle("Set 2 intermediate state")
+
+ggplot(set3_enrichment, aes(x = module_size, y = target_rate)) +
+  geom_point(aes(color = FDR < 0.05)) +
+  geom_text(aes(label = module), vjust = -0.5)+
+  geom_hline(yintercept = set3_enrichment$global_rate, linetype = "dashed") +
+  scale_y_continuous("Set3 fraction") +
+  theme_minimal()+
+  ggtitle("Set 3 strongest state")
+```
+### KZFP
 
 ```{r KZFP in protein}
 
-
-conversion_ids %>% 
-  dplyr::filter(!is.na(gene)) %>% 
-  mutate(KZFP_group=case_when(gene %in%KZFP_2026_list$Label~"KZFP",
+protein_data %>% 
+  dplyr::select(Protein,Module,logFC,P.Value.adj) %>% 
+  left_join(remap_clean, by =c("Protein"="UNIPROT")) %>% 
+  mutate(KZFP_group=case_when(SYMBOL %in%KZFP_2026_list$Label~"KZFP",
                               TRUE ~"not_KZFP")) %>% 
   ggplot(., aes(x=KZFP_group,y=logFC))+
   geom_boxplot()+
@@ -770,25 +850,411 @@ conversion_ids %>%
   theme_bw()+
   ggtitle("LFC of KZFPs in protein data")
 
-conversion_ids %>% 
-  dplyr::filter(!is.na(gene)) %>% 
-   mutate(KZFP_group=case_when(gene %in%KZFP_2026_list$Label~"KZFP",
-                              TRUE ~"not_KZFP")) %>% 
+protein_data %>% 
+  dplyr::select(Protein,Module,logFC,P.Value.adj) %>% 
+  left_join(remap_clean, by =c("Protein"="UNIPROT")) %>% 
+  mutate(KZFP_group=case_when(SYMBOL %in%KZFP_2026_list$Label~"KZFP",
+                              TRUE ~"not_KZFP")) %>%
   group_by(KZFP_group) %>% 
   tally
 
 
 ```
 
+### DAP enrichment
+  getting proteins that are DAP vs non-DAP
+```{r}
+DAP_IDs <- protein_data %>% 
+dplyr::select(Protein,Module,logFC,P.Value.adj, Is_DA_at_adj.p) %>% 
+  dplyr::filter(Is_DA_at_adj.p==1) %>% 
+   left_join(remap_clean, by =c("Protein"="UNIPROT")) 
+ 
+nonDAP_IDs <- protein_data %>% 
+dplyr::select(Protein,Module,logFC,P.Value.adj, Is_DA_at_adj.p) %>% 
+  dplyr::filter(Is_DA_at_adj.p!=1) %>% 
+   left_join(remap_clean, by =c("Protein"="UNIPROT"))
+
+
+Entrezid_protein_module <- protein_data %>% 
+dplyr::select(Protein,Module,logFC,P.Value.adj, Is_DA_at_adj.p) %>% 
+     left_join(remap_clean, by =c("Protein"="UNIPROT")) %>% 
+  dplyr::filter(!is.na(SYMBOL)) %>%
+  distinct(Module,ENTREZID,SYMBOL)
+
+
+Entrezid_protein_module_unique <- Entrezid_protein_module%>%
+  group_by(SYMBOL) %>%
+  summarise(Module = dplyr::first(Module),
+            ENTREZID=dplyr::first(ENTREZID), .groups = "drop")
+```
+
+asking are genes near mer61E_gr enriched in any module or in DAPs?
+
+```{r}
+MER61E_mydata <- 
+H3K27ac_ext200_anno %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = ";") %>% 
+  dplyr::filter(repName=="MER61E")%>% 
+  pull(repID) %>% 
+  unique()
+MER61E_mydata_set3 <- H3K27ac_ext200_anno %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = ";") %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  dplyr::filter(repName=="MER61E")%>% 
+  pull(repID) %>% 
+  unique()
+
+mer61E_gr <- rtracklayer::import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed") 
+# txdb annotation
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+# gene coordinates
+genes_gr <- genes(txdb)
+# nearest gene index
+nearest_idx <- nearest(mer61E_gr, genes_gr)
+# nearest gene IDs
+nearest_entrez <- genes_gr$gene_id[nearest_idx]
+# add to MER61E object
+mcols(mer61E_gr)$nearest_gene <- nearest_entrez
+distances <- distance(mer61E_gr, genes_gr[nearest_idx])
+
+mcols(mer61E_gr)$distance_to_gene <- distances
+## getting the dataframe of nearest genes in and out of my data for counting:
+mer61E_gr %>% 
+  as.data.frame() %>% 
+  mutate(my_MER=if_else(name %in%MER61E_mydata,"in","out")) %>% 
+  ggplot(aes(x=distance_to_gene, color=my_MER))+
+  geom_density()
+
+mer61E_gr %>% 
+  as.data.frame() %>% 
+  mutate(my_MER=if_else(name %in%MER61E_mydata,"in","out")) %>% 
+  mutate(is_DAP=if_else(nearest_gene%in%DAP_IDs$ENTREZID,"DAP","not_DAP")) %>% 
+  left_join(Entrezid_protein_module_unique, by=c("nearest_gene"="ENTREZID")) %>% 
+  mutate(DOX_cor= if_else(Module %in% c("green","lightyellow","salmon","darkgreen","midnightblue"),"DOXcor","non_DOXcor")) %>% 
+  group_by(my_MER, DOX_cor) %>% tally
+  
+
+my_matrix <- matrix(c(3,64,10,190), nrow = 2)
+fisher.test(my_matrix)
+```
+
+
+```{r GREAT nearest gene to MER61E}
+repID_to_gene_MER61E <- read_delim("data/Other_paper_data/repID_to_gene_MER61E.txt", 
+    delim = "\t", escape_double = FALSE, 
+    col_names = FALSE, trim_ws = TRUE, skip = 1)
+
+repID_to_gene_MER61E$closest_gene <- vapply(repID_to_gene_MER61E$X2, function(x){
+  # handle missing/empty
+    if (is.na(x) || x == "") {
+      return(NA_character_)
+    }
+
+    # split entries
+    parts <- str_split(x, ",\\s*")[[1]]
+
+    # extract distances
+    dists <- as.numeric(str_extract(parts, "[+-]\\d+"))
+
+    # extract genes
+    genes <- str_extract(parts, "^[^ ]+")
+
+    # remove failed parses
+    keep <- !is.na(dists) & !is.na(genes)
+
+    dists <- dists[keep]
+    genes <- genes[keep]
+
+    # if nothing valid remains
+    if (length(genes) == 0) {
+      return(NA_character_)
+    }
+
+    # closest gene
+    genes[which.min(abs(dists))]
+
+  },
+  FUN.VALUE = character(1))
+
+repID_to_gene_MER61E %>% 
+  filter(!is.na(closest_gene)) %>% 
+   mutate(my_MER=if_else(X1 %in%MER61E_mydata,"in","out")) %>% 
+  mutate(is_DAP=if_else(closest_gene%in%DAP_IDs$SYMBOL,"DAP","not_DAP")) %>% 
+  left_join(Entrezid_protein_module_unique, by=c("closest_gene"="SYMBOL")) %>% 
+  mutate(DOX_cor= if_else(Module %in% c("green","lightyellow","salmon","darkgreen","midnightblue"),"DOXcor","non_DOXcor")) %>% 
+  group_by(my_MER,DOX_cor) %>% 
+  tally
+
+great_matrix <- matrix(c(5,56,17,161), nrow = 2)
+
+fisher.test(great_matrix)
+
+
+table(table(repID_to_gene_MER61E$closest_gene))
+table(repID_to_gene_MER61E$closest_gene, useNA = "ifany")
+```
+
+
+```{r}
+repID_to_gene_MER61E %>% 
+  filter(!is.na(closest_gene)) %>% 
+   mutate(my_MER=if_else(X1 %in%MER61E_mydata_set3,"in","out")) %>% 
+  mutate(is_DAP=if_else(closest_gene%in%DAP_IDs$SYMBOL,"DAP","not_DAP")) %>% 
+  left_join(Entrezid_protein_module_unique, by=c("closest_gene"="SYMBOL")) %>% 
+  mutate(DOX_cor= if_else(Module %in% c("green","lightyellow","salmon","darkgreen","midnightblue"),"DOXcor","non_DOXcor")) %>% 
+  group_by(my_MER,DOX_cor) %>% 
+  tally
+great_matrix_set3 <- matrix(c(3,34,19,183), nrow = 2)
+
+fisher.test(great_matrix_set3)
+```
+### Looking at TF motif/protein enrichment
+
+```{r}
+H3K27ac_Set2_data <- readRDS("data/RDS_files/H3K27ac_Set2_enrmotif_data.RDS")
+H3K27ac_Set3_data <- readRDS("data/RDS_files/H3K27ac_Set3_enrmotif_data.RDS")
+
+## TF universe
+opts <- list(
+  species = 9606,      # human
+  all_versions = FALSE
+)
+
+pfm_list <- getMatrixSet(JASPAR2022, opts)
+tf_names <- sapply(pfm_list, name)
+
+motif_names_set2H3K27ac <-
+H3K27ac_Set2_data %>%
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>%  
+  dplyr::select(motif_name) %>% 
+  mutate(TF_split=str_split(motif_name,"::")) %>% 
+  unnest(TF_split) %>% 
+  mutate(motif_name2=toupper(TF_split)) %>% 
+  mutate(is_DAP_comp=motif_name2 %in%Entrezid_protein_module_unique$SYMBOL) %>% 
+  group_by(motif_name) %>% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), "DAP", "non_DAP"),
+    .groups = "drop"
+  ) %>% 
+  mutate(motif_name=toupper(motif_name)) %>% 
+  distinct()
+
+
+motif_names_set3H3K27ac <- H3K27ac_Set3_data %>%
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>%  
+  dplyr::select(motif_name) %>% 
+  mutate(TF_split=str_split(motif_name,"::")) %>% 
+  unnest(TF_split) %>% 
+  mutate(motif_name2=toupper(TF_split)) %>% 
+  mutate(is_DAP_comp=motif_name2 %in%Entrezid_protein_module_unique$SYMBOL) %>% 
+  group_by(motif_name) %>% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), "DAP", "non_DAP"),
+    .groups = "drop"
+  ) %>% 
+  mutate(motif_name=toupper(motif_name)) %>% 
+  distinct()
+
+
+
+# motif_names_set2H3K27ac
+
+```
+### Using exact meme file of TFs for enrichment\
+
+```{r}
+motifs <- read_meme("data/Other_paper_data/JASPAR2022_CORE_vertebrates_non-redundant_v2.meme")
+### pulling the alt_name from each element (841 elements)
+tf_names <- sapply(motifs, function(x) x@altname)
+
+### no making the totupper and removing the redundant names (those that are not human are lowercase but maybe the same, ie.LHX1, Lhx1)  This leaves 779 total
+tf_names <- tf_names %>% 
+  toupper() %>% 
+  unique()
+
+H3K27ac_TF_df <- tibble(tf_names) %>% 
+  mutate(TF_split=str_split(tf_names,"::")) %>% 
+  unnest(TF_split) %>% 
+  mutate(is_DAP_comp=TF_split %in%Entrezid_protein_module_unique$SYMBOL) %>% 
+  group_by(tf_names) %>% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), "DAP", "non_DAP"),
+    .groups = "drop"
+  ) %>% 
+  mutate(Set_2=if_else(tf_names %in% motif_names_set2H3K27ac$motif_name,"yes","no"),
+         Set_3=if_else(tf_names %in% motif_names_set3H3K27ac$motif_name,"yes","no")) %>% 
+   mutate(
+    DAP = factor(DAP, levels = c("DAP", "non_DAP")),
+    Set_2 = factor(Set_2, levels = c("yes", "no")),
+    Set_3 = factor(Set_3, levels = c("yes", "no"))) %>% 
+  mutate(
+    set_group = case_when(
+      Set_2 == "yes" & Set_3 == "yes" ~ "shared",
+      Set_2 == "yes" & Set_3 == "no"  ~ "set_2_only",
+      Set_2 == "no"  & Set_3 == "yes" ~ "set_3_only",
+      TRUE ~ "neither"))
+
+
+
+tf_matrix_set2 <- table(H3K27ac_TF_df$DAP, H3K27ac_TF_df$Set_2)
+
+fisher.test(tf_matrix_set2)
+
+```
 
 
 ```{r}
 
-  conversion_ids
+tf_matrix_set3 <- table(H3K27ac_TF_df$DAP, H3K27ac_TF_df$Set_3)
 
-H3K27ac_ext200_anno
+fisher.test(tf_matrix_set3)
+
+```
+almost set3, good odds ratio but not significant with a pvalue=0.1075.
+
+Now I will test if the unique to Set 3, unique to Set 2, or shared TFs are enriched in DAPs vs non-DAPs
+```{r H3K27 ac sus only}
 
 
+table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group=="set_2_only")
+
+tf_uni_matrix_set2 <- matrix(c(11,19,262,487), nrow = 2)
+
+fisher.test(tf_uni_matrix_set2)
+
+```
+```{r H3K27ac acute}
+
+table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group=="set_3_only")
+
+tf_uni_matrix_set3 <- matrix(c(6,24,30,719), nrow = 2)
+
+fisher.test(tf_uni_matrix_set3)
+
+
+
+```
+So we do know that the unique set 3 enriched TFs are also enriched in DAPs significantly.
+
+```{r H3K27ac shared}
+table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group=="shared")
+
+tf_uni_matrix_setshare <- matrix(c(0,30,41,708), nrow = 2)
+
+fisher.test(tf_uni_matrix_setshare)
+
+
+```
+
+## H3K9me3  
+
+```{r}
+H3K9me3_Set2_data <- readRDS("data/RDS_files/H3K9me3_Set2_enrmotif_data.RDS")
+H3K9me3_Set3_data <- readRDS("data/RDS_files/H3K9me3_Set3_enrmotif_data.RDS")
+
+motif_names_set2H3K9me3 <-
+H3K9me3_Set2_data %>%
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>%  
+  dplyr::select(motif_name) %>% 
+  mutate(TF_split=str_split(motif_name,"::")) %>% 
+  unnest(TF_split) %>% 
+  mutate(motif_name2=toupper(TF_split)) %>% 
+  mutate(is_DAP_comp=motif_name2 %in%Entrezid_protein_module_unique$SYMBOL) %>% 
+  group_by(motif_name) %>% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), "DAP", "non_DAP"),
+    .groups = "drop"
+  ) %>% 
+  mutate(motif_name=toupper(motif_name)) %>% 
+  distinct()
+
+
+motif_names_set3H3K9me3 <- H3K9me3_Set3_data %>%
+  dplyr::filter(str_starts(pattern = "MA",string=ID)) %>%  
+  dplyr::select(motif_name) %>% 
+  mutate(TF_split=str_split(motif_name,"::")) %>% 
+  unnest(TF_split) %>% 
+  mutate(motif_name2=toupper(TF_split)) %>% 
+  mutate(is_DAP_comp=motif_name2 %in%Entrezid_protein_module_unique$SYMBOL) %>% 
+  group_by(motif_name) %>% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), "DAP", "non_DAP"),
+    .groups = "drop"
+  ) %>% 
+  mutate(motif_name=toupper(motif_name)) %>% 
+  distinct()
+
+H3K9me3_marked_TF <- tibble(tf_names) %>% 
+  mutate(TF_split=str_split(tf_names,"::")) %>% 
+  unnest(TF_split) %>% 
+  mutate(is_DAP_comp=TF_split %in%Entrezid_protein_module_unique$SYMBOL) %>% 
+   group_by(tf_names) %>% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), "DAP", "non_DAP"),
+    .groups = "drop"
+  ) %>% 
+  mutate(Set_2=if_else(tf_names %in% motif_names_set2H3K9me3$motif_name,"yes","no"),
+         Set_3=if_else(tf_names %in% motif_names_set3H3K9me3$motif_name,"yes","no")) %>% 
+   mutate(
+    DAP = factor(DAP, levels = c("DAP", "non_DAP")),
+    Set_2 = factor(Set_2, levels = c("yes", "no")),
+    Set_3 = factor(Set_3, levels = c("yes", "no"))) %>% 
+  mutate(
+    set_group = case_when(
+      Set_2 == "yes" & Set_3 == "yes" ~ "shared",
+      Set_2 == "yes" & Set_3 == "no"  ~ "set_2_only",
+      Set_2 == "no"  & Set_3 == "yes" ~ "set_3_only",
+      TRUE ~ "neither"))
+
+table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_2)
+ 
+tf_matrix_set2_k9 <- table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_2)
+
+fisher.test(tf_matrix_set2_k9)
+
+
+```
+
+
+```{r}
+
+table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_3)
+ 
+tf_matrix_set3_k9 <- table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_3)
+
+fisher.test(tf_matrix_set3_k9)
+
+
+
+```
+now I will also check if acute/sus/shared enrichment
+
+Acute:(set 2 in H3K9me3)
+
+```{r}
+table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group=="set_2_only")
+ 
+tf_uni_matrix_set2_k9 <- matrix(c(1,29,44,705), nrow = 2)
+
+
+fisher.test(tf_uni_matrix_set2_k9)
+```
+sustained in H3K9me3 (set 3)
+
+```{r}
+table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group=="set_3_only")
+ 
+tf_uni_matrix_set3_k9 <- matrix(c(0,30,12,737), nrow = 2)
+
+fisher.test(tf_uni_matrix_set3_k9)
+```
+```{r h3K9me3 shared enr TFs}
+
+table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group=="shared")
+ 
+tf_uni_matrix_setshare <- matrix(c(4,26,169,580), nrow = 2)
+
+fisher.test(tf_uni_matrix_setshare)
 ```
 
 ```{r pwmpull, eval=FALSE}
