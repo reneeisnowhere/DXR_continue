@@ -1,0 +1,2496 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Renee Matthews" />
+
+<meta name="date" content="2026-05-14" />
+
+<title>Protein_checks</title>
+
+<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.34.0/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DXR_project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/reneeisnowhere/DXR_continue">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Protein_checks</h1>
+<h4 class="author">Renee Matthews</h4>
+<h4 class="date">2026-05-14</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-05-14
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>DXR_continue/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250701code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250701)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250701code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250701)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreef3182579d439d98c74d15aab89d84b40d67faeabtargetblankf318257a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/f3182579d439d98c74d15aab89d84b40d67faeab" target="_blank">f318257</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreef3182579d439d98c74d15aab89d84b40d67faeabtargetblankf318257a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/f3182579d439d98c74d15aab89d84b40d67faeab" target="_blank">f318257</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/Bed_exports/
+    Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
+    Ignored:    data/Cormotif_data/
+    Ignored:    data/DER_data/
+    Ignored:    data/Other_paper_data/
+    Ignored:    data/RDS_files/
+    Ignored:    data/TE_annotation/
+    Ignored:    data/alignment_summary.txt
+    Ignored:    data/all_peak_final_dataframe.txt
+    Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/motif_lists/
+    Ignored:    data/number_frag_peaks_summary.txt
+
+Untracked files:
+    Untracked:  H3K27ac_all_regions_test.bed
+    Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  MER61C_ERV1_LTR.fa
+    Untracked:  analysis/GREAT_H3K27ac.Rmd
+    Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_KZFP_motifs.Rmd
+    Untracked:  analysis/H3K27ac_TE_investigation_200bp.Rmd
+    Untracked:  analysis/H3K27me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K36me3_TE_investigation.Rmd
+    Untracked:  analysis/LFC_regions_with_TEs.Rmd
+    Untracked:  analysis/Top2a_Top2b_expression.Rmd
+    Untracked:  analysis/maps_and_plots.Rmd
+    Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/For_john.R
+    Untracked:  other_analysis/
+
+Unstaged changes:
+    Modified:   analysis/ATAC_integration_data1.Rmd
+    Modified:   analysis/chromHMM_2.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/protein_checks.Rmd</code>) and
+HTML (<code>docs/protein_checks.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/f3182579d439d98c74d15aab89d84b40d67faeab/analysis/protein_checks.Rmd" target="_blank">f318257</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-14
+</td>
+<td>
+wflow_publish("analysis/protein_checks.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/18bbad2b200fcb2a18547b7384e4afc84171cc33/analysis/protein_checks.Rmd" target="_blank">18bbad2</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-11
+</td>
+<td>
+wflow_git_commit(c("analysis/H3K27_TE_overlap_extend.Rmd",
+"analysis/H3K27ac_TE_investigation.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/1b0928cf033ef060635bfb0343ecadb19ee13ddb/analysis/protein_checks.Rmd" target="_blank">1b0928c</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-05
+</td>
+<td>
+wflow_git_commit("analysis/protein_checks.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+</style>
+<pre class="r"><code>library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(readxl)
+library(biomaRt)
+library(ggpubr)
+library(httr)
+library(jsonlite)
+library(org.Hs.eg.db)
+library(AnnotationDbi)
+library(MASS)
+library(GenomicFeatures)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(JASPAR2022)
+library(TFBSTools)
+library(universalmotif)</code></pre>
+<p>From: Johnson O, Paul S, Gutiérrez J … DNA-damage-associated protein
+co-expression network in cardiomyocytes informs on tolerance to genetic
+variation and disease iScience, 2025; 28</p>
+<pre class="r"><code>mmc3 &lt;- read_excel(&quot;C:/Users/renee/Documents/Ward Lab/AC_proteomics/proteins/mmc3.xlsx&quot;, skip = 1) %&gt;% 
+  dplyr::select(Protein:Is_CVD_PPI_protein)
+write.table(mmc3,&quot;data/Other_paper_data/protein_LFC_Johnson_2025.tsv&quot;,sep = &quot;\t&quot;,
+  quote = FALSE,
+  row.names = FALSE)</code></pre>
+<div id="pulling-data" class="section level3">
+<h3>pulling data</h3>
+<pre class="r"><code>protein_data &lt;- read.delim(&quot;data/Other_paper_data/protein_LFC_Johnson_2025.tsv&quot;)
+KZFP_2026_list &lt;- read_excel(&quot;data/Other_paper_data/human_protein_coding_KZFPs_Davis_natgen_2026.xlsx&quot;)
+
+# ids &lt;- as.character(protein_data$Protein)
+# ids &lt;- trimws(ids)
+
+map &lt;- readRDS( &quot;data/RDS_files/uniprot_map.rds&quot;)
+map_clean &lt;- map %&gt;%
+  group_by(Entry) %&gt;%
+  summarise(
+    gene = sub(&quot; .*&quot;, &quot;&quot;, Gene.Names),
+    .groups = &quot;drop&quot;
+  )
+
+H3K27ac_ext200_anno &lt;- readRDS(&quot;data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS&quot;)
+remap &lt;- AnnotationDbi::select(org.Hs.eg.db,
+  keys = protein_data$Protein,   # your UniProt IDs
+  keytype = &quot;UNIPROT&quot;,
+  columns = c(&quot;SYMBOL&quot;, &quot;ENTREZID&quot;))
+
+remap_clean &lt;- remap %&gt;%
+  dplyr::group_by(UNIPROT) %&gt;%
+  dplyr::summarise(
+    SYMBOL = dplyr::first(na.omit(SYMBOL)),
+    ENTREZID = dplyr::first(na.omit(ENTREZID)),
+    .groups = &quot;drop&quot;)
+
+ext200_anno_map &lt;- AnnotationDbi::select(org.Hs.eg.db,
+                          keys=H3K27ac_ext200_anno$geneId,
+                          keytype = &quot;ENTREZID&quot;,
+                          columns = c(&quot;SYMBOL&quot;,&quot;UNIPROT&quot;)) %&gt;% 
+  distinct()
+
+Module_lookup &lt;- protein_data %&gt;% 
+  mutate(greek_module=case_when(Module==&quot;green&quot;~&quot;alpha&quot;,
+                                Module==&quot;darkgreen&quot;~&quot;beta&quot;,
+                                Module==&quot;midnightblue&quot;~&quot;gamma&quot;,
+                                Module==&quot;salmon&quot;~&quot;delta&quot;,
+                                Module==&quot;lightyellow&quot;~&quot;epsilon&quot;,
+                                Module==&quot;lightgreen&quot;~&quot;zeta&quot;,
+                                 Module==&quot;blue&quot;~&quot;eta&quot;,
+                                 Module==&quot;magenta&quot;~&quot;theta&quot;,
+                                 Module==&quot;darkred&quot;~&quot;iota&quot;,
+                                 Module==&quot;brown&quot;~&quot;kappa&quot;,
+                                 Module==&quot;yellow&quot;~&quot;lambda&quot;,
+                                 Module==&quot;royalblue&quot;~&quot;mu&quot;,
+                                Module==&quot;grey&quot;~&quot;Unassigned&quot;)) %&gt;% 
+  dplyr::select(Module,greek_module) %&gt;% 
+  distinct()
+
+alpha   &lt;- &quot;\u03B1&quot;  # α
+beta    &lt;- &quot;\u03B2&quot;  # β
+gamma   &lt;- &quot;\u03B3&quot;  # γ
+delta   &lt;- &quot;\u03B4&quot;  # δ
+epsilon &lt;- &quot;\u03B5&quot;  # ε
+zeta    &lt;- &quot;\u03B6&quot;  # ζ
+eta     &lt;- &quot;\u03B7&quot;  # η
+theta   &lt;- &quot;\u03B8&quot;  # θ
+iota    &lt;- &quot;\u03B9&quot;  # ι
+kappa   &lt;- &quot;\u03BA&quot;  # κ
+lambda  &lt;- &quot;\u03BB&quot;  # λ
+mu      &lt;- &quot;\u03BC&quot;  # μ</code></pre>
+<pre class="r"><code># human_kzfp &lt;- 
+# KZFP_2017_list %&gt;% 
+#   dplyr::filter(Species == &quot;Homo_sapiens.GRCh38&quot;) %&gt;% 
+#   dplyr::select(Label:strand) %&gt;% 
+#   dplyr::filter(Type==&quot;protein_coding&quot;) %&gt;% 
+#   distinct(Label,.keep_all = TRUE)
+
+mart &lt;- useMart(&quot;ensembl&quot;, dataset = &quot;hsapiens_gene_ensembl&quot;,host = &quot;useast.ensembl.org&quot;)
+listAttributes(mart)
+
+results &lt;- getBM(attributes = c(&quot;uniprotswissprot&quot;, &quot;hgnc_symbol&quot;, &quot;entrezgene_id&quot;),
+  filters = &quot;uniprotswissprot&quot;,
+  values = protein_data$Protein,
+  mart = mart)
+
+other_protein_id &lt;- getBM(attributes = c(&quot;uniprotswissprot&quot;, &quot;hgnc_symbol&quot;, &quot;entrezgene_id&quot;, &quot;ensembl_gene_id&quot;),
+  filters = &quot;ensembl_gene_id&quot;,
+  values = KZFP_2026_list$`Gene ID`,
+  mart = mart)
+
+kzfp_uniprot &lt;- other_protein_id %&gt;% 
+  dplyr::filter(uniprotswissprot!=&quot;&quot;)
+
+protein_lookup_table &lt;- results %&gt;%
+  ###only keeping protein if has an hgnc_cymbol and entrezid, but keeping the first entrez_id per uniprot id
+  filter(!is.na(entrezgene_id)| hgnc_symbol != &quot;&quot;) %&gt;%
+  group_by(uniprotswissprot) %&gt;%
+  slice(1) %&gt;%
+  ungroup()
+KZFP_targets &lt;- read_excel(&quot;data/Other_paper_data/KZFP_primary_targests_Supplemental_Table_S3.xlsx&quot;, sheet = &quot;Primary_targets&quot;)</code></pre>
+<pre class="r"><code>url &lt;- &quot;https://rest.uniprot.org/uniprotkb/stream?format=tsv&amp;fields=accession,gene_names&amp;query=organism_id:9606&quot;
+map &lt;- read.delim(url)
+
+
+test &lt;- merge(protein_data, map, by.x = &quot;Protein&quot;, by.y = &quot;Entry&quot;, all.x = TRUE)
+
+saveRDS(map, &quot;data/RDS_files/uniprot_map.rds&quot;)</code></pre>
+<p>I am going to check for enrichment of Set 1 Set 2 and Set 3 in the
+gene groupings of Protein. First I need to create a list of entrezIDs
+for each set. They will have Entrezid, Peakid, cluster for looking up
+purposes. I will also make a set of genes for each cluster and a
+“background” gene-i-verse.</p>
+<pre class="r"><code>Set1_H3K27ac_lookup &lt;- H3K27ac_ext200_anno %&gt;% 
+  dplyr::select(Peakid,cluster, geneId,distanceToTSS) %&gt;% 
+  dplyr::filter(cluster==&quot;Set_1&quot;) 
+
+set1_genes &lt;- H3K27ac_ext200_anno %&gt;% 
+  dplyr::filter(cluster ==&quot;Set_1&quot;) %&gt;% 
+  dplyr::pull(geneId) %&gt;% 
+  unique()
+
+Set2_H3K27ac_lookup &lt;- H3K27ac_ext200_anno %&gt;% 
+  dplyr::select(Peakid,cluster, geneId,distanceToTSS) %&gt;% 
+  dplyr::filter(cluster==&quot;Set_2&quot;)
+
+set2_genes &lt;- H3K27ac_ext200_anno %&gt;% 
+  dplyr::filter(cluster ==&quot;Set_2&quot;) %&gt;% 
+  dplyr::pull(geneId) %&gt;% 
+  unique()
+
+
+
+Set3_H3K27ac_lookup &lt;- H3K27ac_ext200_anno %&gt;% 
+  dplyr::select(Peakid,cluster, geneId,distanceToTSS) %&gt;% 
+  dplyr::filter(cluster==&quot;Set_3&quot;)
+
+set3_genes &lt;- H3K27ac_ext200_anno %&gt;% 
+  dplyr::filter(cluster ==&quot;Set_3&quot;) %&gt;% 
+  dplyr::pull(geneId) %&gt;% 
+  unique()
+
+
+background_genes &lt;- unique(H3K27ac_ext200_anno$geneId)</code></pre>
+<p>Next, I am going to take the protein list and cluster by each
+group:</p>
+<pre class="r"><code>module_ids&lt;- merge(protein_data, remap_clean, by.x = &quot;Protein&quot;, by.y = &quot;UNIPROT&quot;, all.x = TRUE)
+
+protein_module_split &lt;- split(module_ids,module_ids$Module)
+
+gene_universe &lt;- intersect(module_ids$ENTREZID,H3K27ac_ext200_anno$geneId)
+length(intersect(background_genes,gene_universe))</code></pre>
+<pre><code>[1] 3660</code></pre>
+<p>Now I am going to iterate over the split list and for each module
+list get a count of module genes/overlaps and background counts and
+perform a Fisher test for general enrichment over background</p>
+</div>
+<div id="which-modules-are-enriched-in-assigned-genes-of-each-set"
+class="section level3">
+<h3>Which modules are enriched in assigned genes of each set?</h3>
+<pre class="r"><code>enrichment_results_2 &lt;- lapply(names(protein_module_split), function(mod) {
+  
+  mod_df &lt;- protein_module_split[[mod]]
+  
+  # module genes
+  mod_genes &lt;- unique(mod_df$ENTREZID)
+  mod_genes &lt;- mod_genes[!is.na(mod_genes)]
+  mod_genes &lt;- intersect(mod_genes, background_genes)
+  
+  # overlaps
+  in_set2 &lt;- sum(mod_genes %in% set2_genes)
+  not_in_set2 &lt;- length(mod_genes) - in_set2
+  
+  # background universe constrained
+  bg_set2 &lt;- sum(background_genes %in% set2_genes)
+  bg_not_set2 &lt;- length(background_genes) - bg_set2
+  
+  mat &lt;- matrix(c(
+    in_set2,
+    not_in_set2,
+    bg_set2 - in_set2,
+    bg_not_set2 - not_in_set2
+  ), nrow = 2)
+  
+  ft &lt;- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = unname(ft$estimate),
+    in_set2 = in_set2,
+    module_size = length(mod_genes)
+  )
+})
+enrichment_df_2 &lt;- do.call(rbind, enrichment_results_2)
+
+enrichment_df_2$FDR &lt;- p.adjust(enrichment_df_2$pvalue, method = &quot;BH&quot;)
+enrichment_df_2 &lt;-enrichment_df_2 %&gt;% 
+  left_join(Module_lookup)</code></pre>
+<pre class="r"><code>enrichment_results_3 &lt;- lapply(names(protein_module_split), function(mod) {
+  
+  mod_df &lt;- protein_module_split[[mod]]
+  
+  # module genes
+  mod_genes &lt;- unique(mod_df$ENTREZID)
+  mod_genes &lt;- mod_genes[!is.na(mod_genes)]
+  mod_genes &lt;- intersect(mod_genes, background_genes)
+  
+  # overlaps
+  in_set3 &lt;- sum(mod_genes %in% set3_genes)
+  not_in_set3 &lt;- length(mod_genes) - in_set3
+  
+  # background universe constrained
+  bg_set3 &lt;- sum(background_genes %in% set3_genes)
+  bg_not_set3 &lt;- length(background_genes) - bg_set3
+  
+  mat &lt;- matrix(c(
+    in_set3,
+    not_in_set3,
+    bg_set3 - in_set3,
+    bg_not_set3 - not_in_set3
+  ), nrow = 2)
+  
+  ft &lt;- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = unname(ft$estimate),
+    in_set3 = in_set3,
+    module_size = length(mod_genes)
+  )
+})
+enrichment_df_3 &lt;- do.call(rbind, enrichment_results_3)
+
+enrichment_df_3$FDR &lt;- p.adjust(enrichment_df_3$pvalue, method = &quot;BH&quot;)
+enrichment_df_3 &lt;-enrichment_df_3 %&gt;% 
+  left_join(Module_lookup)</code></pre>
+<pre class="r"><code>enrichment_results_1 &lt;- lapply(names(protein_module_split), function(mod) {
+  
+   mod_df &lt;- protein_module_split[[mod]]
+  
+  # module genes
+  mod_genes &lt;- unique(mod_df$ENTREZID)
+  mod_genes &lt;- mod_genes[!is.na(mod_genes)]
+  mod_genes &lt;- intersect(mod_genes, background_genes)
+  
+  # overlaps
+  in_set1 &lt;- sum(mod_genes %in% set1_genes)
+  not_in_set1 &lt;- length(mod_genes) - in_set1
+  
+  # background universe constrained
+  bg_set1 &lt;- sum(background_genes %in% set1_genes)
+  bg_not_set1 &lt;- length(background_genes) - bg_set1
+  
+  mat &lt;- matrix(c(
+    in_set1,
+    not_in_set1,
+    bg_set1 - in_set1,
+    bg_not_set1 - not_in_set1
+  ), nrow = 2)
+  
+  ft &lt;- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = unname(ft$estimate),
+    in_set1 = in_set1,
+    module_size = length(mod_genes)
+  )
+})
+enrichment_df_1 &lt;- do.call(rbind, enrichment_results_1)
+
+enrichment_df_1$FDR &lt;- p.adjust(enrichment_df_1$pvalue, method = &quot;BH&quot;)
+enrichment_df_1 &lt;-enrichment_df_1 %&gt;% 
+  left_join(Module_lookup)</code></pre>
+<div id="plots-of-enrichment" class="section level4">
+<h4>Plots of enrichment</h4>
+<pre class="r"><code>ggplot(enrichment_df_1, aes(x=odds_ratio, -log10(FDR), label=greek_module))+
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;Module Enrichment of assigned nearest genes in Set 1&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/protein_checks.Rmd/Plot%20for%20set%201-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(enrichment_df_2, aes(x=odds_ratio, -log10(FDR), label=greek_module))+
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;Module Enrichment of assigned nearest genes in Set 2&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/protein_checks.Rmd/Plot%20for%20set%202-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(enrichment_df_3, aes(x=odds_ratio, -log10(FDR), label=greek_module))+
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;Module Enrichment of assigned nearest genes in Set 3&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/protein_checks.Rmd/Plot%20for%20set%203-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="now-module-enrichment-in-set-2-v-set-1" class="section level3">
+<h3>now module enrichment in set 2 v set 1</h3>
+<pre class="r"><code>bg_genes_2v1 &lt;- union(set1_genes,set2_genes)
+enrichment_results_2v1 &lt;- lapply(names(protein_module_split), function(mod) {
+  
+  mod_genes &lt;- unique(protein_module_split[[mod]]$ENTREZID)
+  mod_genes &lt;- mod_genes[!is.na(mod_genes)]
+  
+  a &lt;- sum(set2_genes %in% mod_genes)
+  b &lt;- sum(set2_genes %in% bg_genes_2v1) - a
+  
+  c &lt;- sum(set1_genes %in% mod_genes)
+  d &lt;- sum(set1_genes %in% bg_genes_2v1) - c
+  
+  mat &lt;- matrix(c(a, b, c, d), nrow = 2)
+  
+  ft &lt;- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value, 
+    odds_ratio = ft$estimate,
+    set2_in_module = a,
+    set1_in_module = c
+  )
+})
+enrichment_df_2v1 &lt;- do.call(rbind, enrichment_results_2v1)
+
+enrichment_df_2v1$FDR &lt;- p.adjust(enrichment_df_2v1$pvalue, method = &quot;BH&quot;)
+enrichment_df_2v1 &lt;-enrichment_df_2v1 %&gt;% 
+  left_join(Module_lookup)</code></pre>
+<pre class="r"><code>ggplot(enrichment_df_2v1, aes(x=odds_ratio, -log10(FDR), label=greek_module))+
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;Module Enrichment of assigned nearest genes in Set 2 vs set 1&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/protein_checks.Rmd/Plot%20for%20set%202v1-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>datatable(enrichment_df_2v1,options = list(
+    pageLength = 10,
+    scrollX = TRUE))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-7d15ac70e14e0faa7e6f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-7d15ac70e14e0faa7e6f">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13"],["blue","brown","darkgreen","darkred","green","grey","lightgreen","lightyellow","magenta","midnightblue","royalblue","salmon","yellow"],[0.7221690401647417,0.1747717946690244,0.691947940350751,0.5046233463447002,0.848782020750834,1,0.8843792586560258,0.7350563209511206,0.413139211505477,0.09490908453310572,0.002138473483322638,0.1353563171445544,1],[0.466654945575591,0,1.063256557180173,1.10611053601036,1.039195426197319,0.9599220226538182,1.026111035797713,0.8881508194756532,1.293909970875194,0.5009711678313756,1.577204755866311,0.503338203060346,0.7349622372228816],[1,0,29,43,31,5,13,19,8,6,57,5,2],[37,44,472,674,516,90,219,369,107,206,635,171,47],[1,0.5680083326743293,1,1,1,1,1,1,1,0.5680083326743293,0.02780015528319429,0.5680083326743293,1],["eta","kappa","beta","iota","alpha","Unassigned","zeta","epsilon","theta","gamma","mu","delta","lambda"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Module<\/th>\n      <th>pvalue<\/th>\n      <th>odds_ratio<\/th>\n      <th>set2_in_module<\/th>\n      <th>set1_in_module<\/th>\n      <th>FDR<\/th>\n      <th>greek_module<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Module","targets":1},{"name":"pvalue","targets":2},{"name":"odds_ratio","targets":3},{"name":"set2_in_module","targets":4},{"name":"set1_in_module","targets":5},{"name":"FDR","targets":6},{"name":"greek_module","targets":7}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="now-module-enrichment-in-set-3-v-set-1" class="section level3">
+<h3>now module enrichment in set 3 v set 1</h3>
+<pre class="r"><code>bg_genes_3v1 &lt;- union(set1_genes,set3_genes)
+enrichment_results_3v1 &lt;- lapply(names(protein_module_split), function(mod) {
+  
+  mod_genes &lt;- unique(protein_module_split[[mod]]$ENTREZID)
+  mod_genes &lt;- mod_genes[!is.na(mod_genes)]
+  
+  a &lt;- sum(set3_genes %in% mod_genes)
+  b &lt;- sum(set3_genes %in% bg_genes_3v1) - a
+  
+  c &lt;- sum(set1_genes %in% mod_genes)
+  d &lt;- sum(set1_genes %in% bg_genes_3v1) - c
+  
+  mat &lt;- matrix(c(a, b, c, d), nrow = 2)
+  
+  ft &lt;- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = ft$estimate,
+    set3_in_module = a,
+    set1_in_module = c
+  )
+})
+enrichment_df_3v1 &lt;- do.call(rbind, enrichment_results_3v1)
+
+enrichment_df_3v1$FDR &lt;- p.adjust(enrichment_df_3v1$pvalue, method = &quot;BH&quot;)
+enrichment_df_3v1 &lt;-enrichment_df_3v1 %&gt;% 
+  left_join(Module_lookup)</code></pre>
+<pre class="r"><code>ggplot(enrichment_df_3v1, aes(x=odds_ratio, -log10(FDR), label=paste0(greek_module)))+
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;Module Enrichment of assigned nearest genes in Set 3 vs Set 1&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/protein_checks.Rmd/Plot%20for%20set%203v1-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>datatable(enrichment_df_3v1,options = list(
+    pageLength = 10,
+    scrollX = TRUE))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-ac686cfa6b0ab6d13cf6" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ac686cfa6b0ab6d13cf6">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13"],["blue","brown","darkgreen","darkred","green","grey","lightgreen","lightyellow","magenta","midnightblue","royalblue","salmon","yellow"],[0.8456194802514834,0.5842933811154357,0.5870434711736852,0.01503697544872282,0.01862351546122374,0.09405458334402217,0.8733378436431957,0.9017722500916803,0.07877875645691036,0.4651873293333853,0.0180314748694971,0.1403338188966571,0.8646856521761215],[0.8520203545115371,0.7162476509495895,1.060749725047244,1.23179967382291,1.255907029772654,1.454183231649231,0.966417497630872,0.9762200812438672,1.43439982764404,1.116472618704982,1.235637061548225,0.7360883154915324,1.05440638444027],[7,7,111,183,143,29,47,80,34,51,173,28,11],[37,44,472,674,516,90,219,369,107,206,635,171,47],[0.9017722500916803,0.8479516805842119,0.8479516805842119,0.08070190033196951,0.08070190033196951,0.2445419166944577,0.9017722500916803,0.9017722500916803,0.2445419166944577,0.8479516805842119,0.08070190033196951,0.3040566076094238,0.9017722500916803],["eta","kappa","beta","iota","alpha","Unassigned","zeta","epsilon","theta","gamma","mu","delta","lambda"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Module<\/th>\n      <th>pvalue<\/th>\n      <th>odds_ratio<\/th>\n      <th>set3_in_module<\/th>\n      <th>set1_in_module<\/th>\n      <th>FDR<\/th>\n      <th>greek_module<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Module","targets":1},{"name":"pvalue","targets":2},{"name":"odds_ratio","targets":3},{"name":"set3_in_module","targets":4},{"name":"set1_in_module","targets":5},{"name":"FDR","targets":6},{"name":"greek_module","targets":7}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="does-distance-to-tss-change-enrichment" class="section level3">
+<h3>does distance to TSS change enrichment?</h3>
+<pre class="r"><code>set1_2kb_genes &lt;- Set1_H3K27ac_lookup %&gt;% 
+  dplyr::filter(distanceToTSS&lt;2000 &amp; distanceToTSS&gt;-2000) %&gt;% 
+  pull(geneId) %&gt;% 
+  unique()
+
+set2_2kb_genes &lt;- Set2_H3K27ac_lookup %&gt;% 
+  dplyr::filter(distanceToTSS&lt;2000 &amp; distanceToTSS&gt;-2000) %&gt;% 
+  pull(geneId) %&gt;% 
+  unique()
+
+set3_2kb_genes &lt;- Set3_H3K27ac_lookup %&gt;% 
+  dplyr::filter(distanceToTSS&lt;2000 &amp; distanceToTSS&gt;-2000) %&gt;% 
+  pull(geneId) %&gt;% 
+  unique()</code></pre>
+<pre class="r"><code>bg_2v1_2kb &lt;- union(set1_2kb_genes, set2_2kb_genes)
+enrichment_results_2v1_2kb &lt;- lapply(names(protein_module_split), function(mod) {
+  
+  mod_genes &lt;- unique(protein_module_split[[mod]]$ENTREZID)
+  mod_genes &lt;- mod_genes[!is.na(mod_genes)]
+  
+  a &lt;- sum(set2_2kb_genes %in% mod_genes)
+  b &lt;- sum(set2_2kb_genes %in% bg_2v1_2kb) - a
+  
+  c &lt;- sum(set1_2kb_genes %in% mod_genes)
+  d &lt;- sum(set1_2kb_genes %in% bg_2v1_2kb) - c
+  
+  mat &lt;- matrix(c(a, b, c, d), nrow = 2)
+  
+  ft &lt;- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = ft$estimate,
+    set3_in_module = a,
+    set1_in_module = c
+  )
+})
+enrichment_df_2v1_2kb &lt;- do.call(rbind, enrichment_results_2v1_2kb)
+
+enrichment_df_2v1_2kb$FDR &lt;- p.adjust(enrichment_df_2v1_2kb$pvalue, method = &quot;BH&quot;)
+
+ggplot(enrichment_df_2v1_2kb, aes(x=odds_ratio, -log10(FDR), label=Module))+
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;Module Enrichment of assigned nearest genes in Set 2 vs set 1&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/protein_checks.Rmd/unnamed-chunk-7-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>bg_3v1_2kb &lt;- union(set1_2kb_genes, set3_2kb_genes)
+enrichment_results_3v1_2kb &lt;- lapply(names(protein_module_split), function(mod) {
+  
+  mod_genes &lt;- unique(protein_module_split[[mod]]$ENTREZID)
+  mod_genes &lt;- mod_genes[!is.na(mod_genes)]
+  
+  a &lt;- sum(set3_2kb_genes %in% mod_genes)
+  b &lt;- sum(set3_2kb_genes %in% bg_3v1_2kb) - a
+  
+  c &lt;- sum(set1_2kb_genes %in% mod_genes)
+  d &lt;- sum(set1_2kb_genes %in% bg_3v1_2kb) - c
+  
+  mat &lt;- matrix(c(a, b, c, d), nrow = 2)
+  
+  ft &lt;- fisher.test(mat)
+  
+  data.frame(
+    Module = mod,
+    pvalue = ft$p.value,
+    odds_ratio = ft$estimate,
+    set3_in_module = a,
+    set1_in_module = c
+  )
+})
+enrichment_df_3v1_2kb &lt;- do.call(rbind, enrichment_results_3v1_2kb)
+
+enrichment_df_3v1_2kb$FDR &lt;- p.adjust(enrichment_df_3v1_2kb$pvalue, method = &quot;BH&quot;)
+
+ggplot(enrichment_df_3v1_2kb, aes(x=odds_ratio, -log10(FDR), label=Module))+
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+   # geom_text_repel(data = subset(SVA_results, FDR &lt; 0.05)) +
+  geom_text_repel(size=3, max.overlaps = Inf)+
+  geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;Module Enrichment of assigned nearest genes in Set 3 vs set 1&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/protein_checks.Rmd/unnamed-chunk-8-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ordinal-model-set-1set-2-set-3" class="section level3">
+<h3>ordinal model set 1&lt;Set 2&lt; Set 3</h3>
+<pre class="r"><code>set3_clean &lt;- set3_genes
+set2_clean &lt;- setdiff(set2_genes, set3_clean)
+set1_clean &lt;- setdiff(set1_genes, union(set2_clean, set3_clean))
+all_genes &lt;- unique(unlist(lapply(protein_module_split, function(x) x$ENTREZID)))
+all_genes &lt;- all_genes[!is.na(all_genes)]
+gene_df &lt;- data.frame(gene = all_genes)
+
+gene_df$set &lt;- NA
+
+gene_df$set[gene_df$gene %in% set1_clean] &lt;- &quot;Set1&quot;
+gene_df$set[gene_df$gene %in% set2_clean] &lt;- &quot;Set2&quot;
+gene_df$set[gene_df$gene %in% set3_clean] &lt;- &quot;Set3&quot;
+
+gene_df$set &lt;- factor(gene_df$set,
+                      levels = c(&quot;Set1&quot;, &quot;Set2&quot;, &quot;Set3&quot;),
+                      ordered = TRUE)
+
+module_list &lt;- lapply(names(protein_module_split), function(mod) {
+  data.frame(
+    gene = protein_module_split[[mod]]$ENTREZID,
+    module = mod
+  )
+})
+names(module_list) &lt;- names(protein_module_split)
+
+module_df &lt;- lapply(names(protein_module_split), function(mod) {
+  data.frame(
+    gene = protein_module_split[[mod]]$ENTREZID,
+    module = mod,
+    value = 1
+  )
+}) %&gt;%
+  bind_rows() %&gt;%
+  distinct(gene, module, .keep_all = TRUE)
+
+module_wide &lt;- module_df %&gt;%
+  pivot_wider(
+    names_from = module,
+    values_from = value,
+    values_fill = 0
+  )
+# module_wide[is.na(module_wide)] &lt;- 0
+colnames(module_wide) &lt;- sub(&quot;value\\.&quot;, &quot;&quot;, colnames(module_wide))
+
+
+dat &lt;- merge(gene_df, module_wide, by = &quot;gene&quot;, all.x = TRUE)
+module_cols &lt;- setdiff(colnames(dat), c(&quot;gene&quot;, &quot;set&quot;))
+
+dat[module_cols][is.na(dat[module_cols])] &lt;- 0
+
+### some not assigned a set, remove those for analysis purposes
+dat &lt;- dat %&gt;%
+  filter(!is.na(set))
+# dat[is.na(dat)] &lt;- 0</code></pre>
+<pre class="r"><code>model &lt;- polr(
+  set ~ . - gene,
+  data = dat,
+  Hess = TRUE
+)
+
+coef_df &lt;- broom::tidy(model)
+
+heatmap_df &lt;- coef_df %&gt;%
+  dplyr::filter(!grepl(&quot;\\|&quot;, term)) %&gt;%
+  mutate(effect = estimate) %&gt;%
+  dplyr::select(term, effect)
+
+colnames(heatmap_df) &lt;- c(&quot;Module&quot;, &quot;EffectSize&quot;)
+pred &lt;- predict(model, type = &quot;probs&quot;)
+
+
+
+pred_df &lt;- cbind(dat[&quot;gene&quot;], pred)
+
+module_heatmap &lt;- merge(module_df, pred_df, by = &quot;gene&quot;)
+
+module_summary &lt;- module_heatmap %&gt;%
+  group_by(module) %&gt;%
+  summarise(
+    Set1 = mean(Set1),
+    Set2 = mean(Set2),
+    Set3 = mean(Set3),
+    .groups = &quot;drop&quot;
+  )
+heatmap_long &lt;- module_summary %&gt;%
+  pivot_longer(cols = c(Set1, Set2, Set3),
+               names_to = &quot;State&quot;,
+               values_to = &quot;Probability&quot;) %&gt;% 
+  left_join(Module_lookup, by=c(&quot;module&quot;=&quot;Module&quot;))
+
+ggplot(heatmap_long, aes(x = State, y = greek_module, fill = Probability)) +
+  geom_tile() +
+  scale_fill_gradient(low = &quot;white&quot;, high = &quot;red&quot;)</code></pre>
+<p><img src="figure/protein_checks.Rmd/unnamed-chunk-10-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ComplexHeatmap::Heatmap(heatmap_df)</code></pre>
+<pre class="r"><code>table(module_df$gene %in% set1_clean,
+      module_df$gene %in% set2_clean,
+      module_df$gene %in% set3_clean)</code></pre>
+<pre><code>, ,  = FALSE
+
+       
+        FALSE TRUE
+  FALSE   562  129
+  TRUE   2572    0
+
+, ,  = TRUE
+
+       
+        FALSE TRUE
+  FALSE   904    0
+  TRUE      0    0</code></pre>
+<pre class="r"><code>all_genes &lt;- unique(module_df$gene)
+
+global_set2_rate &lt;- mean(all_genes %in% set2_clean)
+global_set2_rate</code></pre>
+<pre><code>[1] 0.03103199</code></pre>
+<pre class="r"><code>module_enrichment &lt;- module_df %&gt;%
+  filter(!is.na(gene)) %&gt;%
+  group_by(module) %&gt;%
+  summarise(
+    module_size = n_distinct(gene),
+    set2_count = sum(gene %in% set2_clean),
+    set2_rate = set2_count / module_size,
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  mutate(
+    enrichment = set2_rate / global_set2_rate
+  )
+
+module_enrichment &lt;- module_enrichment %&gt;%
+  rowwise() %&gt;%
+  mutate(
+    pvalue = fisher.test(matrix(c(
+      set2_count,
+      module_size - set2_count,
+      sum(all_genes %in% set2_clean) - set2_count,
+      length(all_genes) - sum(all_genes %in% set2_clean) - (module_size - set2_count)
+    ), nrow = 2))$p.value
+  ) %&gt;%
+  ungroup()
+
+module_enrichment$FDR &lt;- p.adjust(module_enrichment$pvalue, method = &quot;BH&quot;)
+
+ggplot(module_enrichment, aes(x = module_size, y = set2_rate)) +
+  geom_point(aes(color = FDR &lt; 0.05)) +
+  geom_text(aes(label = module), vjust = -0.5)+
+  geom_hline(yintercept = global_set2_rate, linetype = &quot;dashed&quot;) +
+  scale_y_continuous(&quot;Set2 fraction&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="figure/protein_checks.Rmd/unnamed-chunk-11-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_module_enrichment &lt;- function(module_df, target_set, set_name = &quot;Set&quot;) {
+
+  all_genes &lt;- unique(module_df$gene)
+
+  global_rate &lt;- mean(all_genes %in% target_set)
+
+  out &lt;- module_df %&gt;%
+    filter(!is.na(gene)) %&gt;%
+    group_by(module) %&gt;%
+    summarise(
+      module_size = n_distinct(gene),
+      target_count = sum(gene %in% target_set),
+      target_rate = target_count / module_size,
+      .groups = &quot;drop&quot;
+    ) %&gt;%
+    mutate(
+      enrichment = target_rate / global_rate
+    ) %&gt;%
+    rowwise() %&gt;%
+    mutate(
+      pvalue = fisher.test(matrix(c(
+        target_count,
+        module_size - target_count,
+        sum(all_genes %in% target_set) - target_count,
+        length(all_genes) -
+          sum(all_genes %in% target_set) -
+          (module_size - target_count)
+      ), nrow = 2))$p.value
+    ) %&gt;%
+    ungroup()
+
+  out$FDR &lt;- p.adjust(out$pvalue, method = &quot;BH&quot;)
+  out$global_rate &lt;- global_rate
+  out
+}</code></pre>
+<pre class="r"><code>set2_enrichment &lt;- calc_module_enrichment(module_df, set2_clean)
+set3_enrichment &lt;- calc_module_enrichment(module_df, set3_clean)
+
+ggplot(set2_enrichment, aes(x = module_size, y = target_rate)) +
+  geom_point(aes(color = FDR &lt; 0.05)) +
+  geom_text(aes(label = module), vjust = -0.5)+
+  geom_hline(yintercept = set2_enrichment$global_rate, linetype = &quot;dashed&quot;) +
+  scale_y_continuous(&quot;Set2 fraction&quot;) +
+  theme_minimal()+
+  ggtitle(&quot;Set 2 intermediate state&quot;)</code></pre>
+<p><img src="figure/protein_checks.Rmd/unnamed-chunk-13-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(set3_enrichment, aes(x = module_size, y = target_rate)) +
+  geom_point(aes(color = FDR &lt; 0.05)) +
+  geom_text(aes(label = module), vjust = -0.5)+
+  geom_hline(yintercept = set3_enrichment$global_rate, linetype = &quot;dashed&quot;) +
+  scale_y_continuous(&quot;Set3 fraction&quot;) +
+  theme_minimal()+
+  ggtitle(&quot;Set 3 strongest state&quot;)</code></pre>
+<p><img src="figure/protein_checks.Rmd/unnamed-chunk-13-2.png" alt="" width="672" style="display: block; margin: auto;" />
+### KZFP</p>
+<pre class="r"><code>protein_data %&gt;% 
+  dplyr::select(Protein,Module,logFC,P.Value.adj) %&gt;% 
+  left_join(remap_clean, by =c(&quot;Protein&quot;=&quot;UNIPROT&quot;)) %&gt;% 
+  mutate(KZFP_group=case_when(SYMBOL %in%KZFP_2026_list$Label~&quot;KZFP&quot;,
+                              TRUE ~&quot;not_KZFP&quot;)) %&gt;% 
+  ggplot(., aes(x=KZFP_group,y=logFC))+
+  geom_boxplot()+
+   stat_compare_means(method = &quot;wilcox.test&quot;) +
+  theme_bw()+
+  ggtitle(&quot;LFC of KZFPs in protein data&quot;)</code></pre>
+<p><img src="figure/protein_checks.Rmd/KZFP%20in%20protein-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>protein_data %&gt;% 
+  dplyr::select(Protein,Module,logFC,P.Value.adj) %&gt;% 
+  left_join(remap_clean, by =c(&quot;Protein&quot;=&quot;UNIPROT&quot;)) %&gt;% 
+  mutate(KZFP_group=case_when(SYMBOL %in%KZFP_2026_list$Label~&quot;KZFP&quot;,
+                              TRUE ~&quot;not_KZFP&quot;)) %&gt;%
+  group_by(KZFP_group) %&gt;% 
+  tally</code></pre>
+<pre><code># A tibble: 1 × 2
+  KZFP_group     n
+  &lt;chr&gt;      &lt;int&gt;
+1 not_KZFP    4178</code></pre>
+</div>
+<div id="dap-enrichment" class="section level3">
+<h3>DAP enrichment</h3>
+<p>getting proteins that are DAP vs non-DAP</p>
+<pre class="r"><code>DAP_IDs &lt;- protein_data %&gt;% 
+dplyr::select(Protein,Module,logFC,P.Value.adj, Is_DA_at_adj.p) %&gt;% 
+  dplyr::filter(Is_DA_at_adj.p==1) %&gt;% 
+   left_join(remap_clean, by =c(&quot;Protein&quot;=&quot;UNIPROT&quot;)) 
+ 
+nonDAP_IDs &lt;- protein_data %&gt;% 
+dplyr::select(Protein,Module,logFC,P.Value.adj, Is_DA_at_adj.p) %&gt;% 
+  dplyr::filter(Is_DA_at_adj.p!=1) %&gt;% 
+   left_join(remap_clean, by =c(&quot;Protein&quot;=&quot;UNIPROT&quot;))
+
+
+Entrezid_protein_module &lt;- protein_data %&gt;% 
+dplyr::select(Protein,Module,logFC,P.Value.adj, Is_DA_at_adj.p) %&gt;% 
+     left_join(remap_clean, by =c(&quot;Protein&quot;=&quot;UNIPROT&quot;)) %&gt;% 
+  dplyr::filter(!is.na(SYMBOL)) %&gt;%
+  distinct(Module,ENTREZID,SYMBOL)
+
+
+Entrezid_protein_module_unique &lt;- Entrezid_protein_module%&gt;%
+  group_by(SYMBOL) %&gt;%
+  summarise(Module = dplyr::first(Module),
+            ENTREZID=dplyr::first(ENTREZID), .groups = &quot;drop&quot;)</code></pre>
+<p>asking are genes near mer61E_gr enriched in any module or in
+DAPs?</p>
+<pre class="r"><code>MER61E_mydata &lt;- 
+H3K27ac_ext200_anno %&gt;% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = &quot;;&quot;) %&gt;% 
+  dplyr::filter(repName==&quot;MER61E&quot;)%&gt;% 
+  pull(repID) %&gt;% 
+  unique()
+MER61E_mydata_set3 &lt;- H3K27ac_ext200_anno %&gt;% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = &quot;;&quot;) %&gt;% 
+  dplyr::filter(cluster==&quot;Set_3&quot;) %&gt;% 
+  dplyr::filter(repName==&quot;MER61E&quot;)%&gt;% 
+  pull(repID) %&gt;% 
+  unique()
+
+mer61E_gr &lt;- rtracklayer::import(&quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;) 
+# txdb annotation
+txdb &lt;- TxDb.Hsapiens.UCSC.hg38.knownGene
+# gene coordinates
+genes_gr &lt;- genes(txdb)
+# nearest gene index
+nearest_idx &lt;- nearest(mer61E_gr, genes_gr)
+# nearest gene IDs
+nearest_entrez &lt;- genes_gr$gene_id[nearest_idx]
+# add to MER61E object
+mcols(mer61E_gr)$nearest_gene &lt;- nearest_entrez
+distances &lt;- distance(mer61E_gr, genes_gr[nearest_idx])
+
+mcols(mer61E_gr)$distance_to_gene &lt;- distances
+## getting the dataframe of nearest genes in and out of my data for counting:
+mer61E_gr %&gt;% 
+  as.data.frame() %&gt;% 
+  mutate(my_MER=if_else(name %in%MER61E_mydata,&quot;in&quot;,&quot;out&quot;)) %&gt;% 
+  ggplot(aes(x=distance_to_gene, color=my_MER))+
+  geom_density()</code></pre>
+<p><img src="figure/protein_checks.Rmd/unnamed-chunk-15-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mer61E_gr %&gt;% 
+  as.data.frame() %&gt;% 
+  mutate(my_MER=if_else(name %in%MER61E_mydata,&quot;in&quot;,&quot;out&quot;)) %&gt;% 
+  mutate(is_DAP=if_else(nearest_gene%in%DAP_IDs$ENTREZID,&quot;DAP&quot;,&quot;not_DAP&quot;)) %&gt;% 
+  left_join(Entrezid_protein_module_unique, by=c(&quot;nearest_gene&quot;=&quot;ENTREZID&quot;)) %&gt;% 
+  mutate(DOX_cor= if_else(Module %in% c(&quot;green&quot;,&quot;lightyellow&quot;,&quot;salmon&quot;,&quot;darkgreen&quot;,&quot;midnightblue&quot;),&quot;DOXcor&quot;,&quot;non_DOXcor&quot;)) %&gt;% 
+  group_by(my_MER, DOX_cor) %&gt;% tally</code></pre>
+<pre><code># A tibble: 4 × 3
+# Groups:   my_MER [2]
+  my_MER DOX_cor        n
+  &lt;chr&gt;  &lt;chr&gt;      &lt;int&gt;
+1 in     DOXcor         3
+2 in     non_DOXcor    64
+3 out    DOXcor        10
+4 out    non_DOXcor   190</code></pre>
+<pre class="r"><code>my_matrix &lt;- matrix(c(3,64,10,190), nrow = 2)
+fisher.test(my_matrix)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  my_matrix
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.1528659 3.6051195
+sample estimates:
+odds ratio 
+  0.891003 </code></pre>
+<pre class="r"><code>repID_to_gene_MER61E &lt;- read_delim(&quot;data/Other_paper_data/repID_to_gene_MER61E.txt&quot;, 
+    delim = &quot;\t&quot;, escape_double = FALSE, 
+    col_names = FALSE, trim_ws = TRUE, skip = 1)
+
+repID_to_gene_MER61E$closest_gene &lt;- vapply(repID_to_gene_MER61E$X2, function(x){
+  # handle missing/empty
+    if (is.na(x) || x == &quot;&quot;) {
+      return(NA_character_)
+    }
+
+    # split entries
+    parts &lt;- str_split(x, &quot;,\\s*&quot;)[[1]]
+
+    # extract distances
+    dists &lt;- as.numeric(str_extract(parts, &quot;[+-]\\d+&quot;))
+
+    # extract genes
+    genes &lt;- str_extract(parts, &quot;^[^ ]+&quot;)
+
+    # remove failed parses
+    keep &lt;- !is.na(dists) &amp; !is.na(genes)
+
+    dists &lt;- dists[keep]
+    genes &lt;- genes[keep]
+
+    # if nothing valid remains
+    if (length(genes) == 0) {
+      return(NA_character_)
+    }
+
+    # closest gene
+    genes[which.min(abs(dists))]
+
+  },
+  FUN.VALUE = character(1))
+
+repID_to_gene_MER61E %&gt;% 
+  filter(!is.na(closest_gene)) %&gt;% 
+   mutate(my_MER=if_else(X1 %in%MER61E_mydata,&quot;in&quot;,&quot;out&quot;)) %&gt;% 
+  mutate(is_DAP=if_else(closest_gene%in%DAP_IDs$SYMBOL,&quot;DAP&quot;,&quot;not_DAP&quot;)) %&gt;% 
+  left_join(Entrezid_protein_module_unique, by=c(&quot;closest_gene&quot;=&quot;SYMBOL&quot;)) %&gt;% 
+  mutate(DOX_cor= if_else(Module %in% c(&quot;green&quot;,&quot;lightyellow&quot;,&quot;salmon&quot;,&quot;darkgreen&quot;,&quot;midnightblue&quot;),&quot;DOXcor&quot;,&quot;non_DOXcor&quot;)) %&gt;% 
+  group_by(my_MER,DOX_cor) %&gt;% 
+  tally</code></pre>
+<pre><code># A tibble: 4 × 3
+# Groups:   my_MER [2]
+  my_MER DOX_cor        n
+  &lt;chr&gt;  &lt;chr&gt;      &lt;int&gt;
+1 in     DOXcor         5
+2 in     non_DOXcor    56
+3 out    DOXcor        17
+4 out    non_DOXcor   161</code></pre>
+<pre class="r"><code>great_matrix &lt;- matrix(c(5,56,17,161), nrow = 2)
+
+fisher.test(great_matrix)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  great_matrix
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.2331645 2.5357573
+sample estimates:
+odds ratio 
+ 0.8461691 </code></pre>
+<pre class="r"><code>table(table(repID_to_gene_MER61E$closest_gene))</code></pre>
+<pre><code>
+  1   2   3   4   5 
+132  40   6   1   1 </code></pre>
+<pre class="r"><code>table(repID_to_gene_MER61E$closest_gene, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
+         AKR1C4          AKR1D1           AMY2A          ANXA10           APELA 
+              1               4               1               1               1 
+           APOB         APOBEC1         ARHGAP5            ARL6          ARPP21 
+              1               1               1               1               1 
+        ATF7IP2           ATG4C          ATP1B1        ATXN7L3B           BACH1 
+              1               2               1               1               1 
+           BBS9           BCAT1          BCL11A            BDNF        C12orf50 
+              1               1               1               1               1 
+       C19orf12         C8orf22          C8orf4           CADM1         CCDC170 
+              1               1               1               1               1 
+          CCNG1          CCSER2           CDCA7           CDH11            CDH5 
+              1               2               2               1               3 
+         CHI3L2           CHRM3           CHSY3           CLCA1           CNOT2 
+              1               1               1               1               1 
+          CNTN3            COCH         COL22A1             CPE           CPNE8 
+              1               1               1               1               1 
+           CROT           CSMD1          CSTF2T            CTSO           CYYR1 
+              2               1               1               2               2 
+         DAB2IP          DEPDC1           DESI2           DHFR2            DOK5 
+              2               1               1               1               1 
+          DSCR4           DYRK2            EBF2           EIF4H ENSG00000283378 
+              1               2               1               2               1 
+          EPM2A            ERC2           ETNK1             FER           FGF10 
+              2               1               1               1               1 
+           FIGN          FRMD4B            FTMT            GAS7            GPC5 
+              1               1               2               1               1 
+          GSG1L           HLA-B          HS3ST4          HS3ST5           HSPB3 
+              1               1               2               1               1 
+         IGFBP3          IMMP2L           JADE1          KBTBD6          KCNJ11 
+              2               1               1               1               1 
+        KHDRBS2          LCLAT1           LRP1B           LRRN3           LSAMP 
+              2               1               2               3               1 
+         MBOAT1           MDGA2           MED13         METTL7A            MGMT 
+              1               2               2               1               1 
+           MICB        MIS18BP1           MMP27           MON1B            MSH6 
+              1               2               1               1               2 
+          MYLIP           NABP1           NCAM2         NCR3LG1           NEGR1 
+              2               1               3               1               1 
+           NEK7            NEO1           NFIL3          NHLRC1          NKX6-3 
+              1               1               1               2               1 
+            NPL           NR3C2            NREP           NRSN1           NRXN3 
+              1               1               1               1               1 
+          NYAP2           OR1N1           OR8K5          PARD3B          PAXIP1 
+              1               2               1               1               1 
+         PCDH10          PCDH18           PEX5L         PLA2G4A           PLET1 
+              2               1               1               2               1 
+         PLSCR5            POT1         PPP2R5E            PTER           RAI14 
+              1               1               1               1               3 
+        RANBP3L          RASAL2          RCBTB2           RDH14           RFLNA 
+              1               1               1               1               1 
+           RFX5            RGS6            RIC1          RNASE1           RNPC3 
+              1               1               1               1               1 
+          RPAP3          RPRD1A           RPS12           SALL4          SEMA3E 
+              1               3               2               2               1 
+        SERTAD4            SIL1         SLCO1B1         SLITRK1          SORCS1 
+              1               2               1               1               1 
+          SP110           SPIN1      ST6GALNAC3           SULF2         SULT2A1 
+              1               2               1               1               1 
+           SVIP           SYT10          TMEFF2         TMEM163         TMEM165 
+              1               1               2               1               1 
+        TMEM260            TMPO           TMTC4         TRAM1L1          TREML2 
+              1               1               2               1               1 
+         TRIM24          TRIM36           TRPC4           TRPM1            TSHB 
+              2               1               1               2               1 
+            TSN           TTC28           TUSC3            TYW1           UBE2F 
+              1               1               1               5               2 
+         UGT2A1          UGT2A3         UGT2B10         UGT2B11         UGT2B28 
+              2               1               2               3               2 
+         UTP14C           VDAC1             VIM          VSTM2A            XCR1 
+              2               2               1               1               2 
+           XKR4          YTHDC2           ZNF25          ZNF521          ZRANB2 
+              1               1               2               1               1 
+           &lt;NA&gt; 
+             28 </code></pre>
+<pre class="r"><code>repID_to_gene_MER61E %&gt;% 
+  filter(!is.na(closest_gene)) %&gt;% 
+   mutate(my_MER=if_else(X1 %in%MER61E_mydata_set3,&quot;in&quot;,&quot;out&quot;)) %&gt;% 
+  mutate(is_DAP=if_else(closest_gene%in%DAP_IDs$SYMBOL,&quot;DAP&quot;,&quot;not_DAP&quot;)) %&gt;% 
+  left_join(Entrezid_protein_module_unique, by=c(&quot;closest_gene&quot;=&quot;SYMBOL&quot;)) %&gt;% 
+  mutate(DOX_cor= if_else(Module %in% c(&quot;green&quot;,&quot;lightyellow&quot;,&quot;salmon&quot;,&quot;darkgreen&quot;,&quot;midnightblue&quot;),&quot;DOXcor&quot;,&quot;non_DOXcor&quot;)) %&gt;% 
+  group_by(my_MER,DOX_cor) %&gt;% 
+  tally</code></pre>
+<pre><code># A tibble: 4 × 3
+# Groups:   my_MER [2]
+  my_MER DOX_cor        n
+  &lt;chr&gt;  &lt;chr&gt;      &lt;int&gt;
+1 in     DOXcor         3
+2 in     non_DOXcor    34
+3 out    DOXcor        19
+4 out    non_DOXcor   183</code></pre>
+<pre class="r"><code>great_matrix_set3 &lt;- matrix(c(3,34,19,183), nrow = 2)
+
+fisher.test(great_matrix_set3)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  great_matrix_set3
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.1528595 3.1303576
+sample estimates:
+odds ratio 
+ 0.8503987 </code></pre>
+</div>
+<div id="looking-at-tf-motifprotein-enrichment" class="section level3">
+<h3>Looking at TF motif/protein enrichment</h3>
+<pre class="r"><code>H3K27ac_Set2_data &lt;- readRDS(&quot;data/RDS_files/H3K27ac_Set2_enrmotif_data.RDS&quot;)
+H3K27ac_Set3_data &lt;- readRDS(&quot;data/RDS_files/H3K27ac_Set3_enrmotif_data.RDS&quot;)
+
+## TF universe
+opts &lt;- list(
+  species = 9606,      # human
+  all_versions = FALSE
+)
+
+pfm_list &lt;- getMatrixSet(JASPAR2022, opts)
+tf_names &lt;- sapply(pfm_list, name)
+
+motif_names_set2H3K27ac &lt;-
+H3K27ac_Set2_data %&gt;%
+  dplyr::filter(str_starts(pattern = &quot;MA&quot;,string=ID)) %&gt;%  
+  dplyr::select(motif_name) %&gt;% 
+  mutate(TF_split=str_split(motif_name,&quot;::&quot;)) %&gt;% 
+  unnest(TF_split) %&gt;% 
+  mutate(motif_name2=toupper(TF_split)) %&gt;% 
+  mutate(is_DAP_comp=motif_name2 %in%Entrezid_protein_module_unique$SYMBOL) %&gt;% 
+  group_by(motif_name) %&gt;% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), &quot;DAP&quot;, &quot;non_DAP&quot;),
+    .groups = &quot;drop&quot;
+  ) %&gt;% 
+  mutate(motif_name=toupper(motif_name)) %&gt;% 
+  distinct()
+
+
+motif_names_set3H3K27ac &lt;- H3K27ac_Set3_data %&gt;%
+  dplyr::filter(str_starts(pattern = &quot;MA&quot;,string=ID)) %&gt;%  
+  dplyr::select(motif_name) %&gt;% 
+  mutate(TF_split=str_split(motif_name,&quot;::&quot;)) %&gt;% 
+  unnest(TF_split) %&gt;% 
+  mutate(motif_name2=toupper(TF_split)) %&gt;% 
+  mutate(is_DAP_comp=motif_name2 %in%Entrezid_protein_module_unique$SYMBOL) %&gt;% 
+  group_by(motif_name) %&gt;% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), &quot;DAP&quot;, &quot;non_DAP&quot;),
+    .groups = &quot;drop&quot;
+  ) %&gt;% 
+  mutate(motif_name=toupper(motif_name)) %&gt;% 
+  distinct()
+
+
+
+# motif_names_set2H3K27ac</code></pre>
+</div>
+<div id="using-exact-meme-file-of-tfs-for-enrichment"
+class="section level3">
+<h3>Using exact meme file of TFs for enrichment<br />
+</h3>
+<pre class="r"><code>motifs &lt;- read_meme(&quot;data/Other_paper_data/JASPAR2022_CORE_vertebrates_non-redundant_v2.meme&quot;)
+### pulling the alt_name from each element (841 elements)
+tf_names &lt;- sapply(motifs, function(x) x@altname)
+
+### no making the totupper and removing the redundant names (those that are not human are lowercase but maybe the same, ie.LHX1, Lhx1)  This leaves 779 total
+tf_names &lt;- tf_names %&gt;% 
+  toupper() %&gt;% 
+  unique()
+
+H3K27ac_TF_df &lt;- tibble(tf_names) %&gt;% 
+  mutate(TF_split=str_split(tf_names,&quot;::&quot;)) %&gt;% 
+  unnest(TF_split) %&gt;% 
+  mutate(is_DAP_comp=TF_split %in%Entrezid_protein_module_unique$SYMBOL) %&gt;% 
+  group_by(tf_names) %&gt;% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), &quot;DAP&quot;, &quot;non_DAP&quot;),
+    .groups = &quot;drop&quot;
+  ) %&gt;% 
+  mutate(Set_2=if_else(tf_names %in% motif_names_set2H3K27ac$motif_name,&quot;yes&quot;,&quot;no&quot;),
+         Set_3=if_else(tf_names %in% motif_names_set3H3K27ac$motif_name,&quot;yes&quot;,&quot;no&quot;)) %&gt;% 
+   mutate(
+    DAP = factor(DAP, levels = c(&quot;DAP&quot;, &quot;non_DAP&quot;)),
+    Set_2 = factor(Set_2, levels = c(&quot;yes&quot;, &quot;no&quot;)),
+    Set_3 = factor(Set_3, levels = c(&quot;yes&quot;, &quot;no&quot;))) %&gt;% 
+  mutate(
+    set_group = case_when(
+      Set_2 == &quot;yes&quot; &amp; Set_3 == &quot;yes&quot; ~ &quot;shared&quot;,
+      Set_2 == &quot;yes&quot; &amp; Set_3 == &quot;no&quot;  ~ &quot;set_2_only&quot;,
+      Set_2 == &quot;no&quot;  &amp; Set_3 == &quot;yes&quot; ~ &quot;set_3_only&quot;,
+      TRUE ~ &quot;neither&quot;))
+
+
+
+tf_matrix_set2 &lt;- table(H3K27ac_TF_df$DAP, H3K27ac_TF_df$Set_2)
+
+fisher.test(tf_matrix_set2)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  tf_matrix_set2
+p-value = 0.7096
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.3609622 1.9161552
+sample estimates:
+odds ratio 
+ 0.8523702 </code></pre>
+<pre class="r"><code>tf_matrix_set3 &lt;- table(H3K27ac_TF_df$DAP, H3K27ac_TF_df$Set_3)
+
+fisher.test(tf_matrix_set3)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  tf_matrix_set3
+p-value = 0.1075
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.7709046 6.2510077
+sample estimates:
+odds ratio 
+  2.383567 </code></pre>
+<p>almost set3, good odds ratio but not significant with a
+pvalue=0.1075.</p>
+<p>Now I will test if the unique to Set 3, unique to Set 2, or shared
+TFs are enriched in DAPs vs non-DAPs</p>
+<pre class="r"><code>table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group==&quot;set_2_only&quot;)</code></pre>
+<pre><code>         
+          FALSE TRUE
+  DAP        19   11
+  non_DAP   487  262</code></pre>
+<pre class="r"><code>tf_uni_matrix_set2 &lt;- matrix(c(11,19,262,487), nrow = 2)
+
+fisher.test(tf_uni_matrix_set2)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  tf_uni_matrix_set2
+p-value = 0.8471
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.4552911 2.4214519
+sample estimates:
+odds ratio 
+  1.076031 </code></pre>
+<pre class="r"><code>table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group==&quot;set_3_only&quot;)</code></pre>
+<pre><code>         
+          FALSE TRUE
+  DAP        24    6
+  non_DAP   719   30</code></pre>
+<pre class="r"><code>tf_uni_matrix_set3 &lt;- matrix(c(6,24,30,719), nrow = 2)
+
+fisher.test(tf_uni_matrix_set3)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  tf_uni_matrix_set3
+p-value = 0.001681
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+  1.854957 16.498413
+sample estimates:
+odds ratio 
+  5.963026 </code></pre>
+<p>So we do know that the unique set 3 enriched TFs are also enriched in
+DAPs significantly.</p>
+<pre class="r"><code>table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group==&quot;shared&quot;)</code></pre>
+<pre><code>         
+          FALSE TRUE
+  DAP        30    0
+  non_DAP   708   41</code></pre>
+<pre class="r"><code>tf_uni_matrix_setshare &lt;- matrix(c(0,30,41,708), nrow = 2)
+
+fisher.test(tf_uni_matrix_setshare)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  tf_uni_matrix_setshare
+p-value = 0.397
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.000000 2.363431
+sample estimates:
+odds ratio 
+         0 </code></pre>
+</div>
+<div id="h3k9me3" class="section level2">
+<h2>H3K9me3</h2>
+<pre class="r"><code>H3K9me3_Set2_data &lt;- readRDS(&quot;data/RDS_files/H3K9me3_Set2_enrmotif_data.RDS&quot;)
+H3K9me3_Set3_data &lt;- readRDS(&quot;data/RDS_files/H3K9me3_Set3_enrmotif_data.RDS&quot;)
+
+motif_names_set2H3K9me3 &lt;-
+H3K9me3_Set2_data %&gt;%
+  dplyr::filter(str_starts(pattern = &quot;MA&quot;,string=ID)) %&gt;%  
+  dplyr::select(motif_name) %&gt;% 
+  mutate(TF_split=str_split(motif_name,&quot;::&quot;)) %&gt;% 
+  unnest(TF_split) %&gt;% 
+  mutate(motif_name2=toupper(TF_split)) %&gt;% 
+  mutate(is_DAP_comp=motif_name2 %in%Entrezid_protein_module_unique$SYMBOL) %&gt;% 
+  group_by(motif_name) %&gt;% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), &quot;DAP&quot;, &quot;non_DAP&quot;),
+    .groups = &quot;drop&quot;
+  ) %&gt;% 
+  mutate(motif_name=toupper(motif_name)) %&gt;% 
+  distinct()
+
+
+motif_names_set3H3K9me3 &lt;- H3K9me3_Set3_data %&gt;%
+  dplyr::filter(str_starts(pattern = &quot;MA&quot;,string=ID)) %&gt;%  
+  dplyr::select(motif_name) %&gt;% 
+  mutate(TF_split=str_split(motif_name,&quot;::&quot;)) %&gt;% 
+  unnest(TF_split) %&gt;% 
+  mutate(motif_name2=toupper(TF_split)) %&gt;% 
+  mutate(is_DAP_comp=motif_name2 %in%Entrezid_protein_module_unique$SYMBOL) %&gt;% 
+  group_by(motif_name) %&gt;% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), &quot;DAP&quot;, &quot;non_DAP&quot;),
+    .groups = &quot;drop&quot;
+  ) %&gt;% 
+  mutate(motif_name=toupper(motif_name)) %&gt;% 
+  distinct()
+
+H3K9me3_marked_TF &lt;- tibble(tf_names) %&gt;% 
+  mutate(TF_split=str_split(tf_names,&quot;::&quot;)) %&gt;% 
+  unnest(TF_split) %&gt;% 
+  mutate(is_DAP_comp=TF_split %in%Entrezid_protein_module_unique$SYMBOL) %&gt;% 
+   group_by(tf_names) %&gt;% 
+  summarise(
+    DAP = if_else(any(is_DAP_comp), &quot;DAP&quot;, &quot;non_DAP&quot;),
+    .groups = &quot;drop&quot;
+  ) %&gt;% 
+  mutate(Set_2=if_else(tf_names %in% motif_names_set2H3K9me3$motif_name,&quot;yes&quot;,&quot;no&quot;),
+         Set_3=if_else(tf_names %in% motif_names_set3H3K9me3$motif_name,&quot;yes&quot;,&quot;no&quot;)) %&gt;% 
+   mutate(
+    DAP = factor(DAP, levels = c(&quot;DAP&quot;, &quot;non_DAP&quot;)),
+    Set_2 = factor(Set_2, levels = c(&quot;yes&quot;, &quot;no&quot;)),
+    Set_3 = factor(Set_3, levels = c(&quot;yes&quot;, &quot;no&quot;))) %&gt;% 
+  mutate(
+    set_group = case_when(
+      Set_2 == &quot;yes&quot; &amp; Set_3 == &quot;yes&quot; ~ &quot;shared&quot;,
+      Set_2 == &quot;yes&quot; &amp; Set_3 == &quot;no&quot;  ~ &quot;set_2_only&quot;,
+      Set_2 == &quot;no&quot;  &amp; Set_3 == &quot;yes&quot; ~ &quot;set_3_only&quot;,
+      TRUE ~ &quot;neither&quot;))
+
+table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_2)</code></pre>
+<pre><code>         
+          yes  no
+  DAP       5  25
+  non_DAP 213 536</code></pre>
+<pre class="r"><code>tf_matrix_set2_k9 &lt;- table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_2)
+
+fisher.test(tf_matrix_set2_k9)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  tf_matrix_set2_k9
+p-value = 0.2131
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.1486442 1.3633091
+sample estimates:
+odds ratio 
+ 0.5036649 </code></pre>
+<pre class="r"><code>table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_3)</code></pre>
+<pre><code>         
+          yes  no
+  DAP       4  26
+  non_DAP 181 568</code></pre>
+<pre class="r"><code>tf_matrix_set3_k9 &lt;- table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_3)
+
+fisher.test(tf_matrix_set3_k9)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  tf_matrix_set3_k9
+p-value = 0.1964
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.1209336 1.4190999
+sample estimates:
+odds ratio 
+ 0.4831394 </code></pre>
+<p>now I will also check if acute/sus/shared enrichment</p>
+<p>Acute:(set 2 in H3K9me3)</p>
+<pre class="r"><code>table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group==&quot;set_2_only&quot;)</code></pre>
+<pre><code>         
+          FALSE TRUE
+  DAP        29    1
+  non_DAP   705   44</code></pre>
+<pre class="r"><code>tf_uni_matrix_set2_k9 &lt;- matrix(c(1,29,44,705), nrow = 2)
+
+
+fisher.test(tf_uni_matrix_set2_k9)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  tf_uni_matrix_set2_k9
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.01323388 3.50296494
+sample estimates:
+odds ratio 
+ 0.5528566 </code></pre>
+<p>sustained in H3K9me3 (set 3)</p>
+<pre class="r"><code>table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group==&quot;set_3_only&quot;)</code></pre>
+<pre><code>         
+          FALSE TRUE
+  DAP        30    0
+  non_DAP   737   12</code></pre>
+<pre class="r"><code>tf_uni_matrix_set3_k9 &lt;- matrix(c(0,30,12,737), nrow = 2)
+
+fisher.test(tf_uni_matrix_set3_k9)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  tf_uni_matrix_set3_k9
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.000000 9.321187
+sample estimates:
+odds ratio 
+         0 </code></pre>
+<pre class="r"><code>table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group==&quot;shared&quot;)</code></pre>
+<pre><code>         
+          FALSE TRUE
+  DAP        26    4
+  non_DAP   580  169</code></pre>
+<pre class="r"><code>tf_uni_matrix_setshare &lt;- matrix(c(4,26,169,580), nrow = 2)
+
+fisher.test(tf_uni_matrix_setshare)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  tf_uni_matrix_setshare
+p-value = 0.2716
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.1321486 1.5532997
+sample estimates:
+odds ratio 
+ 0.5283824 </code></pre>
+<pre class="r"><code>TF_Information &lt;- read_delim(&quot;C:/Users/renee/Downloads/F135_3.00_2026_04_10_5_41_pm_allC2H2ZFs/TF_Information.txt&quot;, 
+    delim = &quot;\t&quot;, escape_double = FALSE, 
+    trim_ws = TRUE)
+
+kzpf_motif_IDs &lt;- TF_Information %&gt;% 
+  dplyr::filter(TF_Species==&quot;Homo_sapiens&quot;) %&gt;% 
+  dplyr::filter(TF_Name %in%KZFP_2026_list$Label) %&gt;% 
+  dplyr::filter(Motif_ID != &quot;.&quot;) %&gt;% 
+  pull(Motif_ID)
+
+TF_Information %&gt;% 
+  filter(TF_Species == &quot;Homo_sapiens&quot;) %&gt;% 
+  filter(TF_Name %in% KZFP_2026_list$Label) %&gt;% 
+  summarise(
+    total = dplyr::n(),
+    with_motif = sum(Motif_ID != &quot;.&quot;),
+    missing = sum(Motif_ID == &quot;.&quot;)
+  )
+
+KZFP_motif_info &lt;- TF_Information %&gt;% 
+  filter(TF_Species == &quot;Homo_sapiens&quot;) %&gt;% 
+  filter(TF_Name %in% KZFP_2026_list$Label) %&gt;% 
+   dplyr::filter(Motif_ID != &quot;.&quot;) 
+# saveRDS(KZFP_motif_info,&quot;data/RDS_files/KZFP_motif_info.RDS&quot;)
+
+KZFP_no_motif_list &lt;- 
+   TF_Information %&gt;% 
+  filter(TF_Species == &quot;Homo_sapiens&quot;) %&gt;% 
+  filter(TF_Name %in% KZFP_2026_list$Label) %&gt;% 
+  filter(Motif_ID == &quot;.&quot;) %&gt;% 
+  pull(TF_Name)
+
+KZFP_no_motif_list
+
+files &lt;- list.files(
+  &quot;C:/Users/renee/Downloads/F135_3.00_2026_04_10_5_41_pm_allC2H2ZFs/pwms&quot;,
+  full.names = TRUE)
+
+file_ids &lt;- tools::file_path_sans_ext(basename(files))
+
+meta &lt;- TF_Information %&gt;%
+  dplyr::filter(TF_Species == &quot;Homo_sapiens&quot;) %&gt;%
+  dplyr::filter(TF_Name %in% KZFP_2026_list$Label) %&gt;%
+  dplyr::filter(Motif_ID != &quot;.&quot;) %&gt;%
+  dplyr::select(Motif_ID, TF_Name)
+
+motif_files &lt;- files[file_ids %in% kzpf_motif_IDs]
+motif_names &lt;- tools::file_path_sans_ext(basename(motif_files))
+alt_ids &lt;- meta$TF_Name[match(motif_names, meta$Motif_ID)]
+
+length(kzpf_motif_IDs)
+length(motif_files)
+setdiff(kzpf_motif_IDs,
+        tools::file_path_sans_ext(basename(files)))
+
+library(universalmotif)
+
+get_tf_name &lt;- function(x) {
+  tools::file_path_sans_ext(basename(x))
+}
+
+
+bad &lt;- lapply(motif_files, function(f) {
+
+  df &lt;- read.table(f, header = TRUE, sep = &quot;\t&quot;, check.names = FALSE)
+
+  cols &lt;- intersect(c(&quot;A&quot;,&quot;C&quot;,&quot;G&quot;,&quot;T&quot;), colnames(df))
+
+  if (length(cols) != 4) {
+    return(f)
+  }
+
+  mat &lt;- df[, cols, drop = FALSE]
+  mat &lt;- data.matrix(mat)
+
+  if (ncol(mat) == 0 || nrow(mat) == 0) {
+    return(f)
+  }
+
+  NULL
+})
+
+bad &lt;- unlist(bad)
+bad
+
+
+motifs &lt;- lapply(motif_files, function(f) {
+  
+   df &lt;- read.table(f, header = TRUE, sep = &quot;\t&quot;, check.names = FALSE)
+
+  # robust column matching (ignores whitespace/case issues)
+  col_map &lt;- colnames(df)
+  nuc_cols &lt;- col_map[tolower(col_map) %in% c(&quot;a&quot;,&quot;c&quot;,&quot;g&quot;,&quot;t&quot;)]
+
+  if (length(nuc_cols) != 4) {
+    warning(paste(&quot;Skipping file (bad columns):&quot;, f))
+    return(NULL)
+  }
+
+  mat &lt;- df[, nuc_cols, drop = FALSE]
+  mat &lt;- data.matrix(mat)
+
+  if (nrow(mat) &lt; 2 || ncol(mat) != 4) {
+    warning(paste(&quot;Skipping file (bad matrix):&quot;, f))
+    return(NULL)
+  }
+
+  pwm &lt;- t(mat)
+
+  if (ncol(pwm) == 0) {
+    warning(paste(&quot;Skipping file (empty PWM):&quot;, f))
+    return(NULL)
+  }
+
+  m &lt;- universalmotif::create_motif(pwm, alphabet = &quot;DNA&quot;)
+
+  attr(m, &quot;name&quot;) &lt;- tools::file_path_sans_ext(basename(f))
+
+  m
+})
+
+
+write_meme(motifs, file = &quot;data/Other_paper_data/KZFP_motifs.meme&quot;, overwrite = TRUE)
+
+motif_annotation &lt;- data.frame(
+  NAME = motif_names,
+  ALT_ID = alt_ids
+)
+readLines(&quot;data/Other_paper_data/KZFP_motifs.meme&quot;, n = 40)</code></pre>
+<p>wanting to extract all SET1 SEt2 and Set3 regions that contain a
+MER61E element then test for enrichment.</p>
+<pre class="r"><code>mer_gr &lt;- rtracklayer::import(&quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;)
+H3K27ac_summit_gr &lt;- readRDS(&quot;data/RDS_files/H3K27ac_complete_summit_gr.RDS&quot;)
+
+
+peakAnnoList_H3K27ac &lt;- readRDS(&quot;data/motif_lists/H3K27ac_annotated_peaks.RDS&quot;)
+
+H3K27ac_lookup &lt;- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y)
+)
+
+##assigning Peakid as name of summit region
+ mcols(H3K27ac_summit_gr)$name &lt;- mcols(H3K27ac_summit_gr)$Peakid
+ 
+ H3K27ac_summit_gr_ext &lt;- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = &quot;center&quot;)
+
+H3K27ac_MER61E &lt;- subsetByOverlaps(H3K27ac_summit_gr_ext, mer_gr)
+
+H3K27ac_MER61E_df &lt;- as.data.frame(H3K27ac_MER61E) 
+
+Set1 &lt;- H3K27ac_MER61E_df %&gt;% filter(cluster == &quot;Set_1&quot;)
+Set2 &lt;- H3K27ac_MER61E_df %&gt;% filter(cluster == &quot;Set_2&quot;)
+Set3 &lt;- H3K27ac_MER61E_df %&gt;% filter(cluster == &quot;Set_3&quot;)
+
+Set1_gr &lt;- makeGRangesFromDataFrame(Set1, keep.extra.columns = TRUE)
+Set2_gr &lt;- makeGRangesFromDataFrame(Set2, keep.extra.columns = TRUE)
+Set3_gr &lt;- makeGRangesFromDataFrame(Set3, keep.extra.columns = TRUE)
+
+width(Set1_gr)</code></pre>
+<pre><code> [1] 401 401 401 401 401 401 401 401 401 401 401</code></pre>
+<pre class="r"><code>width(Set3_gr)</code></pre>
+<pre><code> [1] 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401
+[20] 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401
+[39] 401 401</code></pre>
+<pre class="r"><code>library(Biostrings)
+library(BSgenome.Hsapiens.UCSC.hg38)
+Hsapiens &lt;- BSgenome.Hsapiens.UCSC.hg38
+
+gc1 &lt;- letterFrequency(getSeq(Hsapiens, Set1_gr), &quot;GC&quot;, as.prob=TRUE)
+gc3 &lt;- letterFrequency(getSeq(Hsapiens, Set3_gr), &quot;GC&quot;, as.prob=TRUE)
+
+mean(gc1)</code></pre>
+<pre><code>[1] 0.4661075</code></pre>
+<pre class="r"><code>mean(gc3)</code></pre>
+<pre><code>[1] 0.4611596</code></pre>
+<pre class="r"><code>export(Set1_gr, &quot;data/Bed_exports/H3K27ac_MER61E_Set_1.bed&quot;, format = &quot;BED&quot;)
+export(Set3_gr, &quot;data/Bed_exports/H3K27ac_MER61E_Set_3.bed&quot;, format = &quot;BED&quot;)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26200)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] BSgenome.Hsapiens.UCSC.hg38_1.4.5       
+ [2] BSgenome_1.74.0                         
+ [3] BiocIO_1.16.0                           
+ [4] Biostrings_2.74.1                       
+ [5] XVector_0.46.0                          
+ [6] universalmotif_1.24.2                   
+ [7] TFBSTools_1.44.0                        
+ [8] JASPAR2022_0.99.8                       
+ [9] BiocFileCache_2.14.0                    
+[10] dbplyr_2.5.2                            
+[11] TxDb.Hsapiens.UCSC.hg38.knownGene_3.20.0
+[12] GenomicFeatures_1.58.0                  
+[13] MASS_7.3-65                             
+[14] org.Hs.eg.db_3.20.0                     
+[15] AnnotationDbi_1.68.0                    
+[16] Biobase_2.66.0                          
+[17] jsonlite_2.0.0                          
+[18] httr_1.4.8                              
+[19] ggpubr_0.6.3                            
+[20] biomaRt_2.62.1                          
+[21] readxl_1.4.5                            
+[22] DT_0.34.0                               
+[23] ggrepel_0.9.8                           
+[24] rtracklayer_1.66.0                      
+[25] genomation_1.38.0                       
+[26] plyranges_1.26.0                        
+[27] GenomicRanges_1.58.0                    
+[28] GenomeInfoDb_1.42.3                     
+[29] IRanges_2.40.1                          
+[30] S4Vectors_0.44.0                        
+[31] BiocGenerics_0.52.0                     
+[32] lubridate_1.9.5                         
+[33] forcats_1.0.1                           
+[34] stringr_1.6.0                           
+[35] dplyr_1.2.1                             
+[36] purrr_1.2.2                             
+[37] readr_2.2.0                             
+[38] tidyr_1.3.2                             
+[39] tibble_3.3.1                            
+[40] ggplot2_4.0.3                           
+[41] tidyverse_2.0.0                         
+[42] workflowr_1.7.2                         
+
+loaded via a namespace (and not attached):
+  [1] later_1.4.8                 bitops_1.0-9               
+  [3] filelock_1.0.3              R.oo_1.27.1                
+  [5] cellranger_1.1.0            XML_3.99-0.23              
+  [7] DirichletMultinomial_1.48.0 lifecycle_1.0.5            
+  [9] httr2_1.2.2                 pwalign_1.2.0              
+ [11] rstatix_0.7.3               rprojroot_2.1.1            
+ [13] vroom_1.7.1                 processx_3.9.0             
+ [15] lattice_0.22-9              crosstalk_1.2.2            
+ [17] backports_1.5.1             magrittr_2.0.5             
+ [19] sass_0.4.10                 rmarkdown_2.31             
+ [21] jquerylib_0.1.4             yaml_2.3.12                
+ [23] plotrix_3.8-14              httpuv_1.6.17              
+ [25] otel_0.2.0                  DBI_1.3.0                  
+ [27] CNEr_1.42.0                 RColorBrewer_1.1-3         
+ [29] abind_1.4-8                 zlibbioc_1.52.0            
+ [31] R.utils_2.13.0              RCurl_1.98-1.18            
+ [33] rappdirs_0.3.4              git2r_0.36.2               
+ [35] GenomeInfoDbData_1.2.13     seqLogo_1.72.0             
+ [37] annotate_1.84.0             codetools_0.2-20           
+ [39] DelayedArray_0.32.0         xml2_1.5.2                 
+ [41] tidyselect_1.2.1            UCSC.utils_1.2.0           
+ [43] farver_2.1.2                matrixStats_1.5.0          
+ [45] GenomicAlignments_1.42.0    Formula_1.2-5              
+ [47] tools_4.4.2                 progress_1.2.3             
+ [49] TFMPvalue_0.0.9             Rcpp_1.1.1-1.1             
+ [51] glue_1.8.1                  SparseArray_1.6.2          
+ [53] xfun_0.57                   MatrixGenerics_1.18.1      
+ [55] withr_3.0.2                 fastmap_1.2.0              
+ [57] callr_3.7.6                 caTools_1.18.3             
+ [59] digest_0.6.39               timechange_0.4.0           
+ [61] R6_2.6.1                    seqPattern_1.38.0          
+ [63] colorspace_2.1-2            GO.db_3.20.0               
+ [65] gtools_3.9.5                poweRlaw_1.0.0             
+ [67] dichromat_2.0-0.1           RSQLite_3.52.0             
+ [69] R.methodsS3_1.8.2           utf8_1.2.6                 
+ [71] generics_0.1.4              data.table_1.18.4          
+ [73] prettyunits_1.2.0           htmlwidgets_1.6.4          
+ [75] S4Arrays_1.6.0              whisker_0.4.1              
+ [77] pkgconfig_2.0.3             gtable_0.3.6               
+ [79] blob_1.3.0                  S7_0.2.2                   
+ [81] impute_1.80.0               htmltools_0.5.9            
+ [83] carData_3.0-6               scales_1.4.0               
+ [85] png_0.1-9                   knitr_1.51                 
+ [87] rstudioapi_0.18.0           tzdb_0.5.0                 
+ [89] reshape2_1.4.5              rjson_0.2.23               
+ [91] curl_7.1.0                  cachem_1.1.0               
+ [93] KernSmooth_2.23-26          parallel_4.4.2             
+ [95] restfulr_0.0.16             pillar_1.11.1              
+ [97] vctrs_0.7.3                 promises_1.5.0             
+ [99] car_3.1-5                   xtable_1.8-8               
+[101] evaluate_1.0.5              cli_3.6.6                  
+[103] compiler_4.4.2              Rsamtools_2.22.0           
+[105] rlang_1.2.0                 crayon_1.5.3               
+[107] ggsignif_0.6.4              labeling_0.4.3             
+[109] getPass_0.2-4               plyr_1.8.9                 
+[111] fs_2.1.0                    stringi_1.8.7              
+[113] gridBase_0.4-7              BiocParallel_1.40.2        
+[115] Matrix_1.7-5                hms_1.1.4                  
+[117] bit64_4.8.0                 KEGGREST_1.46.0            
+[119] SummarizedExperiment_1.36.0 broom_1.0.12               
+[121] memoise_2.0.1               bslib_0.10.0               
+[123] bit_4.6.0                  </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
