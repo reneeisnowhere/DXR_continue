@@ -532,15 +532,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree262843e011c723b0ddd1b46ac472b480f8465e61targetblank262843ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreed21b8e126b907036f2c1d76f25ea0265421a69a8targetblankd21b8e1a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/262843e011c723b0ddd1b46ac472b480f8465e61" target="_blank">262843e</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/d21b8e126b907036f2c1d76f25ea0265421a69a8" target="_blank">d21b8e1</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree262843e011c723b0ddd1b46ac472b480f8465e61targetblank262843ea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreed21b8e126b907036f2c1d76f25ea0265421a69a8targetblankd21b8e1a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -550,7 +550,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/262843e011c723b0ddd1b46ac472b480f8465e61" target="_blank">262843e</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/d21b8e126b907036f2c1d76f25ea0265421a69a8" target="_blank">d21b8e1</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -647,6 +647,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d21b8e126b907036f2c1d76f25ea0265421a69a8/analysis/protein_checks.Rmd" target="_blank">d21b8e1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-15
+</td>
+<td>
+wflow_publish("analysis/protein_checks.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/01c733f28941a0344943d4bc242932576ab61539/docs/protein_checks.html" target="_blank">01c733f</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -820,7 +854,7 @@ library(AnnotationDbi)
 library(MASS)
 library(GenomicFeatures)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-library(JASPAR2022)
+library(JASPAR2024)
 library(TFBSTools)
 library(universalmotif)</code></pre>
 <p>From: Johnson O, Paul S, Gutiérrez J … DNA-damage-associated protein
@@ -1006,7 +1040,7 @@ class="section level3">
     not_in_set2,
     bg_set2 - in_set2,
     bg_not_set2 - not_in_set2
-  ), nrow = 2)
+  ), nrow = 2,byrow = TRUE)
   
   ft &lt;- fisher.test(mat)
   
@@ -1045,7 +1079,7 @@ enrichment_df_2 &lt;-enrichment_df_2 %&gt;%
     not_in_set3,
     bg_set3 - in_set3,
     bg_not_set3 - not_in_set3
-  ), nrow = 2)
+  ), nrow = 2,byrow = TRUE)
   
   ft &lt;- fisher.test(mat)
   
@@ -1084,7 +1118,7 @@ enrichment_df_3 &lt;-enrichment_df_3 %&gt;%
     not_in_set1,
     bg_set1 - in_set1,
     bg_not_set1 - not_in_set1
-  ), nrow = 2)
+  ), nrow = 2,byrow = TRUE)
   
   ft &lt;- fisher.test(mat)
   
@@ -1266,7 +1300,7 @@ enrichment_results_2v1 &lt;- lapply(names(protein_module_split), function(mod) {
   c &lt;- sum(set1_genes %in% mod_genes)
   d &lt;- sum(set1_genes %in% bg_genes_2v1) - c
   
-  mat &lt;- matrix(c(a, b, c, d), nrow = 2)
+  mat &lt;- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE)
   
   ft &lt;- fisher.test(mat)
   
@@ -1336,7 +1370,7 @@ reneeisnowhere
     pageLength = 10,
     scrollX = TRUE))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-7d15ac70e14e0faa7e6f" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-7d15ac70e14e0faa7e6f">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13"],["blue","brown","darkgreen","darkred","green","grey","lightgreen","lightyellow","magenta","midnightblue","royalblue","salmon","yellow"],[0.7221690401647417,0.1747717946690244,0.691947940350751,0.5046233463447002,0.848782020750834,1,0.8843792586560258,0.7350563209511206,0.413139211505477,0.09490908453310572,0.002138473483322638,0.1353563171445544,1],[0.466654945575591,0,1.063256557180173,1.10611053601036,1.039195426197319,0.9599220226538182,1.026111035797713,0.8881508194756532,1.293909970875194,0.5009711678313756,1.577204755866311,0.503338203060346,0.7349622372228816],[1,0,29,43,31,5,13,19,8,6,57,5,2],[37,44,472,674,516,90,219,369,107,206,635,171,47],[1,0.5680083326743293,1,1,1,1,1,1,1,0.5680083326743293,0.02780015528319429,0.5680083326743293,1],["eta","kappa","beta","iota","alpha","Unassigned","zeta","epsilon","theta","gamma","mu","delta","lambda"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Module<\/th>\n      <th>pvalue<\/th>\n      <th>odds_ratio<\/th>\n      <th>set2_in_module<\/th>\n      <th>set1_in_module<\/th>\n      <th>FDR<\/th>\n      <th>greek_module<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Module","targets":1},{"name":"pvalue","targets":2},{"name":"odds_ratio","targets":3},{"name":"set2_in_module","targets":4},{"name":"set1_in_module","targets":5},{"name":"FDR","targets":6},{"name":"greek_module","targets":7}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-7d15ac70e14e0faa7e6f">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13"],["blue","brown","darkgreen","darkred","green","grey","lightgreen","lightyellow","magenta","midnightblue","royalblue","salmon","yellow"],[0.7221690401647418,0.1747717946690243,0.6919479403507509,0.5046233463447001,0.848782020750834,0.9999999999999999,0.8843792586560258,0.7350563209511206,0.4131392115054771,0.0949090845331057,0.002138473483322637,0.1353563171445544,0.9999999999999999],[0.4666549455755908,0,1.063256557180174,1.10611053601036,1.039195426197319,0.9599220226538183,1.026111035797713,0.8881508194756537,1.293909970875194,0.5009711678313756,1.577204755866311,0.5033382030603462,0.7349622372228818],[1,0,29,43,31,5,13,19,8,6,57,5,2],[37,44,472,674,516,90,219,369,107,206,635,171,47],[0.9999999999999999,0.5680083326743292,0.9999999999999999,0.9999999999999999,0.9999999999999999,0.9999999999999999,0.9999999999999999,0.9999999999999999,0.9999999999999999,0.5680083326743292,0.02780015528319428,0.5680083326743292,0.9999999999999999],["eta","kappa","beta","iota","alpha","Unassigned","zeta","epsilon","theta","gamma","mu","delta","lambda"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Module<\/th>\n      <th>pvalue<\/th>\n      <th>odds_ratio<\/th>\n      <th>set2_in_module<\/th>\n      <th>set1_in_module<\/th>\n      <th>FDR<\/th>\n      <th>greek_module<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Module","targets":1},{"name":"pvalue","targets":2},{"name":"odds_ratio","targets":3},{"name":"set2_in_module","targets":4},{"name":"set1_in_module","targets":5},{"name":"FDR","targets":6},{"name":"greek_module","targets":7}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="now-module-enrichment-in-set-3-v-set-1" class="section level3">
 <h3>now module enrichment in set 3 v set 1</h3>
@@ -1352,7 +1386,7 @@ enrichment_results_3v1 &lt;- lapply(names(protein_module_split), function(mod) {
   c &lt;- sum(set1_genes %in% mod_genes)
   d &lt;- sum(set1_genes %in% bg_genes_3v1) - c
   
-  mat &lt;- matrix(c(a, b, c, d), nrow = 2)
+  mat &lt;- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE)
   
   ft &lt;- fisher.test(mat)
   
@@ -1422,7 +1456,7 @@ reneeisnowhere
     pageLength = 10,
     scrollX = TRUE))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-ac686cfa6b0ab6d13cf6" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-ac686cfa6b0ab6d13cf6">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13"],["blue","brown","darkgreen","darkred","green","grey","lightgreen","lightyellow","magenta","midnightblue","royalblue","salmon","yellow"],[0.8456194802514834,0.5842933811154357,0.5870434711736852,0.01503697544872282,0.01862351546122374,0.09405458334402217,0.8733378436431957,0.9017722500916803,0.07877875645691036,0.4651873293333853,0.0180314748694971,0.1403338188966571,0.8646856521761215],[0.8520203545115371,0.7162476509495895,1.060749725047244,1.23179967382291,1.255907029772654,1.454183231649231,0.966417497630872,0.9762200812438672,1.43439982764404,1.116472618704982,1.235637061548225,0.7360883154915324,1.05440638444027],[7,7,111,183,143,29,47,80,34,51,173,28,11],[37,44,472,674,516,90,219,369,107,206,635,171,47],[0.9017722500916803,0.8479516805842119,0.8479516805842119,0.08070190033196951,0.08070190033196951,0.2445419166944577,0.9017722500916803,0.9017722500916803,0.2445419166944577,0.8479516805842119,0.08070190033196951,0.3040566076094238,0.9017722500916803],["eta","kappa","beta","iota","alpha","Unassigned","zeta","epsilon","theta","gamma","mu","delta","lambda"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Module<\/th>\n      <th>pvalue<\/th>\n      <th>odds_ratio<\/th>\n      <th>set3_in_module<\/th>\n      <th>set1_in_module<\/th>\n      <th>FDR<\/th>\n      <th>greek_module<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Module","targets":1},{"name":"pvalue","targets":2},{"name":"odds_ratio","targets":3},{"name":"set3_in_module","targets":4},{"name":"set1_in_module","targets":5},{"name":"FDR","targets":6},{"name":"greek_module","targets":7}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-ac686cfa6b0ab6d13cf6">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13"],["blue","brown","darkgreen","darkred","green","grey","lightgreen","lightyellow","magenta","midnightblue","royalblue","salmon","yellow"],[0.8456194802514833,0.5842933811154356,0.5870434711736853,0.01503697544872282,0.01862351546122374,0.09405458334402217,0.8733378436431956,0.9017722500916803,0.07877875645691032,0.4651873293333854,0.01803147486949712,0.1403338188966571,0.8646856521761214],[0.8520203545115366,0.7162476509495894,1.060749725047244,1.23179967382291,1.255907029772654,1.454183231649231,0.9664174976308719,0.9762200812438674,1.43439982764404,1.116472618704982,1.235637061548225,0.7360883154915323,1.054406384440269],[7,7,111,183,143,29,47,80,34,51,173,28,11],[37,44,472,674,516,90,219,369,107,206,635,171,47],[0.9017722500916803,0.847951680584212,0.847951680584212,0.08070190033196956,0.08070190033196956,0.2445419166944577,0.9017722500916803,0.9017722500916803,0.2445419166944577,0.847951680584212,0.08070190033196956,0.3040566076094237,0.9017722500916803],["eta","kappa","beta","iota","alpha","Unassigned","zeta","epsilon","theta","gamma","mu","delta","lambda"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Module<\/th>\n      <th>pvalue<\/th>\n      <th>odds_ratio<\/th>\n      <th>set3_in_module<\/th>\n      <th>set1_in_module<\/th>\n      <th>FDR<\/th>\n      <th>greek_module<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Module","targets":1},{"name":"pvalue","targets":2},{"name":"odds_ratio","targets":3},{"name":"set3_in_module","targets":4},{"name":"set1_in_module","targets":5},{"name":"FDR","targets":6},{"name":"greek_module","targets":7}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="does-distance-to-tss-change-enrichment" class="section level3">
 <h3>does distance to TSS change enrichment?</h3>
@@ -1452,7 +1486,7 @@ enrichment_results_2v1_2kb &lt;- lapply(names(protein_module_split), function(mo
   c &lt;- sum(set1_2kb_genes %in% mod_genes)
   d &lt;- sum(set1_2kb_genes %in% bg_2v1_2kb) - c
   
-  mat &lt;- matrix(c(a, b, c, d), nrow = 2)
+  mat &lt;- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE)
   
   ft &lt;- fisher.test(mat)
   
@@ -1529,7 +1563,7 @@ enrichment_results_3v1_2kb &lt;- lapply(names(protein_module_split), function(mo
   c &lt;- sum(set1_2kb_genes %in% mod_genes)
   d &lt;- sum(set1_2kb_genes %in% bg_3v1_2kb) - c
   
-  mat &lt;- matrix(c(a, b, c, d), nrow = 2)
+  mat &lt;- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE)
   
   ft &lt;- fisher.test(mat)
   
@@ -1605,7 +1639,7 @@ regions in set 2 not assigned to protein data gene, compared to number
 of regions assigned to set1 vs not assigned to protein data gene in set
 1.</p>
 <p>more specifically I want to test if Set 2 regions are more frequently
-assigned to differential abundant proteins than set 1 H3K27ac
+assigned to differentially abundant proteins than set 1 H3K27ac
 regions.</p>
 <pre class="r"><code>Protein_list &lt;-   module_ids %&gt;%
   dplyr::select(Protein, Module,Is_DA_at_adj.p, Is_DOXcorrelated, SYMBOL,ENTREZID) 
@@ -1970,7 +2004,7 @@ repID_to_gene_MER61E %&gt;%
 2 in     non_DOXcor    56
 3 out    DOXcor        17
 4 out    non_DOXcor   161</code></pre>
-<pre class="r"><code>great_matrix &lt;- matrix(c(5,56,17,161), nrow = 2)
+<pre class="r"><code>great_matrix &lt;- matrix(c(5,56,17,161), nrow = 2, byrow = TRUE)
 
 fisher.test(great_matrix)</code></pre>
 <pre><code>
@@ -2002,7 +2036,7 @@ odds ratio
 2 in     non_DOXcor    34
 3 out    DOXcor        19
 4 out    non_DOXcor   183</code></pre>
-<pre class="r"><code>great_matrix_set3 &lt;- matrix(c(3,34,19,183), nrow = 2)
+<pre class="r"><code>great_matrix_set3 &lt;- matrix(c(3,34,19,183), nrow = 2,byrow = TRUE)
 
 fisher.test(great_matrix_set3)</code></pre>
 <pre><code>
@@ -2023,13 +2057,16 @@ odds ratio
 H3K27ac_Set3_data &lt;- readRDS(&quot;data/RDS_files/H3K27ac_Set3_enrmotif_data.RDS&quot;)
 
 ## TF universe
-opts &lt;- list(
-  species = 9606,      # human
-  all_versions = FALSE
-)
-
-pfm_list &lt;- getMatrixSet(JASPAR2022, opts)
-tf_names &lt;- sapply(pfm_list, name)
+# jaspar2024 &lt;- JASPAR2024::JASPAR2024()
+# opts &lt;- list(
+#   collection = &quot;CORE&quot;,
+#   tax_group = &quot;vertebrates&quot;,
+#   species = 9606,
+#   all_versions = FALSE
+# )
+# 
+# pfm_list &lt;- TFBSTools::getMatrixSet(jaspar2024, opts)
+# tf_names &lt;- sapply(pfm_list, name)
 
 motif_names_set2H3K27ac &lt;-
 H3K27ac_Set2_data %&gt;%
@@ -2071,7 +2108,7 @@ motif_names_set3H3K27ac &lt;- H3K27ac_Set3_data %&gt;%
 class="section level3">
 <h3>Using exact meme file of TFs for enrichment<br />
 </h3>
-<pre class="r"><code>motifs &lt;- read_meme(&quot;data/Other_paper_data/JASPAR2022_CORE_vertebrates_non-redundant_v2.meme&quot;)
+<pre class="r"><code>motifs &lt;- read_meme(&quot;data/Other_paper_data/JASPAR2024_CORE_vertebrates_non-redundant_v2.meme&quot;)
 ### pulling the alt_name from each element (841 elements)
 tf_names &lt;- sapply(motifs, function(x) x@altname)
 
@@ -2111,13 +2148,13 @@ fisher.test(tf_matrix_set2)</code></pre>
     Fisher&#39;s Exact Test for Count Data
 
 data:  tf_matrix_set2
-p-value = 0.7096
+p-value = 1
 alternative hypothesis: true odds ratio is not equal to 1
 95 percent confidence interval:
- 0.3609622 1.9161552
+ 0.4132031 2.0892791
 sample estimates:
 odds ratio 
- 0.8523702 </code></pre>
+ 0.9474239 </code></pre>
 <pre class="r"><code>tf_matrix_set3 &lt;- table(H3K27ac_TF_df$DAP, H3K27ac_TF_df$Set_3)
 
 fisher.test(tf_matrix_set3)</code></pre>
@@ -2125,13 +2162,13 @@ fisher.test(tf_matrix_set3)</code></pre>
     Fisher&#39;s Exact Test for Count Data
 
 data:  tf_matrix_set3
-p-value = 0.1075
+p-value = 0.1098
 alternative hypothesis: true odds ratio is not equal to 1
 95 percent confidence interval:
- 0.7709046 6.2510077
+ 0.7592585 6.0901316
 sample estimates:
 odds ratio 
-  2.383567 </code></pre>
+   2.33746 </code></pre>
 <p>almost set3, good odds ratio but not significant with a
 pvalue=0.1075.</p>
 <p>Now I will test if the unique to Set 3, unique to Set 2, or shared
@@ -2139,8 +2176,8 @@ TFs are enriched in DAPs vs non-DAPs</p>
 <pre class="r"><code>table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group==&quot;set_2_only&quot;)</code></pre>
 <pre><code>         
           FALSE TRUE
-  DAP        19   11
-  non_DAP   487  262</code></pre>
+  DAP        19   12
+  non_DAP   512  273</code></pre>
 <pre class="r"><code>tf_uni_matrix_set2 &lt;- matrix(c(11,19,262,487), nrow = 2,byrow = TRUE)
 
 fisher.test(tf_uni_matrix_set2)</code></pre>
@@ -2158,8 +2195,8 @@ odds ratio
 <pre class="r"><code>table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group==&quot;set_3_only&quot;)</code></pre>
 <pre><code>         
           FALSE TRUE
-  DAP        24    6
-  non_DAP   719   30</code></pre>
+  DAP        25    6
+  non_DAP   753   32</code></pre>
 <pre class="r"><code>tf_uni_matrix_set3 &lt;- matrix(c(6,24,30,719), nrow = 2, byrow = TRUE)
 
 fisher.test(tf_uni_matrix_set3)</code></pre>
@@ -2179,8 +2216,8 @@ DAPs significantly.</p>
 <pre class="r"><code>table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group==&quot;shared&quot;)</code></pre>
 <pre><code>         
           FALSE TRUE
-  DAP        30    0
-  non_DAP   708   41</code></pre>
+  DAP        31    0
+  non_DAP   744   41</code></pre>
 <pre class="r"><code>tf_uni_matrix_setshare &lt;- matrix(c(0,30,41,708), nrow = 2)
 
 fisher.test(tf_uni_matrix_setshare)</code></pre>
@@ -2258,8 +2295,8 @@ H3K9me3_marked_TF &lt;- tibble(tf_names) %&gt;%
 table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_2)</code></pre>
 <pre><code>         
           yes  no
-  DAP       5  25
-  non_DAP 213 536</code></pre>
+  DAP       5  26
+  non_DAP 229 556</code></pre>
 <pre class="r"><code>tf_matrix_set2_k9 &lt;- table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_2)
 
 fisher.test(tf_matrix_set2_k9)</code></pre>
@@ -2267,18 +2304,18 @@ fisher.test(tf_matrix_set2_k9)</code></pre>
     Fisher&#39;s Exact Test for Count Data
 
 data:  tf_matrix_set2_k9
-p-value = 0.2131
+p-value = 0.1553
 alternative hypothesis: true odds ratio is not equal to 1
 95 percent confidence interval:
- 0.1486442 1.3633091
+ 0.1384028 1.2573937
 sample estimates:
 odds ratio 
- 0.5036649 </code></pre>
+ 0.4672792 </code></pre>
 <pre class="r"><code>table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_3)</code></pre>
 <pre><code>         
           yes  no
-  DAP       4  26
-  non_DAP 181 568</code></pre>
+  DAP       4  27
+  non_DAP 195 590</code></pre>
 <pre class="r"><code>tf_matrix_set3_k9 &lt;- table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$Set_3)
 
 fisher.test(tf_matrix_set3_k9)</code></pre>
@@ -2286,20 +2323,20 @@ fisher.test(tf_matrix_set3_k9)</code></pre>
     Fisher&#39;s Exact Test for Count Data
 
 data:  tf_matrix_set3_k9
-p-value = 0.1964
+p-value = 0.1982
 alternative hypothesis: true odds ratio is not equal to 1
 95 percent confidence interval:
- 0.1209336 1.4190999
+ 0.1126565 1.3104335
 sample estimates:
 odds ratio 
- 0.4831394 </code></pre>
+ 0.4485869 </code></pre>
 <p>now I will also check if acute/sus/shared enrichment</p>
 <p>Acute:(set 2 in H3K9me3)</p>
 <pre class="r"><code>table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group==&quot;set_2_only&quot;)</code></pre>
 <pre><code>         
           FALSE TRUE
-  DAP        29    1
-  non_DAP   705   44</code></pre>
+  DAP        30    1
+  non_DAP   739   46</code></pre>
 <pre class="r"><code>tf_uni_matrix_set2_k9 &lt;- matrix(c(1,29,44,705), nrow = 2,byrow = TRUE)
 
 
@@ -2319,8 +2356,8 @@ odds ratio
 <pre class="r"><code>table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group==&quot;set_3_only&quot;)</code></pre>
 <pre><code>         
           FALSE TRUE
-  DAP        30    0
-  non_DAP   737   12</code></pre>
+  DAP        31    0
+  non_DAP   773   12</code></pre>
 <pre class="r"><code>tf_uni_matrix_set3_k9 &lt;- matrix(c(0,30,12,737), nrow = 2,byrow = TRUE)
 
 fisher.test(tf_uni_matrix_set3_k9)</code></pre>
@@ -2338,8 +2375,8 @@ odds ratio
 <pre class="r"><code>table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group==&quot;shared&quot;)</code></pre>
 <pre><code>         
           FALSE TRUE
-  DAP        26    4
-  non_DAP   580  169</code></pre>
+  DAP        27    4
+  non_DAP   602  183</code></pre>
 <pre class="r"><code>tf_uni_matrix_setshare_k9 &lt;- matrix(c(4,26,169,580), nrow = 2,byrow = TRUE)
 
 fisher.test(tf_uni_matrix_setshare_k9)</code></pre>
@@ -2853,7 +2890,7 @@ attached base packages:
 other attached packages:
  [1] universalmotif_1.24.2                   
  [2] TFBSTools_1.44.0                        
- [3] JASPAR2022_0.99.8                       
+ [3] JASPAR2024_0.99.6                       
  [4] BiocFileCache_2.14.0                    
  [5] dbplyr_2.5.2                            
  [6] TxDb.Hsapiens.UCSC.hg38.knownGene_3.20.0
