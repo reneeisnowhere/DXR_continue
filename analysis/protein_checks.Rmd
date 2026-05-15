@@ -625,218 +625,104 @@ ggplot(enrichment_df_3v1_2kb, aes(x=odds_ratio, -log10(FDR), label=Module))+
 
 ```
 
+### Frequency checks of Set 2 v  Set 1
 
-### ordinal model set 1<Set 2< Set 3
-
-```{r}
-set3_clean <- set3_genes
-set2_clean <- setdiff(set2_genes, set3_clean)
-set1_clean <- setdiff(set1_genes, union(set2_clean, set3_clean))
-all_genes <- unique(unlist(lapply(protein_module_split, function(x) x$ENTREZID)))
-all_genes <- all_genes[!is.na(all_genes)]
-gene_df <- data.frame(gene = all_genes)
-
-gene_df$set <- NA
-
-gene_df$set[gene_df$gene %in% set1_clean] <- "Set1"
-gene_df$set[gene_df$gene %in% set2_clean] <- "Set2"
-gene_df$set[gene_df$gene %in% set3_clean] <- "Set3"
-
-gene_df$set <- factor(gene_df$set,
-                      levels = c("Set1", "Set2", "Set3"),
-                      ordered = TRUE)
-
-module_list <- lapply(names(protein_module_split), function(mod) {
-  data.frame(
-    gene = protein_module_split[[mod]]$ENTREZID,
-    module = mod
-  )
-})
-names(module_list) <- names(protein_module_split)
-
-module_df <- lapply(names(protein_module_split), function(mod) {
-  data.frame(
-    gene = protein_module_split[[mod]]$ENTREZID,
-    module = mod,
-    value = 1
-  )
-}) %>%
-  bind_rows() %>%
-  distinct(gene, module, .keep_all = TRUE)
-
-module_wide <- module_df %>%
-  pivot_wider(
-    names_from = module,
-    values_from = value,
-    values_fill = 0
-  )
-# module_wide[is.na(module_wide)] <- 0
-colnames(module_wide) <- sub("value\\.", "", colnames(module_wide))
-
-
-dat <- merge(gene_df, module_wide, by = "gene", all.x = TRUE)
-module_cols <- setdiff(colnames(dat), c("gene", "set"))
-
-dat[module_cols][is.na(dat[module_cols])] <- 0
-
-### some not assigned a set, remove those for analysis purposes
-dat <- dat %>%
-  filter(!is.na(set))
-# dat[is.na(dat)] <- 0
-```
+This section is to investigate the frequency of near-gene assignments of Proteins from Omar's paper to my interested regions. Here I am taking into account region assignment totals in Set 2 vs Set 1.
+test will be number of regions in set2 assigned to protein data gene, number of regions in set 2 not assigned to protein data gene, compared to number of regions assigned to set1 vs not assigned to protein data gene in set 1.
+  
+  
+  more specifically I want to test if Set 2 regions are more frequently assigned to differential abundant proteins than set 1 H3K27ac regions.
 
 ```{r}
+Protein_list <-   module_ids %>%
+  dplyr::select(Protein, Module,Is_DA_at_adj.p, Is_DOXcorrelated, SYMBOL,ENTREZID) 
 
+Protein_list_clean <- Protein_list %>%
+  filter(!is.na(ENTREZID)) %>% 
+  group_by(ENTREZID) %>%
+  summarise(
+    in_protein_data = TRUE,
+    SYMBOL = paste(unique(na.omit(SYMBOL)), collapse = ";"),
+    Protein = paste(unique(na.omit(Protein)), collapse = ";"),
+    Module = paste(unique(na.omit(Module)), collapse = ";"),
+    any_DA = any(Is_DA_at_adj.p, na.rm = TRUE),
+    any_DOXcorrelated = any(Is_DOXcorrelated, na.rm = TRUE),
+    .groups = "drop")
 
-model <- polr(
-  set ~ . - gene,
-  data = dat,
-  Hess = TRUE
+region_data <- H3K27ac_ext200_anno %>% 
+  dplyr::select(Peakid, geneId, cluster) %>% 
+  left_join(Protein_list_clean, by=c("geneId"="ENTREZID")) %>% 
+  mutate(
+    any_DA = coalesce(any_DA, 0),
+    any_DOXcorrelated= coalesce(any_DOXcorrelated,0))
+
+test_df <- region_data %>%
+  filter(cluster %in% c("Set_1", "Set_2")) %>%
+  mutate(
+    assigned_to_DA_protein = any_DA == 1)
+  
+
+a <- sum(test_df$cluster == "Set_2" &  test_df$assigned_to_DA_protein)
+b <- sum(test_df$cluster == "Set_2" &  !test_df$assigned_to_DA_protein)
+c <- sum(test_df$cluster == "Set_1" &  test_df$assigned_to_DA_protein)
+d <- sum(test_df$cluster == "Set_1" &  !test_df$assigned_to_DA_protein)
+
+tab <- matrix(
+  c(a, b, c, d),
+  nrow = 2,
+  byrow = TRUE
 )
-
-coef_df <- broom::tidy(model)
-
-heatmap_df <- coef_df %>%
-  dplyr::filter(!grepl("\\|", term)) %>%
-  mutate(effect = estimate) %>%
-  dplyr::select(term, effect)
-
-colnames(heatmap_df) <- c("Module", "EffectSize")
-pred <- predict(model, type = "probs")
-
-
-
-pred_df <- cbind(dat["gene"], pred)
-
-module_heatmap <- merge(module_df, pred_df, by = "gene")
-
-module_summary <- module_heatmap %>%
-  group_by(module) %>%
-  summarise(
-    Set1 = mean(Set1),
-    Set2 = mean(Set2),
-    Set3 = mean(Set3),
-    .groups = "drop"
-  )
-heatmap_long <- module_summary %>%
-  pivot_longer(cols = c(Set1, Set2, Set3),
-               names_to = "State",
-               values_to = "Probability") %>% 
-  left_join(Module_lookup, by=c("module"="Module"))
-
-ggplot(heatmap_long, aes(x = State, y = greek_module, fill = Probability)) +
-  geom_tile() +
-  scale_fill_gradient(low = "white", high = "red")
-
-# ComplexHeatmap::Heatmap(heatmap_df)
-```
-```{r}
-table(module_df$gene %in% set1_clean,
-      module_df$gene %in% set2_clean,
-      module_df$gene %in% set3_clean)
-all_genes <- unique(module_df$gene)
-
-global_set2_rate <- mean(all_genes %in% set2_clean)
-global_set2_rate
-
-module_enrichment <- module_df %>%
-  filter(!is.na(gene)) %>%
-  group_by(module) %>%
-  summarise(
-    module_size = n_distinct(gene),
-    set2_count = sum(gene %in% set2_clean),
-    set2_rate = set2_count / module_size,
-    .groups = "drop"
-  ) %>%
-  mutate(
-    enrichment = set2_rate / global_set2_rate
-  )
-
-module_enrichment <- module_enrichment %>%
-  rowwise() %>%
-  mutate(
-    pvalue = fisher.test(matrix(c(
-      set2_count,
-      module_size - set2_count,
-      sum(all_genes %in% set2_clean) - set2_count,
-      length(all_genes) - sum(all_genes %in% set2_clean) - (module_size - set2_count)
-    ), nrow = 2))$p.value
-  ) %>%
-  ungroup()
-
-module_enrichment$FDR <- p.adjust(module_enrichment$pvalue, method = "BH")
-
-ggplot(module_enrichment, aes(x = module_size, y = set2_rate)) +
-  geom_point(aes(color = FDR < 0.05)) +
-  geom_text(aes(label = module), vjust = -0.5)+
-  geom_hline(yintercept = global_set2_rate, linetype = "dashed") +
-  scale_y_continuous("Set2 fraction") +
-  theme_minimal()
-```
-```{r}
-calc_module_enrichment <- function(module_df, target_set, set_name = "Set") {
-
-  all_genes <- unique(module_df$gene)
-
-  global_rate <- mean(all_genes %in% target_set)
-
-  out <- module_df %>%
-    filter(!is.na(gene)) %>%
-    group_by(module) %>%
-    summarise(
-      module_size = n_distinct(gene),
-      target_count = sum(gene %in% target_set),
-      target_rate = target_count / module_size,
-      .groups = "drop"
-    ) %>%
-    mutate(
-      enrichment = target_rate / global_rate
-    ) %>%
-    rowwise() %>%
-    mutate(
-      pvalue = fisher.test(matrix(c(
-        target_count,
-        module_size - target_count,
-        sum(all_genes %in% target_set) - target_count,
-        length(all_genes) -
-          sum(all_genes %in% target_set) -
-          (module_size - target_count)
-      ), nrow = 2))$p.value
-    ) %>%
-    ungroup()
-
-  out$FDR <- p.adjust(out$pvalue, method = "BH")
-  out$global_rate <- global_rate
-  out
-}
-
+fisher.test(tab, alternative = "greater")  
 
 
 ```
 
+hmmm, nope not enriched. And for future reference, I did this for Set 3 and also did not find enrichment.  similar to the tests on modules above.
 
-```{r}
-set2_enrichment <- calc_module_enrichment(module_df, set2_clean)
-set3_enrichment <- calc_module_enrichment(module_df, set3_clean)
+### DAP enrichment in 27ac sets
 
-ggplot(set2_enrichment, aes(x = module_size, y = target_rate)) +
-  geom_point(aes(color = FDR < 0.05)) +
-  geom_text(aes(label = module), vjust = -0.5)+
-  geom_hline(yintercept = set2_enrichment$global_rate, linetype = "dashed") +
-  scale_y_continuous("Set2 fraction") +
-  theme_minimal()+
-  ggtitle("Set 2 intermediate state")
+```{r checking 2 v1 DAP}
+DAP_IDs <- protein_data %>% 
+dplyr::select(Protein,Module,logFC,P.Value.adj, Is_DA_at_adj.p) %>% 
+  dplyr::filter(Is_DA_at_adj.p==1) %>% 
+   left_join(remap_clean, by =c("Protein"="UNIPROT")) 
+ 
+nonDAP_IDs <- protein_data %>% 
+dplyr::select(Protein,Module,logFC,P.Value.adj, Is_DA_at_adj.p) %>% 
+  dplyr::filter(Is_DA_at_adj.p!=1) %>% 
+   left_join(remap_clean, by =c("Protein"="UNIPROT"))
 
-ggplot(set3_enrichment, aes(x = module_size, y = target_rate)) +
-  geom_point(aes(color = FDR < 0.05)) +
-  geom_text(aes(label = module), vjust = -0.5)+
-  geom_hline(yintercept = set3_enrichment$global_rate, linetype = "dashed") +
-  scale_y_continuous("Set3 fraction") +
-  theme_minimal()+
-  ggtitle("Set 3 strongest state")
+a=sum(set2_genes%in%DAP_IDs$ENTREZID)
+b=sum(!set2_genes%in% DAP_IDs$ENTREZID)
+  c=sum(set1_genes%in%DAP_IDs$ENTREZID)
+ d=sum(!set1_genes%in%DAP_IDs$ENTREZID)
+
+tab <- matrix(
+  c(a, b, c, d),
+  nrow = 2,
+  byrow = TRUE
+)
+fisher.test(tab, alternative = "greater") 
 ```
+
+```{r Checking 3v 1 DAP}
+a=sum(set3_genes%in%DAP_IDs$ENTREZID)
+b=sum(!set3_genes%in% DAP_IDs$ENTREZID)
+  c=sum(set1_genes%in%DAP_IDs$ENTREZID)
+ d=sum(!set1_genes%in%DAP_IDs$ENTREZID)
+
+tab <- matrix(
+  c(a, b, c, d),
+  nrow = 2,
+  byrow = TRUE)
+
+fisher.test(tab, alternative = "greater") 
+```
+
+
+
 ### KZFP
-
+just trying to see if KZFPs are in protein data.
 ```{r KZFP in protein}
 
 protein_data %>% 
@@ -934,7 +820,7 @@ mer61E_gr %>%
   group_by(my_MER, DOX_cor) %>% tally
   
 
-my_matrix <- matrix(c(3,64,10,190), nrow = 2)
+my_matrix <- matrix(c(3,64,10,190), nrow = 2, byrow = TRUE)
 fisher.test(my_matrix)
 ```
 
@@ -990,8 +876,8 @@ great_matrix <- matrix(c(5,56,17,161), nrow = 2)
 fisher.test(great_matrix)
 
 
-table(table(repID_to_gene_MER61E$closest_gene))
-table(repID_to_gene_MER61E$closest_gene, useNA = "ifany")
+# table(table(repID_to_gene_MER61E$closest_gene))
+# table(repID_to_gene_MER61E$closest_gene, useNA = "ifany")
 ```
 
 
@@ -1118,7 +1004,7 @@ Now I will test if the unique to Set 3, unique to Set 2, or shared TFs are enric
 
 table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group=="set_2_only")
 
-tf_uni_matrix_set2 <- matrix(c(11,19,262,487), nrow = 2)
+tf_uni_matrix_set2 <- matrix(c(11,19,262,487), nrow = 2,byrow = TRUE)
 
 fisher.test(tf_uni_matrix_set2)
 
@@ -1127,7 +1013,7 @@ fisher.test(tf_uni_matrix_set2)
 
 table(H3K27ac_TF_df$DAP,H3K27ac_TF_df$set_group=="set_3_only")
 
-tf_uni_matrix_set3 <- matrix(c(6,24,30,719), nrow = 2)
+tf_uni_matrix_set3 <- matrix(c(6,24,30,719), nrow = 2, byrow = TRUE)
 
 fisher.test(tf_uni_matrix_set3)
 
@@ -1234,7 +1120,7 @@ Acute:(set 2 in H3K9me3)
 ```{r}
 table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group=="set_2_only")
  
-tf_uni_matrix_set2_k9 <- matrix(c(1,29,44,705), nrow = 2)
+tf_uni_matrix_set2_k9 <- matrix(c(1,29,44,705), nrow = 2,byrow = TRUE)
 
 
 fisher.test(tf_uni_matrix_set2_k9)
@@ -1244,7 +1130,7 @@ sustained in H3K9me3 (set 3)
 ```{r}
 table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group=="set_3_only")
  
-tf_uni_matrix_set3_k9 <- matrix(c(0,30,12,737), nrow = 2)
+tf_uni_matrix_set3_k9 <- matrix(c(0,30,12,737), nrow = 2,byrow = TRUE)
 
 fisher.test(tf_uni_matrix_set3_k9)
 ```
@@ -1252,7 +1138,7 @@ fisher.test(tf_uni_matrix_set3_k9)
 
 table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group=="shared")
  
-tf_uni_matrix_setshare <- matrix(c(4,26,169,580), nrow = 2)
+tf_uni_matrix_setshare <- matrix(c(4,26,169,580), nrow = 2,byrow = TRUE)
 
 fisher.test(tf_uni_matrix_setshare)
 ```
@@ -1389,7 +1275,7 @@ motif_annotation <- data.frame(
 readLines("data/Other_paper_data/KZFP_motifs.meme", n = 40)
 ```
 wanting to extract all SET1 SEt2 and Set3 regions that contain a MER61E element then test for enrichment.
-```{r import regions} 
+```{r import regions, eval=FALSE} 
 
 mer_gr <- rtracklayer::import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
 H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
