@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree56aed794299bd152778aa0fe5799987e70eebcf0targetblank56aed79a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreea3be13a82db9405c1d02bc1eb75c06ce60343a35targetblanka3be13aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/56aed794299bd152778aa0fe5799987e70eebcf0" target="_blank">56aed79</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/a3be13a82db9405c1d02bc1eb75c06ce60343a35" target="_blank">a3be13a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree56aed794299bd152778aa0fe5799987e70eebcf0targetblank56aed79a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreea3be13a82db9405c1d02bc1eb75c06ce60343a35targetblanka3be13aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/56aed794299bd152778aa0fe5799987e70eebcf0" target="_blank">56aed79</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/a3be13a82db9405c1d02bc1eb75c06ce60343a35" target="_blank">a3be13a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -643,6 +643,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a3be13a82db9405c1d02bc1eb75c06ce60343a35/analysis/protein_checks.Rmd" target="_blank">a3be13a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-15
+</td>
+<td>
+wflow_publish("analysis/protein_checks.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/ddce8902a997f47db425910e9a23e10a84f51b3c/docs/protein_checks.html" target="_blank">ddce890</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1523,363 +1557,132 @@ reneeisnowhere
 </div>
 </div>
 </div>
-<div id="ordinal-model-set-1set-2-set-3" class="section level3">
-<h3>ordinal model set 1&lt;Set 2&lt; Set 3</h3>
-<pre class="r"><code>set3_clean &lt;- set3_genes
-set2_clean &lt;- setdiff(set2_genes, set3_clean)
-set1_clean &lt;- setdiff(set1_genes, union(set2_clean, set3_clean))
-all_genes &lt;- unique(unlist(lapply(protein_module_split, function(x) x$ENTREZID)))
-all_genes &lt;- all_genes[!is.na(all_genes)]
-gene_df &lt;- data.frame(gene = all_genes)
+<div id="frequency-checks-of-set-2-v-set-1" class="section level3">
+<h3>Frequency checks of Set 2 v Set 1</h3>
+<p>This section is to investigate the frequency of near-gene assignments
+of Proteins from Omar’s paper to my interested regions. Here I am taking
+into account region assignment totals in Set 2 vs Set 1. test will be
+number of regions in set2 assigned to protein data gene, number of
+regions in set 2 not assigned to protein data gene, compared to number
+of regions assigned to set1 vs not assigned to protein data gene in set
+1.</p>
+<p>more specifically I want to test if Set 2 regions are more frequently
+assigned to differential abundant proteins than set 1 H3K27ac
+regions.</p>
+<pre class="r"><code>Protein_list &lt;-   module_ids %&gt;%
+  dplyr::select(Protein, Module,Is_DA_at_adj.p, Is_DOXcorrelated, SYMBOL,ENTREZID) 
 
-gene_df$set &lt;- NA
+Protein_list_clean &lt;- Protein_list %&gt;%
+  filter(!is.na(ENTREZID)) %&gt;% 
+  group_by(ENTREZID) %&gt;%
+  summarise(
+    in_protein_data = TRUE,
+    SYMBOL = paste(unique(na.omit(SYMBOL)), collapse = &quot;;&quot;),
+    Protein = paste(unique(na.omit(Protein)), collapse = &quot;;&quot;),
+    Module = paste(unique(na.omit(Module)), collapse = &quot;;&quot;),
+    any_DA = any(Is_DA_at_adj.p, na.rm = TRUE),
+    any_DOXcorrelated = any(Is_DOXcorrelated, na.rm = TRUE),
+    .groups = &quot;drop&quot;)
 
-gene_df$set[gene_df$gene %in% set1_clean] &lt;- &quot;Set1&quot;
-gene_df$set[gene_df$gene %in% set2_clean] &lt;- &quot;Set2&quot;
-gene_df$set[gene_df$gene %in% set3_clean] &lt;- &quot;Set3&quot;
+region_data &lt;- H3K27ac_ext200_anno %&gt;% 
+  dplyr::select(Peakid, geneId, cluster) %&gt;% 
+  left_join(Protein_list_clean, by=c(&quot;geneId&quot;=&quot;ENTREZID&quot;)) %&gt;% 
+  mutate(
+    any_DA = coalesce(any_DA, 0),
+    any_DOXcorrelated= coalesce(any_DOXcorrelated,0))
 
-gene_df$set &lt;- factor(gene_df$set,
-                      levels = c(&quot;Set1&quot;, &quot;Set2&quot;, &quot;Set3&quot;),
-                      ordered = TRUE)
+test_df &lt;- region_data %&gt;%
+  filter(cluster %in% c(&quot;Set_1&quot;, &quot;Set_2&quot;)) %&gt;%
+  mutate(
+    assigned_to_DA_protein = any_DA == 1)
+  
 
-module_list &lt;- lapply(names(protein_module_split), function(mod) {
-  data.frame(
-    gene = protein_module_split[[mod]]$ENTREZID,
-    module = mod
-  )
-})
-names(module_list) &lt;- names(protein_module_split)
+a &lt;- sum(test_df$cluster == &quot;Set_2&quot; &amp;  test_df$assigned_to_DA_protein)
+b &lt;- sum(test_df$cluster == &quot;Set_2&quot; &amp;  !test_df$assigned_to_DA_protein)
+c &lt;- sum(test_df$cluster == &quot;Set_1&quot; &amp;  test_df$assigned_to_DA_protein)
+d &lt;- sum(test_df$cluster == &quot;Set_1&quot; &amp;  !test_df$assigned_to_DA_protein)
 
-module_df &lt;- lapply(names(protein_module_split), function(mod) {
-  data.frame(
-    gene = protein_module_split[[mod]]$ENTREZID,
-    module = mod,
-    value = 1
-  )
-}) %&gt;%
-  bind_rows() %&gt;%
-  distinct(gene, module, .keep_all = TRUE)
-
-module_wide &lt;- module_df %&gt;%
-  pivot_wider(
-    names_from = module,
-    values_from = value,
-    values_fill = 0
-  )
-# module_wide[is.na(module_wide)] &lt;- 0
-colnames(module_wide) &lt;- sub(&quot;value\\.&quot;, &quot;&quot;, colnames(module_wide))
-
-
-dat &lt;- merge(gene_df, module_wide, by = &quot;gene&quot;, all.x = TRUE)
-module_cols &lt;- setdiff(colnames(dat), c(&quot;gene&quot;, &quot;set&quot;))
-
-dat[module_cols][is.na(dat[module_cols])] &lt;- 0
-
-### some not assigned a set, remove those for analysis purposes
-dat &lt;- dat %&gt;%
-  filter(!is.na(set))
-# dat[is.na(dat)] &lt;- 0</code></pre>
-<pre class="r"><code>model &lt;- polr(
-  set ~ . - gene,
-  data = dat,
-  Hess = TRUE
+tab &lt;- matrix(
+  c(a, b, c, d),
+  nrow = 2,
+  byrow = TRUE
 )
+fisher.test(tab, alternative = &quot;greater&quot;)  </code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
 
-coef_df &lt;- broom::tidy(model)
-
-heatmap_df &lt;- coef_df %&gt;%
-  dplyr::filter(!grepl(&quot;\\|&quot;, term)) %&gt;%
-  mutate(effect = estimate) %&gt;%
-  dplyr::select(term, effect)
-
-colnames(heatmap_df) &lt;- c(&quot;Module&quot;, &quot;EffectSize&quot;)
-pred &lt;- predict(model, type = &quot;probs&quot;)
-
-
-
-pred_df &lt;- cbind(dat[&quot;gene&quot;], pred)
-
-module_heatmap &lt;- merge(module_df, pred_df, by = &quot;gene&quot;)
-
-module_summary &lt;- module_heatmap %&gt;%
-  group_by(module) %&gt;%
-  summarise(
-    Set1 = mean(Set1),
-    Set2 = mean(Set2),
-    Set3 = mean(Set3),
-    .groups = &quot;drop&quot;
-  )
-heatmap_long &lt;- module_summary %&gt;%
-  pivot_longer(cols = c(Set1, Set2, Set3),
-               names_to = &quot;State&quot;,
-               values_to = &quot;Probability&quot;) %&gt;% 
-  left_join(Module_lookup, by=c(&quot;module&quot;=&quot;Module&quot;))
-
-ggplot(heatmap_long, aes(x = State, y = greek_module, fill = Probability)) +
-  geom_tile() +
-  scale_fill_gradient(low = &quot;white&quot;, high = &quot;red&quot;)</code></pre>
-<p><img src="figure/protein_checks.Rmd/unnamed-chunk-10-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
-Past versions of unnamed-chunk-10-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0f5e3ddfdc6fb3f661995e0509706d56226ebd4/docs/figure/protein_checks.Rmd/unnamed-chunk-10-1.png" target="_blank">a0f5e3d</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-05-14
-</td>
-</tr>
-</tbody>
-</table>
+data:  tab
+p-value = 1
+alternative hypothesis: true odds ratio is greater than 1
+95 percent confidence interval:
+ 0.1704471       Inf
+sample estimates:
+odds ratio 
+ 0.3151662 </code></pre>
+<p>hmmm, nope not enriched. And for future reference, I did this for Set
+3 and also did not find enrichment. similar to the tests on modules
+above.</p>
 </div>
-</div>
-<pre class="r"><code># ComplexHeatmap::Heatmap(heatmap_df)</code></pre>
-<pre class="r"><code>table(module_df$gene %in% set1_clean,
-      module_df$gene %in% set2_clean,
-      module_df$gene %in% set3_clean)</code></pre>
-<pre><code>, ,  = FALSE
+<div id="dap-enrichment-in-27ac-sets" class="section level3">
+<h3>DAP enrichment in 27ac sets</h3>
+<pre class="r"><code>DAP_IDs &lt;- protein_data %&gt;% 
+dplyr::select(Protein,Module,logFC,P.Value.adj, Is_DA_at_adj.p) %&gt;% 
+  dplyr::filter(Is_DA_at_adj.p==1) %&gt;% 
+   left_join(remap_clean, by =c(&quot;Protein&quot;=&quot;UNIPROT&quot;)) 
+ 
+nonDAP_IDs &lt;- protein_data %&gt;% 
+dplyr::select(Protein,Module,logFC,P.Value.adj, Is_DA_at_adj.p) %&gt;% 
+  dplyr::filter(Is_DA_at_adj.p!=1) %&gt;% 
+   left_join(remap_clean, by =c(&quot;Protein&quot;=&quot;UNIPROT&quot;))
 
-       
-        FALSE TRUE
-  FALSE   562  129
-  TRUE   2572    0
+a=sum(set2_genes%in%DAP_IDs$ENTREZID)
+b=sum(!set2_genes%in% DAP_IDs$ENTREZID)
+  c=sum(set1_genes%in%DAP_IDs$ENTREZID)
+ d=sum(!set1_genes%in%DAP_IDs$ENTREZID)
 
-, ,  = TRUE
+tab &lt;- matrix(
+  c(a, b, c, d),
+  nrow = 2,
+  byrow = TRUE
+)
+fisher.test(tab, alternative = &quot;greater&quot;) </code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
 
-       
-        FALSE TRUE
-  FALSE   904    0
-  TRUE      0    0</code></pre>
-<pre class="r"><code>all_genes &lt;- unique(module_df$gene)
+data:  tab
+p-value = 0.9565
+alternative hypothesis: true odds ratio is greater than 1
+95 percent confidence interval:
+ 0.3315557       Inf
+sample estimates:
+odds ratio 
+ 0.6186144 </code></pre>
+<pre class="r"><code>a=sum(set3_genes%in%DAP_IDs$ENTREZID)
+b=sum(!set3_genes%in% DAP_IDs$ENTREZID)
+  c=sum(set1_genes%in%DAP_IDs$ENTREZID)
+ d=sum(!set1_genes%in%DAP_IDs$ENTREZID)
 
-global_set2_rate &lt;- mean(all_genes %in% set2_clean)
-global_set2_rate</code></pre>
-<pre><code>[1] 0.03103199</code></pre>
-<pre class="r"><code>module_enrichment &lt;- module_df %&gt;%
-  filter(!is.na(gene)) %&gt;%
-  group_by(module) %&gt;%
-  summarise(
-    module_size = n_distinct(gene),
-    set2_count = sum(gene %in% set2_clean),
-    set2_rate = set2_count / module_size,
-    .groups = &quot;drop&quot;
-  ) %&gt;%
-  mutate(
-    enrichment = set2_rate / global_set2_rate
-  )
+tab &lt;- matrix(
+  c(a, b, c, d),
+  nrow = 2,
+  byrow = TRUE)
 
-module_enrichment &lt;- module_enrichment %&gt;%
-  rowwise() %&gt;%
-  mutate(
-    pvalue = fisher.test(matrix(c(
-      set2_count,
-      module_size - set2_count,
-      sum(all_genes %in% set2_clean) - set2_count,
-      length(all_genes) - sum(all_genes %in% set2_clean) - (module_size - set2_count)
-    ), nrow = 2))$p.value
-  ) %&gt;%
-  ungroup()
+fisher.test(tab, alternative = &quot;greater&quot;) </code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
 
-module_enrichment$FDR &lt;- p.adjust(module_enrichment$pvalue, method = &quot;BH&quot;)
-
-ggplot(module_enrichment, aes(x = module_size, y = set2_rate)) +
-  geom_point(aes(color = FDR &lt; 0.05)) +
-  geom_text(aes(label = module), vjust = -0.5)+
-  geom_hline(yintercept = global_set2_rate, linetype = &quot;dashed&quot;) +
-  scale_y_continuous(&quot;Set2 fraction&quot;) +
-  theme_minimal()</code></pre>
-<p><img src="figure/protein_checks.Rmd/unnamed-chunk-11-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
-Past versions of unnamed-chunk-11-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-11-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0f5e3ddfdc6fb3f661995e0509706d56226ebd4/docs/figure/protein_checks.Rmd/unnamed-chunk-11-1.png" target="_blank">a0f5e3d</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-05-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>calc_module_enrichment &lt;- function(module_df, target_set, set_name = &quot;Set&quot;) {
-
-  all_genes &lt;- unique(module_df$gene)
-
-  global_rate &lt;- mean(all_genes %in% target_set)
-
-  out &lt;- module_df %&gt;%
-    filter(!is.na(gene)) %&gt;%
-    group_by(module) %&gt;%
-    summarise(
-      module_size = n_distinct(gene),
-      target_count = sum(gene %in% target_set),
-      target_rate = target_count / module_size,
-      .groups = &quot;drop&quot;
-    ) %&gt;%
-    mutate(
-      enrichment = target_rate / global_rate
-    ) %&gt;%
-    rowwise() %&gt;%
-    mutate(
-      pvalue = fisher.test(matrix(c(
-        target_count,
-        module_size - target_count,
-        sum(all_genes %in% target_set) - target_count,
-        length(all_genes) -
-          sum(all_genes %in% target_set) -
-          (module_size - target_count)
-      ), nrow = 2))$p.value
-    ) %&gt;%
-    ungroup()
-
-  out$FDR &lt;- p.adjust(out$pvalue, method = &quot;BH&quot;)
-  out$global_rate &lt;- global_rate
-  out
-}</code></pre>
-<pre class="r"><code>set2_enrichment &lt;- calc_module_enrichment(module_df, set2_clean)
-set3_enrichment &lt;- calc_module_enrichment(module_df, set3_clean)
-
-ggplot(set2_enrichment, aes(x = module_size, y = target_rate)) +
-  geom_point(aes(color = FDR &lt; 0.05)) +
-  geom_text(aes(label = module), vjust = -0.5)+
-  geom_hline(yintercept = set2_enrichment$global_rate, linetype = &quot;dashed&quot;) +
-  scale_y_continuous(&quot;Set2 fraction&quot;) +
-  theme_minimal()+
-  ggtitle(&quot;Set 2 intermediate state&quot;)</code></pre>
-<p><img src="figure/protein_checks.Rmd/unnamed-chunk-13-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
-Past versions of unnamed-chunk-13-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-13-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0f5e3ddfdc6fb3f661995e0509706d56226ebd4/docs/figure/protein_checks.Rmd/unnamed-chunk-13-1.png" target="_blank">a0f5e3d</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-05-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>ggplot(set3_enrichment, aes(x = module_size, y = target_rate)) +
-  geom_point(aes(color = FDR &lt; 0.05)) +
-  geom_text(aes(label = module), vjust = -0.5)+
-  geom_hline(yintercept = set3_enrichment$global_rate, linetype = &quot;dashed&quot;) +
-  scale_y_continuous(&quot;Set3 fraction&quot;) +
-  theme_minimal()+
-  ggtitle(&quot;Set 3 strongest state&quot;)</code></pre>
-<p><img src="figure/protein_checks.Rmd/unnamed-chunk-13-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-2">
-Past versions of unnamed-chunk-13-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-13-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0f5e3ddfdc6fb3f661995e0509706d56226ebd4/docs/figure/protein_checks.Rmd/unnamed-chunk-13-2.png" target="_blank">a0f5e3d</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-05-14
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+data:  tab
+p-value = 0.1888
+alternative hypothesis: true odds ratio is greater than 1
+95 percent confidence interval:
+ 0.8990394       Inf
+sample estimates:
+odds ratio 
+  1.136255 </code></pre>
 </div>
 <div id="kzfp" class="section level3">
 <h3>KZFP</h3>
+<p>just trying to see if KZFPs are in protein data.</p>
 <pre class="r"><code>protein_data %&gt;% 
   dplyr::select(Protein,Module,logFC,P.Value.adj) %&gt;% 
   left_join(remap_clean, by =c(&quot;Protein&quot;=&quot;UNIPROT&quot;)) %&gt;% 
@@ -2000,13 +1803,13 @@ mer61E_gr %&gt;%
   mutate(my_MER=if_else(name %in%MER61E_mydata,&quot;in&quot;,&quot;out&quot;)) %&gt;% 
   ggplot(aes(x=distance_to_gene, color=my_MER))+
   geom_density()</code></pre>
-<p><img src="figure/protein_checks.Rmd/unnamed-chunk-15-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/protein_checks.Rmd/unnamed-chunk-11-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
-Past versions of unnamed-chunk-15-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div id="fig-unnamed-chunk-11-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2025,7 +1828,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0f5e3ddfdc6fb3f661995e0509706d56226ebd4/docs/figure/protein_checks.Rmd/unnamed-chunk-15-1.png" target="_blank">a0f5e3d</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0f5e3ddfdc6fb3f661995e0509706d56226ebd4/docs/figure/protein_checks.Rmd/unnamed-chunk-11-1.png" target="_blank">a0f5e3d</a>
 </td>
 <td>
 reneeisnowhere
@@ -2053,7 +1856,7 @@ reneeisnowhere
 2 in     non_DOXcor    64
 3 out    DOXcor        10
 4 out    non_DOXcor   190</code></pre>
-<pre class="r"><code>my_matrix &lt;- matrix(c(3,64,10,190), nrow = 2)
+<pre class="r"><code>my_matrix &lt;- matrix(c(3,64,10,190), nrow = 2, byrow = TRUE)
 fisher.test(my_matrix)</code></pre>
 <pre><code>
     Fisher&#39;s Exact Test for Count Data
@@ -2132,86 +1935,8 @@ alternative hypothesis: true odds ratio is not equal to 1
 sample estimates:
 odds ratio 
  0.8461691 </code></pre>
-<pre class="r"><code>table(table(repID_to_gene_MER61E$closest_gene))</code></pre>
-<pre><code>
-  1   2   3   4   5 
-132  40   6   1   1 </code></pre>
-<pre class="r"><code>table(repID_to_gene_MER61E$closest_gene, useNA = &quot;ifany&quot;)</code></pre>
-<pre><code>
-         AKR1C4          AKR1D1           AMY2A          ANXA10           APELA 
-              1               4               1               1               1 
-           APOB         APOBEC1         ARHGAP5            ARL6          ARPP21 
-              1               1               1               1               1 
-        ATF7IP2           ATG4C          ATP1B1        ATXN7L3B           BACH1 
-              1               2               1               1               1 
-           BBS9           BCAT1          BCL11A            BDNF        C12orf50 
-              1               1               1               1               1 
-       C19orf12         C8orf22          C8orf4           CADM1         CCDC170 
-              1               1               1               1               1 
-          CCNG1          CCSER2           CDCA7           CDH11            CDH5 
-              1               2               2               1               3 
-         CHI3L2           CHRM3           CHSY3           CLCA1           CNOT2 
-              1               1               1               1               1 
-          CNTN3            COCH         COL22A1             CPE           CPNE8 
-              1               1               1               1               1 
-           CROT           CSMD1          CSTF2T            CTSO           CYYR1 
-              2               1               1               2               2 
-         DAB2IP          DEPDC1           DESI2           DHFR2            DOK5 
-              2               1               1               1               1 
-          DSCR4           DYRK2            EBF2           EIF4H ENSG00000283378 
-              1               2               1               2               1 
-          EPM2A            ERC2           ETNK1             FER           FGF10 
-              2               1               1               1               1 
-           FIGN          FRMD4B            FTMT            GAS7            GPC5 
-              1               1               2               1               1 
-          GSG1L           HLA-B          HS3ST4          HS3ST5           HSPB3 
-              1               1               2               1               1 
-         IGFBP3          IMMP2L           JADE1          KBTBD6          KCNJ11 
-              2               1               1               1               1 
-        KHDRBS2          LCLAT1           LRP1B           LRRN3           LSAMP 
-              2               1               2               3               1 
-         MBOAT1           MDGA2           MED13         METTL7A            MGMT 
-              1               2               2               1               1 
-           MICB        MIS18BP1           MMP27           MON1B            MSH6 
-              1               2               1               1               2 
-          MYLIP           NABP1           NCAM2         NCR3LG1           NEGR1 
-              2               1               3               1               1 
-           NEK7            NEO1           NFIL3          NHLRC1          NKX6-3 
-              1               1               1               2               1 
-            NPL           NR3C2            NREP           NRSN1           NRXN3 
-              1               1               1               1               1 
-          NYAP2           OR1N1           OR8K5          PARD3B          PAXIP1 
-              1               2               1               1               1 
-         PCDH10          PCDH18           PEX5L         PLA2G4A           PLET1 
-              2               1               1               2               1 
-         PLSCR5            POT1         PPP2R5E            PTER           RAI14 
-              1               1               1               1               3 
-        RANBP3L          RASAL2          RCBTB2           RDH14           RFLNA 
-              1               1               1               1               1 
-           RFX5            RGS6            RIC1          RNASE1           RNPC3 
-              1               1               1               1               1 
-          RPAP3          RPRD1A           RPS12           SALL4          SEMA3E 
-              1               3               2               2               1 
-        SERTAD4            SIL1         SLCO1B1         SLITRK1          SORCS1 
-              1               2               1               1               1 
-          SP110           SPIN1      ST6GALNAC3           SULF2         SULT2A1 
-              1               2               1               1               1 
-           SVIP           SYT10          TMEFF2         TMEM163         TMEM165 
-              1               1               2               1               1 
-        TMEM260            TMPO           TMTC4         TRAM1L1          TREML2 
-              1               1               2               1               1 
-         TRIM24          TRIM36           TRPC4           TRPM1            TSHB 
-              2               1               1               2               1 
-            TSN           TTC28           TUSC3            TYW1           UBE2F 
-              1               1               1               5               2 
-         UGT2A1          UGT2A3         UGT2B10         UGT2B11         UGT2B28 
-              2               1               2               3               2 
-         UTP14C           VDAC1             VIM          VSTM2A            XCR1 
-              2               2               1               1               2 
-           XKR4          YTHDC2           ZNF25          ZNF521          ZRANB2 
-              1               1               2               1               1 
-           &lt;NA&gt; 
-             28 </code></pre>
+<pre class="r"><code># table(table(repID_to_gene_MER61E$closest_gene))
+# table(repID_to_gene_MER61E$closest_gene, useNA = &quot;ifany&quot;)</code></pre>
 <pre class="r"><code>repID_to_gene_MER61E %&gt;% 
   filter(!is.na(closest_gene)) %&gt;% 
    mutate(my_MER=if_else(X1 %in%MER61E_mydata_set3,&quot;in&quot;,&quot;out&quot;)) %&gt;% 
@@ -2367,7 +2092,7 @@ TFs are enriched in DAPs vs non-DAPs</p>
           FALSE TRUE
   DAP        19   11
   non_DAP   487  262</code></pre>
-<pre class="r"><code>tf_uni_matrix_set2 &lt;- matrix(c(11,19,262,487), nrow = 2)
+<pre class="r"><code>tf_uni_matrix_set2 &lt;- matrix(c(11,19,262,487), nrow = 2,byrow = TRUE)
 
 fisher.test(tf_uni_matrix_set2)</code></pre>
 <pre><code>
@@ -2386,7 +2111,7 @@ odds ratio
           FALSE TRUE
   DAP        24    6
   non_DAP   719   30</code></pre>
-<pre class="r"><code>tf_uni_matrix_set3 &lt;- matrix(c(6,24,30,719), nrow = 2)
+<pre class="r"><code>tf_uni_matrix_set3 &lt;- matrix(c(6,24,30,719), nrow = 2, byrow = TRUE)
 
 fisher.test(tf_uni_matrix_set3)</code></pre>
 <pre><code>
@@ -2526,7 +2251,7 @@ odds ratio
           FALSE TRUE
   DAP        29    1
   non_DAP   705   44</code></pre>
-<pre class="r"><code>tf_uni_matrix_set2_k9 &lt;- matrix(c(1,29,44,705), nrow = 2)
+<pre class="r"><code>tf_uni_matrix_set2_k9 &lt;- matrix(c(1,29,44,705), nrow = 2,byrow = TRUE)
 
 
 fisher.test(tf_uni_matrix_set2_k9)</code></pre>
@@ -2547,7 +2272,7 @@ odds ratio
           FALSE TRUE
   DAP        30    0
   non_DAP   737   12</code></pre>
-<pre class="r"><code>tf_uni_matrix_set3_k9 &lt;- matrix(c(0,30,12,737), nrow = 2)
+<pre class="r"><code>tf_uni_matrix_set3_k9 &lt;- matrix(c(0,30,12,737), nrow = 2,byrow = TRUE)
 
 fisher.test(tf_uni_matrix_set3_k9)</code></pre>
 <pre><code>
@@ -2566,7 +2291,7 @@ odds ratio
           FALSE TRUE
   DAP        26    4
   non_DAP   580  169</code></pre>
-<pre class="r"><code>tf_uni_matrix_setshare &lt;- matrix(c(4,26,169,580), nrow = 2)
+<pre class="r"><code>tf_uni_matrix_setshare &lt;- matrix(c(4,26,169,580), nrow = 2,byrow = TRUE)
 
 fisher.test(tf_uni_matrix_setshare)</code></pre>
 <pre><code>
@@ -2738,24 +2463,21 @@ Set1_gr &lt;- makeGRangesFromDataFrame(Set1, keep.extra.columns = TRUE)
 Set2_gr &lt;- makeGRangesFromDataFrame(Set2, keep.extra.columns = TRUE)
 Set3_gr &lt;- makeGRangesFromDataFrame(Set3, keep.extra.columns = TRUE)
 
-width(Set1_gr)</code></pre>
-<pre><code> [1] 401 401 401 401 401 401 401 401 401 401 401</code></pre>
-<pre class="r"><code>width(Set3_gr)</code></pre>
-<pre><code> [1] 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401
-[20] 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401 401
-[39] 401 401</code></pre>
-<pre class="r"><code>library(Biostrings)
+width(Set1_gr)
+width(Set3_gr)
+
+
+library(Biostrings)
 library(BSgenome.Hsapiens.UCSC.hg38)
 Hsapiens &lt;- BSgenome.Hsapiens.UCSC.hg38
 
 gc1 &lt;- letterFrequency(getSeq(Hsapiens, Set1_gr), &quot;GC&quot;, as.prob=TRUE)
 gc3 &lt;- letterFrequency(getSeq(Hsapiens, Set3_gr), &quot;GC&quot;, as.prob=TRUE)
 
-mean(gc1)</code></pre>
-<pre><code>[1] 0.4661075</code></pre>
-<pre class="r"><code>mean(gc3)</code></pre>
-<pre><code>[1] 0.4611596</code></pre>
-<pre class="r"><code>export(Set1_gr, &quot;data/Bed_exports/H3K27ac_MER61E_Set_1.bed&quot;, format = &quot;BED&quot;)
+mean(gc1)
+mean(gc3)
+
+export(Set1_gr, &quot;data/Bed_exports/H3K27ac_MER61E_Set_1.bed&quot;, format = &quot;BED&quot;)
 export(Set3_gr, &quot;data/Bed_exports/H3K27ac_MER61E_Set_3.bed&quot;, format = &quot;BED&quot;)</code></pre>
 <br>
 <p>
@@ -2788,112 +2510,109 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] BSgenome.Hsapiens.UCSC.hg38_1.4.5       
- [2] BSgenome_1.74.0                         
- [3] BiocIO_1.16.0                           
- [4] Biostrings_2.74.1                       
- [5] XVector_0.46.0                          
- [6] universalmotif_1.24.2                   
- [7] TFBSTools_1.44.0                        
- [8] JASPAR2022_0.99.8                       
- [9] BiocFileCache_2.14.0                    
-[10] dbplyr_2.5.2                            
-[11] TxDb.Hsapiens.UCSC.hg38.knownGene_3.20.0
-[12] GenomicFeatures_1.58.0                  
-[13] MASS_7.3-65                             
-[14] org.Hs.eg.db_3.20.0                     
-[15] AnnotationDbi_1.68.0                    
-[16] Biobase_2.66.0                          
-[17] jsonlite_2.0.0                          
-[18] httr_1.4.8                              
-[19] ggpubr_0.6.3                            
-[20] biomaRt_2.62.1                          
-[21] readxl_1.4.5                            
-[22] DT_0.34.0                               
-[23] ggrepel_0.9.8                           
-[24] rtracklayer_1.66.0                      
-[25] genomation_1.38.0                       
-[26] plyranges_1.26.0                        
-[27] GenomicRanges_1.58.0                    
-[28] GenomeInfoDb_1.42.3                     
-[29] IRanges_2.40.1                          
-[30] S4Vectors_0.44.0                        
-[31] BiocGenerics_0.52.0                     
-[32] lubridate_1.9.5                         
-[33] forcats_1.0.1                           
-[34] stringr_1.6.0                           
-[35] dplyr_1.2.1                             
-[36] purrr_1.2.2                             
-[37] readr_2.2.0                             
-[38] tidyr_1.3.2                             
-[39] tibble_3.3.1                            
-[40] ggplot2_4.0.3                           
-[41] tidyverse_2.0.0                         
-[42] workflowr_1.7.2                         
+ [1] universalmotif_1.24.2                   
+ [2] TFBSTools_1.44.0                        
+ [3] JASPAR2022_0.99.8                       
+ [4] BiocFileCache_2.14.0                    
+ [5] dbplyr_2.5.2                            
+ [6] TxDb.Hsapiens.UCSC.hg38.knownGene_3.20.0
+ [7] GenomicFeatures_1.58.0                  
+ [8] MASS_7.3-65                             
+ [9] org.Hs.eg.db_3.20.0                     
+[10] AnnotationDbi_1.68.0                    
+[11] Biobase_2.66.0                          
+[12] jsonlite_2.0.0                          
+[13] httr_1.4.8                              
+[14] ggpubr_0.6.3                            
+[15] biomaRt_2.62.1                          
+[16] readxl_1.4.5                            
+[17] DT_0.34.0                               
+[18] ggrepel_0.9.8                           
+[19] rtracklayer_1.66.0                      
+[20] genomation_1.38.0                       
+[21] plyranges_1.26.0                        
+[22] GenomicRanges_1.58.0                    
+[23] GenomeInfoDb_1.42.3                     
+[24] IRanges_2.40.1                          
+[25] S4Vectors_0.44.0                        
+[26] BiocGenerics_0.52.0                     
+[27] lubridate_1.9.5                         
+[28] forcats_1.0.1                           
+[29] stringr_1.6.0                           
+[30] dplyr_1.2.1                             
+[31] purrr_1.2.2                             
+[32] readr_2.2.0                             
+[33] tidyr_1.3.2                             
+[34] tibble_3.3.1                            
+[35] ggplot2_4.0.3                           
+[36] tidyverse_2.0.0                         
+[37] workflowr_1.7.2                         
 
 loaded via a namespace (and not attached):
-  [1] later_1.4.8                 bitops_1.0-9               
-  [3] filelock_1.0.3              R.oo_1.27.1                
-  [5] cellranger_1.1.0            XML_3.99-0.23              
-  [7] DirichletMultinomial_1.48.0 lifecycle_1.0.5            
-  [9] httr2_1.2.2                 pwalign_1.2.0              
- [11] rstatix_0.7.3               rprojroot_2.1.1            
- [13] vroom_1.7.1                 processx_3.9.0             
- [15] lattice_0.22-9              crosstalk_1.2.2            
- [17] backports_1.5.1             magrittr_2.0.5             
- [19] sass_0.4.10                 rmarkdown_2.31             
- [21] jquerylib_0.1.4             yaml_2.3.12                
- [23] plotrix_3.8-14              httpuv_1.6.17              
- [25] otel_0.2.0                  DBI_1.3.0                  
- [27] CNEr_1.42.0                 RColorBrewer_1.1-3         
- [29] abind_1.4-8                 zlibbioc_1.52.0            
- [31] R.utils_2.13.0              RCurl_1.98-1.18            
- [33] rappdirs_0.3.4              git2r_0.36.2               
- [35] GenomeInfoDbData_1.2.13     seqLogo_1.72.0             
- [37] annotate_1.84.0             codetools_0.2-20           
- [39] DelayedArray_0.32.0         xml2_1.5.2                 
- [41] tidyselect_1.2.1            UCSC.utils_1.2.0           
- [43] farver_2.1.2                matrixStats_1.5.0          
- [45] GenomicAlignments_1.42.0    Formula_1.2-5              
- [47] tools_4.4.2                 progress_1.2.3             
- [49] TFMPvalue_0.0.9             Rcpp_1.1.1-1.1             
- [51] glue_1.8.1                  SparseArray_1.6.2          
- [53] xfun_0.57                   MatrixGenerics_1.18.1      
- [55] withr_3.0.2                 fastmap_1.2.0              
- [57] callr_3.7.6                 caTools_1.18.3             
- [59] digest_0.6.39               timechange_0.4.0           
- [61] R6_2.6.1                    seqPattern_1.38.0          
- [63] colorspace_2.1-2            GO.db_3.20.0               
- [65] gtools_3.9.5                poweRlaw_1.0.0             
- [67] dichromat_2.0-0.1           RSQLite_3.52.0             
- [69] R.methodsS3_1.8.2           utf8_1.2.6                 
- [71] generics_0.1.4              data.table_1.18.4          
- [73] prettyunits_1.2.0           htmlwidgets_1.6.4          
- [75] S4Arrays_1.6.0              whisker_0.4.1              
- [77] pkgconfig_2.0.3             gtable_0.3.6               
- [79] blob_1.3.0                  S7_0.2.2                   
- [81] impute_1.80.0               htmltools_0.5.9            
- [83] carData_3.0-6               scales_1.4.0               
- [85] png_0.1-9                   knitr_1.51                 
- [87] rstudioapi_0.18.0           tzdb_0.5.0                 
- [89] reshape2_1.4.5              rjson_0.2.23               
- [91] curl_7.1.0                  cachem_1.1.0               
- [93] KernSmooth_2.23-26          parallel_4.4.2             
- [95] restfulr_0.0.16             pillar_1.11.1              
- [97] vctrs_0.7.3                 promises_1.5.0             
- [99] car_3.1-5                   xtable_1.8-8               
-[101] evaluate_1.0.5              cli_3.6.6                  
-[103] compiler_4.4.2              Rsamtools_2.22.0           
-[105] rlang_1.2.0                 crayon_1.5.3               
-[107] ggsignif_0.6.4              labeling_0.4.3             
-[109] getPass_0.2-4               plyr_1.8.9                 
-[111] fs_2.1.0                    stringi_1.8.7              
-[113] gridBase_0.4-7              BiocParallel_1.40.2        
-[115] Matrix_1.7-5                hms_1.1.4                  
-[117] bit64_4.8.0                 KEGGREST_1.46.0            
-[119] SummarizedExperiment_1.36.0 broom_1.0.12               
-[121] memoise_2.0.1               bslib_0.10.0               
-[123] bit_4.6.0                  </code></pre>
+  [1] later_1.4.8                 BiocIO_1.16.0              
+  [3] bitops_1.0-9                filelock_1.0.3             
+  [5] R.oo_1.27.1                 cellranger_1.1.0           
+  [7] XML_3.99-0.23               DirichletMultinomial_1.48.0
+  [9] lifecycle_1.0.5             httr2_1.2.2                
+ [11] pwalign_1.2.0               rstatix_0.7.3              
+ [13] rprojroot_2.1.1             vroom_1.7.1                
+ [15] processx_3.9.0              lattice_0.22-9             
+ [17] crosstalk_1.2.2             backports_1.5.1            
+ [19] magrittr_2.0.5              sass_0.4.10                
+ [21] rmarkdown_2.31              jquerylib_0.1.4            
+ [23] yaml_2.3.12                 plotrix_3.8-14             
+ [25] httpuv_1.6.17               otel_0.2.0                 
+ [27] DBI_1.3.0                   CNEr_1.42.0                
+ [29] RColorBrewer_1.1-3          abind_1.4-8                
+ [31] zlibbioc_1.52.0             R.utils_2.13.0             
+ [33] RCurl_1.98-1.18             rappdirs_0.3.4             
+ [35] git2r_0.36.2                GenomeInfoDbData_1.2.13    
+ [37] seqLogo_1.72.0              annotate_1.84.0            
+ [39] codetools_0.2-20            DelayedArray_0.32.0        
+ [41] xml2_1.5.2                  tidyselect_1.2.1           
+ [43] UCSC.utils_1.2.0            farver_2.1.2               
+ [45] matrixStats_1.5.0           GenomicAlignments_1.42.0   
+ [47] Formula_1.2-5               tools_4.4.2                
+ [49] progress_1.2.3              TFMPvalue_0.0.9            
+ [51] Rcpp_1.1.1-1.1              glue_1.8.1                 
+ [53] SparseArray_1.6.2           xfun_0.57                  
+ [55] MatrixGenerics_1.18.1       withr_3.0.2                
+ [57] fastmap_1.2.0               callr_3.7.6                
+ [59] caTools_1.18.3              digest_0.6.39              
+ [61] timechange_0.4.0            R6_2.6.1                   
+ [63] seqPattern_1.38.0           colorspace_2.1-2           
+ [65] GO.db_3.20.0                gtools_3.9.5               
+ [67] poweRlaw_1.0.0              dichromat_2.0-0.1          
+ [69] RSQLite_3.52.0              R.methodsS3_1.8.2          
+ [71] utf8_1.2.6                  generics_0.1.4             
+ [73] data.table_1.18.4           prettyunits_1.2.0          
+ [75] htmlwidgets_1.6.4           S4Arrays_1.6.0             
+ [77] whisker_0.4.1               pkgconfig_2.0.3            
+ [79] gtable_0.3.6                blob_1.3.0                 
+ [81] S7_0.2.2                    impute_1.80.0              
+ [83] XVector_0.46.0              htmltools_0.5.9            
+ [85] carData_3.0-6               scales_1.4.0               
+ [87] png_0.1-9                   knitr_1.51                 
+ [89] rstudioapi_0.18.0           tzdb_0.5.0                 
+ [91] reshape2_1.4.5              rjson_0.2.23               
+ [93] curl_7.1.0                  cachem_1.1.0               
+ [95] KernSmooth_2.23-26          parallel_4.4.2             
+ [97] restfulr_0.0.16             pillar_1.11.1              
+ [99] vctrs_0.7.3                 promises_1.5.0             
+[101] car_3.1-5                   xtable_1.8-8               
+[103] evaluate_1.0.5              cli_3.6.6                  
+[105] compiler_4.4.2              Rsamtools_2.22.0           
+[107] rlang_1.2.0                 crayon_1.5.3               
+[109] ggsignif_0.6.4              labeling_0.4.3             
+[111] getPass_0.2-4               plyr_1.8.9                 
+[113] fs_2.1.0                    stringi_1.8.7              
+[115] gridBase_0.4-7              BiocParallel_1.40.2        
+[117] Biostrings_2.74.1           Matrix_1.7-5               
+[119] BSgenome_1.74.0             hms_1.1.4                  
+[121] bit64_4.8.0                 KEGGREST_1.46.0            
+[123] SummarizedExperiment_1.36.0 broom_1.0.12               
+[125] memoise_2.0.1               bslib_0.10.0               
+[127] bit_4.6.0                  </code></pre>
 </div>
 </div>
 </div>
