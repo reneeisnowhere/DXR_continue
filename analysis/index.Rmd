@@ -129,3 +129,7 @@ Contains Overlapping TE elements and full ROI, including information about TE ov
 ### Go analysis
 
 [GO/KEGG analysis of Enriched TF motifs by set](https://reneeisnowhere.github.io/DXR_continue/Goanalysis_TFs.html)
+
+### Protein enrichemnt for Omar and Sayan's paper:
+
+[Protein module enrichment](https://reneeisnowhere.github.io/DXR_continue/protein_checks.html)
