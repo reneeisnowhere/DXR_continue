@@ -44,7 +44,7 @@ library(AnnotationDbi)
 library(MASS)
 library(GenomicFeatures)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-library(JASPAR2022)
+library(JASPAR2024)
 library(TFBSTools)
 library(universalmotif)
 ```
@@ -258,7 +258,7 @@ enrichment_results_2 <- lapply(names(protein_module_split), function(mod) {
     not_in_set2,
     bg_set2 - in_set2,
     bg_not_set2 - not_in_set2
-  ), nrow = 2)
+  ), nrow = 2,byrow = TRUE)
   
   ft <- fisher.test(mat)
   
@@ -302,7 +302,7 @@ enrichment_results_3 <- lapply(names(protein_module_split), function(mod) {
     not_in_set3,
     bg_set3 - in_set3,
     bg_not_set3 - not_in_set3
-  ), nrow = 2)
+  ), nrow = 2,byrow = TRUE)
   
   ft <- fisher.test(mat)
   
@@ -345,7 +345,7 @@ enrichment_results_1 <- lapply(names(protein_module_split), function(mod) {
     not_in_set1,
     bg_set1 - in_set1,
     bg_not_set1 - not_in_set1
-  ), nrow = 2)
+  ), nrow = 2,byrow = TRUE)
   
   ft <- fisher.test(mat)
   
@@ -430,7 +430,7 @@ enrichment_results_2v1 <- lapply(names(protein_module_split), function(mod) {
   c <- sum(set1_genes %in% mod_genes)
   d <- sum(set1_genes %in% bg_genes_2v1) - c
   
-  mat <- matrix(c(a, b, c, d), nrow = 2)
+  mat <- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE)
   
   ft <- fisher.test(mat)
   
@@ -484,7 +484,7 @@ enrichment_results_3v1 <- lapply(names(protein_module_split), function(mod) {
   c <- sum(set1_genes %in% mod_genes)
   d <- sum(set1_genes %in% bg_genes_3v1) - c
   
-  mat <- matrix(c(a, b, c, d), nrow = 2)
+  mat <- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE)
   
   ft <- fisher.test(mat)
   
@@ -551,7 +551,7 @@ enrichment_results_2v1_2kb <- lapply(names(protein_module_split), function(mod) 
   c <- sum(set1_2kb_genes %in% mod_genes)
   d <- sum(set1_2kb_genes %in% bg_2v1_2kb) - c
   
-  mat <- matrix(c(a, b, c, d), nrow = 2)
+  mat <- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE)
   
   ft <- fisher.test(mat)
   
@@ -595,7 +595,7 @@ enrichment_results_3v1_2kb <- lapply(names(protein_module_split), function(mod) 
   c <- sum(set1_2kb_genes %in% mod_genes)
   d <- sum(set1_2kb_genes %in% bg_3v1_2kb) - c
   
-  mat <- matrix(c(a, b, c, d), nrow = 2)
+  mat <- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE)
   
   ft <- fisher.test(mat)
   
@@ -631,7 +631,7 @@ This section is to investigate the frequency of near-gene assignments of Protein
 test will be number of regions in set2 assigned to protein data gene, number of regions in set 2 not assigned to protein data gene, compared to number of regions assigned to set1 vs not assigned to protein data gene in set 1.
   
   
-  more specifically I want to test if Set 2 regions are more frequently assigned to differential abundant proteins than set 1 H3K27ac regions.
+  more specifically I want to test if Set 2 regions are more frequently assigned to differentially abundant proteins than set 1 H3K27ac regions.
 
 ```{r}
 Protein_list <-   module_ids %>%
@@ -871,7 +871,7 @@ repID_to_gene_MER61E %>%
   group_by(my_MER,DOX_cor) %>% 
   tally
 
-great_matrix <- matrix(c(5,56,17,161), nrow = 2)
+great_matrix <- matrix(c(5,56,17,161), nrow = 2, byrow = TRUE)
 
 fisher.test(great_matrix)
 
@@ -890,7 +890,7 @@ repID_to_gene_MER61E %>%
   mutate(DOX_cor= if_else(Module %in% c("green","lightyellow","salmon","darkgreen","midnightblue"),"DOXcor","non_DOXcor")) %>% 
   group_by(my_MER,DOX_cor) %>% 
   tally
-great_matrix_set3 <- matrix(c(3,34,19,183), nrow = 2)
+great_matrix_set3 <- matrix(c(3,34,19,183), nrow = 2,byrow = TRUE)
 
 fisher.test(great_matrix_set3)
 ```
@@ -901,13 +901,16 @@ H3K27ac_Set2_data <- readRDS("data/RDS_files/H3K27ac_Set2_enrmotif_data.RDS")
 H3K27ac_Set3_data <- readRDS("data/RDS_files/H3K27ac_Set3_enrmotif_data.RDS")
 
 ## TF universe
-opts <- list(
-  species = 9606,      # human
-  all_versions = FALSE
-)
-
-pfm_list <- getMatrixSet(JASPAR2022, opts)
-tf_names <- sapply(pfm_list, name)
+# jaspar2024 <- JASPAR2024::JASPAR2024()
+# opts <- list(
+#   collection = "CORE",
+#   tax_group = "vertebrates",
+#   species = 9606,
+#   all_versions = FALSE
+# )
+# 
+# pfm_list <- TFBSTools::getMatrixSet(jaspar2024, opts)
+# tf_names <- sapply(pfm_list, name)
 
 motif_names_set2H3K27ac <-
 H3K27ac_Set2_data %>%
@@ -949,7 +952,7 @@ motif_names_set3H3K27ac <- H3K27ac_Set3_data %>%
 ### Using exact meme file of TFs for enrichment\
 
 ```{r}
-motifs <- read_meme("data/Other_paper_data/JASPAR2022_CORE_vertebrates_non-redundant_v2.meme")
+motifs <- read_meme("data/Other_paper_data/JASPAR2024_CORE_vertebrates_non-redundant_v2.meme")
 ### pulling the alt_name from each element (841 elements)
 tf_names <- sapply(motifs, function(x) x@altname)
 
