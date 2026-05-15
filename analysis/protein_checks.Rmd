@@ -1032,7 +1032,10 @@ fisher.test(tf_uni_matrix_setshare)
 
 ```
 
-## H3K9me3  
+
+
+
+### H3K9me3  
 
 ```{r}
 H3K9me3_Set2_data <- readRDS("data/RDS_files/H3K9me3_Set2_enrmotif_data.RDS")
@@ -1138,9 +1141,54 @@ fisher.test(tf_uni_matrix_set3_k9)
 
 table(H3K9me3_marked_TF$DAP,H3K9me3_marked_TF$set_group=="shared")
  
-tf_uni_matrix_setshare <- matrix(c(4,26,169,580), nrow = 2,byrow = TRUE)
+tf_uni_matrix_setshare_k9 <- matrix(c(4,26,169,580), nrow = 2,byrow = TRUE)
 
-fisher.test(tf_uni_matrix_setshare)
+fisher.test(tf_uni_matrix_setshare_k9)
+```
+### fisher test results
+
+```{r}
+
+mat_list <- list("K27ac2"=tf_uni_matrix_set2,"K27ac3"=tf_uni_matrix_set3,"K27acshared"=tf_uni_matrix_setshare,"K9me32"=tf_uni_matrix_set2_k9,"K9me33"=tf_uni_matrix_set3_k9,"K9me3shared"=tf_uni_matrix_setshare_k9)
+
+fisher_from_matrix <- function(mat, name = NA_character_, alternative = "greater") {
+  
+  ft <- fisher.test(mat, alternative = alternative)
+  
+  tibble(
+    name = name,
+    a = mat[1, 1],
+    b = mat[1, 2],
+    c = mat[2, 1],
+    d = mat[2, 2],
+    odds_ratio = unname(ft$estimate),
+    conf_low = ft$conf.int[1],
+    conf_high = ft$conf.int[2],
+    p_value = ft$p.value,
+    alternative = ft$alternative
+  )
+}
+
+fisher_results <- imap_dfr(
+  mat_list,
+  ~ fisher_from_matrix(.x, name = .y, alternative = "two.sided")
+) %>%
+  mutate(
+    FDR = p.adjust(p_value, method = "BH")
+  )
+
+```
+
+```{r}
+
+  kableExtra::kable(fisher_results) %>% 
+  kableExtra::kable_paper("striped", full_width = FALSE) %>%
+  kableExtra::kable_styling(
+    full_width = FALSE,
+    position = "left",
+    bootstrap_options = c("striped", "hover")
+  ) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
 ```
 
 ```{r pwmpull, eval=FALSE}
