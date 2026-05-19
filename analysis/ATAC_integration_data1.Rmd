@@ -383,14 +383,15 @@ keep_repNames_H3K27ac <- rep_counts_H3K27ac %>%
 
 ### filter out lower count repNames
 
-
+# annotated_H3K27ac_ext200 %>% 
+#   dplyr::filter(Peakid %in% c("chr5:27471754-27474360","chr5:27476211-27477832"))
 ```
 
 
 
 
 ```{r}
-repName_peak_list_H3K27ac <- lapply(anno_check_split_repName, function(df) {
+repName_peak_list_H3K27ac <- lapply(anno_check_split_repName_H3K27ac, function(df) {
   unique(df$Peakid)
 })
 
