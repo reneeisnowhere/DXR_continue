@@ -34,6 +34,9 @@ library(readr)
 library(rtracklayer)
 library(stringr)
 library(DT)
+library(readxl)
+library(TFBSTools)
+library(universalmotif)
 
 ```
 
@@ -205,7 +208,7 @@ ggVennDiagram::ggVennDiagram(list("H3K27ac_Set2"=H3K27ac_Set2_data$motif_name,"H
   ggtitle("H3K27ac motif overlap")+
   coord_cartesian(clip = "off") +
   theme(
-    plot.margin = margin(20, 60, 20, 60)  # top, right, bottom, left
+    plot.margin = margin(20, 40, 20, 40)  # top, right, bottom, left
   )
   
 ```
@@ -642,10 +645,188 @@ cowplot::plot_grid(aligned_filt_plots[[1]],
           aligned_filt_plots[[2]],
           ncol = 2)
 ```
+### KZFP enrichment tests
 
 
 
+are There more KZFPs in acute only, shared, or sustained only groups of enriched TF motifs
+```{r}
+all_set2 <- H3K27ac_Set2_data %>% 
+   dplyr::filter(str_starts(pattern = "MA",string=SIM_MOTIF)) %>% 
+  mutate(motif_name=toupper(motif_name)) %>% 
+  distinct(motif_name)
+all_set3 <- H3K27ac_Set3_data %>% 
+  dplyr::filter(str_starts(pattern = "MA",string=SIM_MOTIF)) %>% 
+  mutate(motif_name=toupper(motif_name)) %>% 
+  distinct(motif_name)
+ H3K27ac_shared <- intersect(all_set2$motif_name,all_set3$motif_name)
+ 
+  H3K27ac_set2only <- setdiff(all_set2$motif_name,all_set3$motif_name)
+  
+   H3K27ac_set3only <- setdiff(all_set3$motif_name,all_set2$motif_name)
+   
+all_enr_TFs <-union(all_set2$motif_name,all_set3$motif_name)
 
+H3K27ac_anno_TFs <- tibble(all_enr_TFs) %>% 
+  mutate(membership=case_when(all_enr_TFs %in% H3K27ac_set2only~"set_2_only",
+                               all_enr_TFs %in% H3K27ac_set3only~"set_3_only",
+                               all_enr_TFs %in% H3K27ac_shared~"shared",
+                               TRUE~"mistake")) %>% 
+  mutate(TF_split=str_split(all_enr_TFs,"::")) %>% 
+  unnest(TF_split) %>% 
+  mutate(motif_name2=toupper(TF_split),
+        is_KZFP=motif_name2 %in%KZFP_2026_list$Label) %>% 
+  group_by(all_enr_TFs) %>% 
+  summarise(
+    KZFP = if_else(any(is_KZFP), "KZFP","not_KZFP"),
+    membership=unique(membership),
+    .groups = "drop"
+  ) 
+ 
+H3K27ac_anno_TFs %>% 
+  group_by(membership,KZFP) %>% 
+  tally()
+
+tab=matrix(c(9,273,2,47),nrow = 2, byrow = TRUE)
+tab
+fisher.test(tab)
+
+tab2=matrix(c(4,37,2,47),nrow = 2, byrow = TRUE)
+tab2
+fisher.test(tab2)
+
+ggVennDiagram::ggVennDiagram(list("H3K27ac_Set2"=all_set2$motif_name,"H3K27ac_Set3"=all_set3$motif_name))+
+  ggtitle("H3K27ac motif overlap upper")+
+  coord_cartesian(clip = "off") +
+  theme(
+    plot.margin = margin(20, 40, 20, 40)  # top, right, bottom, left
+  )
+
+tab3v2=matrix(c(5,36,10,272),nrow = 2, byrow = TRUE)
+tab3v2
+fisher.test(tab3v2)
+```
+
+So  KZFPs were found in TFs whose motifs are enriched in Set3(Acute only)compared to all enriched TFs
+
+Calculating KZFP enrichment in TF motifs compared to all motifs tested:
+
+not sure this is correct.
+
+```{r}
+motifs <- read_meme("data/Other_paper_data/JASPAR2024_CORE_vertebrates_non-redundant_v2.meme")
+### pulling the alt_name from each element (841 elements)
+tf_names <- sapply(motifs, function(x) x@altname)
+
+tf_names <- tf_names %>% 
+  toupper() %>% 
+  unique()
+### 816
+
+H3K27ac_anno_alltestedTFs <-
+tibble(tf_names) %>% 
+  mutate(membership=case_when(tf_names %in% H3K27ac_set2only~"set_2_only",
+                               tf_names %in% H3K27ac_set3only~"set_3_only",
+                               tf_names %in% H3K27ac_shared~"shared",
+                               TRUE~"not_enr")) %>% 
+  mutate(TF_split=str_split(tf_names,"::")) %>% 
+  unnest(TF_split) %>% 
+  mutate(motif_name2=toupper(TF_split),
+        is_KZFP=motif_name2 %in%KZFP_2026_list$Label) %>% 
+  group_by(tf_names) %>% 
+  summarise(
+    KZFP = if_else(any(is_KZFP), "KZFP","not_KZFP"),
+    membership=unique(membership),
+    .groups = "drop"
+  ) 
+H3K27ac_anno_alltestedTFs %>% 
+  group_by(membership,KZFP) %>% 
+  tally()
+
+tab_all=matrix(c(9,273,47,405),nrow = 2, byrow = TRUE)
+tab_all
+fisher.test(tab_all)
+
+tab2_all=matrix(c(4,37,47,405),nrow = 2, byrow = TRUE)
+tab2_all
+fisher.test(tab2_all)
+```
+actually found Set 2 only is depleted in KZFPs compared to all tested TF motifs but not shared or Set 3 when using all tested TF motifs. 
+
+
+```{r}
+filtered_H3K27ac_Set2_data %>% 
+  dplyr::filter(KZFP=="KZFP") %>% 
+  # dplyr::filter(motif_name %in% all_set2$motif_name) %>% 
+   mutate(log10Evalue = -log10(EVALUE)) %>%
+    arrange(desc(log10Evalue)) %>%
+  mutate(enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted"))%>%
+  dplyr::filter(motif_name%in%expressed_KZFPs) %>%
+  
+ggplot(., aes(y = reorder(motif_name, log10Evalue))) +
+    geom_col(aes(x = log10Evalue)) +
+    geom_point(aes(x = ENR_RATIO* 15, color = ENR_RATIO, shape = enr_shape), size = 4)+
+    scale_x_continuous(
+      expand = c(0, .125),
+      sec.axis = sec_axis(~ . /15, name = "Enrichment Ratio")
+    ) +
+   scale_color_viridis_c(
+  name = "Enrichment Ratio",
+  option = "plasma",
+ 
+  oob = scales::squish
+)+
+  ggtitle("All expressed KZFPs in TF data H3K27ac Sustained-only set")
+
+```
+```{r}
+filtered_H3K27ac_Set3_data %>% 
+  dplyr::filter(KZFP=="KZFP") %>% 
+  # dplyr::filter(motif_name %in% all_set2$motif_name) %>% 
+   mutate(log10Evalue = -log10(EVALUE)) %>%
+    arrange(desc(log10Evalue)) %>%
+  mutate(enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted"))%>%
+  dplyr::filter(motif_name%in%expressed_KZFPs) %>% 
+  group_by(motif_name) %>% 
+  slice_max(ENR_RATIO, n=1) %>% 
+ggplot(., aes(y = reorder(motif_name, log10Evalue))) +
+    geom_col(aes(x = log10Evalue)) +
+    geom_point(aes(x = ENR_RATIO* 15, color = ENR_RATIO, shape = enr_shape), size = 4)+
+    scale_x_continuous(
+      expand = c(0, .125),
+      sec.axis = sec_axis(~ . /15, name = "Enrichment Ratio")
+    ) +
+   scale_color_viridis_c(
+  name = "Enrichment Ratio",
+  option = "plasma",
+ 
+  oob = scales::squish
+)+
+  ggtitle("All expressed KZFPs in TF data H3K27ac Acute-only set")
+```
+```{r sus only}
+RNA_full_toptable %>% 
+  dplyr::filter(SYMBOL %in% all_set2$motif_name) %>% 
+  dplyr::filter(SYMBOL %in% KZFP_2026_list$Label) %>% 
+  mutate(timepoint=factor(timepoint, levels = c("24T","24R","144R"))) %>% 
+  ggplot(., aes(x=timepoint,y=logFC))+
+  geom_boxplot()+
+    geom_point(aes(color=SYMBOL, size=4))+
+  theme_bw()+
+  ggtitle("RNA log FC of all KZFPs in Sustained-only enriched TFs")
+```
+
+```{r acute only}
+RNA_full_toptable %>% 
+  dplyr::filter(SYMBOL %in% all_set3$motif_name) %>% 
+  dplyr::filter(SYMBOL %in% KZFP_2026_list$Label) %>% 
+  mutate(timepoint=factor(timepoint, levels = c("24T","24R","144R"))) %>% 
+  ggplot(., aes(x=timepoint,y=logFC))+
+  geom_boxplot()+
+    geom_point(aes(color=SYMBOL, size=4))+
+  theme_bw()+
+  ggtitle("RNA log FC of all KZFPs in Acute-only enriched TFs")
+```
 ### Case and Summit calls method 1, subset A and B
 
 This section looks at the enrichment of A and B cases of each Set.  
