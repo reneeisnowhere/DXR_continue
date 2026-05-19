@@ -523,14 +523,14 @@ cowplot::plot_grid(aligned_filt_plots[[1]],
 
 #### Just KZFPs in motifs  
 
-
-```{r}
+Z
+```{r plots of KZFPs in data}
 expressed_KZFPs <- readRDS("data/RDS_files/expressed_KZFPs.RDS")
 filtered_H3K27ac_Set2_data %>% 
    mutate(log10Evalue = -log10(EVALUE)) %>%
     arrange(desc(log10Evalue)) %>%
   mutate( enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted")) %>%
-  dplyr::filter(ALT_ID%in%expressed_KZFPs) %>% 
+  dplyr::filter(motif_name%in%expressed_KZFPs) %>% 
 ggplot(., aes(y = reorder(motif_name, log10Evalue))) +
     geom_col(aes(x = log10Evalue)) +
     geom_point(aes(x = ENR_RATIO* 10, color = ENR_RATIO, shape = enr_shape), size = 4)+
@@ -551,7 +551,7 @@ filtered_H3K27ac_Set3_data %>%
    mutate(log10Evalue = -log10(EVALUE)) %>%
     arrange(desc(log10Evalue)) %>%
   mutate( enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted")) %>%
-  dplyr::filter(ALT_ID%in%expressed_KZFPs) %>% 
+  dplyr::filter(motif_name%in%expressed_KZFPs) %>% 
 ggplot(., aes(y = reorder(motif_name, log10Evalue))) +
     geom_col(aes(x = log10Evalue)) +
     geom_point(aes(x = ENR_RATIO* 5, color = ENR_RATIO, shape = enr_shape), size = 4)+
@@ -761,7 +761,7 @@ filtered_H3K27ac_Set2_data %>%
    mutate(log10Evalue = -log10(EVALUE)) %>%
     arrange(desc(log10Evalue)) %>%
   mutate(enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted"))%>%
-  dplyr::filter(motif_name%in%expressed_KZFPs) %>%
+  dplyr::filter(motif_name%in%H3K27ac_set2only) %>%
   
 ggplot(., aes(y = reorder(motif_name, log10Evalue))) +
     geom_col(aes(x = log10Evalue)) +
@@ -786,7 +786,7 @@ filtered_H3K27ac_Set3_data %>%
    mutate(log10Evalue = -log10(EVALUE)) %>%
     arrange(desc(log10Evalue)) %>%
   mutate(enr_shape = ifelse(ENR_RATIO > 1, "Enriched", "Depleted"))%>%
-  dplyr::filter(motif_name%in%expressed_KZFPs) %>% 
+  dplyr::filter(motif_name%in%H3K27ac_set3only) %>% 
   group_by(motif_name) %>% 
   slice_max(ENR_RATIO, n=1) %>% 
 ggplot(., aes(y = reorder(motif_name, log10Evalue))) +
@@ -806,7 +806,7 @@ ggplot(., aes(y = reorder(motif_name, log10Evalue))) +
 ```
 ```{r sus only}
 RNA_full_toptable %>% 
-  dplyr::filter(SYMBOL %in% all_set2$motif_name) %>% 
+  dplyr::filter(SYMBOL %in% H3K27ac_set2only) %>% 
   dplyr::filter(SYMBOL %in% KZFP_2026_list$Label) %>% 
   mutate(timepoint=factor(timepoint, levels = c("24T","24R","144R"))) %>% 
   ggplot(., aes(x=timepoint,y=logFC))+
@@ -818,7 +818,7 @@ RNA_full_toptable %>%
 
 ```{r acute only}
 RNA_full_toptable %>% 
-  dplyr::filter(SYMBOL %in% all_set3$motif_name) %>% 
+  dplyr::filter(SYMBOL %in% H3K27ac_set3only) %>% 
   dplyr::filter(SYMBOL %in% KZFP_2026_list$Label) %>% 
   mutate(timepoint=factor(timepoint, levels = c("24T","24R","144R"))) %>% 
   ggplot(., aes(x=timepoint,y=logFC))+
@@ -827,6 +827,38 @@ RNA_full_toptable %>%
   theme_bw()+
   ggtitle("RNA log FC of all KZFPs in Acute-only enriched TFs")
 ```
+
+### Getting targets of KZFPs in data:
+
+```{r}
+KZFP_targets <- read_excel("data/Other_paper_data/KZFP_primary_targests_Supplemental_Table_S3.xlsx", sheet = "Primary_targets")
+
+Set2_KZFP_target_TEs <- KZFP_targets %>% 
+  dplyr::filter(KZFP %in% H3K27ac_set2only) %>% 
+  dplyr::select(KZFP, 'Target Subfamily')
+
+Set3_KZFP_target_TEs <- KZFP_targets %>% 
+  dplyr::filter(KZFP %in% H3K27ac_set3only) %>% 
+  dplyr::select(KZFP, 'Target Subfamily')
+
+datatable(Set2_KZFP_target_TEs,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE)) 
+  datatable(Set3_KZFP_target_TEs,
+  rownames = FALSE,
+  filter = 'top',       # add filter/search boxes
+  options = list(
+    pageLength = 10,
+    autoWidth = TRUE,
+    scrollX = TRUE)) 
+  
+
+```
+
 ### Case and Summit calls method 1, subset A and B
 
 This section looks at the enrichment of A and B cases of each Set.  
