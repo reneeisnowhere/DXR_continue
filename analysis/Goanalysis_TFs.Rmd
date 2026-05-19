@@ -388,6 +388,9 @@ GO_KEGG_analysis(H3K27ac_acute_gost,"GO:BP", 0.05,20)
 
 GO_KEGG_analysis(H3K27ac_acute_gost,"KEGG", 0.05,20)
 
+H3K27ac_acute_gost$result %>% 
+  dplyr::filter(p_value< 0.05)
+
 ```
 
 ```{r}
@@ -759,7 +762,7 @@ reduced_acute_K27  %>%
 
 ```
 
-```{r fig.width=15}
+```{r}
 
 test_sus_K27 <- H3K27ac_sus_gost$result %>% 
   dplyr::filter(p_value<0.05) %>% 
