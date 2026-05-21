@@ -43,6 +43,10 @@ library(readxl)
 library(ChIPseeker)
 library(smplot2)
 library(biomaRt)
+library(org.Hs.eg.db)
+library(AnnotationDbi)
+library(ComplexHeatmap)
+library(circlize)
 ```
 
 adding in data files.
@@ -81,25 +85,43 @@ Symbol_lookup <- RNA_full_toptable %>%
   distinct(Entrez_ID,SYMBOL)
 
   KZFP_2017_list <- read_excel("data/Other_paper_data/41586_2017_BFnature21683_MOESM103_ESM.xlsx")
+KZFP_2026_list <- read_excel("data/Other_paper_data/human_protein_coding_KZFPs_Davis_natgen_2026.xlsx")
+  
+KZFPIDs <- AnnotationDbi::select(org.Hs.eg.db,
+                          keys=KZFP_2026_list$`Gene ID`,
+                          keytype = "ENSEMBL",
+                          columns = c("SYMBOL","ENTREZID")) %>% 
+  distinct() %>% 
+  mutate(SYMBOL=if_else(ENSEMBL=="ENSG00000213297","ZNF625-ZNF20",SYMBOL),
+         ENTREZID=if_else(ENSEMBL=="ENSG00000213297","100529855",ENTREZID),
+         SYMBOL=if_else(ENSEMBL=="ENSG00000224689","ZNF812P",SYMBOL),
+         ENTREZID=if_else(ENSEMBL=="ENSG00000224689","729648",ENTREZID),
+         SYMBOL=if_else(ENSEMBL=="ENSG00000214189","ZNF788P",SYMBOL),
+         ENTREZID=if_else(ENSEMBL=="ENSG00000214189","388507",ENTREZID),
+         SYMBOL=if_else(ENSEMBL=="ENSG00000196381","ZNF781",SYMBOL),
+         ENTREZID=if_else(ENSEMBL=="ENSG00000196381","163115",ENTREZID)) %>% 
+  arrange(SYMBOL) %>% 
+  mutate(ENTREZID=as.numeric(ENTREZID))
+         
+  # KZFPIDs <- KZFP_2017_list %>% 
+  #   dplyr::filter(Species == "Homo_sapiens.GRCh38") %>%
+  #   dplyr::select(Label,`Gene ID`, Type)
+  # 
+  # mart <- useEnsembl(biomart = "genes",
+  #                    dataset = "hsapiens_gene_ensembl",
+  #                    mirror = "useast") ### using a different mirror due to server issues
+  # 
+  # ensembl_ID <- KZFPIDs$`Gene ID`
+  # 
+  # results_KZFP <- getBM(attributes = c("ensembl_gene_id", "entrezgene_id","hgnc_symbol"),
+  #              filters = "ensembl_gene_id",
+  #              values = ensembl_ID,
+  #              mart = mart)
+  # 
+  # results_KZFP %>% na.omit()
+annotated_H3K27ac_ext200 <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
 
-  
-  KZFPIDs <- KZFP_2017_list %>% 
-    dplyr::filter(Species == "Homo_sapiens.GRCh38") %>%
-    dplyr::select(Label,`Gene ID`, Type)
-  
-  mart <- useEnsembl(biomart = "genes",
-                     dataset = "hsapiens_gene_ensembl",
-                     mirror = "useast") ### using a different mirror due to server issues
-  
-  ensembl_ID <- KZFPIDs$`Gene ID`
-  
-  results_KZFP <- getBM(attributes = c("ensembl_gene_id", "entrezgene_id","hgnc_symbol"),
-               filters = "ensembl_gene_id",
-               values = ensembl_ID,
-               mart = mart)
-  
-  results_KZFP %>% na.omit()
-
+RNA_count_table <- read_csv("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/filcpm_final_matrix.csv") %>% dplyr::rename(ENTREZID=1)
 ```
 
 Below this code is how I combined the RNA files from Emma's paper for future reference.
@@ -120,6 +142,9 @@ RNA_acute_cluster <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR
 
 RNA_chronic_cluster <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
     sheet = "Table_S7", skip = 2)
+
+
+
 
 ## Creating R object for my data:
 
@@ -171,6 +196,29 @@ I will do a Fisher's Exact test.  Note, I am treating each ROI individually, mea
 I will first ask if Set2 is enriched in Acute or Chronic
 
 ####  Acute or Chronic Set2  
+```{r make fisher test matrix function}
+make_fisher_mat <- function(df, test_cluster, set_a = "Set_3", set_b = "Set_1") {
+  
+  tab <- df %>%
+    filter(ROI_cluster %in% c(set_a, set_b)) %>%
+    mutate(ROI_cluster = factor(ROI_cluster, levels = c(set_a, set_b)),
+           is_hit = Cluster == test_cluster) %>%
+    count(ROI_cluster, is_hit) %>%
+    tidyr::complete(ROI_cluster,
+                    is_hit = c(TRUE, FALSE),
+                    fill = list(n = 0)) %>%
+    tidyr::pivot_wider(names_from = is_hit,
+                       values_from = n,
+                       values_fill = 0) %>%
+    arrange(ROI_cluster)
+  
+  mat <- as.matrix(tab[, c("TRUE", "FALSE")])
+  rownames(mat) <- tab$ROI_cluster
+  colnames(mat) <- c(test_cluster, paste0("Not_", test_cluster))
+  
+  mat
+}
+```
 
 ```{r  Set2 enrichment}
 tab_annotate <- Joined_clusters %>%
@@ -180,87 +228,49 @@ tab_annotate <- Joined_clusters %>%
     Cluster=factor(Cluster,levels=c("Chronic", "Acute")))
  
 
-tab_21_acute <-  tab_annotate %>% 
-  filter(ROI_cluster %in% c("Set_1", "Set_2")) %>%
-  mutate(is_acute = Cluster=="Acute") %>% 
-  count(ROI_cluster, is_acute) %>%
-  tidyr::pivot_wider(
-    names_from = is_acute,
-    values_from = n,
-    values_fill = 0)
+mat_21_acute <-  make_fisher_mat(tab_annotate, test_cluster = "Acute",set_a="Set_2",set_b="Set_1")
 
-tab_21_chronic <-  tab_annotate %>% 
-  filter(ROI_cluster %in% c("Set_1", "Set_2")) %>%
-  mutate(is_chronic=Cluster=="Chronic") %>% 
-  count(ROI_cluster, is_chronic) %>%
-  tidyr::pivot_wider(
-    names_from = is_chronic,
-    values_from = n,
-    values_fill = 0)
+mat_21_chronic <- make_fisher_mat(tab_annotate, test_cluster = "Chronic",set_a="Set_2",set_b="Set_1")
  
 
-mat_21_acute <- as.matrix(tab_21_acute[, c("TRUE", "FALSE")])
-mat_21_chronic <- as.matrix(tab_21_chronic[, c("TRUE", "FALSE")])
-
+mat_21_acute 
 fisher.test(mat_21_acute)
+
+mat_21_chronic 
 fisher.test(mat_21_chronic)
 ```
+
+There is no enrichment in set 2 (sustained) vs Set 1 in Acute or Chronic data sets
 
 
 ```{r  Set3 enrichment}
 
-tab_31_acute <-  tab_annotate %>% 
-  filter(ROI_cluster %in% c("Set_1", "Set_3")) %>%
-  mutate(is_acute = Cluster=="Acute") %>% 
-  count(ROI_cluster, is_acute) %>%
-  tidyr::pivot_wider(
-    names_from = is_acute,
-    values_from = n,
-    values_fill = 0)
+mat_31_acute <-  make_fisher_mat(tab_annotate, test_cluster = "Acute",set_a="Set_3",set_b="Set_1")
 
-tab_31_chronic <-  tab_annotate %>% 
-  filter(ROI_cluster %in% c("Set_1", "Set_3")) %>%
-  mutate(is_chronic=Cluster=="Chronic") %>% 
-  count(ROI_cluster, is_chronic) %>%
-  tidyr::pivot_wider(
-    names_from = is_chronic,
-    values_from = n,
-    values_fill = 0)
+mat_31_chronic <- make_fisher_mat(tab_annotate, test_cluster = "Chronic",set_a="Set_3",set_b="Set_1")
  
 
-mat_31_acute <- as.matrix(tab_31_acute[, c("TRUE", "FALSE")])
-mat_31_chronic <- as.matrix(tab_31_chronic[, c("TRUE", "FALSE")])
-
+mat_31_acute 
 fisher.test(mat_31_acute)
+
+mat_31_chronic 
 fisher.test(mat_31_chronic)
 ```
+I found set 3 is depleted  in acute gene sets vs set 1.
+
 
 ```{r  Set2 verses set3 enrichment}
 
 
-tab_23_acute <-  tab_annotate %>% 
-  filter(ROI_cluster %in% c("Set_2", "Set_3")) %>%
-  mutate(is_acute = Cluster=="Acute") %>% 
-  count(ROI_cluster, is_acute) %>%
-  tidyr::pivot_wider(
-    names_from = is_acute,
-    values_from = n,
-    values_fill = 0)
+mat_23_acute <-  make_fisher_mat(tab_annotate, test_cluster = "Acute",set_a="Set_2",set_b="Set_3")
 
-tab_23_chronic <-  tab_annotate %>% 
-  filter(ROI_cluster %in% c("Set_2", "Set_3")) %>%
-  mutate(is_chronic=Cluster=="Chronic") %>% 
-  count(ROI_cluster, is_chronic) %>%
-  tidyr::pivot_wider(
-    names_from = is_chronic,
-    values_from = n,
-    values_fill = 0)
+mat_23_chronic <- make_fisher_mat(tab_annotate, test_cluster = "Chronic",set_a="Set_2",set_b="Set_3")
  
 
-mat_23_acute <- as.matrix(tab_23_acute[, c("TRUE", "FALSE")])
-mat_23_chronic <- as.matrix(tab_23_chronic[, c("TRUE", "FALSE")])
-
+mat_23_acute 
 fisher.test(mat_23_acute)
+
+mat_23_chronic 
 fisher.test(mat_23_chronic)
 ```
 
@@ -465,12 +475,13 @@ plot_LFC_scatter <- function(df,
                              timepoint = "24T") {
 
   ggplot(
-    df %>% dplyr::filter(cluster == cluster_name),
+    (df %>% dplyr::filter(cluster == cluster_name)),
     aes(x = {{ x_var }}, y = {{ y_var }}, color = set_case)
   ) +
     geom_point(alpha = 0.2, size = 1) +
     geom_density_2d(color = "black") +
-    sm_statCorr(corr_method = "spearman") +
+    sm_statCorr(aes(group = 1), corr_method = "spearman")+
+    # sm_statCorr(corr_method = "spearman") +
     geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
     geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
     labs(
@@ -916,12 +927,12 @@ summit_LTR_ROIs %>%
 ```{r Basic LFC}
 RNA_filcpm_final_matrix <- read_csv("data/Other_paper_data/RNA_filcpm_final_matrix.csv")
 
-just_kzfp <- results_KZFP %>% na.omit()%>%
-  arrange(hgnc_symbol)
+just_kzfp <- KZFPIDs %>% na.omit()%>%
+  arrange(SYMBOL)
 
 
 KZFP_RNA <- RNA_filcpm_final_matrix %>% 
-  dplyr::filter(Entrezid %in% just_kzfp$entrezgene_id) %>% 
+  dplyr::filter(Entrezid %in% KZFPIDs$ENTREZID) %>% 
   pivot_longer(cols=!Entrezid, names_to = "sample",values_to = "log2cpm") %>% 
   separate_wider_delim(cols = sample, names = c("trt","time","ind"), delim = "_") %>% 
   mutate(group=paste0(trt,"_",time),
@@ -930,7 +941,7 @@ KZFP_RNA <- RNA_filcpm_final_matrix %>%
 
 RNA_full_toptable %>% 
   mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
-  dplyr::filter(Entrez_ID %in% just_kzfp$entrezgene_id) %>% 
+   dplyr::filter(Entrez_ID %in% KZFPIDs$ENTREZID) %>% 
   ggplot(., aes(x=timepoint, y=logFC))+
   geom_boxplot()+
   ggtitle("LFC of all KZFP in RNA data")+
@@ -939,14 +950,14 @@ RNA_full_toptable %>%
 
 ## KZFP Plots {.tabset .tabset-dropdown}
 ```{r Basic LFC all kzfp, results='asis', echo=FALSE}
-for (aim in just_kzfp$entrezgene_id){
+for (aim in KZFPIDs$ENTREZID){
   df <- KZFP_RNA %>% 
     mutate(time=factor(time, levels=c("24T","24R","144R"))) %>% 
         dplyr::filter(Entrezid== aim)
   if (nrow(df) == 0) next
-  symbol <- just_kzfp %>% 
-      dplyr::filter(entrezgene_id==aim) %>% 
-    dplyr::pull(hgnc_symbol)
+  symbol <- KZFPIDs %>% 
+      dplyr::filter(ENTREZID==aim) %>% 
+    dplyr::pull(SYMBOL)
   
   # Create tab title
   cat(paste0("\n\n### ", symbol, " (", aim, ")\n\n"))
@@ -972,7 +983,7 @@ print(
 
 # results_KZFP
 KZFP_age <- KZFP_2017_list %>% 
-  dplyr::filter(Label %in% results_KZFP$hgnc_symbol) %>% 
+  dplyr::filter(Label %in% KZFPIDs$SYMBOL) %>% 
   group_by(Label) %>% 
   summarise(
     max_MY = max(`Estimated evolutionary distance from human (MY)`, na.rm=TRUE),
@@ -980,13 +991,13 @@ KZFP_age <- KZFP_2017_list %>%
     cluster = `Cluster #`[`Latin name` == "Homo sapiens"][1])
 
 KZFP_RNA %>% 
-  left_join(.,just_kzfp, by =c("Entrezid"="entrezgene_id")) %>% 
-  left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("hgnc_symbol"="Label"))
+  left_join(.,KZFPIDs, by =c("Entrezid"="ENTREZID")) %>% 
+  left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label"))
 
 
 
 RNA_full_toptable %>% 
-    dplyr::filter(Entrez_ID %in%just_kzfp$entrezgene_id) %>% 
+    dplyr::filter(Entrez_ID %in%KZFPIDs$ENTREZID) %>% 
   left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label")) %>% 
   mutate(timepoint=factor(timepoint,levels=c("24T","24R","144R"))) %>%
   mutate(color_by=case_when(SYMBOL=="ZNF780A"~"A",
@@ -1001,7 +1012,7 @@ RNA_full_toptable %>%
 
 ```{r}
 RNA_full_toptable %>% 
-    dplyr::filter(Entrez_ID %in%just_kzfp$entrezgene_id) %>% 
+    dplyr::filter(Entrez_ID %in%KZFPIDs$ENTREZID) %>% 
   left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label")) %>% 
   na.omit() %>% 
    mutate(age_bin = case_when(
@@ -1018,7 +1029,7 @@ RNA_full_toptable %>%
   facet_wrap(~timepoint) + 
   theme_bw()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))+
-  ggtitle("RNA expression and time (mya-million years ago)")
+  ggtitle("RNA expression of KZFPs and time (mya-million years ago)")
 ```
 ```{r}
 # RNA_full_toptable %>% 
@@ -1029,7 +1040,7 @@ RNA_full_toptable %>%
 
 
 RNA_full_toptable %>% 
-    dplyr::filter(Entrez_ID %in%just_kzfp$entrezgene_id) %>% 
+    dplyr::filter(Entrez_ID %in%KZFPIDs$ENTREZID) %>% 
   left_join(., (KZFP_age %>% dplyr::select(Label,max_MY)), by =c("SYMBOL"="Label")) %>% 
   na.omit() %>% 
    mutate(age_bin = case_when(
@@ -1042,9 +1053,388 @@ RNA_full_toptable %>%
         age_bin=factor(age_bin,levels=c("0-50 mya","50-150 mya","150-200 mya","> 300 mya","unknown"))) %>% 
   group_by(age_bin) %>% tally()
 ```
-### H3K27ac regions crossing LTR at summit with age
+## Looking at expression of specific genes
+
+### TRIM28 (10155)
+
+```{r trim28 with points}
+RNA_count_table %>% 
+dplyr::filter(ENTREZID==10155) %>% 
+  pivot_longer(cols=!ENTREZID, names_to = "Samples",values_to = "lcpm" ) %>% 
+  mutate(Sample=Samples) %>% 
+  separate_wider_delim(cols = "Samples", names=c("trt","time","individual"), delim = "_") %>% 
+  mutate(trt=factor(trt, levels =c("DMSO","DOX")),
+         time=factor(time, levels=c("24T","24R","144R"))) %>% 
+  ggplot(aes(x = interaction(trt,time), y = lcpm, fill = trt)) +
+  geom_boxplot(position = position_dodge(width = 0.8), outlier.shape = NA) +
+  geom_point(aes(color = individual))+
+  theme_classic()+
+  #   position = position_dodge(
+  #     width = 0.15),
+  #     # dodge.width = 0.8
+  #   # ),
+  #   size = 2
+  # ) +
+  ggtitle("Log2cpm of TRIM28 in RNA")
+```
+
+
+```{r trim28 without points}
+RNA_count_table %>% 
+dplyr::filter(ENTREZID==10155) %>% 
+  pivot_longer(cols=!ENTREZID, names_to = "Samples",values_to = "lcpm" ) %>% 
+  mutate(Sample=Samples) %>% 
+  separate_wider_delim(cols = "Samples", names=c("trt","time","individual"), delim = "_") %>% 
+  mutate(trt=factor(trt, levels =c("DMSO","DOX")),
+         time=factor(time, levels=c("24T","24R","144R"))) %>% 
+  ggplot(aes(x = time, y = lcpm, fill = trt)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  theme_classic()+
+  # geom_point(aes(color = individual))+
+  #   position = position_dodge(
+  #     width = 0.15),
+  #     # dodge.width = 0.8
+  #   # ),
+  #   size = 2
+  # ) +
+  ggtitle("Log2cpm of TRIM28 in RNA")
+```
+
+### MER61E assigned genes
+using the GREAT annotated distances
 
 ```{r}
+repID_to_gene_MER61E <- read_delim("data/Other_paper_data/repID_to_gene_MER61E.txt", 
+    delim = "\t", escape_double = FALSE, 
+    col_names = FALSE, trim_ws = TRUE, skip = 1)
 
+get_closest_gene_dist <- function(x) {
+  
+  # handle missing/empty
+  if (is.na(x) || x == "") {
+    return(tibble(
+      closest_gene = NA_character_,
+      closest_distance = NA_real_
+    ))
+  }
+  
+  # split entries
+  parts <- str_split(x, ",\\s*")[[1]]
+  
+  # extract distances
+  dists <- as.numeric(str_extract(parts, "[+-]\\d+"))
+  
+  # extract genes
+  genes <- str_extract(parts, "^[^ ]+")
+  
+  # remove failed parses
+  keep <- !is.na(dists) & !is.na(genes)
+  
+  dists <- dists[keep]
+  genes <- genes[keep]
+  
+  # if nothing valid remains
+  if (length(genes) == 0) {
+    return(tibble(
+      closest_gene = NA_character_,
+      closest_distance = NA_real_
+    ))
+  }
+  
+  # closest index
+  i <- which.min(abs(dists))
+  
+  tibble(
+    closest_gene = genes[i],
+    closest_distance = dists[i]
+  )
+}
+
+closest_df <- purrr::map_dfr(
+  repID_to_gene_MER61E$X2,
+  get_closest_gene_dist
+)
+
+repID_to_gene_MER61E <- bind_cols(
+  repID_to_gene_MER61E,
+  closest_df)
+
+gene_map <- AnnotationDbi::select(org.Hs.eg.db,
+  keys = unique(na.omit(repID_to_gene_MER61E$closest_gene)),
+  keytype = "SYMBOL",
+  columns = c("SYMBOL", "ENTREZID"))
+
+gene_map <- gene_map %>% 
+  mutate(name=SYMBOL) %>% 
+  mutate(SYMBOL=case_when(name=="ENSG00000283378"~"CNTNAP3C",
+                          name=="C8orf4"~"TCIM",
+                          name=="C8orf22"~"PPDPFL",
+                          name=="METTL7A"~"TMT1A",
+                          TRUE~name)) %>% 
+  mutate(ENTREZID=case_when(name=="ENSG00000283378"~"1002892798",
+                            name=="C8orf4"~"56892",
+                            name=="C8orf22"~"492307",
+                            name=="METTL7A"~"25840",
+                            TRUE~ENTREZID))
+                            
+MER61E_cluster_anno <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repName,repID), delim=";") %>% 
+  dplyr::select(repName,repID,cluster) %>% 
+  na.omit() %>% 
+  dplyr::filter(repName=="MER61E") %>% 
+  dplyr::distinct(repID,cluster)
+
+
+MER61E_anno_genes <- repID_to_gene_MER61E %>% 
+  dplyr::rename("repID"=1) %>% 
+  left_join(gene_map,by=c("closest_gene"="name")) %>% 
+  mutate(ENTREZID=as.numeric(ENTREZID)) %>% 
+  left_join(MER61E_cluster_anno) #%>% 
+ 
+# saveRDS(MER61E_anno_genes, "data/RDS_files/MER61E_anno_genes.RDS")
+
+```
+
+
+#### 20kb Genes
+```{r}
+MER61E_20kbng_df <- repID_to_gene_MER61E %>% 
+  dplyr::rename("repID"=1) %>% 
+  dplyr::filter(closest_distance>-20000 & closest_distance<20000) %>% 
+  left_join(gene_map,by=c("closest_gene"="SYMBOL")) %>% 
+  mutate(ENTREZID=as.numeric(ENTREZID)) %>% 
+  left_join(RNA_lfc_entrez_id,by=c("ENTREZID"="Entrez_ID")) %>% 
+  dplyr::filter(repID %in%MER61E_cluster_anno$repID) %>% 
+  left_join(MER61E_cluster_anno) %>% 
+  dplyr::select(repID,name, RNA_LFC_24T,RNA_LFC_24R,RNA_LFC_144R,cluster)
+
+MER61E_20kbng_mat <- MER61E_20kbng_df %>% 
+  tidyr::unite(col = "row_ID",repID,name,sep = "_") %>% 
+  dplyr::select(row_ID,RNA_LFC_24T,RNA_LFC_24R,RNA_LFC_144R) %>% 
+  column_to_rownames("row_ID") %>% 
+  as.matrix()
+
+MER61E_20kbng_annomat <- MER61E_20kbng_df %>% 
+  tidyr::unite(col = "row_ID",repID,name,sep = "_",remove = FALSE) %>% 
+  column_to_rownames("row_ID") %>% 
+  dplyr::select(repID,name,cluster)
+
+idx <- match(rownames(MER61E_20kbng_mat), rownames(MER61E_20kbng_annomat))
+
+MER61E_20kbng_annomat <- MER61E_20kbng_annomat[idx, , drop = FALSE]
+##sanity check for order
+sum(is.na(idx)) 
+all(rownames(MER61E_20kbng_mat) == rownames(MER61E_20kbng_annomat))
+
+range(MER61E_20kbng_mat, na.rm = TRUE)
+```
+```{r}
+
+col_fun <- colorRamp2(c(-2,0,2),
+                      c("blue","white","red"))
+
+row_ha_20kb <- rowAnnotation(
+  cluster = MER61E_20kbng_annomat$cluster,
+  name=MER61E_20kbng_annomat$name)
+  
+
+Heatmap(
+  MER61E_20kbng_mat,
+  column_title= "RNA LFC of MER61E closest genes(20kb)",
+  name="LFC",
+  col = col_fun,
+  use_raster = TRUE,
+  raster_quality = 2,
+  left_annotation = row_ha_20kb,
+   row_labels = MER61E_20kbng_annomat$name,
+   row_title_rot = 0,
+  na_col="grey",
+  show_row_names = TRUE,
+cluster_columns = FALSE,
+  cluster_rows = FALSE)
+  # )
+```
+####10kb Genes
+
+```{r}
+MER61E_10kbng_df <- repID_to_gene_MER61E %>% 
+  dplyr::rename("repID"=1) %>% 
+  dplyr::filter(closest_distance>-10000 & closest_distance<10000) %>% 
+  left_join(gene_map,by=c("closest_gene"="SYMBOL")) %>% 
+  mutate(ENTREZID=as.numeric(ENTREZID)) %>% 
+  left_join(RNA_lfc_entrez_id,by=c("ENTREZID"="Entrez_ID")) %>% 
+  dplyr::filter(repID %in%MER61E_cluster_anno$repID) %>% 
+  left_join(MER61E_cluster_anno) %>% 
+  dplyr::select(repID,name, RNA_LFC_24T,RNA_LFC_24R,RNA_LFC_144R,cluster)
+
+MER61E_10kbng_mat <- MER61E_10kbng_df %>% 
+  tidyr::unite(col = "row_ID",repID,name,sep = "_") %>% 
+  dplyr::select(row_ID,RNA_LFC_24T,RNA_LFC_24R,RNA_LFC_144R) %>% 
+  column_to_rownames("row_ID") %>% 
+  as.matrix()
+
+MER61E_10kbng_annomat <- MER61E_10kbng_df %>% 
+  tidyr::unite(col = "row_ID",repID,name,sep = "_",remove = FALSE) %>% 
+  column_to_rownames("row_ID") %>% 
+  dplyr::select(repID,name,cluster)
+
+idx_10kb <- match(rownames(MER61E_10kbng_mat), rownames(MER61E_10kbng_annomat))
+
+MER61E_10kbng_annomat <- MER61E_10kbng_annomat[idx_10kb, , drop = FALSE]
+##sanity check for order
+sum(is.na(idx)) 
+all(rownames(MER61E_10kbng_mat) == rownames(MER61E_10kbng_annomat))
+
+range(MER61E_10kbng_mat, na.rm = TRUE)
+```
+```{r}
+col_fun <- colorRamp2(c(-2,0,2),
+                      c("blue","white","red"))
+
+row_ha_10kb <- rowAnnotation(
+  cluster = MER61E_10kbng_annomat$cluster,
+  name=MER61E_10kbng_annomat$name)
+  
+
+Heatmap(
+  MER61E_10kbng_mat,
+  column_title= "RNA LFC of MER61E closest genes(10kb)",
+  name="LFC",
+  col = col_fun,
+  use_raster = TRUE,
+  raster_quality = 2,
+  left_annotation = row_ha_10kb,
+   row_labels = MER61E_10kbng_annomat$name,
+   row_title_rot = 0,
+  na_col="grey",
+  show_row_names = TRUE,
+cluster_columns = FALSE,
+  cluster_rows = FALSE)
+```
+
+### LTR10E
+
+
+```{r}
+repID_to_gene_LTR10E <- read_delim("data/Other_paper_data/GREAT_LTR10E_gene_to_repID.txt", 
+    delim = "\t", escape_double = FALSE, 
+    col_names = FALSE, trim_ws = TRUE, skip = 1)
+
+
+closest_df_LTR10E <- purrr::map_dfr(
+  repID_to_gene_LTR10E$X2,
+  get_closest_gene_dist
+)
+
+repID_to_gene_LTR10E <- bind_cols(
+  repID_to_gene_LTR10E,
+  closest_df_LTR10E)
+
+gene_map_LTR10E <- AnnotationDbi::select(org.Hs.eg.db,
+  keys = unique(na.omit(repID_to_gene_LTR10E$closest_gene)),
+  keytype = "SYMBOL",
+  columns = c("SYMBOL", "ENTREZID"))
+
+gene_map_LTR10E <- gene_map_LTR10E %>% 
+  mutate(name=SYMBOL) %>% 
+  mutate(SYMBOL=case_when(name=="ACPP"~"ACP3",
+                          name=="ENSG00000284684"~"ENSG00000284684",
+                          name=="ENSG00000241149"~"ZNF722",
+                          name=="WDR60"~"DYNC2I1",
+                          name=="C8orf22"~"PPDPFL",
+                          name=="C11orf95"~"ZFTA",
+                          name=="TMEM5"~"RXYLT1",
+                          TRUE~name)) %>% 
+  mutate(ENTREZID=case_when(name=="ACPP"~"55",
+                            name=="ENSG00000284684"~"128125818",
+                            name=="ENSG00000241149"~"100419780",
+                            name=="WDR60"~"55112",
+                            name=="C8orf22"~"492307",
+                            name=="C11orf95"~"65998",
+                            name=="TMEM5"~"10329",
+                          TRUE~ENTREZID))
+
+LTR10E_cluster_anno <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repName,repID), delim=";") %>% 
+  dplyr::select(repName,repID,cluster) %>% 
+  na.omit() %>% 
+  dplyr::filter(repName=="LTR10E") %>% 
+  dplyr::distinct(repID,cluster)
+
+
+LTR10E_anno_genes <- repID_to_gene_LTR10E %>% 
+  dplyr::rename("repID"=1) %>% 
+  left_join(gene_map_LTR10E,by=c("closest_gene"="name")) %>% 
+  mutate(ENTREZID=as.numeric(ENTREZID)) %>% 
+  left_join(LTR10E_cluster_anno) #%>% 
+ 
+# saveRDS(LTR10E_anno_genes, "data/RDS_files/LTR10E_anno_genes.RDS")
+
+
+```
+
+#### 20kb Genes (with anno distance)
+
+```{r}
+LTR10E_20kbng_df <- repID_to_gene_LTR10E %>% 
+  dplyr::rename("repID"=1) %>% 
+  dplyr::filter(closest_distance>-20000 & closest_distance<20000) %>% 
+  left_join(gene_map_LTR10E,by=c("closest_gene"="SYMBOL")) %>% 
+  mutate(ENTREZID=as.numeric(ENTREZID)) %>% 
+  left_join(RNA_lfc_entrez_id,by=c("ENTREZID"="Entrez_ID")) %>% 
+  dplyr::filter(repID %in%LTR10E_cluster_anno$repID) %>% 
+  left_join(LTR10E_cluster_anno) %>% 
+  dplyr::select(repID,name, RNA_LFC_24T,RNA_LFC_24R,RNA_LFC_144R,cluster, closest_distance)
+
+LTR10E_20kbng_mat <- LTR10E_20kbng_df %>% 
+  tidyr::unite(col = "row_ID",repID,name,sep = "_") %>% 
+  dplyr::select(row_ID,RNA_LFC_24T,RNA_LFC_24R,RNA_LFC_144R) %>% 
+  column_to_rownames("row_ID") %>% 
+  as.matrix()
+
+LTR10E_20kbng_annomat <- LTR10E_20kbng_df %>% 
+  tidyr::unite(col = "row_ID",repID,name,sep = "_",remove = FALSE) %>% 
+  column_to_rownames("row_ID") %>% 
+  mutate(distance_bin = case_when(
+      abs(closest_distance) <= 10000 ~ "<=10kb",
+      abs(closest_distance) > 10000  ~ ">10kb",
+      TRUE ~ NA_character_)) %>% 
+    
+  dplyr::select(repID,name,cluster,distance_bin)
+
+idx_LTR10e20kb <- match(rownames(LTR10E_20kbng_mat), rownames(LTR10E_20kbng_annomat))
+
+LTR10E_20kbng_annomat <- LTR10E_20kbng_annomat[idx_LTR10e20kb, , drop = FALSE]
+##sanity check for order
+sum(is.na(idx)) 
+all(rownames(LTR10E_20kbng_mat) == rownames(LTR10E_20kbng_annomat))
+
+range(LTR10E_20kbng_mat, na.rm = TRUE)
+```
+
+```{r}
+col_fun <- colorRamp2(c(-2,0,2),
+                      c("blue","white","red"))
+
+row_ha_20kb_LTR10E <- rowAnnotation(
+  cluster = LTR10E_20kbng_annomat$cluster,
+  name=LTR10E_20kbng_annomat$name,
+   distance = LTR10E_20kbng_annomat$distance_bin)
+  
+
+Heatmap(
+  LTR10E_20kbng_mat,
+  column_title= "RNA LFC of LTR10E closest genes(20kb)",
+  name="LFC",
+  col = col_fun,
+  use_raster = TRUE,
+  raster_quality = 2,
+  left_annotation = row_ha_20kb_LTR10E,
+   row_labels = LTR10E_20kbng_annomat$name,
+   row_title_rot = 0,
+  na_col="grey",
+  show_row_names = TRUE,
+cluster_columns = FALSE,
+  cluster_rows = FALSE)
 ```
 
