@@ -57,7 +57,7 @@ I am looking at GO enrichment analysis.  I will take the enriched motifs found t
 Strat 1:  taking list of enriched motifs names, breaking down pairs like FOS::JUNB into FOS and JUNB and doing GO analysis compared to all genes.
 -maybe filter for expression with RNA data?
 
-Strat 2: Using GOMO analysis.  this takes the enriched meme file of set 2 v set 1 and set 3 v set 1 and searches for the genes they regulate then does GO MF BP and CC for all the genes associtated with being activated by that motif.
+Strat 2: Using GOMO analysis.  this takes the enriched meme file of set 2 v set 1 and set 3 v set 1 and searches for the genes they regulate then does GO MF BP and CC for all the genes associated with being activated by that motif.
 
 Strat 3:  Overlapping Set 2 and Set 3, go analysis on unique TFs
 ### H3K27ac  
@@ -1020,3 +1020,85 @@ reduced_shared_k9  %>%
 
 
 ```
+### TE specific GO/KEGG
+
+```{r}
+MER61E_anno_genes <- readRDS("data/RDS_files/MER61E_anno_genes.RDS")
+LTR10E_anno_genes <- readRDS("data/RDS_files/LTR10E_anno_genes.RDS")
+
+Mer_100k_3 <-MER61E_anno_genes %>% 
+  dplyr::filter(abs(closest_distance)<100000) %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  pull(ENTREZID)
+
+Mer_all_3 <-MER61E_anno_genes %>% 
+  # dplyr::filter(abs(closest_distance)<100000) %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  pull(ENTREZID)
+
+Ltr_100k_3 <-LTR10E_anno_genes %>% 
+  dplyr::filter(abs(closest_distance)<100000) %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  pull(ENTREZID)
+Ltr_all_3 <-LTR10E_anno_genes %>% 
+  # dplyr::filter(abs(closest_distance)<100000) %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  pull(ENTREZID)
+
+```
+
+
+```{r gost TE, eval=FALSE}
+MER61_all_gost <- gost(query = Mer_all_3,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+H3K27ac_Set3_gost <- gost(query = Set3_list$Entrez_ID,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+saveRDS(MER61_100k_gost,"data/RDS_files/MER61_100k_gost.RDS")
+saveRDS(LTR10_100k_gost,"data/RDS_files/LTR10_100k_gost.RDS")
+saveRDS(MER61_all_gost,"data/RDS_files/MER61_all_gost.RDS")
+saveRDS(LTR10_all_gost,"data/RDS_files/LTR10_all_gost.RDS")
+```
+
+```{r}
+
+MER61_100k_gost <- readRDS("data/RDS_files/MER61_100k_gost.RDS")
+LTR10_100k_gost <- readRDS("data/RDS_files/LTR10_100k_gost.RDS")
+
+GO_KEGG_analysis(MER61_100k_gost,"GO:BP", 0.1,20)
+GO_KEGG_analysis(MER61_100k_gost,"KEGG", 0.1,20)
+
+GO_KEGG_analysis(LTR10_100k_gost,"GO:BP", 0.1,20)
+GO_KEGG_analysis(LTR10_100k_gost,"KEGG", 0.1,20)
+```
+
+```{r}
+
+MER61_all_gost <- readRDS("data/RDS_files/MER61_all_gost.RDS")
+LTR10_all_gost <- readRDS("data/RDS_files/LTR10_all_gost.RDS")
+GO_KEGG_analysis(LTR10_all_gost,"GO:BP", 0.05,20)
+GO_KEGG_analysis(LTR10_all_gost,"KEGG", 0.05,20)
+
+GO_KEGG_analysis(MER61_all_gost,"GO:BP", 0.05,20)
+GO_KEGG_analysis(MER61_all_gost,"KEGG", 0.05,20)
+```
+
