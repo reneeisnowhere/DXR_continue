@@ -738,6 +738,8 @@ return(list(
   qc_plot=completeness_plot))
 }
 ```
+### MER61 family  
+
 
 ```{r}
 MER61A_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "MER61A")
@@ -765,6 +767,10 @@ MER61F_results
 MER61_int_results
 ```
 
+
+### LTR10 Families  
+
+
 ```{r}
 
 LTR10E_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "LTR10E")
@@ -791,6 +797,32 @@ HERV1_LTRa_results
 
 
 ```
+
+### Some Other sub-families
+```{r}
+SVAF_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "SVA_F")
+SVAF_results
+
+L1PA3_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "L1PA3")
+L1PA3_results
+
+ALUSX1_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "AluSx1")
+ALUSX1_results
+
+THE1C_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "THE1C")
+THE1C_results
+```
+```{r}
+Tigger7_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "Tigger7")
+Tigger7_results
+
+Chap1mam_results <- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, "Chap1_Mam")
+Chap1mam_results
+```
+
+
+
+
 ### KZFP TSS
 
 ```{r}
@@ -1077,3 +1109,315 @@ KZFP_results_50bp_list$VEH_24T %>%
   
 ```
 
+### Around the genome
+
+```{r}
+##making a segmentation set that all files have
+all_segments <- GenomicRanges::disjoin(c(chrom_24T_DOX, chrom_24R_DOX, chrom_144R_DOX, chrom_24T_VEH, chrom_24R_VEH,chrom_144R_VEH))
+
+assign_state <- function(common_gr, sample_gr) {
+
+  hits <- findOverlaps(common_gr, sample_gr)
+
+  out <- rep(NA_character_, length(common_gr))
+
+  out[queryHits(hits)] <- sample_gr$name[subjectHits(hits)]
+
+  out
+}
+
+state_transitions <- data.frame(
+
+  regionID = seq_along(all_segments),
+
+  DOX_24T  = assign_state(all_segments, chrom_24T_DOX),
+  DOX_24R  = assign_state(all_segments, chrom_24R_DOX),
+  DOX_144R = assign_state(all_segments, chrom_144R_DOX),
+
+  VEH_24T  = assign_state(all_segments, chrom_24T_VEH),
+  VEH_24R  = assign_state(all_segments, chrom_24R_VEH),
+  VEH_144R = assign_state(all_segments, chrom_144R_VEH))
+
+### summarizing state transitions becuase of number
+# transition_counts <- state_transitions %>%
+#   count(DOX_24T, DOX_24R, DOX_144R, VEH_24T,VEH_24R,VEH_144R)
+
+States_anno$simple_state <- state_map[States_anno$Name] 
+
+mapping_simple_state <- setNames(
+  States_anno$simple_state,
+  States_anno$State)
+
+state_transitions <- state_transitions %>%
+  mutate(
+    DOX_24T_anno  = mapping_simple_state[DOX_24T],
+    DOX_24R_anno  = mapping_simple_state[DOX_24R],
+    DOX_144R_anno = mapping_simple_state[DOX_144R],
+
+    VEH_24T_anno  = mapping_simple_state[VEH_24T],
+    VEH_24R_anno  = mapping_simple_state[VEH_24R],
+    VEH_144R_anno = mapping_simple_state[VEH_144R])
+  
+```
+
+```{r}
+state_colors <- c(
+  "Transcription" = "#D73027",
+  "Enhancer" = "#FC8D59",
+  "Poised" = "#FEE08B",
+  "Repressed" = "#4575B4",
+  "Quiescent" = "#D9D9D9")
+  
+state_props <- state_transitions %>% 
+   pivot_longer(
+    cols = ends_with("_anno"),
+    names_to = "TX_timepoint",
+    values_to = "State" ) %>% 
+  count(TX_timepoint,State) %>% 
+  mutate(prop= n/sum(n))
+
+state_props %>% 
+  dplyr::mutate(TX_timepoint=factor(TX_timepoint,levels=c("DOX_24T_anno","DOX_24R_anno","DOX_144R_anno","VEH_24T_anno","VEH_24R_anno","VEH_144R_anno"),labels=c("DOX_24T","DOX_24R","DOX_144R","VEH_24T","VEH_24R","VEH_144R"))) %>% 
+ggplot( aes(x = TX_timepoint, y = prop, fill = State)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal()+
+  scale_fill_manual(values = state_colors)
+
+# names(state_transitions)
+# grep("_anno", names(state_transitions), value = TRUE)
+# str(state_transitions)
+# setdiff(unique(state_transitions$VEH_24T), names(mapping_simple_state))
+# unique(state_transitions$VEH_24T)
+# nchar(unique(state_transitions$VEH_24T))
+```
+
+
+### All MER61E integrants
+Working on application to all TEs
+```{r}
+
+process_chromhmm_TE_raw <- function(chrom_gr, te_gr, te_name) {
+
+  hits <- findOverlaps(te_gr, chrom_gr, ignore.strand = TRUE)
+
+  te_states <- data.frame(
+    te_id    = mcols(te_gr)$name[queryHits(hits)],
+    te_name  = te_name,
+    state    = mcols(chrom_gr)$name[subjectHits(hits)],
+    width    = width(pintersect(
+      te_gr[queryHits(hits)],
+      chrom_gr[subjectHits(hits)]
+    )),
+    TE_width = width(te_gr[queryHits(hits)])
+  )
+
+  te_states_summed <- te_states %>%
+    group_by(te_id, te_name, state, TE_width) %>%
+    summarize(total_width = sum(width), .groups = "drop")
+
+  te_states_props <- te_states_summed %>%
+    mutate(frac = total_width / TE_width)
+  
+  return(te_states_props)
+}
+```
+
+
+```{r MER61E processing}
+
+MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
+
+MER61E_results_df <- purrr::imap_dfr(chrom_list, function(chrom_gr, set_name) {
+  
+  process_chromhmm_TE_raw(
+    chrom_gr = chrom_gr,
+    te_gr = MER61E_regions,
+    te_name = "MER61E"
+  ) %>%
+    mutate(Set = set_name)
+})
+
+
+MER61E_dominant <- MER61E_results_df %>%
+  group_by(te_id, te_name, Set) %>%
+  arrange(desc(frac), .by_group = TRUE) %>%
+  slice(1) %>%
+  ungroup() %>%
+  left_join(States_anno, by = c("state" = "State")) %>%
+  mutate(
+    Broad_state = unname(state_map[Name]),
+    Condition = ifelse(grepl("DOX", Set), "DOX", "VEH"),
+    Timepoint = case_when(
+      grepl("24T", Set) ~ "24T",
+      grepl("24R", Set) ~ "24R",
+      grepl("144R", Set) ~ "144R",
+      TRUE ~ NA_character_
+    )
+  )
+
+MER61E_trajectory_detailed <- MER61E_dominant %>%
+  dplyr::select(te_id, te_name, Condition, Timepoint, Name) %>%
+  pivot_wider(
+    names_from = c(Condition, Timepoint),
+    values_from = Name
+  )
+
+MER61E_trajectory_broad <- MER61E_dominant %>%
+  dplyr::select(te_id, te_name, Condition, Timepoint, Broad_state) %>%
+  pivot_wider(
+    names_from = c(Condition, Timepoint),
+    values_from = Broad_state)
+  
+
+```
+
+
+```{r func plot trajectory}
+plot_trajectory <- function(dominant_df, TE, id_col="te_id",state_col="Broad_state") {
+  
+  state_colors <- c(
+  "Transcription" = "#D73027",
+  "Enhancer" = "#FC8D59",
+  "Poised" = "#FEE08B",
+  "Repressed" = "#4575B4",
+  "Quiescent" = "#D9D9D9")
+  
+  trajectory <- dominant_df %>%
+  dplyr::select(all_of(id_col),te_name, Condition, Timepoint, all_of(state_col)) %>%
+  pivot_wider(
+    names_from = Timepoint,
+    values_from = all_of(state_col))
+  
+  
+  ## checking if TE has all markings
+  trajectory <- trajectory %>% 
+    mutate(status=case_when(
+        rowSums(is.na(across(c(`24T`, `24R`, `144R`)))) == 0 ~ "complete",
+        rowSums(is.na(across(c(`24T`, `24R`, `144R`)))) == 3 ~ "missing",
+        TRUE ~ "partial"))
+  
+  n_elements <- trajectory %>%
+  distinct(.data[[id_col]]) %>%
+  nrow()
+  
+  trajectory_complete <- trajectory %>%
+    filter(status == "complete")
+  
+   alluvial_plot <- ggplot(trajectory_complete, aes(axis1 = `24T`,
+                                                    axis2 = `24R`,
+                                                    axis3 = `144R`,
+                                                    y = 1)) +
+     geom_alluvium(aes(fill = after_stat(stratum)),
+                   alpha = 0.4) +
+     geom_stratum(aes(fill = after_stat(stratum)),
+                  color = "black") +
+     geom_text(stat = "stratum",aes(label = after_stat(stratum)),
+               size = 3) +
+     facet_wrap(~ Condition) +
+     scale_x_discrete(limits = c("24T", "24R", "144R"),
+                      expand = c(0.1, 0.05)) +
+     scale_fill_manual(values = state_colors,
+                       na.value = "grey80") +
+     labs(title = paste0("Complete ChromHMM state trajectories for ", TE," (n = ",n_elements," integrants)"),
+          x = NULL,
+          y = paste0("Number of ", TE, " elements"),
+          fill = "State") +
+     theme_minimal()
+   #### calculating incompletes and QC
+    qc_counts <- trajectory %>%
+    count(Condition, status)
+    
+    qc_plot <- ggplot(qc_counts, aes(x = status, y = n, fill = status)) +
+    geom_col(width = 0.6) +
+    facet_wrap(~ Condition) +
+    theme_minimal() +
+    labs( x = NULL,
+          y = paste0("Number of ", TE, " elements"),
+          title = paste0("ChromHMM trajectory completeness for ", TE)) +
+      theme(legend.position = "none")
+    
+    qc_summary <- trajectory %>%
+    group_by(Condition) %>%
+    summarise(n_elements = dplyr::n(),
+              complete = sum(status == "complete"),
+              partial = sum(status == "partial"),
+              missing = sum(status == "missing"),
+              frac_complete = complete / n_elements,
+              .groups = "drop")
+    
+    return(list(
+    alluvial_plot = alluvial_plot,
+    qc_plot = qc_plot,
+    trajectory = trajectory,
+    trajectory_complete = trajectory_complete,
+    QC_counts = qc_counts,
+    QC_summary = qc_summary
+  ))
+}
+
+```
+
+```{r MER61E_plot_data}
+MER61E_plot_data <- plot_trajectory(MER61E_dominant,TE="MER61E",id_col="te_id",state_col="Broad_state")
+
+MER61E_plot_data
+```
+
+### All LTR10E integrants  
+
+
+```{r LTR10E processing}
+
+LTR10E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/LTR10E_ERV1_LTR.bed")
+
+LTR10E_results_df <- purrr::imap_dfr(chrom_list, function(chrom_gr, set_name) {
+  
+  process_chromhmm_TE_raw(
+    chrom_gr = chrom_gr,
+    te_gr = LTR10E_regions,
+    te_name = "LTR10E"
+  ) %>%
+    mutate(Set = set_name)
+})
+
+
+LTR10E_dominant <- LTR10E_results_df %>%
+  group_by(te_id, te_name, Set) %>%
+  arrange(desc(frac), .by_group = TRUE) %>%
+  slice(1) %>%
+  ungroup() %>%
+  left_join(States_anno, by = c("state" = "State")) %>%
+  mutate(
+    Broad_state = unname(state_map[Name]),
+    Condition = ifelse(grepl("DOX", Set), "DOX", "VEH"),
+    Timepoint = case_when(
+      grepl("24T", Set) ~ "24T",
+      grepl("24R", Set) ~ "24R",
+      grepl("144R", Set) ~ "144R",
+      TRUE ~ NA_character_
+    )
+  )
+
+LTR10E_trajectory_detailed <- LTR10E_dominant %>%
+  dplyr::select(te_id, te_name, Condition, Timepoint, Name) %>%
+  pivot_wider(
+    names_from = c(Condition, Timepoint),
+    values_from = Name
+  )
+
+LTR10E_trajectory_broad <- LTR10E_dominant %>%
+  dplyr::select(te_id, te_name, Condition, Timepoint, Broad_state) %>%
+  pivot_wider(
+    names_from = c(Condition, Timepoint),
+    values_from = Broad_state)
+  
+
+```
+
+
+```{r LTR10E_plot_data}
+LTR10E_plot_data <- plot_trajectory(LTR10E_dominant,TE="LTR10E",id_col="te_id",state_col="Broad_state")
+
+LTR10E_plot_data
+```
