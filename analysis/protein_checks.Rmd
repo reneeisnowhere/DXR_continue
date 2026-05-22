@@ -718,6 +718,31 @@ tab <- matrix(
 
 fisher.test(tab, alternative = "greater") 
 ```
+Investigation of number of proteins in alpha
+
+```{r}
+green_alpha <- module_ids %>% 
+  dplyr::filter(Module=="green") %>% 
+  pull(ENTREZID)
+
+
+tibble(background_genes) %>% 
+  mutate(is_alpha=background_genes%in% green_alpha,
+         is_set1=background_genes%in% set1_genes,
+         is_set2=background_genes%in% set2_genes,
+         is_set3=background_genes%in% set3_genes) %>% 
+  group_by(is_alpha, is_set3) %>% tally
+
+set2vset1alpha_mat <- matrix(c(31,1234,516,21345),nrow=2,byrow = TRUE)
+fisher.test(set2vset1alpha_mat)
+
+set3vset1alpha_mat <- matrix(c(143,4710,516,21345),nrow=2,byrow = TRUE)
+fisher.test(set3vset1alpha_mat)
+
+set3vset2alpha_mat <- matrix(c(143,4710,31,1234),nrow=2,byrow = TRUE)
+fisher.test(set3vset2alpha_mat)
+
+```
 
 
 
@@ -862,6 +887,7 @@ repID_to_gene_MER61E$closest_gene <- vapply(repID_to_gene_MER61E$X2, function(x)
   },
   FUN.VALUE = character(1))
 
+# save_MER <- 
 repID_to_gene_MER61E %>% 
   filter(!is.na(closest_gene)) %>% 
    mutate(my_MER=if_else(X1 %in%MER61E_mydata,"in","out")) %>% 
@@ -878,6 +904,9 @@ fisher.test(great_matrix)
 
 # table(table(repID_to_gene_MER61E$closest_gene))
 # table(repID_to_gene_MER61E$closest_gene, useNA = "ifany")
+
+
+# saveRDS(save_MER,"data/MER61intermediatemarking_protein.RDS")
 ```
 
 
