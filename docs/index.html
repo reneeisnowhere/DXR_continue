@@ -310,7 +310,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-05-15
+<strong>Last updated:</strong> 2026-05-28
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -357,15 +357,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree028df74b2f5da4ab38c3282eab39a7b09949c36btargetblank028df74a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree6f1676b2c2efa00519ceacaaf02c606143ea358ctargetblank6f1676ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/028df74b2f5da4ab38c3282eab39a7b09949c36b" target="_blank">028df74</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/6f1676b2c2efa00519ceacaaf02c606143ea358c" target="_blank">6f1676b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree028df74b2f5da4ab38c3282eab39a7b09949c36btargetblank028df74a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree6f1676b2c2efa00519ceacaaf02c606143ea358ctargetblank6f1676ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -375,7 +375,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/028df74b2f5da4ab38c3282eab39a7b09949c36b" target="_blank">028df74</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/6f1676b2c2efa00519ceacaaf02c606143ea358c" target="_blank">6f1676b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -396,15 +396,19 @@ Ignored files:
     Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
+    Ignored:    data/H3K27ac_MER61E_integrant_anno.RDS
+    Ignored:    data/MER61intermediatemarking_protein.RDS
     Ignored:    data/Other_paper_data/
     Ignored:    data/RDS_files/
     Ignored:    data/TE_annotation/
     Ignored:    data/alignment_summary.txt
     Ignored:    data/all_peak_final_dataframe.txt
     Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_p53_canonical.RDS
     Ignored:    data/full_summary_QC_metrics.txt
     Ignored:    data/motif_lists/
     Ignored:    data/number_frag_peaks_summary.txt
+    Ignored:    data/p53halfsite_TE_ids.RDS
 
 Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
@@ -418,14 +422,18 @@ Untracked files:
     Untracked:  analysis/H3K36me3_TE_investigation.Rmd
     Untracked:  analysis/LFC_regions_with_TEs.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
+    Untracked:  analysis/drill_down_KZFPs.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
     Untracked:  code/For_john.R
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/ATAC_integration_data1.Rmd
+    Modified:   analysis/H3K27ac_RNA_integration.Rmd
+    Modified:   analysis/H3K27me3_TE_overlap_extend.Rmd
+    Modified:   analysis/TP53_motif_interrogation.Rmd
     Modified:   analysis/chromHMM_2.Rmd
+    Modified:   analysis/protein_checks.Rmd
 
 </code></pre>
 <p>
@@ -469,6 +477,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/6f1676b2c2efa00519ceacaaf02c606143ea358c/analysis/index.Rmd" target="_blank">6f1676b</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-28
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/56aed794299bd152778aa0fe5799987e70eebcf0/docs/index.html" target="_blank">56aed79</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2012,6 +2054,9 @@ class="section level3">
 <p><a
 href="https://reneeisnowhere.github.io/DXR_continue/protein_checks.html">Protein
 module enrichment</a></p>
+<p><a
+href="https://reneeisnowhere.github.io/DXR_continue/MER61E_build.html">A
+little more with MER61E gathering all the data</a></p>
 </div>
 </div>
 </div>
