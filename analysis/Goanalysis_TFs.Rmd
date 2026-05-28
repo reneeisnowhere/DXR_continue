@@ -167,16 +167,18 @@ GO_KEGG_analysis <- function(df,type, setp_value=1, top_n= NULL){
       slice_head(n = top_n)
   }
 
-table <- filtered_df %>%
-  mutate_at(.vars = 6, .funs = scales::scientific_format()) %>%
-  kable(.,caption = paste0("Significant (p < ",setp_value," ) ",type," terms found in ",a," enriched TFs")) %>%
-  kable_paper("striped", full_width = FALSE) %>%
-  kable_styling(
-    full_width = FALSE,
-    position = "left",
-    bootstrap_options = c("striped", "hover")
-  ) %>%
-  scroll_box(width = "100%", height = "400px")
+  table <- filtered_df %>%
+    dplyr::mutate(p_value = scales::scientific(p_value)) %>%
+    DT::datatable(caption = htmltools::tags$caption(
+      style = "caption-side: top; text-align: left;",
+      paste0("Significant (p < ", setp_value, ") ",type, " terms found in ", a, " enriched TFs")),
+      rownames = FALSE,
+      filter = "top",
+      options = list(pageLength = 10,
+                     scrollX = TRUE,
+                     scrollY = "400px",
+                     autoWidth = TRUE))
+  
 
 
 # plot the table as ggplot object
