@@ -47,6 +47,7 @@ library(org.Hs.eg.db)
 library(AnnotationDbi)
 library(ComplexHeatmap)
 library(circlize)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 ```
 
 adding in data files.
@@ -1198,6 +1199,9 @@ MER61E_anno_genes <- repID_to_gene_MER61E %>%
 
 #### 20kb Genes
 ```{r}
+# temp_data <- readRDS("data/H3K27ac_MER61E_integrant_anno.RDS") %>% 
+#   dplyr::select(H3K27ac_region_geneId,repID)
+
 MER61E_20kbng_df <- repID_to_gene_MER61E %>% 
   dplyr::rename("repID"=1) %>% 
   dplyr::filter(closest_distance>-20000 & closest_distance<20000) %>% 
@@ -1311,6 +1315,95 @@ Heatmap(
 cluster_columns = FALSE,
   cluster_rows = FALSE)
 ```
+#### Using ChipseekeR
+  annotating using hg38 and ChIPseeker
+```{r}
+# TxDb_hg38 <- TxDb.Hsapiens.UCSC.hg38.knownGene
+# MER61E_bed_gr <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
+
+# MER61E_anno_chipseeker <- annotatePeak(MER61E_bed_gr, TxDb=TxDb_hg38)
+# saveRDS(MER61E_anno_chipseeker,"data/RDS_files/MER61E_anno_chipseeker.RDS")
+
+MER61E_anno_chipseeker <- readRDS("data/RDS_files/MER61E_anno_chipseeker.RDS")
+
+MER61E_anno_chipseeker_df <- MER61E_anno_chipseeker %>% as.data.frame() %>% 
+  dplyr::select(name,geneId,distanceToTSS)
+
+chipseeker_61E_gene_lookup <- AnnotationDbi::select(
+  org.Hs.eg.db,
+  keys = MER61E_anno_chipseeker_df$geneId,
+  keytype = "ENTREZID",
+  columns = c("SYMBOL", "GENENAME","ENTREZID")
+)
+
+only_61E_gene_lookup <- chipseeker_61E_gene_lookup %>% 
+  distinct()
+```
+
+
+```{r}
+MER61E_20kb_csng_df <-
+MER61E_anno_chipseeker_df %>% 
+  dplyr::filter(distanceToTSS>-20000 & distanceToTSS<20000) %>% 
+  left_join(only_61E_gene_lookup,by=c("geneId"="ENTREZID")) %>% 
+  mutate(geneId=as.numeric(geneId)) %>% 
+  dplyr::filter(name %in% MER61E_cluster_anno$repID) %>% 
+  left_join(RNA_lfc_entrez_id,by=c("geneId"="Entrez_ID")) %>% 
+  left_join(MER61E_cluster_anno, by=c("name"="repID")) %>% 
+  dplyr::select(name,geneId,SYMBOL, RNA_LFC_24T,RNA_LFC_24R,RNA_LFC_144R,cluster,distanceToTSS)
+
+MER61E_20kb_csng_mat <- MER61E_20kb_csng_df %>% 
+  tidyr::unite(col = "row_ID",name,SYMBOL,sep = "_") %>% 
+  dplyr::select(row_ID,RNA_LFC_24T,RNA_LFC_24R,RNA_LFC_144R) %>% 
+  column_to_rownames("row_ID") %>% 
+  as.matrix()
+
+MER61E_20kb_csng_annomat <- MER61E_20kb_csng_df %>% 
+  tidyr::unite(col = "row_ID",name,SYMBOL,sep = "_",remove = FALSE) %>% 
+  column_to_rownames("row_ID") %>% 
+   mutate(distance_bin = case_when(
+      abs(distanceToTSS) <= 10000 ~ "<=10kb",
+      abs(distanceToTSS) > 10000  ~ ">10kb",
+      TRUE ~ NA_character_)) %>% 
+  dplyr::select(name,SYMBOL,distance_bin,cluster)
+
+idx_20kb_cs <- match(rownames(MER61E_20kb_csng_mat), rownames(MER61E_20kb_csng_annomat))
+
+MER61E_20kb_csng_annomat <- MER61E_20kb_csng_annomat[idx_20kb_cs, , drop = FALSE]
+##sanity check for order
+sum(is.na(idx_20kb_cs)) 
+all(rownames(MER61E_20kb_csng_mat) == rownames(MER61E_20kb_csng_annomat))
+
+range(MER61E_20kb_csng_mat, na.rm = TRUE)
+```
+```{r, fig.height=7, fig.width=5}
+
+col_fun_MER61Ecs <- colorRamp2(c(-2,0,2),
+                      c("blue","white","red"))
+
+row_ha_20kb_MER61E_cs <- rowAnnotation(
+  cluster = MER61E_20kb_csng_annomat$cluster,
+  name=MER61E_20kb_csng_annomat$SYMBOL,
+   distance = MER61E_20kb_csng_annomat$distance_bin)
+  
+
+Heatmap(
+  MER61E_20kb_csng_mat,
+  column_title= "RNA LFC of MER61E \nclosest genes by Chipseeker(20kb)",
+  name="LFC",
+  col = col_fun_MER61Ecs,
+  use_raster = TRUE,
+  raster_quality = 2,
+  left_annotation = row_ha_20kb_MER61E_cs,
+   row_labels = MER61E_20kb_csng_annomat$SYMBOL,
+   row_title_rot = 0,
+  na_col="grey",
+  show_row_names = TRUE,
+cluster_columns = FALSE,
+  cluster_rows = FALSE)
+```
+
+
 
 ### LTR10E
 
@@ -1436,5 +1529,168 @@ Heatmap(
   show_row_names = TRUE,
 cluster_columns = FALSE,
   cluster_rows = FALSE)
+```
+
+#### LTR10E using chipseeker
+```{r}
+
+# temp_data <- readRDS("data/H3K27ac_MER61E_integrant_anno.RDS") %>% 
+#   dplyr::select(H3K27ac_region_geneId,repID)
+
+#  TxDb_hg38 <- TxDb.Hsapiens.UCSC.hg38.knownGene
+# LTR10E_bed_gr <- import("data/Bed_exports/repeatmasker_sets/ERV1/LTR10E_ERV1_LTR.bed")
+# 
+# LTR10E_anno_chipseeker <- annotatePeak(LTR10E_bed_gr, TxDb=TxDb_hg38)
+# saveRDS(LTR10E_anno_chipseeker,"data/RDS_files/LTR10E_anno_chipseeker.RDS")
+LTR10E_anno_chipseeker <- readRDS("data/RDS_files/LTR10E_anno_chipseeker.RDS")
+
+LTR10E_anno_chipseeker_df <- LTR10E_anno_chipseeker %>% as.data.frame() %>% 
+  dplyr::select(name,geneId,distanceToTSS)
+
+chipseeker_LTR10E_gene_lookup <- AnnotationDbi::select(
+  org.Hs.eg.db,
+  keys = LTR10E_anno_chipseeker_df$geneId,
+  keytype = "ENTREZID",
+  columns = c("SYMBOL", "GENENAME","ENTREZID")
+)
+
+only_LTR10E_gene_lookup <- chipseeker_LTR10E_gene_lookup %>% 
+  distinct()
+
+```
+note to self:  filtering the LTR10Es to only look at the LTR10Es in my H3K27ac data.
+```{r LTR10E cs data}
+LTR10E_20kb_csng_df <-
+LTR10E_anno_chipseeker_df %>% 
+  dplyr::filter(distanceToTSS>-20000 & distanceToTSS<20000) %>% 
+  left_join(only_LTR10E_gene_lookup,by=c("geneId"="ENTREZID")) %>% 
+  mutate(geneId=as.numeric(geneId)) %>% 
+  dplyr::filter(name %in% LTR10E_cluster_anno$repID) %>% 
+  left_join(RNA_lfc_entrez_id,by=c("geneId"="Entrez_ID")) %>% 
+  left_join(LTR10E_cluster_anno, by=c("name"="repID")) %>% 
+  dplyr::select(name,geneId,SYMBOL, RNA_LFC_24T,RNA_LFC_24R,RNA_LFC_144R,cluster,distanceToTSS)
+
+LTR10E_20kb_csng_mat <- LTR10E_20kb_csng_df %>% 
+  tidyr::unite(col = "row_ID",name,SYMBOL,sep = "_") %>% 
+  dplyr::select(row_ID,RNA_LFC_24T,RNA_LFC_24R,RNA_LFC_144R) %>% 
+  column_to_rownames("row_ID") %>% 
+  as.matrix()
+
+LTR10E_20kb_csng_annomat <- LTR10E_20kb_csng_df %>% 
+  tidyr::unite(col = "row_ID",name,SYMBOL,sep = "_",remove = FALSE) %>% 
+  column_to_rownames("row_ID") %>% 
+   mutate(distance_bin = case_when(
+      abs(distanceToTSS) <= 10000 ~ "<=10kb",
+      abs(distanceToTSS) > 10000  ~ ">10kb",
+      TRUE ~ NA_character_)) %>% 
+  dplyr::select(name,SYMBOL,distance_bin,cluster)
+
+idxLTR10E_20kb_cs <- match(rownames(LTR10E_20kb_csng_mat), rownames(LTR10E_20kb_csng_annomat))
+
+LTR10E_20kb_csng_annomat <- LTR10E_20kb_csng_annomat[idxLTR10E_20kb_cs, , drop = FALSE]
+##sanity check for order
+sum(is.na(idxLTR10E_20kb_cs)) 
+all(rownames(LTR10E_20kb_csng_mat) == rownames(LTR10E_20kb_csng_annomat))
+
+range(LTR10E_20kb_csng_mat, na.rm = TRUE)
+```
+
+```{r LTR10E cs, fig.height=7, fig.width=5}
+col_fun_LTR10Ecs <- colorRamp2(c(-3,0,3),
+                      c("blue","white","red"))
+
+row_ha_20kb_LTR10E_cs <- rowAnnotation(
+  cluster = LTR10E_20kb_csng_annomat$cluster,
+  name=LTR10E_20kb_csng_annomat$SYMBOL,
+   distance = LTR10E_20kb_csng_annomat$distance_bin)
+  
+
+Heatmap(
+  LTR10E_20kb_csng_mat,
+  column_title= "RNA LFC of LTR10E closest \ngenes by Chipseeker(20kb)",
+  name="LFC",
+  col = col_fun_LTR10Ecs,
+  use_raster = TRUE,
+  raster_quality = 2,
+  left_annotation = row_ha_20kb_LTR10E_cs,
+   row_labels = LTR10E_20kb_csng_annomat$SYMBOL,
+   row_title_rot = 0,
+  na_col="grey",
+  show_row_names = TRUE,
+cluster_columns = FALSE,
+  cluster_rows = FALSE)
+```
+
+### Other TE ids
+
+```{r}
+repID_to_gene_MER61B <- read_delim("data/Other_paper_data/repID_to_gene_MER61B.txt", 
+    delim = "\t", escape_double = FALSE, 
+    col_names = FALSE, trim_ws = TRUE, skip = 1)
+
+closest_df <- purrr::map_dfr(
+  repID_to_gene_MER61B$X2,
+  get_closest_gene_dist
+)
+
+repID_to_gene_MER61B <- bind_cols(
+  repID_to_gene_MER61B,
+  closest_df)
+
+gene_map <- AnnotationDbi::select(org.Hs.eg.db,
+  keys = unique(na.omit(repID_to_gene_MER61B$closest_gene)),
+  keytype = "SYMBOL",
+  columns = c("SYMBOL", "ENTREZID"))
+
+gene_map <- gene_map %>% 
+  mutate(name=SYMBOL) %>% 
+  mutate(SYMBOL=case_when(name=="FAM46B"~"TENT5B",
+                          name=="RFWD2"~"COP1",
+                          name=="C2orf50"~"CIMIP5",
+                          name=="TTC30A"~"IFT70A",
+                          name=="HRASLS"~"PLAAT1",
+                          name=="TTC37"~"SKIC3",
+                          name=="HIST1H2BJ"~"H2BC11",
+                          name=="MUT"~"MMUT",
+                           name=="FAM46A"~"TENT5A",
+                          name=="KIAA1324L"~"ELAPOR2",
+                          name=="IMPAD1"~"BPNT2",
+                          name=="NOV"~"CCN3",
+                          name=="ENSG00000283930"~"PLD5P1",
+                          name=="COLCA2"~"POU2AF3",
+                          name=="FAM71D"~"GARIN2",
+                          TRUE~name)) %>% 
+  mutate(ENTREZID=case_when(name=="FAM46B"~"115572",
+                            name=="RFWD2"~"64326",
+                            name=="C2orf50"~"130813",
+                            name=="TTC30A"~"92104",
+                            name=="HRASLS"~"57110",
+                            name=="TTC37"~"9652",
+                            name=="HIST1H2BJ"~"8970",
+                            name=="MUT"~"4594",
+                             name=="FAM46A"~"55603",
+                            name=="KIAA1324L"~"222223",
+                            name=="IMPAD1"~"54928",
+                            name=="NOV"~"4856",
+                            name=="ENSG00000283930"~"100420618",
+                            name=="COLCA2"~"120376",
+                            name=="FAM71D"~"161142",
+                            TRUE~ENTREZID))
+
+MER61B_cluster_anno <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repName,repID), delim=";") %>% 
+  dplyr::select(repName,repID,cluster) %>% 
+  na.omit() %>% 
+  dplyr::filter(repName=="MER61B") %>% 
+  dplyr::distinct(repID,cluster)
+
+
+MER61B_anno_genes <- repID_to_gene_MER61B %>% 
+  dplyr::rename("repID"=1) %>% 
+  left_join(gene_map,by=c("closest_gene"="name")) %>% 
+  mutate(ENTREZID=as.numeric(ENTREZID)) %>% 
+  left_join(MER61B_cluster_anno) #%>% 
+ 
+# saveRDS(MER61B_anno_genes, "data/RDS_files/MER61B_anno_genes.RDS")
 ```
 
