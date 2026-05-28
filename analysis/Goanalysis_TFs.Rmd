@@ -1021,8 +1021,9 @@ reduced_shared_k9  %>%
 
 ```
 ### TE specific GO/KEGG
+#### using GREAT assigned genes
 
-```{r}
+```{r, eval=FALSE}
 MER61E_anno_genes <- readRDS("data/RDS_files/MER61E_anno_genes.RDS")
 LTR10E_anno_genes <- readRDS("data/RDS_files/LTR10E_anno_genes.RDS")
 
@@ -1048,7 +1049,7 @@ Ltr_all_3 <-LTR10E_anno_genes %>%
 ```
 
 
-```{r gost TE, eval=FALSE}
+```{r gost TE great, eval=FALSE}
 MER61_all_gost <- gost(query = Mer_all_3,
                     organism = "hsapiens",
                     significant = FALSE,
@@ -1061,17 +1062,6 @@ MER61_all_gost <- gost(query = Mer_all_3,
                     custom_bg = RNA_lookup$Entrez_ID,
                     sources=c("GO:BP","KEGG"))
 
-H3K27ac_Set3_gost <- gost(query = Set3_list$Entrez_ID,
-                    organism = "hsapiens",
-                    significant = FALSE,
-                    ordered_query = FALSE,
-                    domain_scope = "custom",
-                    measure_underrepresentation = FALSE,
-                    evcodes = FALSE,
-                    user_threshold = 0.05,
-                    correction_method = c("fdr"),
-                    custom_bg = RNA_lookup$Entrez_ID,
-                    sources=c("GO:BP","KEGG"))
 
 saveRDS(MER61_100k_gost,"data/RDS_files/MER61_100k_gost.RDS")
 saveRDS(LTR10_100k_gost,"data/RDS_files/LTR10_100k_gost.RDS")
@@ -1102,3 +1092,100 @@ GO_KEGG_analysis(MER61_all_gost,"GO:BP", 0.05,20)
 GO_KEGG_analysis(MER61_all_gost,"KEGG", 0.05,20)
 ```
 
+#### using Chipseeker assigned genes
+
+```{r, eval=FALSE}
+annotated_H3K27ac_ext200 <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+
+LTR10E_cluster_anno <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repName,repID), delim=";") %>% 
+  dplyr::select(repName,repID,cluster) %>% 
+  na.omit() %>% 
+  dplyr::filter(repName=="LTR10E") %>% 
+  dplyr::distinct(repID,cluster)
+MER61E_cluster_anno <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repName,repID), delim=";") %>% 
+  dplyr::select(repName,repID,cluster) %>% 
+  na.omit() %>% 
+  dplyr::filter(repName=="MER61E") %>% 
+  dplyr::distinct(repID,cluster)
+
+MER61E_anno_cs <- readRDS("data/RDS_files/MER61E_anno_chipseeker.RDS")
+LTR10E_anno_cs <- readRDS("data/RDS_files/LTR10E_anno_chipseeker.RDS")
+
+Mer_100k_3_cs <-MER61E_anno_cs %>% 
+  as.data.frame() %>% 
+  dplyr::filter(abs(distanceToTSS)<100000) %>%
+  left_join(MER61E_cluster_anno, by=c("name" = "repID")) %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  pull(geneId) %>% 
+  unique()
+
+Mer_all_3_cs <-MER61E_anno_cs %>% 
+  as.data.frame() %>% 
+  # dplyr::filter(abs(distanceToTSS)<100000) %>%
+  left_join(MER61E_cluster_anno, by=c("name" = "repID")) %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  pull(geneId) %>% 
+  unique()
+
+Ltr_100k_3_cs <-LTR10E_anno_cs %>% 
+  as.data.frame() %>% 
+  dplyr::filter(abs(distanceToTSS)<100000) %>%
+  left_join(LTR10E_cluster_anno, by=c("name" = "repID")) %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  pull(geneId) %>% 
+  unique()
+Ltr_all_3_cs <-LTR10E_anno_cs %>% 
+  as.data.frame() %>% 
+  # dplyr::filter(abs(distanceToTSS)<100000) %>%
+  left_join(LTR10E_cluster_anno, by=c("name" = "repID")) %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  pull(geneId) %>% 
+  unique()
+```
+
+
+```{r gost TE, eval=FALSE}
+LTR10E_cs_all_gost <- gost(query = Ltr_all_3_cs,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+
+
+saveRDS(MER61E_cs_100k_gost,"data/RDS_files/MER61E_cs_100k_gost.RDS")
+saveRDS(LTR10E_cs_100k_gost,"data/RDS_files/LTR10E_cs_100k_gost.RDS")
+saveRDS(MER61E_cs_all_gost,"data/RDS_files/MER61E_cs_all_gost.RDS")
+saveRDS(LTR10E_cs_all_gost,"data/RDS_files/LTR10E_cs_all_gost.RDS")
+```
+
+```{r}
+
+MER61E_cs_100k_gost <- readRDS("data/RDS_files/MER61E_cs_100k_gost.RDS")
+LTR10E_cs_100k_gost <- readRDS("data/RDS_files/LTR10E_cs_100k_gost.RDS")
+
+GO_KEGG_analysis(MER61E_cs_100k_gost,"GO:BP", 0.1,20)
+GO_KEGG_analysis(MER61E_cs_100k_gost,"KEGG", 0.1,20)
+
+GO_KEGG_analysis(LTR10E_cs_100k_gost,"GO:BP", 0.1,20)
+GO_KEGG_analysis(LTR10E_cs_100k_gost,"KEGG", 0.1,20)
+```
+
+```{r}
+
+MER61E_cs_all_gost <- readRDS("data/RDS_files/MER61E_cs_all_gost.RDS")
+LTR10E_cs_all_gost <- readRDS("data/RDS_files/LTR10E_cs_all_gost.RDS")
+GO_KEGG_analysis(LTR10E_cs_all_gost,"GO:BP", 0.05,20)
+GO_KEGG_analysis(LTR10E_cs_all_gost,"KEGG", 0.05,20)
+
+GO_KEGG_analysis(MER61E_cs_all_gost,"GO:BP", 0.05,20)
+GO_KEGG_analysis(MER61E_cs_all_gost,"KEGG", 0.05,20)
+```
