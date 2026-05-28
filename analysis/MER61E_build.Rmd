@@ -1,0 +1,520 @@
+---
+title: "MER61_building dataframe"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+library(ggalluvial)
+```
+
+The purpose of this page is to build a large dataframe for MER61E annotations.
+
+```{r annotation data frames}
+ZNF780A_regions <- import("data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed")
+MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
+
+H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+ H3K27ac_summit_gr_ext <- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
+
+peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+
+H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+
+##assigning Peakid as name of ext summit region
+ mcols(H3K27ac_summit_gr_ext)$name <- mcols(H3K27ac_summit_gr_ext)$Peakid
+ 
+ H3K27ac_ext200_anno <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+ 
+ MER61E_anno_genes <- readRDS("data/RDS_files/MER61E_anno_genes.RDS")
+ MER61E_intermediat_protein <- readRDS("data/MER61intermediatemarking_protein.RDS")
+ 
+ full_p53_canonical  <- readRDS("data/full_p53_canonical.RDS")
+  p53halfsite_TE_ids <- readRDS("data/p53halfsite_TE_ids.RDS")
+
+  LTR_df <- readRDS("data/RDS_files/LTR_DF_hg38.RDS")
+
+  H3K27ac_toplist <- readRDS("data/DER_data/H3K27ac_toplist.RDS")
+
+  H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
+
+
+set_case_list_H3K27ac <-  H3K27ac_toptable_list %>% 
+  dplyr::select(group,genes, logFC) %>% 
+  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %>% 
+  dplyr::left_join(H3K27ac_lookup,by =c("genes"="Peakid")) %>% 
+  mutate(case= case_when(H3K27ac_24T > 0 & H3K27ac_24R >0 & H3K27ac_144R>0~"A",
+                              H3K27ac_24T < 0 & H3K27ac_24R <0 & H3K27ac_144R<0~"B",
+                              TRUE ~ "C")) %>% 
+  mutate(set_case=paste0(cluster,"_",case)) %>% 
+  dplyr::select(genes, cluster,case,set_case)
+
+LTR10E_trajectory_broad <- readRDS("data/RDS_files/LTR10E_trajectory_broad.RDS")
+LTR10E_trajectory_detailed <- readRDS("data/RDS_files/LTR10E_trajectory_detailed.RDS")
+MER61E_trajectory_broad <- readRDS("data/RDS_files/MER61E_trajectory_broad.RDS")
+MER61E_trajectory_detailed <- readRDS("data/RDS_files/MER61E_trajectory_detailed.RDS")
+
+```
+
+
+canonical assignments
+```{r function p53 canonical motifs}
+p53_canonical_motifs <- function(fimo_root_dir, te_bed_base_dir) {
+ 
+  
+  # Initialize results list
+  results_list <- list()
+  hit_list <- list()
+  
+  # Find all directories ending with "_fimo"
+  fimo_dirs <- list.dirs(fimo_root_dir, recursive = FALSE)
+  fimo_dirs <- fimo_dirs[grepl("_sea_jaspar$", basename(fimo_dirs))]
+  
+  for (fimo_dir in fimo_dirs) {
+    base_name <- sub("_sea_jaspar$", "", basename(fimo_dir))
+    
+    # Find FIMO file
+    sites_file <- file.path(fimo_dir, "sites.tsv")
+    if (!file.exists(sites_file)) {
+      message("Skipping ", fimo_dir, ": sites.tsv not found")
+      next
+    }
+  
+  
+  te_file <- file.path(te_bed_base_dir, paste0(base_name, ".bed"))
+    if (!file.exists(te_file)) {
+      message("Skipping ", base_name, ": TE BED file not found")
+      next
+    }
+  
+    
+    # ------------------------------
+    # Load TE BED file
+    # ------------------------------
+    te_df <- read.table(te_file, header = FALSE, stringsAsFactors = FALSE)
+    colnames(te_df) <- c("chr","start","end","name","score","strand")
+    te_df <- te_df[!is.na(te_df$start) & !is.na(te_df$end) & (te_df$start <= te_df$end), ]
+    te_gr <- GRanges(
+    seqnames = te_df$chr,
+    ranges = IRanges(start = te_df$start, end = te_df$end),
+    strand = te_df$strand,
+    TE_id = te_df$name,
+    TE_score = te_df$score
+    )
+    # ------------------------------
+    # Load TP53 sites
+    # ------------------------------
+    cano_sites <- read.delim(sites_file, stringsAsFactors = FALSE)
+    
+    # Filter TP53 motifs
+    if (!"motif_ALT_ID" %in% colnames(cano_sites)) {
+      message("No motif_ALT_ID column in ", sites_file)
+      next
+    }
+    cano_sites <- cano_sites[
+      grepl("TP53", cano_sites$motif_ALT_ID, ignore.case = TRUE),
+    ]
+    # Skip if no motifs found
+    if (nrow(cano_sites) == 0) {
+      message("No TP53 motifs in ", base_name)
+      results_list[[paste0(base_name, "_no_hits")]] <- data.frame(
+        TE_name = base_name,
+        motif_name = "TP53",
+        total_TEs = length(te_gr),
+        TEs_with_TP53 = 0,
+        total_TP53_hits = 0,
+        occupancy = 0
+      )
+      next
+    }
+    
+    # Clean FIMO entries
+    cano_sites <- cano_sites[!is.na(cano_sites$site_Start) & !is.na(cano_sites$site_End) & (cano_sites$site_Start <= cano_sites$site_End), ]
+    
+    motif_name <- unique(cano_sites$motif_ALT_ID)
+    
+    # Loop over each motif separately (in case multiple motifs exist)
+    for (mn in motif_name) {
+      fimo_motif <- cano_sites[cano_sites$motif_ALT_ID == mn, ]
+      
+      fimo_gr <- GRanges(
+        seqnames = fimo_motif$seq_ID,
+        ranges = IRanges(start = fimo_motif$site_Start, end = fimo_motif$site_End),
+        strand = fimo_motif$site_Strand,
+        score = fimo_motif$site_Score
+      )
+      
+      # ------------------------------
+      # Overlaps
+      # ------------------------------
+      hits <- findOverlaps(fimo_gr, te_gr)
+      n_te_total <- length(te_gr)
+      
+      if (length(hits) == 0) {
+        message("No overlaps for motif ", mn, " in ", base_name)
+        results_list[[paste0(base_name, "_", mn)]] <- data.frame(
+          TE_name = base_name,
+          motif_name = mn,
+          total_TEs = n_te_total,
+          TEs_with_TP53 = 0,
+          total_TP53_hits = 0,
+          occupancy = 0
+        )
+        next
+      }
+      
+      n_te_with_hits <- length(unique(subjectHits(hits)))
+      n_total_hits <- length(hits)
+      occupancy <- ifelse(n_te_total > 0, n_te_with_hits / n_te_total, NA)
+      
+    
+    # ------------------------------
+      # Compute relative positions
+      # ------------------------------
+      rel_pos <- (start(fimo_gr)[queryHits(hits)] - start(te_gr)[subjectHits(hits)]) /
+                 width(te_gr)[subjectHits(hits)]
+      rel_pos <- pmin(pmax(rel_pos, 0), 1)
+      df <- data.frame(rel_pos = rel_pos)
+      hit_df <- data.frame(
+        TE_name = base_name,
+       motif_name = mn,
+
+    # which FIMO motif hit
+       motif_chr = as.character(seqnames(fimo_gr)[queryHits(hits)]),
+        motif_start = start(fimo_gr)[queryHits(hits)],
+        motif_end = end(fimo_gr)[queryHits(hits)],
+        motif_strand = as.character(strand(fimo_gr)[queryHits(hits)]),
+        motif_score = mcols(fimo_gr)$score[queryHits(hits)],
+
+    # which TE it overlaps
+        TE_id = mcols(te_gr)$TE_id[subjectHits(hits)],
+        TE_chr = as.character(seqnames(te_gr)[subjectHits(hits)]),
+        TE_start = start(te_gr)[subjectHits(hits)],
+        TE_end = end(te_gr)[subjectHits(hits)],
+        TE_strand = as.character(strand(te_gr)[subjectHits(hits)]),
+
+          rel_pos = rel_pos
+        )
+
+hit_list[[paste0(base_name, "_", mn)]] <- hit_df
+      
+      # ------------------------------
+      # Store results
+      # ------------------------------
+      results_list[[paste0(base_name, "_", mn)]] <- data.frame(
+        TE_name = base_name,
+        motif_name = mn,
+        total_TEs = n_te_total,
+        TEs_with_TP53 = n_te_with_hits,
+        total_TP53_hits = n_total_hits,
+        occupancy = occupancy
+      )
+      
+      # ------------------------------
+      # Plot density
+      # ------------------------------
+      cat(paste0("### ", base_name, " ", mn, "\n"))
+      cat(base_name, "| total TEs:", n_te_total, "| with cTP53:", n_te_with_hits, 
+          "| hits:", n_total_hits, "\n")
+      cat("Sequences with full TP53 motif: ", round(occupancy * 100, 2), "%\n\n")
+      
+      p <- ggplot(df, aes(x = rel_pos)) +
+        geom_density(fill = "steelblue", alpha = 0.5) +
+        labs(x = "Relative position in TE", y = "Motif density") +
+        theme_classic() +
+        ggtitle(paste0("canonical TP53 motif distribution: ", base_name,
+                       "\nSequences with motif: ", round(occupancy * 100, 1), "%"))
+      print(p)
+      cat("\n\n")
+    }
+  } # end fimo_dirs loop
+  
+  # Combine all results into one data frame
+  results_df <- do.call(rbind, results_list)
+  
+  print(results_df)
+  hits_df <- do.call(rbind, hit_list)
+
+return(list(
+  summary = results_df,
+  hits = hits_df
+))
+}
+    
+
+```
+
+```{r}
+full_p53 <- p53_canonical_motifs("C:/Users/renee/Other_projects_data/DXR_data/TE_sea_jaspar_results","data/Bed_exports/repeatmasker_sets/ERV1")
+
+p53_canonical <- full_p53$hits
+```
+
+```{r pulling if TE is in my data}
+MER61E_mydata <- 
+H3K27ac_ext200_anno %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = ";") %>% 
+  dplyr::filter(repName=="MER61E")%>% 
+  pull(repID) %>% 
+  unique()
+protein_info <- MER61E_intermediat_protein %>% 
+  dplyr::select(X1,my_MER,is_DAP,DOX_cor)
+Peakid_lookup_repID <-
+  H3K27ac_ext200_anno %>% 
+  separate_longer_delim(.,cols=c(repName,repID),delim=";") %>% 
+    dplyr::filter(repName=="MER61E") %>% 
+    dplyr::select(repID,Peakid,geneId,distanceToTSS)
+```
+
+```{r determining which repIDs have binding}
+ZNF780A_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,ZNF780A_regions) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+```
+
+
+
+### MER61E making of data frame  
+
+```{r}
+intermediate_data <-
+  MER61E_anno_genes %>% 
+  left_join(protein_info,by=c("repID"="X1")) %>% 
+  left_join(Peakid_lookup_repID) %>% 
+  dplyr::rename("GREAT_gene_assign"=2,
+                "H3K27ac_region"=Peakid,
+                "H3K27ac_region_geneId"=geneId,
+                "H3K27ac_region_distanceToTSS"=distanceToTSS) %>% 
+  left_join(LTR_df, by=c("repID"="RM_id")) %>% 
+  mutate(my_MER=if_else(repID %in% MER61E_mydata, "yes","no"),
+         p53_halfsite =if_else(repID %in% p53halfsite_TE_ids$Peakid, "yes","no"),
+         p53_fullsite=if_else(repID %in% p53_canonical$TE_id,"yes","no")) %>% 
+  left_join(set_case_list_H3K27ac,by=c("H3K27ac_region"="genes", "cluster"="cluster")) %>% 
+  left_join(MER61E_trajectory_broad,by=c("repID"="te_id", "repName"="te_name")) %>% 
+  mutate(ZNF780A_binding=if_else(repID %in%ZNF780A_overlaps_MER61E,"yes","no"))
+  
+
+DT::datatable(intermediate_data,
+              options=list(scrollX = TRUE,
+                           scrollY="500px",
+                           paging=TRUE,
+                           autoWidth=TRUE))
+```
+
+```{r}
+
+
+intermediate_data %>% 
+  dplyr::group_by(my_MER,cluster) %>% 
+  summarize("total"=dplyr::n(),avg_milliDiv=mean(milliDiv))
+
+intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=cluster,y=milliDiv))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  ) +
+  labs(title = "MER61E milliDiv dispersion in groups",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+
+
+```
+
+```{r}
+intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=cluster,y=milliDel))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  ) +
+  labs(title = "MER61E milliDel dispersion in groups",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+
+
+intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=cluster,y=milliIns))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  ) +
+  labs(title = "MER61E milliIns dispersion in groups",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+
+```{r}
+intermediate_data %>% 
+  # group_by(p53_halfsite) %>% #, p53_fullsite,cluster) %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=cluster,y=milliDiv, color=case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~p53_halfsite)+
+  ggtitle("MER61E with and without p53 halfsites")
+
+# saveRDS(intermediate_data,"data/H3K27ac_MER61E_integrant_anno.RDS")
+```
+
+```{r function plot trajectory}
+plot_trajectory <- function(input_df, TE) {
+  
+  state_colors <- c(
+  "Transcription" = "#D73027",
+  "Enhancer" = "#FC8D59",
+  "Poised" = "#FEE08B",
+  "Repressed" = "#4575B4",
+  "Quiescent" = "#D9D9D9")
+  
+  trajectory_cols <- c(
+  "DOX_24T",
+  "DOX_24R",
+  "DOX_144R",
+  "VEH_24T",
+  "VEH_24R",
+  "VEH_144R"
+)
+
+trajectory_complete <- input_df %>%
+  tidyr::pivot_longer(
+    cols = c(DOX_24T, DOX_24R, DOX_144R, VEH_24T, VEH_24R, VEH_144R),
+    names_to = c("Condition", "Time"),
+    names_sep = "_",
+    values_to = "State"
+  ) %>%
+  tidyr::pivot_wider(
+    id_cols = c(te_id, te_name, Condition),
+    names_from = Time,
+    values_from = State
+  ) %>%
+  mutate(
+    Condition = factor(Condition, levels = c("DOX", "VEH"))
+  )
+
+plot_input <-  ggplot(trajectory_complete, aes(axis1 = `24T`,
+                                               axis2 = `24R`,
+                                               axis3 = `144R`,
+                                               y = 1)) +
+     geom_alluvium(aes(fill = after_stat(stratum)),
+                   alpha = 0.4) +
+     geom_stratum(aes(fill = after_stat(stratum)),
+                  color = "black") +
+     geom_text(stat = "stratum",aes(label = after_stat(stratum)),
+               size = 3) +
+     facet_wrap(~ Condition) +
+     scale_x_discrete(limits = c("24T", "24R", "144R"),
+                      expand = c(0.1, 0.05)) +
+     scale_fill_manual(values = state_colors,
+                       na.value = "grey80") +
+     labs(title = paste0("Complete ChromHMM state trajectories for ", TE),
+          x = NULL,
+          y = paste0("Number of ", TE, " elements"),
+          fill = "State") +
+     theme_minimal()
+
+ return(plot_input)
+
+}
+
+
+```
+
+```{r}
+filtered_trajectory_test <- MER61E_trajectory_broad %>% 
+  dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
+  dplyr::filter(te_id %in% (p53halfsite_TE_ids %>% 
+                              dplyr::filter(TE_name=="MER61E_ERV1_LTR") %>%
+                              pull(Peakid) %>% 
+                              unique()))
+
+plot_trajectory(filtered_trajectory_test,"MER61E with p53 halfsite")
+```
+```{r}
+
+filtered_trajectory_780A <- MER61E_trajectory_broad %>% 
+  # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
+  dplyr::filter(te_id %in% ZNF780A_overlaps_MER61E)
+
+plot_trajectory(filtered_trajectory_780A,"any MER61E with ZNF780A binding")
+```
+
