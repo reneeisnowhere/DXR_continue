@@ -196,8 +196,8 @@ plot <- filtered_df %>%
   theme(axis.text.y = element_text(color="black"))+
   ggtitle(paste0("(p < ",setp_value," ) ",type," terms found in\n ",a," enriched TFs"))
 
-print(table)
 print(plot)
+print(table)
 }
 
 
