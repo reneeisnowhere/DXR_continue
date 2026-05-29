@@ -332,7 +332,15 @@ intermediate_data <-
   left_join(set_case_list_H3K27ac,by=c("H3K27ac_region"="genes", "cluster"="cluster")) %>% 
   left_join(MER61E_trajectory_broad,by=c("repID"="te_id", "repName"="te_name")) %>% 
   mutate(ZNF780A_binding=if_else(repID %in%ZNF780A_overlaps_MER61E,"yes","no"),
-         ZNF680_binding=if_else(repID %in% ZNF680_overlaps_MER61E, "yes","no"))
+         ZNF680_binding=if_else(repID %in% ZNF680_overlaps_MER61E, "yes","no")) %>% 
+  dplyr::mutate(
+    state_24T_compare = dplyr::if_else(DOX_24T == VEH_24T, "same", "different"),
+    state_24R_compare = dplyr::if_else(DOX_24R == VEH_24R, "same", "different"),
+    state_144R_compare = dplyr::if_else(DOX_144R == VEH_144R, "same", "different")) %>% 
+  dplyr::mutate(overall_compare = dplyr::case_when(DOX_24T == VEH_24T & 
+                                                     DOX_24R == VEH_24R &
+                                                     DOX_144R == VEH_144R ~"same_all_timepoints",
+                                                   TRUE ~ "different_at_one_or_more_timepoints"))
   
 
 DT::datatable(intermediate_data,
@@ -562,7 +570,7 @@ plot_trajectory_flow <- function(input_df, TE) {
         fill = state
       ),
       stat = "alluvium",
-      aes.flow = "backward",
+      aes.flow = "forward",
       alpha = 0.8
     ) +
     # VEH flows: color each segment by the state it comes from
@@ -619,7 +627,7 @@ plot_trajectory_flow <- function(input_df, TE) {
       y = paste0("Number of ", TE, " elements"),
       fill = "State"
     ) +
-    theme_bw() +
+    theme_minimal() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1)
     )
@@ -639,7 +647,13 @@ filtered_trajectory_test <- MER61E_trajectory_broad %>%
 plot_trajectory(filtered_trajectory_test,"MER61E with p53 halfsite")
 plot_trajectory_flow(filtered_trajectory_test,"MER61E with p53 halfsite")
 ```
+
 ```{r}
+plot_trajectory(MER61E_trajectory_broad,"all MER61E elements")
+```
+
+
+```{r 780a plot}
 
 filtered_trajectory_780A <- MER61E_trajectory_broad %>% 
   # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
@@ -653,5 +667,174 @@ filtered_trajectory_680 <- MER61E_trajectory_broad %>%
   dplyr::filter(te_id %in% ZNF680_overlaps_MER61E)
 
 plot_trajectory(filtered_trajectory_680,"any MER61E with ZNF680 binding")
+```
+```{r}
+intermediate_data %>% 
+  group_by(cluster,my_MER,overall_compare) %>%
+  tally()
+matdata <- matrix(c(61,6, 49, 151), nrow = 2, byrow = FALSE)
+matdata
+fisher.test(matdata)
+```
+```{r}
+intermediate_data %>% 
+  group_by(my_MER,ZNF780A_binding) %>% 
+  tally()
+
+ZNF780A_data <- matrix(c(27,40, 64, 136), nrow = 2, byrow = FALSE)
+ZNF780A_data
+fisher.test(ZNF780A_data)
+```
+
+Integrants in my data not significantly enriched in ZNF780A binding sites (exo-ChIP) than integrants not in my data.
+
+```{r}
+intermediate_data %>% 
+  group_by(cluster,my_MER,ZNF780A_binding) %>% 
+  tally()
+
+ZNF780A_data_3v1 <- matrix(c(19,21,2, 9), nrow = 2, byrow = FALSE)
+ZNF780A_data_3v1
+fisher.test(ZNF780A_data_3v1)
+```
+Integrants in set3 not significantly enriched in ZNF780A binding sites (exo-ChIP) than integrants in set1.
+
+
+
+```{r}
+intermediate_data %>% 
+  group_by(my_MER,ZNF680_binding) %>% 
+  tally()
+
+ZNF680_data <- matrix(c(25,42, 37, 163), nrow = 2, byrow = FALSE)
+ZNF680_data
+fisher.test(ZNF680_data)
+```
+Integrants in my data are more likely to be enriched in ZNF680 binding sites (ChIP) than those not in my data.
+```{r}
+intermediate_data %>% 
+  group_by(cluster,my_MER,ZNF680_binding) %>% 
+  tally()
+
+ZNF680_3v1_data <- matrix(c(15,25, 4, 7), nrow = 2, byrow = FALSE)
+ZNF680_3v1_data
+fisher.test(ZNF680_3v1_data)
+```
+Integrants in set3 not significantly enriched in ZNF680 binding sites (exo-ChIP) than integrants in set1.
+
+
+```{r}
+intermediate_data %>% 
+  group_by(my_MER,p53_fullsite) %>% 
+  tally()
+
+p53full_data <- matrix(c(12,55, 10, 190), nrow = 2, byrow = FALSE)
+p53full_data
+fisher.test(p53full_data)
+
+```
+MER61E integrants in my data are more likely to contain a full p53 site than integrants not in my data.
+```{r}
+intermediate_data %>% 
+  group_by(my_MER,p53_halfsite) %>% 
+  tally()
+
+p53half_data <- matrix(c(63,4, 93, 107), nrow = 2, byrow = FALSE)
+p53half_data
+fisher.test(p53half_data)
+
+```
+MER61E integrants in my data are more likely to contain a half p53 site than integrants not in my data.
+
+```{r}
+
+
+intermediate_data %>%
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=cluster,y=closest_distance, color=case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")),
+    method = "wilcox.test")+
+  ggtitle("distance to nearest gene?")
+  
+intermediate_data %>%
+  mutate(my_MER = factor(my_MER,levels= c("yes","no"))) %>%
+  ggplot(aes(x=my_MER,y=closest_distance, color=case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(comparisons = list(c("yes", "no")),
+                                                method = "wilcox.test")+
+  ggtitle("distance to nearest gene no broken up by set")
+    
+
+
+```
+### TF enrichment:
+
+```{r MER61E TF enrichment}
+MER61E_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results_2024/MER61E_ERV1_LTR_xstreme/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+MER61E_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results_2024/MER61E_ERV1_LTR_xstreme/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+
+MER61E_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results_2024/MER61E_ERV1_LTR_xstreme/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+
+
+test_bind <- bind_rows(MER61E_sea_disc_out, MER61E_sea_known) %>% 
+  dplyr::select(DB:ENR_RATIO) %>% 
+  group_by(ID,ALT_ID, ENR_RATIO) %>% distinct() %>% 
+  dplyr::rename("consensus"="CONSENSUS")
+
+MER61E_set_data <- MER61E_xstreme %>% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(test_bind, by=c("ALT_ID"="ALT_ID","ID"="ID")) %>% 
+  mutate(diff_per=`TP%` -`FP%`) %>% 
+  dplyr::select(CLUSTER,ID,consensus,ALT_ID,EVALUE,SIM_MOTIF:motif_name,TP:diff_per)
+
+novel_MER61E <- MER61E_set_data %>% dplyr::filter(is.na(MOTIF_URL))
+found_MER61E <- MER61E_set_data %>% dplyr::filter(!is.na(MOTIF_URL))
+```
+
+
+```{r}
+novel_MER61E %>% 
+  dplyr::filter(EVALUE<0.05) %>% 
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=ENR_RATIO*.17), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./.17,name="Enrichment Ratio of Motifs"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("MER61E novel enriched motifs compared to all ERV1"))
+```
+
+
+```{r, fig.height=6, fig.width=5}
+found_MER61E %>% 
+  dplyr::filter(EVALUE<0.05) %>% 
+  group_by(motif_name) %>%
+  slice_min(EVALUE, with_ties = FALSE) %>%
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*4), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./4,name="Enrichment Ratio of regions"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("MER61 enriched motifs compared to all ERV1"))
 ```
 
