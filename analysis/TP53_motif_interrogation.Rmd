@@ -54,11 +54,6 @@ library(kableExtra)
 
 
 
-
-
-
-
-
 ## Exploring TP53 motifs across MER61 subfamily
 Testing files
 ```{r data set loading}
@@ -264,6 +259,7 @@ full_p53 <- p53_canonical_motifs("C:/Users/renee/Other_projects_data/DXR_data/TE
 kable(full_p53, caption = "TP53 full motif occupancy per TE family") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) %>%
   column_spec(1, bold = TRUE) 
+# saveRDS(full_p53,"data/full_p53_canonical.RDS")
 ```
 
 
@@ -564,7 +560,7 @@ all_mer_members_clean <- all_mer_members %>%
   group_by(Peakid) %>%
   summarise(
     repName = paste(unique(repName), collapse = ";"),
-    cluster = first(cluster),
+    cluster = dplyr::first(cluster),
     p53_bin = max(p53_bin)   # 1 if any hit
   )
 
@@ -610,6 +606,8 @@ enrich_results <- lapply(Mer_list, function(m) {
 enrichment_df <- bind_rows(enrich_results)
 
 enrichment_df
+
+# saveRDS(p53_TE_ids,"data/p53halfsite_TE_ids.RDS")
 ```
 
 
@@ -678,7 +676,7 @@ p53_enrichment_df
 ```
 
 
-```{r plot OR of MER61 enrichment}
+```{r plot OR of MER61 enrichment 3v1}
 # enrichment_df
 
 ggplot(p53_enrichment_df, aes(x = repName, y = odds_ratio)) +
@@ -998,7 +996,7 @@ Set3_KZFP_names <- KZFP_set3vset1 %>%
 
 ```
 
-```{r SET2 KZFP RNA expression}
+```{r SET3 KZFP RNA expression}
 KZFP_set3vset1 %>% 
   dplyr::filter(`E-value`<0.05) %>% 
   distinct(TF_Name) %>% 
