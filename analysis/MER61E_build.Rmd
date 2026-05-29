@@ -42,6 +42,9 @@ library(ggalluvial)
 The purpose of this page is to build a large dataframe for MER61E annotations.
 
 ```{r annotation data frames}
+# ZNF680 narrowpeak binding Hek293 ENCFF935XZI
+ZNF680_regions <- import("data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed",format = "narrowPeak")
+
 ZNF780A_regions <- import("data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed")
 MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
 
@@ -82,9 +85,9 @@ set_case_list_H3K27ac <-  H3K27ac_toptable_list %>%
   dplyr::select(genes, cluster,case,set_case)
 
 LTR10E_trajectory_broad <- readRDS("data/RDS_files/LTR10E_trajectory_broad.RDS")
-LTR10E_trajectory_detailed <- readRDS("data/RDS_files/LTR10E_trajectory_detailed.RDS")
+# LTR10E_trajectory_detailed <- readRDS("data/RDS_files/LTR10E_trajectory_detailed.RDS")
 MER61E_trajectory_broad <- readRDS("data/RDS_files/MER61E_trajectory_broad.RDS")
-MER61E_trajectory_detailed <- readRDS("data/RDS_files/MER61E_trajectory_detailed.RDS")
+# MER61E_trajectory_detailed <- readRDS("data/RDS_files/MER61E_trajectory_detailed.RDS")
 
 ```
 
@@ -264,7 +267,7 @@ hit_list[[paste0(base_name, "_", mn)]] <- hit_df
   # Combine all results into one data frame
   results_df <- do.call(rbind, results_list)
   
-  print(results_df)
+  # print(results_df)
   hits_df <- do.call(rbind, hit_list)
 
 return(list(
@@ -303,7 +306,10 @@ ZNF780A_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,ZNF780A_regions) %>%
   as.data.frame() %>% 
   pull(name) %>% 
   unique()
-
+ZNF680_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,ZNF680_regions) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
 ```
 
 
@@ -325,7 +331,8 @@ intermediate_data <-
          p53_fullsite=if_else(repID %in% p53_canonical$TE_id,"yes","no")) %>% 
   left_join(set_case_list_H3K27ac,by=c("H3K27ac_region"="genes", "cluster"="cluster")) %>% 
   left_join(MER61E_trajectory_broad,by=c("repID"="te_id", "repName"="te_name")) %>% 
-  mutate(ZNF780A_binding=if_else(repID %in%ZNF780A_overlaps_MER61E,"yes","no"))
+  mutate(ZNF780A_binding=if_else(repID %in%ZNF780A_overlaps_MER61E,"yes","no"),
+         ZNF680_binding=if_else(repID %in% ZNF680_overlaps_MER61E, "yes","no"))
   
 
 DT::datatable(intermediate_data,
@@ -496,7 +503,129 @@ plot_input <-  ggplot(trajectory_complete, aes(axis1 = `24T`,
 
 }
 
+```
 
+```{r}
+plot_trajectory_flow <- function(input_df, TE) {
+  
+  state_colors <- c(
+    "Transcription" = "#D73027",
+    "Enhancer" = "#FC8D59",
+    "Poised" = "#FEE08B",
+    "Repressed" = "#4575B4",
+    "Quiescent" = "#D9D9D9"
+  )
+  
+  axis_order <- c(
+    "DOX_24T", "DOX_24R", "DOX_144R",
+    "VEH_24T", "VEH_24R", "VEH_144R"
+  )
+  
+  # ---- DOX trajectories only ----
+  dox_summary <- input_df %>%
+    count(DOX_24T, DOX_24R, DOX_144R, name = "n") %>%
+    mutate(traj_id = paste0("DOX_", row_number()))
+  
+  dox_lodes <- dox_summary %>%
+    pivot_longer(
+      cols = c(DOX_24T, DOX_24R, DOX_144R),
+      names_to = "axis",
+      values_to = "state"
+    ) %>%
+    mutate(axis = factor(axis, levels = axis_order))
+  
+  # ---- VEH trajectories only ----
+  veh_summary <- input_df %>%
+    count(VEH_24T, VEH_24R, VEH_144R, name = "n") %>%
+    mutate(traj_id = paste0("VEH_", row_number()))
+  
+  veh_lodes <- veh_summary %>%
+    pivot_longer(
+      cols = c(VEH_24T, VEH_24R, VEH_144R),
+      names_to = "axis",
+      values_to = "state"
+    ) %>%
+    mutate(axis = factor(axis, levels = axis_order))
+  
+  # combine for strata/text layers
+  strata_df <- bind_rows(dox_lodes, veh_lodes)
+  
+  p <- ggplot() +
+    # DOX flows: color each segment by the state it comes from
+    geom_flow(
+      data = dox_lodes,
+      aes(
+        x = axis,
+        stratum = state,
+        alluvium = traj_id,
+        y = n,
+        fill = state
+      ),
+      stat = "alluvium",
+      aes.flow = "backward",
+      alpha = 0.8
+    ) +
+    # VEH flows: color each segment by the state it comes from
+    geom_flow(
+      data = veh_lodes,
+      aes(
+        x = axis,
+        stratum = state,
+        alluvium = traj_id,
+        y = n,
+        fill = state
+      ),
+      stat = "alluvium",
+      aes.flow = "backward",
+      alpha = 0.8
+    ) +
+    geom_stratum(
+      data = strata_df,
+      aes(
+        x = axis,
+        stratum = state,
+        alluvium = traj_id,
+        y = n,
+        fill = state
+      ),
+      color = "black"
+    ) +
+    geom_text(
+      data = strata_df,
+      stat = "stratum",
+      aes(
+        x = axis,
+        stratum = state,
+        y = n,
+        label = after_stat(stratum)
+      ),
+      size = 3
+    ) +
+    scale_x_discrete(
+      limits = axis_order,
+      labels = c(
+        "DOX 24T", "DOX 24R", "DOX 144R",
+        "VEH 24T", "VEH 24R", "VEH 144R"
+      ),
+      expand = c(0.08, 0.05)
+    ) +
+    scale_fill_manual(
+      values = state_colors,
+      na.value = "grey80"
+    ) +
+    labs(
+      title = paste0(TE, " regulatory-state trajectories"),
+      x = NULL,
+      y = paste0("Number of ", TE, " elements"),
+      fill = "State"
+    ) +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    )
+  
+  return(p)
+}
 ```
 
 ```{r}
@@ -508,6 +637,7 @@ filtered_trajectory_test <- MER61E_trajectory_broad %>%
                               unique()))
 
 plot_trajectory(filtered_trajectory_test,"MER61E with p53 halfsite")
+plot_trajectory_flow(filtered_trajectory_test,"MER61E with p53 halfsite")
 ```
 ```{r}
 
@@ -516,5 +646,12 @@ filtered_trajectory_780A <- MER61E_trajectory_broad %>%
   dplyr::filter(te_id %in% ZNF780A_overlaps_MER61E)
 
 plot_trajectory(filtered_trajectory_780A,"any MER61E with ZNF780A binding")
+```
+```{r}
+filtered_trajectory_680 <- MER61E_trajectory_broad %>% 
+  # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
+  dplyr::filter(te_id %in% ZNF680_overlaps_MER61E)
+
+plot_trajectory(filtered_trajectory_680,"any MER61E with ZNF680 binding")
 ```
 
