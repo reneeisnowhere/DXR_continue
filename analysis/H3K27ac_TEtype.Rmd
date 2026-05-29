@@ -72,6 +72,16 @@ KZFP_2026_list <- read_excel("data/Other_paper_data/human_protein_coding_KZFPs_D
 
 ERV1_summary_char <- read.csv(file.path("data/Other_paper_data/ERV1_file_summary.csv"))
 
+
+H3K27ac_ext200_anno <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+
+MER61E_mydata <- 
+H3K27ac_ext200_anno %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = ";") %>% 
+  dplyr::filter(repName=="MER61E")%>% 
+  pull(repID) %>% 
+  unique()
+
 ```
 
 
@@ -98,6 +108,7 @@ res <- data.frame(
 )
 
 MER61E_genes <- res %>% distinct(gene)
+MER61E_genes_myset <- res %>% dplyr::filter(ltr %in% MER61E_mydata)
 
 RNA_expressed_genes <- RNA_full_toptable %>% distinct(Entrez_ID)
 
@@ -209,6 +220,30 @@ RNA_full_toptable %>%
   geom_line()+
   ggtitle("LFC at timepoints of nearest gene to all MER61E TE")
 ```
+
+### LFC of MER61E neargenes, (MER61E in my data)
+
+```{r}
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
+  dplyr::filter(Entrez_ID %in% MER61E_genes_myset$gene) %>% 
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  ggtitle("LFC at timepoints of nearest gene to MER61E TE elements in my data")+
+  theme_bw()
+
+
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
+  dplyr::filter(Entrez_ID %in% MER61E_genes_myset$gene) %>% 
+  ggplot(., aes(x=timepoint, y=logFC, group = Entrez_ID))+
+  geom_point()+
+  geom_line()+
+  ggtitle("LFC at timepoints of nearest gene to all MER61E TE elements in my data")
+```
+
+
+
 
 
 ```{r}
