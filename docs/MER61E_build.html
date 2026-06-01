@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-05-29" />
+<meta name="date" content="2026-06-01" />
 
 <title>MER61_building dataframe</title>
 
@@ -370,7 +370,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">MER61_building dataframe</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-05-29</h4>
+<h4 class="date">2026-06-01</h4>
 
 </div>
 
@@ -399,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-05-29
+<strong>Last updated:</strong> 2026-06-01
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree2c2e4ab5a16a9a605fba4d3e5a728e7c2b3fbccbtargetblank2c2e4aba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreef8e28330692d532ce9d7014a2ef9022fe40aaaectargetblankf8e2833a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/2c2e4ab5a16a9a605fba4d3e5a728e7c2b3fbccb" target="_blank">2c2e4ab</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/f8e28330692d532ce9d7014a2ef9022fe40aaaec" target="_blank">f8e2833</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree2c2e4ab5a16a9a605fba4d3e5a728e7c2b3fbccbtargetblank2c2e4aba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreef8e28330692d532ce9d7014a2ef9022fe40aaaectargetblankf8e2833a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/2c2e4ab5a16a9a605fba4d3e5a728e7c2b3fbccb" target="_blank">2c2e4ab</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/f8e28330692d532ce9d7014a2ef9022fe40aaaec" target="_blank">f8e2833</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -603,7 +603,7 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/H3K27me3_TE_overlap_extend.Rmd
-    Modified:   analysis/TP53_motif_interrogation.Rmd
+    Modified:   analysis/LTR10E_build.Rmd
     Modified:   analysis/chromHMM_2.Rmd
     Modified:   analysis/protein_checks.Rmd
 
@@ -650,6 +650,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/f8e28330692d532ce9d7014a2ef9022fe40aaaec/analysis/MER61E_build.Rmd" target="_blank">f8e2833</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-01
+</td>
+<td>
+updates
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/b4a0ed0fd478f8cbe6614e7c60c413e541c059c9/docs/MER61E_build.html" target="_blank">b4a0ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-29
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1353,7 +1387,7 @@ ZNF680_overlaps_MER61E &lt;- subsetByOverlaps(MER61E_regions,ZNF680_regions) %&g
   left_join(LTR_df, by=c(&quot;repID&quot;=&quot;RM_id&quot;)) %&gt;% 
   mutate(my_MER=if_else(repID %in% MER61E_mydata, &quot;yes&quot;,&quot;no&quot;),
          p53_halfsite =if_else(repID %in% p53halfsite_TE_ids$Peakid, &quot;yes&quot;,&quot;no&quot;),
-         p53_fullsite=if_else(repID %in% p53_canonical$TE_id,&quot;yes&quot;,&quot;no&quot;)) %&gt;% 
+         p53_fullsite=if_else(repID %in% full_p53_canonical$TE_id,&quot;yes&quot;,&quot;no&quot;)) %&gt;% 
   left_join(set_case_list_H3K27ac,by=c(&quot;H3K27ac_region&quot;=&quot;genes&quot;, &quot;cluster&quot;=&quot;cluster&quot;)) %&gt;% 
   left_join(MER61E_trajectory_broad,by=c(&quot;repID&quot;=&quot;te_id&quot;, &quot;repName&quot;=&quot;te_name&quot;)) %&gt;% 
   mutate(ZNF780A_binding=if_else(repID %in%ZNF780A_overlaps_MER61E,&quot;yes&quot;,&quot;no&quot;),
@@ -1830,6 +1864,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b4a0ed0fd478f8cbe6614e7c60c413e541c059c9/docs/figure/MER61E_build.Rmd/unnamed-chunk-8-1.png" target="_blank">b4a0ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-29
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/abbf149900384b1600fa3c83c950b0793d5847bb/docs/figure/MER61E_build.Rmd/unnamed-chunk-8-1.png" target="_blank">abbf149</a>
 </td>
 <td>
@@ -1845,20 +1890,168 @@ reneeisnowhere
 </div>
 <pre class="r"><code>plot_trajectory_flow(filtered_trajectory_test,&quot;MER61E with p53 halfsite&quot;)</code></pre>
 <p><img src="figure/MER61E_build.Rmd/unnamed-chunk-8-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b4a0ed0fd478f8cbe6614e7c60c413e541c059c9/docs/figure/MER61E_build.Rmd/unnamed-chunk-8-2.png" target="_blank">b4a0ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_trajectory(MER61E_trajectory_broad,&quot;all MER61E elements&quot;)</code></pre>
 <p><img src="figure/MER61E_build.Rmd/unnamed-chunk-9-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b4a0ed0fd478f8cbe6614e7c60c413e541c059c9/docs/figure/MER61E_build.Rmd/unnamed-chunk-9-1.png" target="_blank">b4a0ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>filtered_trajectory_780A &lt;- MER61E_trajectory_broad %&gt;% 
   # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %&gt;% 
   dplyr::filter(te_id %in% ZNF780A_overlaps_MER61E)
 
 plot_trajectory(filtered_trajectory_780A,&quot;any MER61E with ZNF780A binding&quot;)</code></pre>
 <p><img src="figure/MER61E_build.Rmd/780a%20plot-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-780a-plot-1">
+Past versions of "780a plot-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-780a-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b4a0ed0fd478f8cbe6614e7c60c413e541c059c9/docs/figure/MER61E_build.Rmd/780a plot-1.png" target="_blank">b4a0ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>filtered_trajectory_680 &lt;- MER61E_trajectory_broad %&gt;% 
   # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %&gt;% 
   dplyr::filter(te_id %in% ZNF680_overlaps_MER61E)
 
 plot_trajectory(filtered_trajectory_680,&quot;any MER61E with ZNF680 binding&quot;)</code></pre>
 <p><img src="figure/MER61E_build.Rmd/unnamed-chunk-10-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b4a0ed0fd478f8cbe6614e7c60c413e541c059c9/docs/figure/MER61E_build.Rmd/unnamed-chunk-10-1.png" target="_blank">b4a0ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>intermediate_data %&gt;% 
   group_by(cluster,my_MER,overall_compare) %&gt;%
   tally()</code></pre>
@@ -2096,6 +2289,43 @@ site than integrants not in my data.</p>
     method = &quot;wilcox.test&quot;)+
   ggtitle(&quot;distance to nearest gene?&quot;)</code></pre>
 <p><img src="figure/MER61E_build.Rmd/unnamed-chunk-18-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b4a0ed0fd478f8cbe6614e7c60c413e541c059c9/docs/figure/MER61E_build.Rmd/unnamed-chunk-18-1.png" target="_blank">b4a0ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>intermediate_data %&gt;%
   mutate(my_MER = factor(my_MER,levels= c(&quot;yes&quot;,&quot;no&quot;))) %&gt;%
   ggplot(aes(x=my_MER,y=closest_distance, color=case))+
@@ -2103,8 +2333,47 @@ site than integrants not in my data.</p>
   ggpubr::stat_compare_means(comparisons = list(c(&quot;yes&quot;, &quot;no&quot;)),
                                                 method = &quot;wilcox.test&quot;)+
   ggtitle(&quot;distance to nearest gene no broken up by set&quot;)</code></pre>
-<p><img src="figure/MER61E_build.Rmd/unnamed-chunk-18-2.png" alt="" width="672" style="display: block; margin: auto;" />
-### TF enrichment:</p>
+<p><img src="figure/MER61E_build.Rmd/unnamed-chunk-18-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-2">
+Past versions of unnamed-chunk-18-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b4a0ed0fd478f8cbe6614e7c60c413e541c059c9/docs/figure/MER61E_build.Rmd/unnamed-chunk-18-2.png" target="_blank">b4a0ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="tf-enrichment" class="section level3">
+<h3>TF enrichment:</h3>
 <pre class="r"><code>MER61E_sea_disc_out &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results_2024/MER61E_ERV1_LTR_xstreme/sea_disc_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;disc&quot;) %&gt;% slice_head(n = length(.$ID)-3)
 
 MER61E_sea_known &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results_2024/MER61E_ERV1_LTR_xstreme/sea_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;known&quot;) %&gt;% slice_head(n = length(.$ID)-3)
@@ -2142,6 +2411,43 @@ found_MER61E &lt;- MER61E_set_data %&gt;% dplyr::filter(!is.na(MOTIF_URL))</code
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;MER61E novel enriched motifs compared to all ERV1&quot;))</code></pre>
 <p><img src="figure/MER61E_build.Rmd/unnamed-chunk-19-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b4a0ed0fd478f8cbe6614e7c60c413e541c059c9/docs/figure/MER61E_build.Rmd/unnamed-chunk-19-1.png" target="_blank">b4a0ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>found_MER61E %&gt;% 
   dplyr::filter(EVALUE&lt;0.05) %&gt;% 
   group_by(motif_name) %&gt;%
@@ -2149,12 +2455,49 @@ found_MER61E &lt;- MER61E_set_data %&gt;% dplyr::filter(!is.na(MOTIF_URL))</code
    mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
   ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
   geom_col(aes(x=log10Evalue))+
-  geom_point(aes(x=`TP%`*4), size =4)+
-  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./4,name=&quot;Enrichment Ratio of regions&quot;))+
+  geom_point(aes(x=ENR_RATIO*.25), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./.25,name=&quot;Enrichment Ratio of regions&quot;))+
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;MER61 enriched motifs compared to all ERV1&quot;))</code></pre>
 <p><img src="figure/MER61E_build.Rmd/unnamed-chunk-20-1.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
+Past versions of unnamed-chunk-20-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b4a0ed0fd478f8cbe6614e7c60c413e541c059c9/docs/figure/MER61E_build.Rmd/unnamed-chunk-20-1.png" target="_blank">b4a0ed0</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
