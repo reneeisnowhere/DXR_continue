@@ -328,7 +328,7 @@ intermediate_data <-
   left_join(LTR_df, by=c("repID"="RM_id")) %>% 
   mutate(my_MER=if_else(repID %in% MER61E_mydata, "yes","no"),
          p53_halfsite =if_else(repID %in% p53halfsite_TE_ids$Peakid, "yes","no"),
-         p53_fullsite=if_else(repID %in% p53_canonical$TE_id,"yes","no")) %>% 
+         p53_fullsite=if_else(repID %in% full_p53_canonical$TE_id,"yes","no")) %>% 
   left_join(set_case_list_H3K27ac,by=c("H3K27ac_region"="genes", "cluster"="cluster")) %>% 
   left_join(MER61E_trajectory_broad,by=c("repID"="te_id", "repName"="te_name")) %>% 
   mutate(ZNF780A_binding=if_else(repID %in%ZNF780A_overlaps_MER61E,"yes","no"),
@@ -831,8 +831,8 @@ found_MER61E %>%
    mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
   ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
   geom_col(aes(x=log10Evalue))+
-  geom_point(aes(x=`TP%`*4), size =4)+
-  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./4,name="Enrichment Ratio of regions"))+
+  geom_point(aes(x=ENR_RATIO*.25), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./.25,name="Enrichment Ratio of regions"))+
   theme_classic()+
   ylab("Enriched TF motif")+
   ggtitle(paste("MER61 enriched motifs compared to all ERV1"))
