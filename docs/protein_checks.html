@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-05-22" />
+<meta name="date" content="2026-06-02" />
 
 <title>Protein_checks</title>
 
@@ -372,7 +372,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Protein_checks</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-05-22</h4>
+<h4 class="date">2026-06-02</h4>
 
 </div>
 
@@ -401,7 +401,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-05-22
+<strong>Last updated:</strong> 2026-06-02
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -532,15 +532,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree3148f03eadfdcccbf4d80f5e5be571c8db05d4dbtargetblank3148f03a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree29a25f8a4543a1e141f50b0b9bff67fac91b66b0targetblank29a25f8a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/3148f03eadfdcccbf4d80f5e5be571c8db05d4db" target="_blank">3148f03</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/29a25f8a4543a1e141f50b0b9bff67fac91b66b0" target="_blank">29a25f8</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree3148f03eadfdcccbf4d80f5e5be571c8db05d4dbtargetblank3148f03a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree29a25f8a4543a1e141f50b0b9bff67fac91b66b0targetblank29a25f8a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -550,7 +550,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/3148f03eadfdcccbf4d80f5e5be571c8db05d4db" target="_blank">3148f03</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/29a25f8a4543a1e141f50b0b9bff67fac91b66b0" target="_blank">29a25f8</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -567,11 +567,11 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
+    Ignored:    data/H3K27ac_MER61E_integrant_anno.RDS
     Ignored:    data/MER61intermediatemarking_protein.RDS
     Ignored:    data/Other_paper_data/
     Ignored:    data/RDS_files/
@@ -579,9 +579,11 @@ Ignored files:
     Ignored:    data/alignment_summary.txt
     Ignored:    data/all_peak_final_dataframe.txt
     Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_p53_canonical.RDS
     Ignored:    data/full_summary_QC_metrics.txt
     Ignored:    data/motif_lists/
     Ignored:    data/number_frag_peaks_summary.txt
+    Ignored:    data/p53halfsite_TE_ids.RDS
 
 Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
@@ -603,7 +605,6 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/H3K27me3_TE_overlap_extend.Rmd
-    Modified:   analysis/TP53_motif_interrogation.Rmd
     Modified:   analysis/chromHMM_2.Rmd
 
 </code></pre>
@@ -649,6 +650,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/29a25f8a4543a1e141f50b0b9bff67fac91b66b0/analysis/protein_checks.Rmd" target="_blank">29a25f8</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-02
+</td>
+<td>
+wflow_publish("analysis/protein_checks.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/2f4f37bfcd32bed26820bed8745e454c447df76d/docs/protein_checks.html" target="_blank">2f4f37b</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1047,6 +1082,7 @@ protein_module_split &lt;- split(module_ids,module_ids$Module)
 gene_universe &lt;- intersect(module_ids$ENTREZID,H3K27ac_ext200_anno$geneId)
 length(intersect(background_genes,gene_universe))</code></pre>
 <pre><code>[1] 3660</code></pre>
+<pre class="r"><code># saveRDS(module_ids,&quot;data/Other_paper_data/Protein_paper_assigned_lookup.RDS&quot;)</code></pre>
 <p>Now I am going to iterate over the split list and for each module
 list get a count of module genes/overlaps and background counts and
 perform a Fisher test for general enrichment over background</p>
@@ -1924,6 +1960,57 @@ sample estimates:
 odds ratio 
   1.208523 </code></pre>
 </div>
+<div id="mer61e-specific-tests" class="section level3">
+<h3>MER61E specific tests</h3>
+<p>What about neargenes to MER61E? Are more DAPs associated with MER61E
+than MER61B?</p>
+<pre class="r"><code>MER61E_anno_genes &lt;- readRDS(&quot;data/RDS_files/MER61E_anno_genes.RDS&quot;)
+MER61B_anno_genes &lt;- readRDS(&quot;data/RDS_files/MER61B_anno_genes.RDS&quot;)
+
+MER61E_anno_genes %&gt;% 
+  mutate(is_DAP= ENTREZID %in% DAP_IDs$ENTREZID) %&gt;% 
+  group_by(cluster,is_DAP) %&gt;% 
+  count</code></pre>
+<pre><code># A tibble: 4 × 3
+# Groups:   cluster, is_DAP [4]
+  cluster      is_DAP     n
+  &lt;chr&gt;        &lt;lgl&gt;  &lt;int&gt;
+1 Set_1        FALSE     11
+2 Set_3        FALSE     40
+3 not_assigned FALSE     16
+4 &lt;NA&gt;         FALSE    200</code></pre>
+<pre class="r"><code>MER61B_anno_genes %&gt;% 
+  mutate(is_DAP= ENTREZID %in% DAP_IDs$ENTREZID) %&gt;% 
+  group_by(cluster,is_DAP) %&gt;% 
+  count</code></pre>
+<pre><code># A tibble: 4 × 3
+# Groups:   cluster, is_DAP [4]
+  cluster      is_DAP     n
+  &lt;chr&gt;        &lt;lgl&gt;  &lt;int&gt;
+1 Set_1        FALSE      5
+2 not_assigned FALSE      3
+3 &lt;NA&gt;         FALSE    342
+4 &lt;NA&gt;         TRUE       5</code></pre>
+<pre class="r"><code>a_MERE=0
+b_MERE_noDAP=267
+c_MERB=5
+d_MERB_noDAP=350
+
+fisher.test(matrix(c(a_MERE,b_MERE_noDAP,c_MERB,d_MERB_noDAP),nrow=2,byrow = FALSE))</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  matrix(c(a_MERE, b_MERE_noDAP, c_MERB, d_MERB_noDAP), nrow = 2, byrow = FALSE)
+p-value = 0.07409
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.000000 1.444495
+sample estimates:
+odds ratio 
+         0 </code></pre>
+<p>Well, disappointing that no MER61E assigned near genes overlap a DAP.
+(Assignment of neargenes was done by GREAT website app)</p>
+</div>
 <div id="kzfp" class="section level3">
 <h3>KZFP</h3>
 <p>just trying to see if KZFPs are in protein data.</p>
@@ -2047,7 +2134,55 @@ mer61E_gr %&gt;%
   mutate(my_MER=if_else(name %in%MER61E_mydata,&quot;in&quot;,&quot;out&quot;)) %&gt;% 
   ggplot(aes(x=distance_to_gene, color=my_MER))+
   geom_density()</code></pre>
-<p><img src="figure/protein_checks.Rmd/unnamed-chunk-12-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/protein_checks.Rmd/unnamed-chunk-13-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/afe0d0b2719c97bfc968300d5976f304845ba69d/docs/figure/protein_checks.Rmd/unnamed-chunk-13-1.png" target="_blank">afe0d0b</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0f5e3ddfdc6fb3f661995e0509706d56226ebd4/docs/figure/protein_checks.Rmd/unnamed-chunk-13-1.png" target="_blank">a0f5e3d</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>mer61E_gr %&gt;% 
   as.data.frame() %&gt;% 
   mutate(my_MER=if_else(name %in%MER61E_mydata,&quot;in&quot;,&quot;out&quot;)) %&gt;% 
