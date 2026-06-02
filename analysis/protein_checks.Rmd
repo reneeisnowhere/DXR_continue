@@ -227,7 +227,7 @@ protein_module_split <- split(module_ids,module_ids$Module)
 
 gene_universe <- intersect(module_ids$ENTREZID,H3K27ac_ext200_anno$geneId)
 length(intersect(background_genes,gene_universe))
-
+# saveRDS(module_ids,"data/Other_paper_data/Protein_paper_assigned_lookup.RDS")
 ```
 
 Now I am going to iterate over the split list and for each module list get a count of module genes/overlaps and background counts and perform a Fisher test for general enrichment over background
@@ -743,6 +743,32 @@ set3vset2alpha_mat <- matrix(c(143,4710,31,1234),nrow=2,byrow = TRUE)
 fisher.test(set3vset2alpha_mat)
 
 ```
+### MER61E specific tests
+
+What about neargenes to MER61E?  Are more DAPs associated with MER61E than MER61B?
+
+```{r}
+MER61E_anno_genes <- readRDS("data/RDS_files/MER61E_anno_genes.RDS")
+MER61B_anno_genes <- readRDS("data/RDS_files/MER61B_anno_genes.RDS")
+
+MER61E_anno_genes %>% 
+  mutate(is_DAP= ENTREZID %in% DAP_IDs$ENTREZID) %>% 
+  group_by(cluster,is_DAP) %>% 
+  count
+
+MER61B_anno_genes %>% 
+  mutate(is_DAP= ENTREZID %in% DAP_IDs$ENTREZID) %>% 
+  group_by(cluster,is_DAP) %>% 
+  count
+a_MERE=0
+b_MERE_noDAP=267
+c_MERB=5
+d_MERB_noDAP=350
+
+fisher.test(matrix(c(a_MERE,b_MERE_noDAP,c_MERB,d_MERB_noDAP),nrow=2,byrow = FALSE))
+```
+
+Well, disappointing that no MER61E assigned near genes overlap a DAP.  (Assignment of neargenes was done by GREAT website app)
 
 
 
