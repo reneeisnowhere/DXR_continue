@@ -37,6 +37,8 @@ library(DT)
 library(ComplexHeatmap)
 library(circlize)
 library(ggalluvial)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
 ```
 
 The purpose of this page is to build a large dataframe for MER61E annotations.
@@ -89,6 +91,17 @@ LTR10E_trajectory_broad <- readRDS("data/RDS_files/LTR10E_trajectory_broad.RDS")
 MER61E_trajectory_broad <- readRDS("data/RDS_files/MER61E_trajectory_broad.RDS")
 # MER61E_trajectory_detailed <- readRDS("data/RDS_files/MER61E_trajectory_detailed.RDS")
 
+HALLMARK_DNA_REPAIR <- read_csv("data/Other_paper_data/HALLMARK_DNA_REPAIR.v2026.1.Hs.tsv", 
+    skip = 16) %>% 
+  pivot_longer(everything()) %>% 
+ dplyr::filter(name !="SOURCE_MEMBERS\tAAAS") %>% 
+  pull(value)
+ 
+ DNA_repair <- 
+ AnnotationDbi::select(org.Hs.eg.db,
+  keys = HALLMARK_DNA_REPAIR,   # your UniProt IDs
+  keytype = "SYMBOL",
+  columns = c("SYMBOL", "ENTREZID"))
 ```
 
 
@@ -317,7 +330,7 @@ ZNF680_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,ZNF680_regions) %>%
 ### MER61E making of data frame  
 
 ```{r}
-intermediate_data <-
+mintermediate_data <-
   MER61E_anno_genes %>% 
   left_join(protein_info,by=c("repID"="X1")) %>% 
   left_join(Peakid_lookup_repID) %>% 
@@ -340,10 +353,11 @@ intermediate_data <-
   dplyr::mutate(overall_compare = dplyr::case_when(DOX_24T == VEH_24T & 
                                                      DOX_24R == VEH_24R &
                                                      DOX_144R == VEH_144R ~"same_all_timepoints",
-                                                   TRUE ~ "different_at_one_or_more_timepoints"))
+                                                   TRUE ~ "different_at_one_or_more_timepoints")) %>% 
+  mutate(is_DNA_repair=ENTREZID%in% DNA_repair$ENTREZID)
   
 
-DT::datatable(intermediate_data,
+DT::datatable(mintermediate_data,
               options=list(scrollX = TRUE,
                            scrollY="500px",
                            paging=TRUE,
@@ -353,11 +367,11 @@ DT::datatable(intermediate_data,
 ```{r}
 
 
-intermediate_data %>% 
+mintermediate_data %>% 
   dplyr::group_by(my_MER,cluster) %>% 
   summarize("total"=dplyr::n(),avg_milliDiv=mean(milliDiv))
 
-intermediate_data %>% 
+mintermediate_data %>% 
   mutate(
     cluster = as.character(cluster),
     cluster = if_else(is.na(cluster), "NA", cluster),
@@ -382,7 +396,7 @@ intermediate_data %>%
 ```
 
 ```{r}
-intermediate_data %>% 
+mintermediate_data %>% 
   mutate(
     cluster = as.character(cluster),
     cluster = if_else(is.na(cluster), "NA", cluster),
@@ -404,7 +418,7 @@ intermediate_data %>%
        subtitle="Pairwise Wilcoxon rank-sum tests")
 
 
-intermediate_data %>% 
+mintermediate_data %>% 
   mutate(
     cluster = as.character(cluster),
     cluster = if_else(is.na(cluster), "NA", cluster),
@@ -427,7 +441,7 @@ intermediate_data %>%
 ```
 
 ```{r}
-intermediate_data %>% 
+mintermediate_data %>% 
   # group_by(p53_halfsite) %>% #, p53_fullsite,cluster) %>% 
   mutate(
     cluster = as.character(cluster),
@@ -584,7 +598,7 @@ plot_trajectory_flow <- function(input_df, TE) {
         fill = state
       ),
       stat = "alluvium",
-      aes.flow = "backward",
+      aes.flow = "forward",
       alpha = 0.8
     ) +
     geom_stratum(
@@ -636,17 +650,30 @@ plot_trajectory_flow <- function(input_df, TE) {
 }
 ```
 
-```{r}
-filtered_trajectory_test <- MER61E_trajectory_broad %>% 
+```{r p53half site traj}
+mfiltered_trajectory_test <- MER61E_trajectory_broad %>% 
   dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
   dplyr::filter(te_id %in% (p53halfsite_TE_ids %>% 
                               dplyr::filter(TE_name=="MER61E_ERV1_LTR") %>%
                               pull(Peakid) %>% 
                               unique()))
 
-plot_trajectory(filtered_trajectory_test,"MER61E with p53 halfsite")
-plot_trajectory_flow(filtered_trajectory_test,"MER61E with p53 halfsite")
+plot_trajectory(mfiltered_trajectory_test,"MER61E with p53 halfsite")
+plot_trajectory_flow(mfiltered_trajectory_test,"MER61E with p53 halfsite")
 ```
+
+```{r p53full site traj}
+mfilteredfull_trajectory_test <- MER61E_trajectory_broad %>% 
+  dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
+  dplyr::filter(te_id %in% (full_p53_canonical %>% 
+                              dplyr::filter(TE_name=="MER61E_ERV1_LTR") %>%
+                              pull(TE_id) %>% 
+                              unique()))
+
+plot_trajectory(mfilteredfull_trajectory_test,"MER61E with p53 fullsite")
+plot_trajectory_flow(mfilteredfull_trajectory_test,"MER61E with p53 fullsite")
+```
+
 
 ```{r}
 plot_trajectory(MER61E_trajectory_broad,"all MER61E elements")
@@ -669,7 +696,7 @@ filtered_trajectory_680 <- MER61E_trajectory_broad %>%
 plot_trajectory(filtered_trajectory_680,"any MER61E with ZNF680 binding")
 ```
 ```{r}
-intermediate_data %>% 
+mintermediate_data %>% 
   group_by(cluster,my_MER,overall_compare) %>%
   tally()
 matdata <- matrix(c(61,6, 49, 151), nrow = 2, byrow = FALSE)
@@ -677,7 +704,7 @@ matdata
 fisher.test(matdata)
 ```
 ```{r}
-intermediate_data %>% 
+mintermediate_data %>% 
   group_by(my_MER,ZNF780A_binding) %>% 
   tally()
 
@@ -689,7 +716,7 @@ fisher.test(ZNF780A_data)
 Integrants in my data not significantly enriched in ZNF780A binding sites (exo-ChIP) than integrants not in my data.
 
 ```{r}
-intermediate_data %>% 
+mintermediate_data %>% 
   group_by(cluster,my_MER,ZNF780A_binding) %>% 
   tally()
 
@@ -702,7 +729,7 @@ Integrants in set3 not significantly enriched in ZNF780A binding sites (exo-ChIP
 
 
 ```{r}
-intermediate_data %>% 
+mintermediate_data %>% 
   group_by(my_MER,ZNF680_binding) %>% 
   tally()
 
@@ -712,7 +739,7 @@ fisher.test(ZNF680_data)
 ```
 Integrants in my data are more likely to be enriched in ZNF680 binding sites (ChIP) than those not in my data.
 ```{r}
-intermediate_data %>% 
+mintermediate_data %>% 
   group_by(cluster,my_MER,ZNF680_binding) %>% 
   tally()
 
@@ -724,7 +751,7 @@ Integrants in set3 not significantly enriched in ZNF680 binding sites (exo-ChIP)
 
 
 ```{r}
-intermediate_data %>% 
+mintermediate_data %>% 
   group_by(my_MER,p53_fullsite) %>% 
   tally()
 
@@ -735,7 +762,7 @@ fisher.test(p53full_data)
 ```
 MER61E integrants in my data are more likely to contain a full p53 site than integrants not in my data.
 ```{r}
-intermediate_data %>% 
+mintermediate_data %>% 
   group_by(my_MER,p53_halfsite) %>% 
   tally()
 
@@ -749,7 +776,7 @@ MER61E integrants in my data are more likely to contain a half p53 site than int
 ```{r}
 
 
-intermediate_data %>%
+mintermediate_data %>%
   mutate(
     cluster = as.character(cluster),
     cluster = if_else(is.na(cluster), "NA", cluster),
@@ -766,7 +793,7 @@ intermediate_data %>%
     method = "wilcox.test")+
   ggtitle("distance to nearest gene?")
   
-intermediate_data %>%
+mintermediate_data %>%
   mutate(my_MER = factor(my_MER,levels= c("yes","no"))) %>%
   ggplot(aes(x=my_MER,y=closest_distance, color=case))+
   smplot2::sm_boxplot(legends = TRUE)+
@@ -836,5 +863,12 @@ found_MER61E %>%
   theme_classic()+
   ylab("Enriched TF motif")+
   ggtitle(paste("MER61 enriched motifs compared to all ERV1"))
+```
+
+```{r}
+
+mintermediate_data %>% 
+  group_by(my_MER,cluster, is_DNA_repair) %>% 
+  tally()
 ```
 

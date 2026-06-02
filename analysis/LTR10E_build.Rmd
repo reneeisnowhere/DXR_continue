@@ -435,8 +435,10 @@ LTR10E_intermediate_data %>%
   labs(title = "LTR10E milliIns dispersion in groups",
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
+#### P53 halfsite plot 
 
-```{r}
+
+```{r halfsite53 plot}
 LTR10E_intermediate_data %>% 
   # group_by(p53_halfsite) %>% #, p53_fullsite,cluster) %>% 
   mutate(
@@ -594,7 +596,7 @@ plot_trajectory_flow <- function(input_df, TE) {
         fill = state
       ),
       stat = "alluvium",
-      aes.flow = "backward",
+      aes.flow = "forward",
       alpha = 0.8
     ) +
     geom_stratum(
@@ -646,19 +648,33 @@ plot_trajectory_flow <- function(input_df, TE) {
 }
 ```
 
+####  p53 trajectory half site  
+
+
 ```{r}
-filtered_trajectory_test <- LTR10E_trajectory_broad %>% 
+lfiltered_trajectory_test <- LTR10E_trajectory_broad %>% 
   dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
   dplyr::filter(te_id %in% (p53halfsite_TE_ids %>% 
                               dplyr::filter(TE_name=="LTR10E_ERV1_LTR") %>%
                               pull(Peakid) %>% 
                               unique()))
 
-plot_trajectory(filtered_trajectory_test,"LTR10E with p53 halfsite")
-plot_trajectory_flow(filtered_trajectory_test,"LTR10E with p53 halfsite")
+plot_trajectory(lfiltered_trajectory_test,"LTR10E with p53 halfsite")
+plot_trajectory_flow(lfiltered_trajectory_test,"LTR10E with p53 halfsite")
+```
+```{r cannonical p53 traj}
+filteredfull_trajectory_test <- LTR10E_trajectory_broad %>% 
+  dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
+  dplyr::filter(te_id %in% (full_p53_canonical %>% 
+                              dplyr::filter(TE_name=="LTR10E_ERV1_LTR") %>%
+                              pull(TE_id) %>% 
+                              unique()))
+
+plot_trajectory(filteredfull_trajectory_test,"LTR10E with p53 fullsite")
+plot_trajectory_flow(filteredfull_trajectory_test,"LTR10E with p53 fullsite")
 ```
 
-```{r}
+```{r alLTR10E traj}
 plot_trajectory(LTR10E_trajectory_broad,"all LTR10E elements")
 ```
 
@@ -743,6 +759,7 @@ LTR10E_intermediate_data %>%
 
 
 ```
+ 
 ### TF enrichment:
 
 ```{r LTR10E TF enrichment}
@@ -802,5 +819,33 @@ found_LTR10E %>%
   theme_classic()+
   ylab("Enriched TF motif")+
   ggtitle(paste("LTR10 enriched motifs compared to all ERV1"))
+```
+
+```{r}
+greenmod <- protein_module_ids %>% 
+  dplyr::filter(!is.na(ENTREZID)) %>% 
+  dplyr::filter(Module=="green") %>% 
+  distinct(ENTREZID)
+allmod <- protein_module_ids %>% 
+  dplyr::filter(!is.na(ENTREZID)) %>% 
+  distinct(ENTREZID)
+
+H3K27ac_ext200_anno %>% 
+  # dplyr::filter(cluster=="Set_1") %>%
+  distinct(geneId,cluster) %>%
+  mutate(greenmod=geneId %in% greenmod$ENTREZID) %>% 
+  mutate(allmod=geneId %in% allmod$ENTREZID) %>% 
+  group_by(cluster, greenmod, allmod) %>% 
+  tally()
+
+set3vset1mod <- matrix(c(143,761,516,3069),nrow = 2,byrow = TRUE)
+fisher.test(set3vset1mod)
+
+set3vset2mod <- matrix(c(143,761,31,188),nrow = 2,byrow = TRUE)
+fisher.test(set3vset2mod)
+
+set2vset1mod <- matrix(c(31,188,516,3069),nrow = 2,byrow = TRUE)
+fisher.test(set3vset1mod)
+
 ```
 
