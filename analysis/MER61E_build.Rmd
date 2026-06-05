@@ -39,6 +39,7 @@ library(circlize)
 library(ggalluvial)
 library(AnnotationDbi)
 library(org.Hs.eg.db)
+
 ```
 
 The purpose of this page is to build a large dataframe for MER61E annotations.
@@ -51,8 +52,8 @@ ZNF780A_regions <- import("data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZN
 MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
 
 H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
- H3K27ac_summit_gr_ext <- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
-
+ H3K27ac_summit_gr_ext <- GenomicRanges::resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
+# export(H3K27ac_summit_gr_ext,"data/Bed_exports/H3K27ac_summit_gr_ext.bed")
 peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
 
 H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
@@ -102,6 +103,70 @@ HALLMARK_DNA_REPAIR <- read_csv("data/Other_paper_data/HALLMARK_DNA_REPAIR.v2026
   keys = HALLMARK_DNA_REPAIR,   # your UniProt IDs
   keytype = "SYMBOL",
   columns = c("SYMBOL", "ENTREZID"))
+ 
+ DOX_24_ATAC <- readRDS("data/Other_paper_data/Matthews_2025_DOX_24h_ATAC.RDS")
+ DOX_24_DAR_gr <- DOX_24_ATAC %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(peak) %>% 
+  separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %>% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand="*")
+DOX_24_CAR_gr <- DOX_24_ATAC %>% 
+  dplyr::filter(adj.P.Val>0.05) %>% 
+  dplyr::select(peak) %>% 
+  separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %>% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand="*")
+mcols(DOX_24_CAR_gr)$name <- mcols(DOX_24_CAR_gr)$peak
+mcols(DOX_24_DAR_gr)$name <- mcols(DOX_24_DAR_gr)$peak
+
+H3K27ac_summit_gr_ext <- keepStandardChromosomes(
+  H3K27ac_summit_gr_ext,
+  pruning.mode = "coarse"
+)
+phyloP_df <- read.delim(
+  "C:/Users/renee/Other_projects_data/genome_files/H3K27ac_summit_phyloP.tsv",
+  na.strings = "",
+  stringsAsFactors = FALSE)
+### because some (6,691) regions have more than one summit ext region:
+
+phyloP_df$Peakid <- H3K27ac_summit_gr_ext$Peakid
+phyloP_df$width <- width(H3K27ac_summit_gr_ext)
+
+peak_phyloP_by_id <- phyloP_df %>%
+  group_by(Peakid) %>%
+  summarise(
+    n_summit_regions = n(),
+    total_summit_width = sum(width, na.rm = TRUE),
+    peak_phyloP_mean = weighted.mean(phyloP_mean, w = width, na.rm = TRUE),
+    peak_phyloP_max = ifelse(all(is.na(phyloP_max)),NA_real_,
+      max(phyloP_max, na.rm = TRUE)),  .groups = "drop")
+idx <-match(H3K27ac_summit_gr_ext$Peakid,peak_phyloP_by_id$Peakid)
+
+
+mcols(H3K27ac_summit_gr_ext)$phyloP_mean <- phyloP_df$phyloP_mean
+mcols(H3K27ac_summit_gr_ext)$phyloP_max  <- phyloP_df$phyloP_max
+mcols(H3K27ac_summit_gr_ext)$peak_phyloP_mean <- peak_phyloP_by_id$peak_phyloP_mean[idx]
+mcols(H3K27ac_summit_gr_ext)$peak_phyloP_max <- peak_phyloP_by_id$peak_phyloP_max[idx]
+mcols(H3K27ac_summit_gr_ext)$n_summit_regions <- peak_phyloP_by_id$n_summit_regions[idx]
+
+
+p53_sp_ChIP <- rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP57_VEH_p53_Ind6/MCW_SP_ChIP57_VEH_p53_Ind6_q0.05_peaks.narrowPeak",format = "narrowPeak")
+
+CTCF_sp_ChIP <-  rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP63_VEH_CTCF_Ind1/MCW_SP_ChIP63_VEH_CTCF_Ind1_q0.05_peaks.narrowPeak",format = "narrowPeak")
+
+RAD21_sp_ChIP <-  rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP69_VEH_RAD21_Ind1/MCW_SP_ChIP69_VEH_RAD21_Ind1_q0.05_peaks.narrowPeak",format = "narrowPeak")
+
+TOP2B_sp_ChIP <-  rtracklayer::import("data/Other_paper_data/ChIP3_TOP2B_CM_87-1.bed")
+
 ```
 
 
@@ -323,8 +388,51 @@ ZNF680_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,ZNF680_regions) %>%
   as.data.frame() %>% 
   pull(name) %>% 
   unique()
+
+p53_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,p53_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+CTCF_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,CTCF_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+RAD21_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,RAD21_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+TOP2B_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,TOP2B_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
 ```
 
+```{r overlappig DARs and CARs}
+
+DAR_set <- subsetByOverlaps(MER61E_regions,DOX_24_DAR_gr)
+DAR_MER61E_set <- DAR_set %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+CAR_set <- subsetByOverlaps(MER61E_regions,DOX_24_CAR_gr)
+CAR_MER61E_set <- CAR_set %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+```
+
+getting phyloP added per region:
+```{r}
+phyloP_calc_df <- H3K27ac_summit_gr_ext %>% 
+  as.data.frame() %>% 
+  dplyr::select(Peakid,cluster, name,peak_phyloP_max,peak_phyloP_mean) %>% distinct()
+    
+```
 
 
 ### MER61E making of data frame  
@@ -345,7 +453,11 @@ mintermediate_data <-
   left_join(set_case_list_H3K27ac,by=c("H3K27ac_region"="genes", "cluster"="cluster")) %>% 
   left_join(MER61E_trajectory_broad,by=c("repID"="te_id", "repName"="te_name")) %>% 
   mutate(ZNF780A_binding=if_else(repID %in%ZNF780A_overlaps_MER61E,"yes","no"),
-         ZNF680_binding=if_else(repID %in% ZNF680_overlaps_MER61E, "yes","no")) %>% 
+         ZNF680_binding=if_else(repID %in% ZNF680_overlaps_MER61E, "yes","no"),
+         sp_p53_binding=if_else(repID %in% p53_overlaps_MER61E, "yes","no"),
+              sp_CTCF_binding=if_else(repID %in% CTCF_overlaps_MER61E, "yes","no"),
+         sp_RAD21_binding=if_else(repID %in% RAD21_overlaps_MER61E, "yes","no"),
+         sp_TOP2B_binding=if_else(repID %in% TOP2B_overlaps_MER61E, "yes","no"),) %>% 
   dplyr::mutate(
     state_24T_compare = dplyr::if_else(DOX_24T == VEH_24T, "same", "different"),
     state_24R_compare = dplyr::if_else(DOX_24R == VEH_24R, "same", "different"),
@@ -354,7 +466,10 @@ mintermediate_data <-
                                                      DOX_24R == VEH_24R &
                                                      DOX_144R == VEH_144R ~"same_all_timepoints",
                                                    TRUE ~ "different_at_one_or_more_timepoints")) %>% 
-  mutate(is_DNA_repair=ENTREZID%in% DNA_repair$ENTREZID)
+  mutate(is_DNA_repair=ENTREZID%in% DNA_repair$ENTREZID,
+         overlap_DAR=if_else(repID %in% DAR_MER61E_set,"yes","no"),
+         overlap_CAR=if_else(repID %in% CAR_MER61E_set,"yes","no")) %>% 
+  left_join(phyloP_calc_df, by=c("H3K27ac_region"="Peakid","cluster"="cluster"))
   
 
 DT::datatable(mintermediate_data,
@@ -464,7 +579,73 @@ mintermediate_data %>%
 
 # saveRDS(intermediate_data,"data/H3K27ac_MER61E_integrant_anno.RDS")
 ```
+### Investigating DAR/CAR
 
+```{r}
+mintermediate_data %>% 
+  group_by(my_MER,overlap_DAR) %>% 
+  tally()
+DAR_MER61E_mat <- matrix(c(44,23,17,183),nrow=2, byrow = TRUE)
+fisher.test(DAR_MER61E_mat)
+```
+  tested if MER61E integrants in my data are enriched in DARs vs MER61E integrants not in my data:
+  Found Odds Ratio 20.21 pval 2.2E-16 that  MER61Es tha overlap my H3K27ac regions are enriched in DARs compared to MER61E not overlapping my H3K27ac regions.
+  
+```{r}
+mintermediate_data %>% 
+  group_by(my_MER,overlap_CAR) %>% 
+  tally()
+CAR_MER61E_mat <- matrix(c(16,51,8,192),nrow=2, byrow = TRUE)
+fisher.test(CAR_MER61E_mat)
+
+
+```
+
+tested if MER61E integrants in my data are enriched in CARs vs MER61E integrants not in my data:
+  Found Odds Ratio 7.45 pval 7.363e-6   MER61Es that overlap my H3K27ac regions are enriched in CARs compared to MER61E not overlapping my H3K27ac regions.
+```{r}
+DARvCAR_MER61E_mat <- matrix(c(44,23,16,51),nrow=2, byrow = TRUE)
+fisher.test(DARvCAR_MER61E_mat)
+
+```
+ 
+ 
+ tested if MER61E integrants in my data are enriched in DARs vs CARs:
+  Found Odds Ratio 6.01 pval 1.946e-6.   MER61Es that overlap my H3K27ac regions are enriched in DARs vs. CARs from DOX24 ATAC data.
+  
+```{r}
+mintermediate_data %>% 
+  group_by(my_MER,cluster,overlap_DAR) %>% 
+  tally()
+
+mintermediate_data %>% 
+  group_by(my_MER,cluster,overlap_CAR) %>% 
+  tally()
+
+Set3_MER61E_DARvCAR_mat <- matrix(c(30,10,6,34),nrow=2,byrow = TRUE)
+
+fisher.test(Set3_MER61E_DARvCAR_mat)
+```
+Now I am testing if MER61E in Set3 are enriched in DARs v CARs, and yes with an OR of 16.21, p value= 9.508e-8, MER61E in set 3 are enriched in DARs.
+
+### other TF binding enrichment
+
+Look at relationships between TOP2B and MER61E; RAD21 and MER61E, p53 and MER61E ; CTCF and MER61E;
+
+NOTE, no overlaps were observed using TOP2B regions and CTCF regions.  for RAD21- 3 elements overlapped a RAD21 peak, P53: 20 p53 regions overlap a MER61E.
+
+
+```{r}
+mintermediate_data %>% 
+  group_by(my_MER, sp_p53_binding, p53_halfsite) %>% 
+  count
+
+mintermediate_data %>% 
+  group_by(my_MER, sp_RAD21_binding, p53_halfsite) %>% 
+  count
+```
+
+  
 ```{r function plot trajectory}
 plot_trajectory <- function(input_df, TE) {
   
@@ -676,7 +857,7 @@ plot_trajectory_flow(mfilteredfull_trajectory_test,"MER61E with p53 fullsite")
 
 
 ```{r}
-plot_trajectory(MER61E_trajectory_broad,"all MER61E elements")
+plot_trajectory_flow(MER61E_trajectory_broad,"all MER61E elements")
 ```
 
 
@@ -686,15 +867,64 @@ filtered_trajectory_780A <- MER61E_trajectory_broad %>%
   # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
   dplyr::filter(te_id %in% ZNF780A_overlaps_MER61E)
 
-plot_trajectory(filtered_trajectory_780A,"any MER61E with ZNF780A binding")
+plot_trajectory_flow(filtered_trajectory_780A,"any MER61E with ZNF780A binding")
 ```
 ```{r}
 filtered_trajectory_680 <- MER61E_trajectory_broad %>% 
   # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
   dplyr::filter(te_id %in% ZNF680_overlaps_MER61E)
 
-plot_trajectory(filtered_trajectory_680,"any MER61E with ZNF680 binding")
+plot_trajectory_flow(filtered_trajectory_680,"any MER61E with ZNF680 binding")
 ```
+
+```{r}
+
+MER61Ep53half <- p53halfsite_TE_ids %>% dplyr::filter(TE_name =="MER61E_ERV1_LTR") %>% pull(Peakid) %>% unique()
+  MER61Ep53full <- full_p53_canonical %>% dplyr::filter(TE_name =="MER61E_ERV1_LTR") %>% pull(TE_id)%>% unique()
+  
+  MER61p53all <- union(MER61Ep53half, MER61Ep53full)
+
+filtered_comboP53 <- MER61E_trajectory_broad %>% 
+  # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
+  dplyr::filter(te_id %in% MER61p53all)
+
+plot_trajectory_flow(filtered_comboP53,"All MER61E with p53 binding")
+```
+
+```{r}
+filtered_comboP53a <- MER61E_trajectory_broad %>% 
+  dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>%
+  dplyr::filter(te_id %in% MER61p53all) %>% distinct()
+
+filtered_comboP53b <- MER61E_trajectory_broad %>% 
+  dplyr::filter(!te_id %in% Peakid_lookup_repID$repID) %>%
+  dplyr::filter(te_id %in% MER61p53all)
+
+plot_trajectory_flow(filtered_comboP53a,"MER61E any p53 binding in my H3K27ac regions")
+plot_trajectory_flow(filtered_comboP53b,"MER61E any p53 binding NOT in my H3K27ac regions")
+
+
+```
+
+```{r}
+filtered_comboP53c <- MER61E_trajectory_broad %>% 
+  # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>%
+  dplyr::filter(!te_id %in% MER61p53all)
+
+filtered_comboP53d <- MER61E_trajectory_broad %>% 
+  dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>%
+  dplyr::filter(!te_id %in% MER61p53all)
+
+filtered_comboP53e <- MER61E_trajectory_broad %>% 
+  dplyr::filter(!te_id %in% Peakid_lookup_repID$repID) %>%
+  dplyr::filter(!te_id %in% MER61p53all)
+plot_trajectory_flow(filtered_comboP53c,"MER61E no p53 binding ")
+plot_trajectory_flow(filtered_comboP53d,"MER61E no p53 binding in my H3K27ac regions")
+
+plot_trajectory_flow(filtered_comboP53e,"MER61E no p53 binding not \nin my H3K27ac regions")
+```
+
+
 ```{r}
 mintermediate_data %>% 
   group_by(cluster,my_MER,overall_compare) %>%
@@ -702,7 +932,10 @@ mintermediate_data %>%
 matdata <- matrix(c(61,6, 49, 151), nrow = 2, byrow = FALSE)
 matdata
 fisher.test(matdata)
+
 ```
+
+
 ```{r}
 mintermediate_data %>% 
   group_by(my_MER,ZNF780A_binding) %>% 
@@ -804,9 +1037,12 @@ mintermediate_data %>%
 
 
 ```
+
+
+
 ### TF enrichment:
 
-```{r MER61E TF enrichment}
+```{r MER61E TF enrichment, eval=FALSE, include=FALSE}
 MER61E_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results_2024/MER61E_ERV1_LTR_xstreme/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
 
 MER61E_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_results_2024/MER61E_ERV1_LTR_xstreme/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
@@ -836,21 +1072,34 @@ found_MER61E <- MER61E_set_data %>% dplyr::filter(!is.na(MOTIF_URL))
 ```
 
 
-```{r}
-novel_MER61E %>% 
-  dplyr::filter(EVALUE<0.05) %>% 
-  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
-  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
-  geom_col(aes(x=log10Evalue))+
-  geom_point(aes(x=ENR_RATIO*.17), size =4)+
-  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./.17,name="Enrichment Ratio of Motifs"))+
-  theme_classic()+
-  ylab("Enriched TF motif")+
-  ggtitle(paste("MER61E novel enriched motifs compared to all ERV1"))
+```{r MER61E TF enrichment2024}
+MER61E_sea_only <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_sea_jaspar_results_2024/MER61E_ERV1_LTR_sea_jaspar/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
 ```
 
 
-```{r, fig.height=6, fig.width=5}
+```{r,fig.height=10, fig.width=8}
+MER61E_sea_only %>% 
+  dplyr::filter(QVALUE<0.05) %>% 
+  arrange(QVALUE) %>% 
+  mutate(log10Qvalue= log(QVALUE, base = 10)*(-1),
+         facet_group=ceiling(row_number() / 30)) %>% 
+  ggplot(., aes (y= reorder(ALT_ID,log10Qvalue))) +
+  geom_col(aes(x=log10Qvalue))+
+  geom_point(aes(x=ENR_RATIO/3), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~.*3,name="Enrichment Ratio of Motifs"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("MER61E enriched motifs compared to all ERV1"))+
+ facet_wrap(~ facet_group, scales = "free_y")+
+  scale_y_discrete(drop = TRUE)
+  
+  
+  
+```
+Not really helpful
+
+
+```{r, fig.height=6, fig.width=5, eval=FALSE}
 found_MER61E %>% 
   dplyr::filter(EVALUE<0.05) %>% 
   group_by(motif_name) %>%
