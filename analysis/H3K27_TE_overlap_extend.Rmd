@@ -34,6 +34,7 @@ library(rtracklayer)
 library(stringr)
 library(ggrepel)
 library(DT)
+library(ChIPseeker)
 ```
 
 First steps: breakdown repeatmasker into groups and pull out the ones by each class I am interested in.  
@@ -1860,7 +1861,7 @@ repName_results <- comparisons %>%
 
 ggplot(repName_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
   geom_point(aes(color = odds_ratio > 1), size = 3) +
-   geom_text_repel(data = subset(repName_results, FDR < 0.05),
+   geom_text_repel(data = subset(repName_results, FDR < 0.01),
     size = 3,
     force = 3,
     box.padding = 0.6,
@@ -1871,6 +1872,7 @@ ggplot(repName_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) 
   ) +
   # geom_text_repel(size=3, max.overlaps = Inf)+
   geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  geom_hline(yintercept = -log10(0.01), linetype = "dotted") +
   labs(
     x = "(Odds Ratio)",
     y = "-log10(FDR)",
