@@ -65,6 +65,12 @@ H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
  H3K27ac_ext200_anno <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
  
  MER61E_anno_genes <- readRDS("data/RDS_files/MER61E_anno_genes.RDS")
+ MER61E_anno_chipseeker <- readRDS("data/RDS_files/MER61E_anno_chipseeker.RDS")
+ 
+chipseeker_anno_MER61E <-  MER61E_anno_chipseeker %>% 
+  as.data.frame() %>% 
+  dplyr::select(name,annotation,geneId,distanceToTSS) %>% 
+  dplyr::rename("repID"=name,"CS_MER61E_gene"=geneId,"CS_distanceToTSS"=distanceToTSS)
  MER61E_intermediat_protein <- readRDS("data/MER61intermediatemarking_protein.RDS")
  
  full_p53_canonical  <- readRDS("data/full_p53_canonical.RDS")
@@ -81,11 +87,17 @@ set_case_list_H3K27ac <-  H3K27ac_toptable_list %>%
   dplyr::select(group,genes, logFC) %>% 
   pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %>% 
   dplyr::left_join(H3K27ac_lookup,by =c("genes"="Peakid")) %>% 
-  mutate(case= case_when(H3K27ac_24T > 0 & H3K27ac_24R >0 & H3K27ac_144R>0~"A",
+  mutate(cluster= case_when (is.na(cluster)~"not_assigned",
+                           TRUE ~ cluster),
+         case= case_when(H3K27ac_24T > 0 & H3K27ac_24R >0 & H3K27ac_144R>0~"A",
                               H3K27ac_24T < 0 & H3K27ac_24R <0 & H3K27ac_144R<0~"B",
-                              TRUE ~ "C")) %>% 
-  mutate(set_case=paste0(cluster,"_",case)) %>% 
-  dplyr::select(genes, cluster,case,set_case)
+                              TRUE ~ "C"),
+         alt_case= case_when(H3K27ac_24T > 0~"D",
+                              H3K27ac_24T < 0~"E",
+                              TRUE ~ "F")) %>% 
+  mutate(set_case=paste0(cluster,"_",case),
+         set_alt_case=paste0(cluster,"_",alt_case)) %>% 
+  dplyr::select(genes, cluster,case,set_case,alt_case,set_alt_case)
 
 LTR10E_trajectory_broad <- readRDS("data/RDS_files/LTR10E_trajectory_broad.RDS")
 # LTR10E_trajectory_detailed <- readRDS("data/RDS_files/LTR10E_trajectory_detailed.RDS")
@@ -136,11 +148,20 @@ phyloP_df <- read.delim(
   "C:/Users/renee/Other_projects_data/genome_files/H3K27ac_summit_phyloP.tsv",
   na.strings = "",
   stringsAsFactors = FALSE)
+
+phyloP_MER61E_df <- read.delim(
+  "C:/Users/renee/Other_projects_data/genome_files/H3K27ac_MER61E_phyloP.tsv",
+  na.strings = "",
+  stringsAsFactors = FALSE)
 ### because some (6,691) regions have more than one summit ext region:
 
 phyloP_df$Peakid <- H3K27ac_summit_gr_ext$Peakid
 phyloP_df$width <- width(H3K27ac_summit_gr_ext)
 
+phyloP_MER61E_df$repID <- MER61E_regions$name
+phyloP_MER61E_df <- phyloP_MER61E_df %>% 
+  dplyr::select(repID,phyloP_mean) %>% 
+  dplyr::rename("MER61E_phyloP_mean"=phyloP_mean)
 peak_phyloP_by_id <- phyloP_df %>%
   group_by(Peakid) %>%
   summarise(
@@ -440,6 +461,8 @@ phyloP_calc_df <- H3K27ac_summit_gr_ext %>%
 ```{r}
 mintermediate_data <-
   MER61E_anno_genes %>% 
+  mutate(cluster= case_when(is.na(cluster)~"NA",
+                            TRUE~ cluster)) %>% 
   left_join(protein_info,by=c("repID"="X1")) %>% 
   left_join(Peakid_lookup_repID) %>% 
   dplyr::rename("GREAT_gene_assign"=2,
@@ -469,7 +492,9 @@ mintermediate_data <-
   mutate(is_DNA_repair=ENTREZID%in% DNA_repair$ENTREZID,
          overlap_DAR=if_else(repID %in% DAR_MER61E_set,"yes","no"),
          overlap_CAR=if_else(repID %in% CAR_MER61E_set,"yes","no")) %>% 
-  left_join(phyloP_calc_df, by=c("H3K27ac_region"="Peakid","cluster"="cluster"))
+  left_join(phyloP_calc_df, by=c("H3K27ac_region"="Peakid","cluster"="cluster")) %>% 
+  left_join(chipseeker_anno_MER61E) %>% 
+  left_join(phyloP_MER61E_df,by="repID")
   
 
 DT::datatable(mintermediate_data,
@@ -478,7 +503,7 @@ DT::datatable(mintermediate_data,
                            paging=TRUE,
                            autoWidth=TRUE))
 ```
-
+### Age between MER61E elements in my data vs not in my H3K27ac data
 ```{r}
 
 
@@ -579,6 +604,122 @@ mintermediate_data %>%
 
 # saveRDS(intermediate_data,"data/H3K27ac_MER61E_integrant_anno.RDS")
 ```
+### Looking at p53 new data
+
+Look at relationships between TOP2B and MER61E; RAD21 and MER61E, p53 and MER61E ; CTCF and MER61E;
+
+NOTE, no overlaps were observed using TOP2B regions and CTCF regions.  for RAD21- 3 elements overlapped a RAD21 peak, P53: 20 p53 regions overlap a MER61E.
+
+
+```{r}
+mintermediate_data %>% 
+  group_by(my_MER, sp_p53_binding, p53_halfsite) %>% 
+  count
+
+mintermediate_data %>% 
+  group_by(my_MER, sp_RAD21_binding, p53_halfsite) %>% 
+  count
+```
+
+
+```{r}
+mintermediate_data %>% 
+  # group_by(p53_halfsite) %>% #, p53_fullsite,cluster) %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=sp_p53_binding,y=peak_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  # facet_wrap(~sp_p53_binding)+
+  ggtitle("H3K27ac region overlapping mean phyloP which overlap p53 ChIP data")
+
+```
+lets look at the actual MER61E phyloP mean scores across the TE integrant
+
+```{r}
+mintermediate_data %>% 
+  
+  # group_by(p53_halfsite) %>% #, p53_fullsite,cluster) %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=sp_p53_binding,y=MER61E_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~my_MER)+
+  ggtitle("mean MER61E phyloP which overlap p53 ChIP data")
+```
+
+Is there a difference between the phyloP calculated across integrants for those overlapping an H3K27ac region vs. not overlapping an H3K27ac region?
+```{r}
+mintermediate_data %>% 
+  # group_by(p53_halfsite) %>% #, p53_fullsite,cluster) %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=my_MER,y=MER61E_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  # facet_wrap(~sp_p53_binding)+
+  ggtitle("MER61E mean phyloP of integrants in my H3K27ac data")
+```
+ What about the phyloP mean across integrants both within my H3K27ac data (overlapping a region) vs not in my data and when I stratify whether they have a p53 halfsite or not?
+```{r}
+mintermediate_data %>% 
+  # group_by(p53_halfsite) %>% #, p53_fullsite,cluster) %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=my_MER,y=MER61E_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~p53_halfsite)+
+  ggtitle("MER61E mean phyloP of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
+```
+Yes, for those integrants with a p53 halfsite and in my data, there is a difference in phyloP mean than those integrants with a p53 halfsite but not in my data.
+
+
+what about the milliDiv?
+
+```{r}
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=my_MER,y=milliDiv, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~p53_halfsite)+
+  ggtitle("MER61E milliDiv of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
+```
+So there are significantly newer (lower milliDiv) MER61E integrant containing a p53 site in my data than not in my data. There is also a significantly higher milliDiv in integrants not containing a p53 site in my data than integrants not in my data (in my data= overlaps an H3K27ac region. not in my data= does not overlap and H3K27ac region)
+
 ### Investigating DAR/CAR
 
 ```{r}
@@ -627,23 +768,61 @@ Set3_MER61E_DARvCAR_mat <- matrix(c(30,10,6,34),nrow=2,byrow = TRUE)
 fisher.test(Set3_MER61E_DARvCAR_mat)
 ```
 Now I am testing if MER61E in Set3 are enriched in DARs v CARs, and yes with an OR of 16.21, p value= 9.508e-8, MER61E in set 3 are enriched in DARs.
+```{r}
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=overlap_CAR,y=MER61E_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~p53_halfsite)+
+  ggtitle("MER61E mean phyloP of integrants overlapping p53 halfsites\nnot overlapping and overlapping my a CAR")
+```
+Looking at mean phyloP of integrants that overlap a CAR, with a p53 halfsite and without a p53 halfsite
+```{r}
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  dplyr::filter(p53_halfsite =="yes") %>% 
+  ggplot(aes(x=overlap_CAR,y=MER61E_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~p53_halfsite)+
+  ggtitle("MER61E mean phyloP of integrants overlapping p53 halfsites\nnot overlapping and overlapping my a CAR")
+```
+```{r}
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  dplyr::filter(p53_halfsite =="yes") %>% 
+  ggplot(aes(x=overlap_DAR,y=MER61E_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  # facet_wrap(~p53_halfsite)+
+  ggtitle("of MER61E integrants containing at least one p53 halfsite: What is the phyloP mean for those that also overlap a DAR vs not overlap a DAR")
+```
+
 
 ### other TF binding enrichment
 
-Look at relationships between TOP2B and MER61E; RAD21 and MER61E, p53 and MER61E ; CTCF and MER61E;
-
-NOTE, no overlaps were observed using TOP2B regions and CTCF regions.  for RAD21- 3 elements overlapped a RAD21 peak, P53: 20 p53 regions overlap a MER61E.
-
-
-```{r}
-mintermediate_data %>% 
-  group_by(my_MER, sp_p53_binding, p53_halfsite) %>% 
-  count
-
-mintermediate_data %>% 
-  group_by(my_MER, sp_RAD21_binding, p53_halfsite) %>% 
-  count
-```
 
   
 ```{r function plot trajectory}
@@ -1032,13 +1211,128 @@ mintermediate_data %>%
   smplot2::sm_boxplot(legends = TRUE)+
   ggpubr::stat_compare_means(comparisons = list(c("yes", "no")),
                                                 method = "wilcox.test")+
-  ggtitle("distance to nearest gene no broken up by set")
+  ggtitle("distance to nearest gene not broken up by set")
     
 
 
 ```
 
+```{r}
+mintermediate_data %>%
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+    ggplot(aes(x=cluster,y=MER61E_phyloP_mean, color=case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")),
+    method = "wilcox.test")+
+  ggtitle("mean phylop score of region overlapping MER61E element")
+```
+```{r}
+mintermediate_data %>%
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1","Set_2","Set_3", "not_assigned", "NA"))) %>% 
+    ggplot(aes(x=cluster,y=peak_phyloP_mean, color=case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  # c("Set_1", "not_assigned"),
+  # c("Set_1", "NA"),
+  # c("Set_3","NA"),
+  c("Set_3","Set_1")),
+    method = "wilcox.test")+
+  ggtitle("Mean phylop score of region overlapping MER61E element")
+```
+```{r}
+mintermediate_data %>%
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1","Set_2","Set_3", "not_assigned", "NA"))) %>% 
+    ggplot(aes(x=cluster,y=MER61E_phyloP_mean, color=case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  # c("Set_1", "not_assigned"),
+  # c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("NA","Set_1")),
+    method = "wilcox.test")+
+  ggtitle("Mean phylop overlapping MER61E element")
+```
 
+
+
+
+```{r}
+peak_phyloP_by_id %>% 
+  left_join(set_case_list_H3K27ac,by=c("Peakid"="genes")) %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1","Set_2","Set_3", "not_assigned", "NA"))) %>% 
+    ggplot(aes(x=cluster,y=peak_phyloP_mean))+
+  geom_violin()+
+  # smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "Set_2"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","Set_2")),
+    method = "wilcox.test")+
+  ggtitle("mean phylop score of all H3K27ac regions")
+```
+```{r}
+mintermediate_data %>%
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_2","Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(.,aes(x=closest_distance,MER61E_phyloP_mean)) +
+  geom_point( aes(color=cluster))
+
+
+```
+### looking at other data dimensions
+
+```{r}
+
+plotAnnoBar(MER61E_anno_chipseeker,title = "Feature Distribution of all MER61E integrants")
+
+mintermediate_data  %>% 
+  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation)) %>% 
+  # group_by(my_MER,cluster, anno_alt) %>% 
+  ggplot(., aes(x=anno_alt,y=peak_phyloP_mean))+
+  geom_boxplot()+
+  geom_point(aes(color=set_case))
+  
+  
+```
+
+```{r}
+mintermediate_data %>% 
+  ggplot(., aes(x=CS_distanceToTSS, y = MER61E_phyloP_mean,color=cluster))+
+  geom_point()
+
+```
 
 ### TF enrichment:
 
