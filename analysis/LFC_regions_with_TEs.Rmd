@@ -1,0 +1,589 @@
+---
+title: "LFC of TE regions"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+```
+
+
+```{r loading in data}
+
+annotated_H3K27ac_ext200 <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+
+annotated_H3K9me3_ext200 <- readRDS("data/TE_annotation/annotated_H3K9me3_ext200_TE_overlaps.RDS")
+
+
+H3K27ac_repName_results <- readRDS("data/RDS_files/H3K27ac_repName_results.RDS")
+
+H3K9me3_repName_results <- readRDS("data/RDS_files/H3K9me3_repName_results.RDS")
+
+res_K27ac <- H3K27ac_repName_results %>% 
+  dplyr::filter(FDR<0.01) %>% 
+  distinct(repName) %>% 
+  pull(repName)
+res_K9me3 <- H3K9me3_repName_results %>% 
+  dplyr::filter(FDR<0.01) %>% 
+  distinct(repName)%>% 
+  pull(repName)
+
+target_repnames <- union(res_K27ac,res_K9me3)
+target_repnames <- target_repnames[!target_repnames %in% c("G-rich", "GA-rich")]
+
+H3K27ac_toplist <- readRDS( "data/DER_data/H3K27ac_toplist.RDS")
+H3K9me3_toplist <- readRDS( "data/DER_data/H3K9me3_toplist.RDS")
+H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
+
+H3K9me3_toptable_list <- bind_rows(H3K9me3_toplist, .id = "group")
+
+```
+
+```{r H3K27ac peakids}
+##filtering out Peakids that cross enriched TEs, also contains annotations repClass, repFamily, repName and cluster
+just_H3K27ac_repName <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName),delim = ";") %>% 
+  dplyr::filter(repName %in% res_K27ac) %>% 
+  dplyr::select(Peakid,repClass,repFamily,repName,cluster) %>% 
+  dplyr::filter(repClass !="Low_complexity") %>%
+  group_by(Peakid) %>% 
+  slice_head(n=1)
+
+
+H3K27ac_only_mat <- H3K27ac_toptable_list %>% dplyr::select(genes, logFC,group) %>% 
+  pivot_wider(id_cols = genes,names_from = group,values_from = logFC) %>% 
+  dplyr::filter(genes %in% just_H3K27ac_repName$Peakid) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix()
+
+H3K27ac_only_anno_df <- just_H3K27ac_repName[match(rownames(H3K27ac_only_mat),just_H3K27ac_repName$Peakid),]
+
+### enforcing order
+idx <- match(rownames(H3K27ac_only_mat), H3K27ac_only_anno_df$Peakid)
+
+H3K27ac_only_force_df <- H3K27ac_only_anno_df[idx, , drop = FALSE]
+
+###sanity check, should be 0 and TRUE
+sum(is.na(idx)) 
+all(rownames(H3K27ac_only_mat) == H3K27ac_only_force_df$Peakid)  # should be TRUE
+
+range(H3K27ac_only_mat, na.rm = TRUE)
+```
+
+
+```{r H3K27ac only LFC heatmap, fig.height=6, fig.width=6}
+
+col_fun <- colorRamp2(c(-5,0,5),
+                      c("blue","white","red"))
+
+split_levels <- unique(H3K27ac_only_force_df$repClass)
+
+row_order <- unlist(
+  lapply(split_levels, function(cl){
+
+    idx <- which(H3K27ac_only_force_df$repClass == cl)
+
+    mat_sub <- H3K27ac_only_mat[idx, , drop = FALSE]
+
+    d <- as.dist(
+      1 - cor(
+        t(mat_sub),
+        method = "pearson",
+        use = "pairwise.complete.obs"
+      )
+    )
+
+    hc <- hclust(d, method = "ward.D2")
+
+    idx[hc$order]
+  })
+)
+
+row_ha <- rowAnnotation(
+  cluster = H3K27ac_only_force_df$cluster,
+  repClass=H3K27ac_only_force_df$repClass,
+  repName= H3K27ac_only_force_df$repName)
+
+Heatmap(
+  H3K27ac_only_mat,
+  name = "LFC",
+  col = col_fun,
+  left_annotation = row_ha,
+  row_split = H3K27ac_only_force_df$repClass,
+  row_order = row_order,
+  row_title_rot = 0,
+  show_row_names = FALSE,
+  ## use precomputed clustering
+  cluster_rows = FALSE)
+
+
+```
+```{r}
+##filtering out Peakids that cross enriched TEs, also contains annotations repClass, repFamily, repName and cluster
+just_H3K9me3_repName <- annotated_H3K9me3_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName),delim = ";") %>% 
+  dplyr::filter(repName %in% res_K9me3) %>% 
+  dplyr::select(Peakid,repClass,repFamily,repName,cluster) %>%
+  dplyr::filter(repClass!="Low_complexity") %>% 
+  group_by(Peakid) %>% 
+  slice_head(n=1)  
+  
+
+
+H3K9me3_only_mat <- H3K9me3_toptable_list %>% dplyr::select(genes, logFC,group) %>% 
+  pivot_wider(id_cols = genes,names_from = group,values_from = logFC) %>% 
+  dplyr::filter(genes %in% just_H3K9me3_repName$Peakid) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix()
+
+H3K9me3_only_anno_df <- just_H3K9me3_repName[match(rownames(H3K9me3_only_mat),just_H3K9me3_repName$Peakid),]
+
+### enforcing order
+idx <- match(rownames(H3K9me3_only_mat), H3K9me3_only_anno_df$Peakid)
+
+H3K9me3_only_force_df <- H3K9me3_only_anno_df[idx, , drop = FALSE]
+
+###sanity check, should be 0 and TRUE
+sum(is.na(idx)) 
+all(rownames(H3K9me3_only_mat) == H3K9me3_only_force_df$Peakid)  # should be TRUE
+
+range(H3K9me3_only_mat, na.rm = TRUE)
+```
+
+```{r, fig.height=12, fig.width=6}
+
+split_levels_k9me3 <- unique(H3K9me3_only_force_df$repClass)
+
+row_order_k9me3 <- unlist(
+  lapply(split_levels_k9me3, function(cl){
+
+    idx <- which(H3K9me3_only_force_df$repClass == cl)
+
+    mat_sub <- H3K9me3_only_mat[idx, , drop = FALSE]
+
+    d <- as.dist(
+      1 - cor(
+        t(mat_sub),
+        method = "pearson",
+        use = "pairwise.complete.obs"
+      )
+    )
+
+    hc <- hclust(d, method = "ward.D2")
+
+    idx[hc$order]
+  })
+)
+row_ha_k9me3 <- rowAnnotation(
+  cluster = H3K9me3_only_force_df$cluster,
+  repClass=H3K9me3_only_force_df$repClass,
+  repName= H3K9me3_only_force_df$repName)
+
+Heatmap(
+  H3K9me3_only_mat,
+  name = "LFC",
+  col = col_fun,
+  use_raster = TRUE,
+  raster_quality = 2,
+  left_annotation = row_ha_k9me3,
+  row_split = H3K9me3_only_force_df$repClass,
+   row_title_rot = 0,
+   row_order = row_order_k9me3,
+  show_row_names = FALSE,
+cluster_columns = FALSE)
+  # cluster_rows = FALSE
+  # )
+```
+
+
+### Looking at shared RepIDs
+
+```{r}
+
+ K9repeat_IDs <- annotated_H3K9me3_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID),delim = ";") %>% 
+  pull(repID) %>% 
+  na.omit() %>% 
+  unique()
+
+ K27repeat_IDs <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID),delim = ";") %>% 
+  pull(repID) %>% 
+  na.omit() %>% 
+  unique()
+ 
+intersected_repids <- intersect(K9repeat_IDs,K27repeat_IDs)
+
+  
+intersected_H3K27ac_repName <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID),delim = ";") %>%
+  dplyr::filter(repID %in% intersected_repids) %>% 
+  dplyr::filter(repName %in% target_repnames) %>% 
+  dplyr::select(Peakid,repClass,repFamily,repName,cluster) %>% 
+  dplyr::filter(repClass !="Low_complexity") %>%
+  group_by(Peakid) %>% 
+  slice_head(n=1)
+
+
+H3K27ac_intx_only_mat <- H3K27ac_toptable_list %>% dplyr::select(genes, logFC,group) %>% 
+  pivot_wider(id_cols = genes,names_from = group,values_from = logFC) %>% 
+  dplyr::filter(genes %in% intersected_H3K27ac_repName$Peakid) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix()
+
+H3K27ac_intx_only_anno_df <- intersected_H3K27ac_repName[match(rownames(H3K27ac_intx_only_mat),intersected_H3K27ac_repName$Peakid),]
+
+### enforcing order
+idx_intx_ac <- match(rownames(H3K27ac_intx_only_mat), H3K27ac_intx_only_anno_df$Peakid)
+
+H3K27ac_intx_only_force_df <- H3K27ac_intx_only_anno_df[idx_intx_ac, , drop = FALSE]
+
+###sanity check, should be 0 and TRUE
+sum(is.na(idx_intx_ac)) 
+all(rownames(H3K27ac_intx_only_mat) == H3K27ac_intx_only_force_df$Peakid)  # should be TRUE
+
+range(H3K27ac_only_mat, na.rm = TRUE)
+```
+
+```{r, fig.height=12, fig.width=6}
+cluster_fun <- function(mat) {
+
+  d <- as.dist(
+    1 - cor(
+      t(mat),
+      method = "pearson",
+      use = "pairwise.complete.obs"
+    )
+  )
+
+  hc <- hclust(d, method = "ward.D2")
+
+  as.dendrogram(hc)
+}
+
+row_ha_intx <- rowAnnotation(
+  cluster = H3K27ac_intx_only_force_df$cluster,
+  repClass=H3K27ac_intx_only_force_df$repClass,
+  repName= H3K27ac_intx_only_force_df$repName)
+
+Heatmap(H3K27ac_intx_only_mat,
+  name = "LFC- intersected H3K27ac",
+  col = col_fun,
+  left_annotation = row_ha_intx,
+  row_split = H3K27ac_intx_only_force_df$repClass,
+  cluster_rows = cluster_fun,
+  row_title_rot = 0,
+  show_row_names = FALSE,
+  cluster_columns = FALSE)
+```
+
+```{r}
+
+ # K9repeat_IDs <- annotated_H3K9me3_ext200 %>% 
+ #  separate_longer_delim(cols=c(repClass,repFamily,repName,repID),delim = ";") %>% 
+ #  pull(repID) %>% 
+ #  na.omit() %>% 
+ #  unique()
+ # 
+ # K27repeat_IDs <- annotated_H3K27ac_ext200 %>% 
+ #  separate_longer_delim(cols=c(repClass,repFamily,repName,repID),delim = ";") %>% 
+ #  pull(repID) %>% 
+ #  na.omit() %>% 
+ #  unique()
+ 
+intersected_repids <- intersect(K9repeat_IDs,K27repeat_IDs)
+
+  
+intersected_H3K9me3_repName <- annotated_H3K9me3_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID),delim = ";") %>%
+  dplyr::filter(repID %in% intersected_repids) %>% 
+  dplyr::filter(repName %in% target_repnames) %>% 
+  dplyr::select(Peakid,repClass,repFamily,repName,cluster) %>% 
+  dplyr::filter(repClass !="Low_complexity") %>%
+  group_by(Peakid) %>% 
+  slice_head(n=1)
+
+
+H3K9me3_intx_only_mat <- H3K9me3_toptable_list %>% dplyr::select(genes, logFC,group) %>% 
+  pivot_wider(id_cols = genes,names_from = group,values_from = logFC) %>% 
+  dplyr::filter(genes %in% intersected_H3K9me3_repName$Peakid) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix()
+
+H3K9me3_intx_only_anno_df <- intersected_H3K9me3_repName[match(rownames(H3K9me3_intx_only_mat),intersected_H3K9me3_repName$Peakid),]
+
+### enforcing order
+idx_intx <- match(rownames(H3K9me3_intx_only_mat), H3K9me3_intx_only_anno_df$Peakid)
+
+H3K9me3_intx_only_force_df <- H3K9me3_intx_only_anno_df[idx_intx, , drop = FALSE]
+
+###sanity check, should be 0 and TRUE
+sum(is.na(idx_intx)) 
+all(rownames(H3K9me3_intx_only_mat) == H3K9me3_intx_only_force_df$Peakid)  # should be TRUE
+
+range(H3K9me3_only_mat, na.rm = TRUE)
+```
+
+```{r, fig.height=12, fig.width=6}
+cluster_fun <- function(mat) {
+
+  d <- as.dist(
+    1 - cor(
+      t(mat),
+      method = "pearson",
+      use = "pairwise.complete.obs"
+    )
+  )
+
+  hc <- hclust(d, method = "ward.D2")
+
+  as.dendrogram(hc)
+}
+
+row_ha_intx <- rowAnnotation(
+  cluster = H3K9me3_intx_only_force_df$cluster,
+  repClass=H3K9me3_intx_only_force_df$repClass,
+  repName= H3K9me3_intx_only_force_df$repName)
+
+Heatmap(H3K9me3_intx_only_mat,
+  name = "LFC- intersected H3K9me3",
+  col = col_fun,
+  left_annotation = row_ha_intx,
+  row_split = H3K9me3_intx_only_force_df$repClass,
+  cluster_rows = cluster_fun,
+  row_title_rot = 0,
+  show_row_names = FALSE,
+  cluster_columns = FALSE)
+```
+
+```{r eval=FALSE, warning=TRUE, include=FALSE}
+annotated_H3K9me3_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID),delim = ";") %>%
+  dplyr::filter(repID %in% intersected_repids) %>% 
+  dplyr::filter(repName %in% target_repnames) %>% 
+  dplyr::select(Peakid,repClass,repFamily,repName,cluster) %>% 
+  dplyr::filter(repClass !="Low_complexity") %>%
+  group_by(Peakid) %>% tally() %>% dplyr::filter(n==1)# count(repName) 
+  slice_head(n=1)
+  
+  
+  
+  annotated_H3K9me3_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID),delim = ";") %>% 
+  dplyr::filter(repName %in% target_repnames) %>%
+    dplyr::select(Peakid,repClass:repID) %>%
+    dplyr::filter(repID %in% intersected_repids) %>%
+    group_by(Peakid) %>% tally()
+
+```
+### shared REpIDs
+```{r H3K9me3 full intersect}
+intersected_H3K9me3_repName_full <- annotated_H3K9me3_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID),delim = ";") %>%
+  dplyr::filter(repID %in% intersected_repids) %>% 
+  dplyr::filter(repName %in% target_repnames) %>% 
+  dplyr::filter(repClass !="Low_complexity") %>% 
+  dplyr::select(Peakid,repID,repClass,repFamily,repName,cluster) 
+  
+H3K9me3_intx_full_df <- H3K9me3_toptable_list %>% 
+  dplyr::select(genes, logFC, group) %>% 
+  pivot_wider(id_cols = genes,names_from = group,values_from = logFC) %>%
+  dplyr::rename(Peakid = "genes") %>%
+  inner_join(intersected_H3K9me3_repName_full, by = "Peakid") %>%
+  distinct(repID, .keep_all = TRUE)
+
+H3K9me3_intx_full_mat <- H3K9me3_intx_full_df %>%
+  column_to_rownames("repID") %>%
+  dplyr::select(-Peakid,-repClass,-repFamily,-repName,-cluster) %>%
+  as.matrix()
+
+H3K9me3_intx_full_anno <- H3K9me3_intx_full_df %>%
+  dplyr::select(repID,repClass, repFamily,repName,cluster) %>% 
+  dplyr::arrange(repClass,repFamily,repName)
+
+### enforcing order
+idx_intx_k9_full <- match(H3K9me3_intx_full_anno$repID, 
+                          rownames(H3K9me3_intx_full_mat))
+
+H3K9me3_intx_full_force_df <-  H3K9me3_intx_full_anno[idx_intx_k9_full, ]
+
+H3K9me3_intx_full_mat <- H3K9me3_intx_full_mat[idx_intx_k9_full, ]
+
+all(
+  rownames(H3K9me3_intx_full_mat) ==
+    H3K9me3_intx_full_anno$repID
+)
+
+range(H3K9me3_only_mat, na.rm = TRUE)
+```
+
+
+```{r H3K9me3 full intersect plot,fig.height=12, fig.width=6}
+# cluster_fun <- function(mat) {
+# 
+#   d <- as.dist(
+#     1 - cor(
+#       t(mat),
+#       method = "pearson",
+#       use = "pairwise.complete.obs"
+#     )
+#   )
+# 
+#   hc <- hclust(d, method = "ward.D2")
+# 
+#   as.dendrogram(hc)
+# }
+row_split = data.frame(
+  Class = H3K9me3_intx_full_anno$repClass,
+  Family = H3K9me3_intx_full_anno$repFamily
+)
+row_ha_intx_K9_full <- rowAnnotation(
+  cluster = H3K9me3_intx_full_anno$cluster,
+  repClass= H3K9me3_intx_full_anno$repClass,
+  repName= H3K9me3_intx_full_anno$repName)
+
+Heatmap(H3K9me3_intx_full_mat,
+  name = "LFC- intersected H3K9me3",
+  col = col_fun,
+  left_annotation = row_ha_intx_K9_full,
+  row_split = row_split,
+  row_gap = unit(1, "mm"),
+  cluster_rows = FALSE,
+  row_title_rot = 0,
+  show_row_names = FALSE,
+  cluster_columns = FALSE)
+
+
+```
+
+```{r H3K27ac full intersect}
+
+target_order <- H3K9me3_intx_full_anno$repID
+intersected_H3K27ac_repName_full <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID),delim = ";") %>%
+  dplyr::filter(repID %in% intersected_repids) %>% 
+  dplyr::filter(repName %in% target_repnames) %>% 
+  dplyr::filter(repClass !="Low_complexity") %>% 
+  dplyr::select(Peakid,repID,repClass,repFamily,repName,cluster) 
+  
+H3K27ac_intx_full_df <- H3K27ac_toptable_list %>% 
+  dplyr::select(genes, logFC, group) %>% 
+  pivot_wider(id_cols = genes,names_from = group,values_from = logFC) %>%
+  dplyr::rename(Peakid = "genes") %>%
+  inner_join(intersected_H3K27ac_repName_full, by = "Peakid") %>%
+  distinct(repID, .keep_all = TRUE)
+
+H3K27ac_intx_full_mat <- H3K27ac_intx_full_df %>%
+  column_to_rownames("repID") %>%
+  dplyr::select(-Peakid,-repClass,-repFamily,-repName,-cluster) %>%
+  as.matrix()
+
+H3K27ac_intx_full_anno <- H3K27ac_intx_full_df %>%
+  dplyr::select(repID,repClass, repFamily,repName,cluster)# %>% 
+  # arrange(repClass,repFamily,repName)
+
+### enforcing order
+idx_intx_k27_full <- match(target_order, 
+                          rownames(H3K27ac_intx_full_mat))
+
+
+H3K27ac_intx_full_mat <- H3K27ac_intx_full_mat[idx_intx_k27_full, ]
+
+idx_anno <- match(
+  target_order,
+  H3K27ac_intx_full_anno$repID
+)
+
+H3K27ac_intx_full_anno <- 
+  H3K27ac_intx_full_anno[idx_anno, , drop = FALSE]
+
+
+all(
+  rownames(H3K27ac_intx_full_mat) ==
+    H3K27ac_intx_full_anno$repID
+)
+
+range(H3K27ac_only_mat, na.rm = TRUE)
+```
+
+
+```{r H3K27ac full intersect plot,fig.height=12, fig.width=6}
+# cluster_fun <- function(mat) {
+# 
+#   d <- as.dist(
+#     1 - cor(
+#       t(mat),
+#       method = "pearson",
+#       use = "pairwise.complete.obs"
+#     )
+#   )
+# 
+#   hc <- hclust(d, method = "ward.D2")
+# 
+#   as.dendrogram(hc)
+# }
+row_split = data.frame(
+  Class = H3K27ac_intx_full_anno$repClass,
+  Family = H3K27ac_intx_full_anno$repFamily
+)
+row_ha_intx_K27_full <- rowAnnotation(
+  cluster = H3K27ac_intx_full_anno$cluster,
+  repClass= H3K27ac_intx_full_anno$repClass,
+  repName= H3K27ac_intx_full_anno$repName)
+
+Heatmap(H3K27ac_intx_full_mat,
+  name = "LFC- intersected H3K27ac",
+  col = col_fun,
+  left_annotation = row_ha_intx_K27_full,
+  row_split = row_split,
+  row_gap = unit(1, "mm"),
+  cluster_rows = FALSE,
+  row_title_rot = 0,
+  show_row_names = FALSE,
+  cluster_columns = FALSE)
+
+
+```
+
+
+
+```{r PURPL looking}
+
+H3K27ac_toptable_list %>% 
+  dplyr::select(genes, logFC, group) %>% 
+  pivot_wider(id_cols = genes,names_from = group,values_from = logFC) %>%
+  dplyr::rename(Peakid = "genes") %>% 
+dplyr::filter(Peakid %in% c("chr5:27471754-27474360","chr5:27476211-27477832"))
+```
+
