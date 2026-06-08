@@ -37,11 +37,13 @@ library(DT)
 library(ComplexHeatmap)
 library(circlize)
 library(ggalluvial)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
 ```
 
 The purpose of this page is to build a large dataframe for LTR10E annotations.
 
-```{r annotation data frames}
+```{r annotated data frames}
 # ZNF680 narrowpeak binding Hek293 ENCFF935XZI
 # ZNF680_regions <- import("data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed",format = "narrowPeak")
 # 
@@ -63,6 +65,29 @@ H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
  
  LTR10E_anno_genes <- readRDS("data/RDS_files/LTR10E_anno_genes.RDS")
  # MER61E_intermediat_protein <- readRDS("data/MER61intermediatemarking_protein.RDS")
+```
+
+
+```{r, eval=FALSE}
+library(ChIPseeker)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+
+TxDb_hg38=TxDb.Hsapiens.UCSC.hg38.knownGene
+
+LTR10E_anno_chipseeker <- annotatePeak(LTR10E_regions,TxDb=TxDb_hg38)
+saveRDS(LTR10E_anno_chipseeker,"data/RDS_files/LTR10E_anno_chipseeker.RDS")
+```
+
+
+```{r annotation data frames}
+LTR10E_anno_chipseeker <- readRDS("data/RDS_files/LTR10E_anno_chipseeker.RDS")
+ 
+chipseeker_anno_LTR10E <-  LTR10E_anno_chipseeker %>% 
+  as.data.frame() %>% 
+  dplyr::select(name,annotation,geneId,distanceToTSS) %>% 
+  dplyr::rename("repID"=name,"CS_LTR10E_gene"=geneId,"CS_distanceToTSS"=distanceToTSS)
+ LTR10E_intermediat_protein <- readRDS("data/MER61intermediatemarking_protein.RDS")
+ 
  
 protein_module_ids <-  readRDS("data/Other_paper_data/Protein_paper_assigned_lookup.RDS")
  
@@ -80,16 +105,107 @@ set_case_list_H3K27ac <-  H3K27ac_toptable_list %>%
   dplyr::select(group,genes, logFC) %>% 
   pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %>% 
   dplyr::left_join(H3K27ac_lookup,by =c("genes"="Peakid")) %>% 
-  mutate(case= case_when(H3K27ac_24T > 0 & H3K27ac_24R >0 & H3K27ac_144R>0~"A",
+  mutate(cluster= case_when (is.na(cluster)~"not_assigned",
+                           TRUE ~ cluster),
+         case= case_when(H3K27ac_24T > 0 & H3K27ac_24R >0 & H3K27ac_144R>0~"A",
                               H3K27ac_24T < 0 & H3K27ac_24R <0 & H3K27ac_144R<0~"B",
-                              TRUE ~ "C")) %>% 
-  mutate(set_case=paste0(cluster,"_",case)) %>% 
-  dplyr::select(genes, cluster,case,set_case)
+                              TRUE ~ "C"),
+         alt_case= case_when(H3K27ac_24T > 0~"D",
+                              H3K27ac_24T < 0~"E",
+                              TRUE ~ "F")) %>% 
+  mutate(set_case=paste0(cluster,"_",case),
+         set_alt_case=paste0(cluster,"_",alt_case)) %>% 
+  dplyr::select(genes, cluster,case,set_case,alt_case,set_alt_case)
 
 LTR10E_trajectory_broad <- readRDS("data/RDS_files/LTR10E_trajectory_broad.RDS")
 # LTR10E_trajectory_detailed <- readRDS("data/RDS_files/LTR10E_trajectory_detailed.RDS")
 MER61E_trajectory_broad <- readRDS("data/RDS_files/MER61E_trajectory_broad.RDS")
 # MER61E_trajectory_detailed <- readRDS("data/RDS_files/MER61E_trajectory_detailed.RDS")
+
+
+HALLMARK_DNA_REPAIR <- read_csv("data/Other_paper_data/HALLMARK_DNA_REPAIR.v2026.1.Hs.tsv", 
+    skip = 16) %>% 
+  pivot_longer(everything()) %>% 
+ dplyr::filter(name !="SOURCE_MEMBERS\tAAAS") %>% 
+  pull(value)
+ 
+ DNA_repair <- 
+ AnnotationDbi::select(org.Hs.eg.db,
+  keys = HALLMARK_DNA_REPAIR,   # your UniProt IDs
+  keytype = "SYMBOL",
+  columns = c("SYMBOL", "ENTREZID"))
+ 
+ DOX_24_ATAC <- readRDS("data/Other_paper_data/Matthews_2025_DOX_24h_ATAC.RDS")
+ DOX_24_DAR_gr <- DOX_24_ATAC %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(peak) %>% 
+  separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %>% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand="*")
+DOX_24_CAR_gr <- DOX_24_ATAC %>% 
+  dplyr::filter(adj.P.Val>0.05) %>% 
+  dplyr::select(peak) %>% 
+  separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %>% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand="*")
+mcols(DOX_24_CAR_gr)$name <- mcols(DOX_24_CAR_gr)$peak
+mcols(DOX_24_DAR_gr)$name <- mcols(DOX_24_DAR_gr)$peak
+
+H3K27ac_summit_gr_ext <- keepStandardChromosomes(
+  H3K27ac_summit_gr_ext,
+  pruning.mode = "coarse"
+)
+phyloP_df <- read.delim(
+  "C:/Users/renee/Other_projects_data/genome_files/H3K27ac_summit_phyloP.tsv",
+  na.strings = "",
+  stringsAsFactors = FALSE)
+
+phyloP_LTR10E_df <- read.delim(
+  "C:/Users/renee/Other_projects_data/genome_files/H3K27ac_LTR10E_phyloP.tsv",
+  na.strings = "",
+  stringsAsFactors = FALSE)
+### because some (6,691) regions have more than one summit ext region:
+
+phyloP_df$Peakid <- H3K27ac_summit_gr_ext$Peakid
+phyloP_df$width <- width(H3K27ac_summit_gr_ext)
+
+phyloP_LTR10E_df$repID <- LTR10E_regions$name
+phyloP_LTR10E_df <- phyloP_LTR10E_df %>% 
+  dplyr::select(repID,phyloP_mean) %>% 
+  dplyr::rename("LTR10E_phyloP_mean"=phyloP_mean)
+peak_phyloP_by_id <- phyloP_df %>%
+  group_by(Peakid) %>%
+  summarise(
+    n_summit_regions = n(),
+    total_summit_width = sum(width, na.rm = TRUE),
+    peak_phyloP_mean = weighted.mean(phyloP_mean, w = width, na.rm = TRUE),
+    peak_phyloP_max = ifelse(all(is.na(phyloP_max)),NA_real_,
+      max(phyloP_max, na.rm = TRUE)),  .groups = "drop")
+idx <-match(H3K27ac_summit_gr_ext$Peakid,peak_phyloP_by_id$Peakid)
+
+
+mcols(H3K27ac_summit_gr_ext)$phyloP_mean <- phyloP_df$phyloP_mean
+mcols(H3K27ac_summit_gr_ext)$phyloP_max  <- phyloP_df$phyloP_max
+mcols(H3K27ac_summit_gr_ext)$peak_phyloP_mean <- peak_phyloP_by_id$peak_phyloP_mean[idx]
+mcols(H3K27ac_summit_gr_ext)$peak_phyloP_max <- peak_phyloP_by_id$peak_phyloP_max[idx]
+mcols(H3K27ac_summit_gr_ext)$n_summit_regions <- peak_phyloP_by_id$n_summit_regions[idx]
+
+
+p53_sp_ChIP <- rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP57_VEH_p53_Ind6/MCW_SP_ChIP57_VEH_p53_Ind6_q0.05_peaks.narrowPeak",format = "narrowPeak")
+
+CTCF_sp_ChIP <-  rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP63_VEH_CTCF_Ind1/MCW_SP_ChIP63_VEH_CTCF_Ind1_q0.05_peaks.narrowPeak",format = "narrowPeak")
+
+RAD21_sp_ChIP <-  rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP69_VEH_RAD21_Ind1/MCW_SP_ChIP69_VEH_RAD21_Ind1_q0.05_peaks.narrowPeak",format = "narrowPeak")
+
+TOP2B_sp_ChIP <-  rtracklayer::import("data/Other_paper_data/ChIP3_TOP2B_CM_87-1.bed")
 
 ```
 
@@ -309,20 +425,56 @@ Peakid_lookup_repID <-
   separate_longer_delim(.,cols=c(repName,repID),delim=";") %>% 
     dplyr::filter(repName=="LTR10E") %>% 
     dplyr::select(repID,Peakid,geneId,distanceToTSS)
+
+
 ```
 
-```{r determining which repIDs have binding, eval=FALSE}
-# ZNF780A_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,ZNF780A_regions) %>% 
-#   as.data.frame() %>% 
-#   pull(name) %>% 
-#   unique()
-# ZNF680_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,ZNF680_regions) %>% 
-#   as.data.frame() %>% 
-#   pull(name) %>% 
-#   unique()
+```{r}
+p53_overlaps_LTR10E <- subsetByOverlaps(LTR10E_regions,p53_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+CTCF_overlaps_LTR10E <- subsetByOverlaps(LTR10E_regions,CTCF_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+RAD21_overlaps_LTR10E <- subsetByOverlaps(LTR10E_regions,RAD21_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+TOP2B_overlaps_LTR10E <- subsetByOverlaps(LTR10E_regions,TOP2B_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
 ```
 
 
+```{r overlappig DARs and CARs}
+
+DAR_set <- subsetByOverlaps(LTR10E_regions,DOX_24_DAR_gr)
+DAR_LTR10E_set <- DAR_set %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+CAR_set <- subsetByOverlaps(LTR10E_regions,DOX_24_CAR_gr)
+CAR_LTR10E_set <- CAR_set %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+```
+
+getting phyloP added per region:
+```{r}
+phyloP_calc_df <- H3K27ac_summit_gr_ext %>% 
+  as.data.frame() %>% 
+  dplyr::select(Peakid,cluster, name,peak_phyloP_max,peak_phyloP_mean) %>% distinct()
+    
+```
 
 ### LTR10E making of data frame  
 
@@ -340,9 +492,12 @@ LTR10E_intermediate_data <-
          p53_halfsite =if_else(repID %in% p53halfsite_TE_ids$Peakid, "yes","no"),
          p53_fullsite=if_else(repID %in% full_p53_canonical$TE_id,"yes","no")) %>% 
   left_join(set_case_list_H3K27ac,by=c("H3K27ac_region"="genes", "cluster"="cluster")) %>% 
-  left_join(LTR10E_trajectory_broad,by=c("repID"="te_id", "repName"="te_name")) %>% 
-  # mutate(ZNF780A_binding=if_else(repID %in%ZNF780A_overlaps_MER61E,"yes","no"),
-  #        ZNF680_binding=if_else(repID %in% ZNF680_overlaps_MER61E, "yes","no")) %>% 
+  left_join(LTR10E_trajectory_broad,by=c("repID"="te_id", "repName"="te_name")) %>%
+  mutate( sp_p53_binding=if_else(repID %in% p53_overlaps_LTR10E, "yes","no"),
+         sp_CTCF_binding=if_else(repID %in% CTCF_overlaps_LTR10E, "yes","no"),
+         sp_RAD21_binding=if_else(repID %in% RAD21_overlaps_LTR10E, "yes","no"),
+         sp_TOP2B_binding=if_else(repID %in% TOP2B_overlaps_LTR10E, "yes","no")) %>% 
+
   dplyr::mutate(
     state_24T_compare = dplyr::if_else(DOX_24T == VEH_24T, "same", "different"),
     state_24R_compare = dplyr::if_else(DOX_24R == VEH_24R, "same", "different"),
@@ -350,7 +505,14 @@ LTR10E_intermediate_data <-
   dplyr::mutate(overall_compare = dplyr::case_when(DOX_24T == VEH_24T & 
                                                      DOX_24R == VEH_24R &
                                                      DOX_144R == VEH_144R ~"same_all_timepoints",
-                                                   TRUE ~ "different_at_one_or_more_timepoints"))
+                                                   TRUE ~ "different_at_one_or_more_timepoints")) %>% 
+   mutate(is_DNA_repair=ENTREZID%in% DNA_repair$ENTREZID,
+         overlap_DAR=if_else(repID %in% DAR_LTR10E_set,"yes","no"),
+         overlap_CAR=if_else(repID %in% CAR_LTR10E_set,"yes","no")) %>% 
+  left_join(phyloP_calc_df, by=c("H3K27ac_region"="Peakid","cluster"="cluster")) %>% 
+  left_join(chipseeker_anno_LTR10E) %>%
+  left_join(phyloP_LTR10E_df,by="repID")
+  
   
 
 DT::datatable(LTR10E_intermediate_data,
@@ -359,6 +521,8 @@ DT::datatable(LTR10E_intermediate_data,
                            paging=TRUE,
                            autoWidth=TRUE))
 ```
+### looking at milliDiv etc...  
+
 
 ```{r}
 
@@ -390,6 +554,32 @@ LTR10E_intermediate_data %>%
 
 
 ```
+```{r}
+
+LTR10E_intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1","Set_2", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=my_LTR,y=milliDiv))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no"))
+#   # c("Set_1", "not_assigned"),
+#   # c("Set_1", "NA"),
+#   # c("Set_3","NA"),
+#   # c("Set_3","not_assigned")
+# ),
+#     method = "wilcox.test"
+  ) +
+  labs(title = "LTR10E milliDiv dispersion in vs out of my data",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+
+
+
 
 ```{r}
 LTR10E_intermediate_data %>% 
@@ -461,7 +651,125 @@ LTR10E_intermediate_data %>%
   ggtitle("LTR10E with and without p53 halfsites")
 
 # saveRDS(LTR10E_intermediate_data,"data/H3K27ac_LTR10E_integrant_anno.RDS")
+
+``` 
+
+
+### Looking at p53 new data
+
+Look at relationships between TOP2B and MER61E; RAD21 and MER61E, p53 and MER61E ; CTCF and MER61E;
+
+NOTE, no overlaps were observed using TOP2B regions, RAD21 regions and CTCF regions.   P53: 5 p53 regions overlap a LTR10E.
+
+
+```{r}
+LTR10E_intermediate_data %>% 
+  group_by(my_LTR, sp_p53_binding, p53_halfsite) %>% 
+  count
+LTR10E_intermediate_data %>% 
+  group_by(my_LTR, p53_fullsite, p53_halfsite,sp_p53_binding) %>% 
+  count
+
 ```
+
+
+
+Just looking at the numbers: 5 LTR10E overlap a p53 Chip Peak.
+
+of those 5= 3/5 overlap an LTR in my data (overlaps an H3K27ac region)
+  1 overlapps a p53 site but not any LTRs in my data
+  of the 3 in my data, all also overlap an LTR with a p53 halfsite.
+```{r}
+LTR10E_intermediate_data %>% 
+mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=sp_p53_binding,y=peak_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  # facet_wrap(~sp_p53_binding)+
+  ggtitle("H3K27ac region overlapping an LTR10E- mean phyloP which overlap p53 ChIP data")
+```
+```{r}
+
+LTR10E_intermediate_data %>%
+mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=sp_p53_binding,y=LTR10E_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~my_LTR)+
+  ggtitle("mean LTR10E phyloP which overlap p53 ChIP data")
+```
+Of all LTR integrants what is the mean PhyloP of the LTRs that are in my data vs those not in my data?
+
+```{r}
+LTR10E_intermediate_data %>%
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=my_LTR,y=LTR10E_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  # facet_wrap(~p53_halfsite)+
+  ggtitle("LTR10E mean phyloP of integrants in my H3K27ac data")
+```
+
+Of the integrants that overlap a p53 halfsite, what is the mean PhyloP of the LTRs that are in my data vs those not in my data
+```{r}
+LTR10E_intermediate_data %>%
+  dplyr::filter(p53_halfsite=="yes") %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=my_LTR,y=LTR10E_phyloP_mean, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  # facet_wrap(~p53_halfsite)+
+  ggtitle("LTR10E mean phyloP of integrants in my H3K27ac data")
+```
+What about milliDiv?
+
+```{r}
+LTR10E_intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=my_LTR,y=milliDiv, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~p53_halfsite)+
+  ggtitle("LTR10E milliDiv of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
+
+```
+
+
 
 ```{r function plot trajectory}
 plot_trajectory <- function(input_df, TE) {
