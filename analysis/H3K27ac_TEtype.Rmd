@@ -41,6 +41,7 @@ library(ComplexHeatmap)
 library(circlize)
 library(readxl)
 library(kableExtra)
+library(RColorBrewer)
 ```
 
 ```{r data loading}
@@ -119,7 +120,7 @@ summit_overlap_MER61E_genes <- res %>%
 ```
 
 
-```{r}
+```{r MER61E elements plot1}
 
 
 RNA_full_toptable %>% 
@@ -163,6 +164,64 @@ RNA_full_toptable %>%
     ggtitle("density of MER61E TEs distance to expressed gene, bins=50")
 ```
 
+### MER61E-ERV1-LTRs near genes anno by GREAT
+```{r}
+MER61E_anno_great <- readRDS("data/RDS_files/MER61E_anno_genes.RDS")
+
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"), labels = c("tx + 0","tx + 24h","tx + 144h"))) %>% 
+  dplyr::filter(Entrez_ID %in% MER61E_anno_great$ENTREZID) %>%
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  ggtitle("LFC at timepoints of genes nearest to all MER61E TE (GREAT)")+
+  theme_bw()
+
+
+
+MER61E_anno_great %>% dplyr::filter(ENTREZID %in% RNA_expressed_genes$Entrez_ID) %>% 
+    ggplot(., aes(x=abs(closest_distance)))+
+    geom_density()+
+    ggtitle("density of MER61E TEs distance to expressed gene (GREAT)")
+  
+
+MER61E_anno_great %>% dplyr::filter(ENTREZID %in% RNA_expressed_genes$Entrez_ID) %>% 
+    ggplot(., aes(x=abs(closest_distance)))+
+     geom_histogram(bins = 50)+
+    ggtitle("density of MER61E TEs distance to expressed gene (GREAT)\nbins = 50")
+  
+
+```
+
+
+### MER61E-ERV1-LTRs near genes anno by chipseeker
+```{r}
+MER61E_anno_chipseeker <- readRDS("data/RDS_files/MER61E_anno_chipseeker.RDS")
+
+MER61E_anno_cs <- MER61E_anno_chipseeker %>% 
+  as.data.frame()
+
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"), labels = c("tx + 0","tx + 24h","tx + 144h"))) %>% 
+  dplyr::filter(Entrez_ID %in% MER61E_anno_cs$geneId) %>%
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  ggtitle("LFC at timepoints of genes nearest to all MER61E TE (chipseeker)")+
+  theme_bw()
+
+
+
+MER61E_anno_cs %>% dplyr::filter(geneId %in% RNA_expressed_genes$Entrez_ID) %>% 
+    ggplot(., aes(x=abs(distanceToTSS)))+
+    geom_density()+
+    ggtitle("density of MER61E TEs distance to expressed gene (chipseeker)")
+  
+
+MER61E_anno_cs %>% dplyr::filter(geneId %in% RNA_expressed_genes$Entrez_ID) %>% 
+    ggplot(., aes(x=abs(distanceToTSS)))+
+     geom_histogram(bins = 50)+
+    ggtitle("density of MER61E TEs distance to expressed gene (chipseeker)\nbins = 50")
+  
+```
 
 ### RNA expression of MER61E nearby genes  
 
@@ -202,13 +261,13 @@ print(plot)
 #### Looking as LFC  
 
 
-```{r}
+```{r standard}
 RNA_full_toptable %>% 
   mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
   dplyr::filter(Entrez_ID %in% MER61E_genes$gene) %>% 
   ggplot(., aes(x=timepoint, y=logFC))+
   geom_boxplot()+
-  ggtitle("LFC at timepoints of nearest gene to MER61E TE")+
+  ggtitle("LFC at timepoints of nearest gene to all MER61E TE")+
   theme_bw()
 
 
@@ -220,6 +279,7 @@ RNA_full_toptable %>%
   geom_line()+
   ggtitle("LFC at timepoints of nearest gene to all MER61E TE")
 ```
+
 
 ### LFC of MER61E neargenes, (MER61E in my data)
 
@@ -243,8 +303,51 @@ RNA_full_toptable %>%
 ```
 
 
+```{r GREAT LFC}
+GREAT_MERs <- MER61E_anno_great %>% 
+  dplyr::filter(repID %in% MER61E_genes_myset$ltr)
+  
+
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
+    dplyr::filter(Entrez_ID %in% GREAT_MERs$ENTREZID) %>% 
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  ggtitle("LFC at timepoints of nearest gene to MER61E TE elements in my data (GREAT)")+
+  theme_bw()
 
 
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
+  dplyr::filter(Entrez_ID %in% GREAT_MERs$ENTREZID) %>% 
+  ggplot(., aes(x=timepoint, y=logFC, group = Entrez_ID))+
+  geom_point()+
+  geom_line()+
+  ggtitle("LFC at timepoints of nearest gene to all MER61E TE elements in my data(GREAT)")
+```
+
+```{r Chipseeker LFC}
+CS_MERs <- MER61E_anno_cs %>% 
+  dplyr::filter(name %in% MER61E_genes_myset$ltr)
+  
+
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
+    dplyr::filter(Entrez_ID %in% CS_MERs$geneId) %>% 
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  ggtitle("LFC at timepoints of nearest gene to MER61E TE elements in my data (chipseeker)")+
+  theme_bw()
+
+
+RNA_full_toptable %>% 
+  mutate(timepoint=factor(timepoint, levels=c("24T","24R","144R"))) %>% 
+  dplyr::filter(Entrez_ID %in% CS_MERs$geneId) %>% 
+  ggplot(., aes(x=timepoint, y=logFC, group = Entrez_ID))+
+  geom_point()+
+  geom_line()+
+  ggtitle("LFC at timepoints of nearest gene to all MER61E TE elements in my data(chipseeker)")
+```
 
 ```{r}
 matrix_file <- ("C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/matcenter_MER61E_ERV1_LTR.gz")
@@ -402,7 +505,7 @@ RNA_full_toptable %>%
 
 ### Proportion tables   
 
-
+#### MER61 subfamily
 
 ```{r prop 1}
 prop_table <- annotated_H3K27ac_summits %>% 
@@ -488,6 +591,56 @@ plot <- ggplot(prop_table, aes(x = clus_names, y = n, fill = clus_names)) +
 
 ```
 
+
+#### LTR10 proportions
+```{r}
+Ltr_list <- c("LTR10A","LTR10B","LTR10B1","LTR10B2","LTR10C","LTR10D","LTR10E","LTR10F","LTR10G")
+
+for (Mer in Ltr_list){
+
+prop_table <- annotated_H3K27ac_summits %>% 
+  dplyr::filter(repName==Mer) %>% 
+  group_by(cluster) %>% 
+  summarise(n = dplyr::n(), .groups = "drop") %>% 
+  mutate(cluster = if_else(is.na(cluster), "NA", cluster),
+         clus_names=case_when(cluster =="Set_1"~"No response",
+                              cluster=="Set_3"~"Acute response",
+                              cluster=="Set_2"~"Sustained response",
+                              TRUE~"not assigned")) 
+  
+if(!"Set_2" %in% prop_table$cluster){
+  prop_table <- rbind(
+    prop_table,
+    data.frame(cluster = "Set_2", n = 0,clus_names="Sustained response")
+  )} 
+if(!"Set_3" %in% prop_table$cluster){
+  prop_table <- rbind(
+    prop_table,
+    data.frame(cluster = "Set_3", n = 0,clus_names="Acute response")
+  )} 
+
+plot <- ggplot(prop_table, aes(x = clus_names, y = n, fill = clus_names)) +
+  geom_col(position = "identity") +
+  geom_text(aes(
+      label = sprintf('%d (%.1f%%)', n, 100 * n / sum(n)),  
+      y = n + 0.05 * max(n)),
+    colour = 'royalblue',
+    size = 5) +
+  theme_classic() +
+  labs(x = "H3K27ac response group",
+    y = paste0("Proportion of ",Mer),
+    fill = "Cluster",
+    title = paste0("Proportion of ",Mer," across each H3K27ac set")) +
+  theme(axis.text.x = element_text(angle = 0, hjust = .5))
+    
+    print(plot)
+}
+
+
+
+```
+
+
 ### KZFP hits  
 
 ```{r}
@@ -557,7 +710,7 @@ print(plot)
 ```{r filtering step for ERV1}
 ERV1_summary_char %>% 
   mutate(name=str_remove(filename,"_ERV1_LTR.bed")) %>% 
-  dplyr::filter(name %in%Mer_list) %>% 
+  dplyr::filter(name %in%Mer_list| name%in% Ltr_list) %>% 
   dplyr::rename("count"=n_lines) %>% 
   dplyr::select( name, count:min_len)
   
@@ -823,8 +976,25 @@ plot <- ggplot(prop_table, aes(x = clus_names, y = n, fill = clus_names)) +
 ```{r}
 LTR_df <- readRDS("data/RDS_files/LTR_DF_hg38.RDS")
 
-hgLTR <- LTR_df %>% 
+hgLTR_mer <- LTR_df %>% 
   filter(repName %in% Mer_list) %>% 
+  dplyr::select(repClass,repFamily,repName,RM_id) %>% 
+  mutate(Peakid="NA",
+         annotation="NA",
+         geneId="NA",
+         distanceToTSS=0,
+         summit_pos="0",
+         TE_status="TE",
+         SINE_status="wnot_SINE",
+         LINE_status="wnot_LINE",
+         LTR_status="LTR",
+         DNA_status="wnot_LTR",
+         SVA_status="wnot_SVA",
+         cluster="hg38")
+
+
+hgLTR_ltr <- LTR_df %>% 
+  filter(repName %in% Ltr_list) %>% 
   dplyr::select(repClass,repFamily,repName,RM_id) %>% 
   mutate(Peakid="NA",
          annotation="NA",
@@ -844,13 +1014,14 @@ hgLTR <- LTR_df %>%
 #### MER subfamily  
 
 
-```{r prop_extended plot}
+```{r prop_extended plot MERsubfamily}
+ltr_list_colors <- c("#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#ffff33", "#a65628","#f781bf","#999999")
 df_clean <- annotated_H3K27ac_extended %>%
   separate_rows(repClass,repFamily,repName,repID, sep = ";")
 
 prop_table_all <- df_clean %>%
   filter(repName %in% Mer_list) %>%
-  bind_rows(hgLTR) %>% 
+  bind_rows(hgLTR_mer) %>% 
   mutate(
     cluster = if_else(is.na(cluster), "NA", cluster),
     clus_names = case_when(
@@ -876,7 +1047,46 @@ ggplot(prop_table_all, aes(x = clus_names, y = prop, fill = repName)) +
     y = "Proportion",
     fill = "MER61 subfamily",
     title = "MER61 subfamily composition across H3K27ac sets"
-  )
+  )+
+ scale_fill_brewer(palette = "Set2")
+```
+#### LTR10 subfamily:
+
+
+```{r}
+ltr_list_colors <- c("#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462", "#b3de69","#fccde5","#d9d9d9")
+prop_table_all_ltr <- df_clean %>%
+  filter(repName %in% Ltr_list) %>%
+  bind_rows(hgLTR_ltr) %>% 
+  mutate(
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    clus_names = case_when(
+      cluster == "Set_1" ~ "No response",
+      cluster == "Set_2" ~ "Sustained response",
+      cluster == "Set_3" ~ "Acute response",
+      cluster == "hg38" ~ "hg38",
+      TRUE ~ "Not assigned"
+    )
+  ) %>%
+  count(clus_names, repName) %>%
+  group_by(clus_names) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>% 
+  mutate(clus_names=factor(clus_names, levels = c("hg38","No response","Sustained response","Acute response","Not assigned")))
+
+
+ggplot(prop_table_all_ltr, aes(x = clus_names, y = prop, fill = repName)) +
+  geom_col() +
+  theme_classic() +
+  labs(
+    x = "H3K27ac response group",
+    y = "Proportion",
+    fill = "LTR10 subfamily",
+    title = "LTR10 subfamily composition across H3K27ac sets"
+  )+
+ scale_fill_manual(values=ltr_list_colors)
+
+# scale_fill_brewer(palette = "Spectral")
 ```
 
 ### ERVL-MaLR:LTRs 
