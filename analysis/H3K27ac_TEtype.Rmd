@@ -1088,6 +1088,49 @@ ggplot(prop_table_all_ltr, aes(x = clus_names, y = prop, fill = repName)) +
 
 # scale_fill_brewer(palette = "Spectral")
 ```
+##### More proportions for LTR overlapping extended region
+```{r}
+for (Mer in Ltr_list){
+
+prop_table <- annotated_H3K27ac_extended %>% 
+  dplyr::filter(str_detect(repName,Mer)) %>% 
+  group_by(cluster) %>% 
+  summarise(n = dplyr::n(), .groups = "drop") %>% 
+  mutate(cluster = if_else(is.na(cluster), "NA", cluster),
+         clus_names=case_when(cluster =="Set_1"~"No response",
+                              cluster=="Set_3"~"Acute response",
+                              cluster=="Set_2"~"Sustained response",
+                              TRUE~"not assigned")) 
+  
+if(!"Set_2" %in% prop_table$cluster){
+  prop_table <- rbind(
+    prop_table,
+    data.frame(cluster = "Set_2", n = 0,clus_names="Sustained response")
+  )} 
+if(!"Set_3" %in% prop_table$cluster){
+  prop_table <- rbind(
+    prop_table,
+    data.frame(cluster = "Set_3", n = 0,clus_names="Acute response")
+  )} 
+
+plot <- ggplot(prop_table, aes(x = clus_names, y = n, fill = clus_names)) +
+  geom_col(position = "identity") +
+  geom_text(aes(
+      label = sprintf('%d (%.1f%%)', n, 100 * n / sum(n)),  
+      y = n + 0.05 * max(n)),
+    colour = 'royalblue',
+    size = 5) +
+  theme_classic() +
+  labs(x = "H3K27ac response group",
+    y = paste0("Proportion of ",Mer),
+    fill = "Cluster",
+    title = paste0("Proportion of ",Mer," across each H3K27ac set extended")) +
+  theme(axis.text.x = element_text(angle = 0, hjust = .5))
+    
+    print(plot)
+}
+```
+
 
 ### ERVL-MaLR:LTRs 
 
