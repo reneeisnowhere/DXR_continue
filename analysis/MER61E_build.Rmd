@@ -1324,7 +1324,18 @@ mintermediate_data  %>%
   geom_boxplot()+
   geom_point(aes(color=set_case))
   
+  peakAnno_my_MER <- subset(
+  MER61E_anno_chipseeker,
+  name %in% MER61E_mydata)
+  peakAnno_not_my_MER <- subset(
+  MER61E_anno_chipseeker,
+  !name %in% MER61E_mydata)
   
+  
+  plotAnnoBar(peakAnno_my_MER,title = "Feature Distribution of all MER61E overlapping an H3K27ac region")
+  
+  plotAnnoBar(peakAnno_not_my_MER,title = "Feature Distribution of all MER61E NOT overlapping an H3K27ac region")
+ 
 ```
 
 ```{r}
@@ -1333,6 +1344,110 @@ mintermediate_data %>%
   geom_point()
 
 ```
+```{r}
+p53_label <- c(yes="p53 overlap",no="no p53 overlap")
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9)) %>% 
+  ggplot(aes(x=my_MER,y=milliDiv, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
+  ggtitle("MER61E milliDiv of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
+
+
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2E-9) %>% 
+  ggplot(aes(x=my_MER,y=MYA_jukes_cantor, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  ylab("Million Years Ago (Jukes/Cantor method)")+
+    facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
+  ggtitle("MER61E MYA of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
+
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  ggplot(aes(x=my_MER,y=MYA_bourque, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  ylab("Million Years Ago (Bourque method)")+
+    facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label)) +
+  ggtitle("MER61E MYA (Bourque method) of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
+
+```
+```{r}
+mintermediate_data %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  group_by(my_MER,p53_halfsite) %>% 
+  summarise(milliDiv_avg=(mean(milliDiv)),
+            MYA_jukes_cantor_avg=mean(MYA_jukes_cantor),
+            MYA_bourque_avg=mean(MYA_bourque)) %>% 
+  datatable(.) %>% 
+  DT::formatRound(
+    columns = c("milliDiv_avg", "MYA_jukes_cantor_avg", "MYA_bourque_avg"),
+    digits = 2)
+```
+
+
+
+```{r}
+
+mintermediate_data %>% 
+  group_by(my_MER,cluster, is_DNA_repair) %>% 
+  tally()
+```
+
+
+```{r}
+mintermediate_data %>% 
+mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+  ggplot(aes(x=p53_halfsite,y=MYA_bourque, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  ylab("Million Years Ago (Bourque method)")+
+  xlab("has a p53 halfsite?")+ 
+    # facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
+  ggtitle("MER61E MYA (Bourque method) of integrants overlapping my H3K27ac data \nand looking at p53 halfsites")
+
+```
+
+
 
 ### TF enrichment:
 
@@ -1408,10 +1523,179 @@ found_MER61E %>%
   ggtitle(paste("MER61 enriched motifs compared to all ERV1"))
 ```
 
+
+### DERs
+
+```{r venn up down}
+regions_24T <- H3K27ac_toplist$H3K27ac_24T %>%
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(genes,logFC,adj.P.Val) %>% 
+  left_join(H3K27ac_lookup, by=c("genes"="Peakid")) %>% 
+  mutate(direction=case_when(logFC>0~"up",
+                             logFC<0~"down",
+                             TRUE~"even"))
+
+regions_24R <- H3K27ac_toplist$H3K27ac_24R %>%
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(genes,logFC,adj.P.Val) %>%
+  left_join(H3K27ac_lookup, by=c("genes"="Peakid")) %>% 
+  mutate(direction=case_when(logFC>0~"up",
+                             logFC<0~"down",
+                             TRUE~"even"))
+
+regions_144R <- H3K27ac_toplist$H3K27ac_144R %>%
+  dplyr::filter(adj.P.Val<0.05)%>% 
+  dplyr::select(genes,logFC,adj.P.Val) %>%
+  left_join(H3K27ac_lookup, by=c("genes"="Peakid")) %>% 
+  mutate(direction=case_when(logFC>0~"up",
+                             logFC<0~"down",
+                             TRUE~"even")) 
+
+ggVennDiagram::ggVennDiagram(list("24T_up"=regions_24T[regions_24T$direction=="up",]$genes,"24R_up"=regions_24R[regions_24R$direction=="up",]$genes,"144R_up"=regions_144R[regions_144R$direction=="up",]$genes))+
+  ggtitle("H3K27ac DERs up-regulated by time")+
+  scale_fill_viridis_c()
+
+
+ggVennDiagram::ggVennDiagram(list("24T_down"=regions_24T[regions_24T$direction=="down",]$genes,"24R_down"=regions_24R[regions_24R$direction=="down",]$genes,"144R_down"=regions_144R[regions_144R$direction=="down",]$genes))+
+  ggtitle("H3K27ac DERs down-regulated by time")+
+  scale_fill_viridis_c()
+
+```
+
 ```{r}
 
-mintermediate_data %>% 
-  group_by(my_MER,cluster, is_DNA_repair) %>% 
+mintermediate_data
+ggVennDiagram::ggVennDiagram(list("24T_up"=regions_24T[regions_24T$direction=="up",]$genes,"24R_up"=regions_24R[regions_24R$direction=="up",]$genes,"144R_up"=regions_144R[regions_144R$direction=="up",]$genes))+
+  ggtitle("H3K27ac DERs up-regulated by time")+
+  scale_fill_viridis_c()
+
+```
+
+```{r LFC}
+add_on_mintermediate_data <- mintermediate_data %>% 
+  dplyr::select(repID,cluster, my_MER, H3K27ac_region,milliDiv:p53_fullsite,overlap_DAR, overlap_CAR, MER61E_phyloP_mean,CS_distanceToTSS) %>% 
+  mutate(DER_24T=if_else(H3K27ac_region %in% regions_24T$genes, "DER_24T","not_DER_24T"),
+         DER_24R=if_else(H3K27ac_region%in% regions_24R$genes,"DER_24R","not_DER_24R"),
+         DER_144R=if_else(H3K27ac_region%in% regions_144R$genes,"DER_144R","not_DER_144R"))
+
+
+add_on_mintermediate_data %>% 
+  group_by(my_MER,p53_halfsite,DER_24T) %>% 
   tally()
+add_on_mintermediate_data %>% 
+  group_by(my_MER,cluster,DER_24T) %>% 
+  tally(name="n") %>% 
+  ggplot(aes(x = my_MER, y = n, fill = DER_24T)) +
+  geom_col(position = "fill") +
+  # facet_wrap(~ cluster) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x = "MER61E in my data",
+    y = "Proportion",
+    fill = "DER_24T"
+  ) +
+  theme_minimal()
+```
+```{r}
+add_on_mintermediate_data %>% 
+  group_by(my_MER,cluster,DER_24R) %>% 
+  tally(name="n") %>% 
+  ggplot(aes(x = my_MER, y = n, fill = DER_24R)) +
+  geom_col(position = "fill") +
+  # facet_wrap(~ cluster) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x = "MER61E in my data",
+    y = "Proportion",
+    fill = "DER_24R"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+add_on_mintermediate_data %>% 
+  group_by(my_MER,cluster,DER_144R) %>% 
+  tally(name="n") %>% 
+  ggplot(aes(x = my_MER, y = n, fill = DER_144R)) +
+  geom_col(position = "fill") +
+  # facet_wrap(~ cluster) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x = "MER61E in my data",
+    y = "Proportion",
+    fill = "DER_144R"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+add_on_mintermediate_data %>% 
+  group_by(my_MER,DER_24T,p53_halfsite, overlap_DAR) %>% 
+  tally()
+
+add_on_mintermediate_data %>% 
+  group_by(my_MER,DER_24R,p53_halfsite, overlap_DAR) %>% 
+  tally()
+
+add_on_mintermediate_data %>% 
+  group_by(my_MER,DER_144R,p53_halfsite, overlap_DAR) %>% 
+  tally()
+```
+```{r}
+add_on_mintermediate_data %>% 
+  group_by(my_MER,DER_24T,cluster, p53_halfsite) %>% 
+  tally()
+```
+```{r}
+add_on_mintermediate_data %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+   left_join(H3K27ac_toplist$H3K27ac_24T,by =c("H3K27ac_region"="genes")) %>% 
+   ggplot(.,aes(x=CS_distanceToTSS,y=logFC)) +
+  geom_point(aes(color=p53_halfsite))+
+  ggtitle("24T logFC vs mean phyloP score")+
+  smplot2::sm_statCorr()
+
+
+add_on_mintermediate_data %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+   left_join(H3K27ac_toplist$H3K27ac_24T,by =c("H3K27ac_region"="genes")) %>% 
+   ggplot(.,aes(x=p53_halfsite,y=logFC)) +
+  geom_boxplot(aes(color=p53_halfsite))+
+  ggtitle("24T logFC across p53 halfsite content")+
+  ggpubr::stat_compare_means(comparisons = list(
+  c("yes", "no")),
+  # c("Set_1", "not_assigned"),
+  # c("Set_1", "NA"),
+      method = "wilcox.test")
+  
+
+add_on_mintermediate_data %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+   left_join(H3K27ac_toplist$H3K27ac_24T,by =c("H3K27ac_region"="genes")) %>% 
+   ggplot(.,aes(x=p53_halfsite,y=MER61E_phyloP_mean)) +
+  geom_boxplot()+
+  ggtitle("24T mean PhyloP score across my_MER elements with/without p53 halfsite")+
+  ggpubr::stat_compare_means(comparisons = list(
+  c("yes", "no")),
+  # c("Set_1", "not_assigned"),
+  # c("Set_1", "NA"),
+      method = "wilcox.test")
+  
+```
+
+
+#### Creating activated bed table
+```{r, eval=FALSE}
+
+Set3_mer61e <- mintermediate_data %>% 
+  dplyr::filter(my_MER=="yes" & cluster == "Set_3") %>%
+  dplyr::filter(alt_case=="D") %>% 
+  distinct(repID)
+
+
+
+test <- MER61E_regions[mcols(MER61E_regions)$name %in% Set3_mer61e$repID]
+
+export(test,"data/Bed_exports/MER61E_Set3_active.bed")
 ```
 

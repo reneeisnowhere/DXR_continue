@@ -752,11 +752,13 @@ LTR10E_intermediate_data %>%
 What about milliDiv?
 
 ```{r}
+p53_label <- c(yes="p53 overlap",no="no p53 overlap")
 LTR10E_intermediate_data %>% 
   mutate(
     cluster = as.character(cluster),
     cluster = if_else(is.na(cluster), "NA", cluster),
     cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9)) %>% 
   ggplot(aes(x=my_LTR,y=milliDiv, color=alt_case))+
   smplot2::sm_boxplot(legends = TRUE)+
   ggpubr::stat_compare_means(
@@ -764,11 +766,86 @@ LTR10E_intermediate_data %>%
   c("yes", "no")),
     method = "wilcox.test"
   )+
-  facet_wrap(~p53_halfsite)+
+  facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
   ggtitle("LTR10E milliDiv of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
 
+
+LTR10E_intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2E-9) %>% 
+  ggplot(aes(x=my_LTR,y=MYA_jukes_cantor, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  ylab("Million Years Ago (Jukes/Cantor method)")+
+    facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
+  ggtitle("LTR10E MYA of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
+
+LTR10E_intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  ggplot(aes(x=my_LTR,y=MYA_bourque, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  ylab("Million Years Ago (Bourque method)")+
+    facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
+  ggtitle("LTR10E MYA (Bourque method) of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
+
+```
+```{r}
+LTR10E_intermediate_data %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  group_by(my_LTR,p53_halfsite) %>% 
+  summarise(milliDiv_avg=(mean(milliDiv)),
+            MYA_jukes_cantor_avg=mean(MYA_jukes_cantor),
+            MYA_bourque_avg=mean(MYA_bourque)) %>% 
+  datatable(.) %>% 
+  DT::formatRound(
+    columns = c("milliDiv_avg", "MYA_jukes_cantor_avg", "MYA_bourque_avg"),
+    digits = 2)
 ```
 
+comparing between my LTRs and p53/no p53
+
+```{r}
+LTR10E_intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  dplyr::filter(my_LTR=="yes") %>% 
+  ggplot(aes(x=p53_halfsite,y=MYA_bourque, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  ylab("Million Years Ago (Bourque method)")+
+  xlab("has a p53 halfsite?") +
+    # facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
+  ggtitle("LTR10E MYA (Bourque method) of integrants overlapping my\n H3K27ac data and looking at p53 halfsites")
+```
+
+yes the age of the p53-halfsite-containing LTR integrants are younger than the LTR integrants not containing a p53-halfsite  in integrants overlapping an H3K27ac region.
 
 
 ```{r function plot trajectory}
@@ -1155,5 +1232,22 @@ fisher.test(set3vset2mod)
 set2vset1mod <- matrix(c(31,188,516,3069),nrow = 2,byrow = TRUE)
 fisher.test(set3vset1mod)
 
+```
+
+
+
+#### Creating activated bed table
+```{r, eval=FALSE}
+
+Set3_ltr10e <- LTR10E_intermediate_data %>% 
+  dplyr::filter(my_LTR=="yes" & cluster == "Set_3") %>%
+  dplyr::filter(alt_case=="D") %>% 
+  distinct(repID)
+
+
+
+test_ltr <- LTR10E_regions[mcols(LTR10E_regions)$name %in% Set3_ltr10e$repID]
+
+export(test_ltr,"data/Bed_exports/LTR10E_Set3_active.bed")
 ```
 
