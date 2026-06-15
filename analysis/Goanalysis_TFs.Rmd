@@ -1274,3 +1274,68 @@ GO_KEGG_analysis(filt_known_ltr_set3a_gost,"GO:BP", 0.05,20)
 GO_KEGG_analysis(filt_known_ltr_set3a_gost,"KEGG", 0.05,20)
 ```
 
+```{r}
+
+ggVennDiagram::ggVennDiagram(list("LTR"=known_ltr_set3$motif_name,"MER"=known_mer_set3$motif_name))
+
+intersect(ltr_genes, mer_genes)
+```
+```{r}
+shared=c("TP53",   "ZFP335", "PRDM1",  "SOX11" , "SOX10" , "ZNF768")
+
+
+shared_set3a_gost <- gost(query = shared,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+  saveRDS(shared_set3a_gost,"data/RDS_files/shared_set3a_gost.RDS")
+```
+
+```{r}
+shared_set3a_gost <- readRDS("data/RDS_files/shared_set3a_gost.RDS")
+
+GO_KEGG_analysis(shared_set3a_gost,"GO:BP", 0.05,20)
+GO_KEGG_analysis(shared_set3a_gost,"KEGG", 0.05,20)
+```
+```{r}
+shared=c("TP53",   "ZFP335", "PRDM1",  "SOX11" , "SOX10" , "ZNF768")
+RNA_full_toptable %>% 
+  dplyr::filter(SYMBOL %in% shared) %>% 
+  dplyr::select(Entrez_ID, SYMBOL,logFC,timepoint) %>% 
+  mutate(timepoint=factor(timepoint, levels = c("24T","24R","144R"))) %>% 
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  geom_point(aes(color=SYMBOL, size=6))+
+  theme_bw()+
+  ggtitle("Expressed and shared enriched TFs")
+
+RNA_full_toptable %>% 
+  dplyr::filter(SYMBOL %in% ltr_genes) %>% 
+  dplyr::select(Entrez_ID, SYMBOL,logFC,timepoint) %>% 
+  mutate(timepoint=factor(timepoint, levels = c("24T","24R","144R"))) %>% 
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  geom_point(aes(color=SYMBOL, size=6))+
+  theme_bw()+
+  ggtitle("Expressed LTR10E enriched TFs")
+
+
+RNA_full_toptable %>% 
+  dplyr::filter(SYMBOL %in% mer_genes) %>% 
+  dplyr::select(Entrez_ID, SYMBOL,logFC,timepoint) %>% 
+  mutate(timepoint=factor(timepoint, levels = c("24T","24R","144R"))) %>% 
+  ggplot(., aes(x=timepoint, y=logFC))+
+  geom_boxplot()+
+  geom_point(aes(color=SYMBOL, size=6))+
+  theme_bw()+
+  ggtitle("Expressed MER61E enriched TFs")
+```
+
