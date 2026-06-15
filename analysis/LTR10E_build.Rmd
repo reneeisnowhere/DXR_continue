@@ -1064,21 +1064,7 @@ plot_trajectory(LTR10E_trajectory_broad,"all LTR10E elements")
 ```
 
 
-```{r 780a plot, eval=FALSE}
 
-filtered_trajectory_780A <- MER61E_trajectory_broad %>% 
-  # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
-  dplyr::filter(te_id %in% ZNF780A_overlaps_MER61E)
-
-plot_trajectory(filtered_trajectory_780A,"any MER61E with ZNF780A binding")
-```
-```{r,eval=FALSE}
-filtered_trajectory_680 <- MER61E_trajectory_broad %>% 
-  # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
-  dplyr::filter(te_id %in% ZNF680_overlaps_MER61E)
-
-plot_trajectory(filtered_trajectory_680,"any MER61E with ZNF680 binding")
-```
 ```{r}
 LTR10E_intermediate_data %>% 
   group_by(cluster,my_LTR,overall_compare) %>%
@@ -1249,5 +1235,120 @@ Set3_ltr10e <- LTR10E_intermediate_data %>%
 test_ltr <- LTR10E_regions[mcols(LTR10E_regions)$name %in% Set3_ltr10e$repID]
 
 export(test_ltr,"data/Bed_exports/LTR10E_Set3_active.bed")
+```
+
+### Looking at TF enrichment in active TEs
+
+```{r}
+
+LTR_aSet3_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3_results/LTR10E_Set3_active_xstreme/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+LTR_aSet3_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3_results/LTR10E_Set3_active_xstreme/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+
+LTR_aSet3_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3_results/LTR10E_Set3_active_xstreme/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+
+
+test_bind_ltr <-  bind_rows(LTR_aSet3_sea_disc_out ,LTR_aSet3_sea_known)%>%
+  dplyr::select(DB:ENR_RATIO) %>% 
+  group_by(ID,ALT_ID) %>% 
+  distinct()
+
+
+```
+
+```{r}
+ ltr_set3_table <- 
+LTR_aSet3_xstreme %>% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(test_bind_ltr) %>% 
+  mutate(diff_per=`TP%` -`FP%`)
+
+```
+
+
+```{r}
+
+ ltr_set3_table %>% 
+  group_by(motif_name) %>% 
+slice_min(EVALUE, with_ties = FALSE) %>%
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*2), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./2,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("Motifs enriched in Set 3 active LTR10E vs all others LTR10E"))
+
+novel_ltr_set3 <- ltr_set3_table %>% 
+  dplyr::filter(is.na(MOTIF_URL))
+
+known_ltr_set3 <- ltr_set3_table %>% 
+  dplyr::filter(!is.na(MOTIF_URL))
+```
+
+```{r}
+novel_ltr_set3 %>% 
+group_by(motif_name) %>% 
+slice_min(EVALUE, with_ties = FALSE) %>%
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=ENR_RATIO*2), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./2,name="Enrichment Ratio"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("Novel Motifs enriched in Set 3 active \n LTR10E vs all others LTR10E n = 13"))
+
+
+known_ltr_set3 %>% 
+group_by(motif_name) %>% 
+slice_min(EVALUE, with_ties = FALSE) %>%
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=ENR_RATIO*8), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./8,name="Enrichment Ratio"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("Known Motifs enriched in Set 3 active \n LTR10E vs all others LTR10E n = 20"))
+
+```
+Filtering for expressed TFs
+```{r}
+RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
+
+RNA_expressed <- RNA_full_toptable %>% 
+  dplyr::select(Entrez_ID, SYMBOL)
+
+### had to add in a special filter to account for the :: in the names of the motifs
+symbols <- str_to_upper(RNA_expressed$SYMBOL)
+
+filtered_known_ltr_set3 <- known_ltr_set3 %>%
+  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
+  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
+  dplyr::select(-motif_tokens)
+
+
+filtered_known_ltr_set3 %>% 
+group_by(motif_name) %>% 
+slice_min(EVALUE, with_ties = FALSE) %>%
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=ENR_RATIO*10), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./10,name="Enrichment Ratio"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("Expressed TFs Known Motifs enriched in Set 3 active \n LTR10E vs all others LTR10E n = 14"))
+
 ```
 

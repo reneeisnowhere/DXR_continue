@@ -1734,6 +1734,8 @@ H3K27ac_aSet3_xstreme %>%
   mutate(diff_per=`TP%` -`FP%`)
 
 ```
+
+
 ```{r}
 
  mer_set3_table %>% 
@@ -1754,6 +1756,7 @@ novel_mer_set3 <- mer_set3_table %>%
 known_mer_set3 <- mer_set3_table %>% 
   dplyr::filter(!is.na(MOTIF_URL))
 ```
+
 
 ```{r}
 novel_mer_set3 %>% 
@@ -1776,7 +1779,7 @@ slice_min(EVALUE, with_ties = FALSE) %>%
   ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
   geom_col(aes(x=log10Evalue))+
   geom_point(aes(x=ENR_RATIO*20), size =4)+
-  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./20,name="Percent of peaks with motif"))+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./20,name="Enrichment Ratio"))+
   theme_classic()+
   ylab("Enriched TF motif")+
   ggtitle(paste("Known Motifs enriched in Set 3 active \n MER61E vs all others MER61E n = 26"))
@@ -1807,7 +1810,7 @@ slice_min(EVALUE, with_ties = FALSE) %>%
   ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
   geom_col(aes(x=log10Evalue))+
   geom_point(aes(x=ENR_RATIO*20), size =4)+
-  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./20,name="Percent of peaks with motif"))+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./20,name="Enrichment Ratio"))+
   theme_classic()+
   ylab("Enriched TF motif")+
   ggtitle(paste("Expressed TFs Known Motifs enriched in Set 3 active \n MER61E vs all others MER61E n = 16"))
