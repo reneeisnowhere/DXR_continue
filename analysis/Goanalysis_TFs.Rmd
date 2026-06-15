@@ -1191,3 +1191,86 @@ GO_KEGG_analysis(LTR10E_cs_all_gost,"KEGG", 0.05,20)
 GO_KEGG_analysis(MER61E_cs_all_gost,"GO:BP", 0.05,20)
 GO_KEGG_analysis(MER61E_cs_all_gost,"KEGG", 0.05,20)
 ```
+
+
+### Looking at active TE integrant enrichment
+
+
+```{r}
+known_mer_set3 <- readRDS( "data/RDS_files/MER61E_set3active_enr.RDS")
+
+known_ltr_set3 <- readRDS( "data/RDS_files/LTR10E_set3active_enr.RDS")
+
+
+filtered_known_mer_set3 <- readRDS("data/RDS_files/filtered_MER61E_set3active_enr.RDS")
+filtered_known_ltr_set3 <- readRDS("data/RDS_files/filtered_LTR10E_set3active_enr.RDS")
+
+
+mer_genes <- known_mer_set3 %>% separate_longer_delim(motif_name, delim="::") %>% 
+mutate(motif_tokens = toupper(motif_name)) %>% 
+  dplyr::pull(motif_tokens) %>% 
+  unique
+
+filt_mer_genes <- filtered_known_mer_set3 %>% separate_longer_delim(motif_name, delim="::") %>% 
+mutate(motif_tokens = toupper(motif_name)) %>% 
+  dplyr::pull(motif_tokens) %>% 
+  unique
+
+ltr_genes <- known_ltr_set3 %>% separate_longer_delim(motif_name, delim="::") %>% 
+mutate(motif_tokens = toupper(motif_name)) %>% 
+  dplyr::pull(motif_tokens) %>% 
+  unique
+
+filt_ltr_genes <- filtered_known_ltr_set3 %>% separate_longer_delim(motif_name, delim="::") %>% 
+mutate(motif_tokens = toupper(motif_name)) %>% 
+  dplyr::pull(motif_tokens) %>% 
+  unique
+```
+
+```{r, eval=FALSE}
+
+known_ltr_set3a_gost <- gost(query = ltr_genes,
+                    organism = "hsapiens",
+                    significant = FALSE,
+                    ordered_query = FALSE,
+                    domain_scope = "custom",
+                    measure_underrepresentation = FALSE,
+                    evcodes = FALSE,
+                    user_threshold = 0.05,
+                    correction_method = c("fdr"),
+                    custom_bg = RNA_lookup$Entrez_ID,
+                    sources=c("GO:BP","KEGG"))
+
+
+saveRDS(known_mer_set3a_gost,"data/RDS_files/known_mer_set3a_gost.RDS")
+saveRDS(filt_known_mer_set3a_gost,"data/RDS_files/filt_known_mer_set3a_gost.RDS")
+
+saveRDS(filt_known_ltr_set3a_gost,"data/RDS_files/filt_known_ltr_set3a_gost.RDS")
+
+saveRDS(known_ltr_set3a_gost,"data/RDS_files/known_ltr_set3a_gost.RDS")
+
+```
+
+```{r}
+
+
+known_mer_set3a_gost <- readRDS("data/RDS_files/known_mer_set3a_gost.RDS")
+filt_known_mer_set3a_gost <- readRDS("data/RDS_files/filt_known_mer_set3a_gost.RDS")
+
+filt_known_ltr_set3a_gost <- readRDS("data/RDS_files/filt_known_ltr_set3a_gost.RDS")
+
+known_ltr_set3a_gost <- readRDS("data/RDS_files/known_ltr_set3a_gost.RDS")
+
+GO_KEGG_analysis(known_mer_set3a_gost,"GO:BP", 0.05,20)
+GO_KEGG_analysis(known_mer_set3a_gost,"KEGG", 0.05,20)
+
+GO_KEGG_analysis(filt_known_mer_set3a_gost,"GO:BP", 0.05,20)
+GO_KEGG_analysis(filt_known_mer_set3a_gost,"KEGG", 0.05,20)
+
+GO_KEGG_analysis(known_ltr_set3a_gost,"GO:BP", 0.05,20)
+GO_KEGG_analysis(known_ltr_set3a_gost,"KEGG", 0.05,20)
+
+GO_KEGG_analysis(filt_known_ltr_set3a_gost,"GO:BP", 0.05,20)
+GO_KEGG_analysis(filt_known_ltr_set3a_gost,"KEGG", 0.05,20)
+```
+
