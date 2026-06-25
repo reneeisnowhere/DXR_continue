@@ -39,7 +39,7 @@ library(circlize)
 library(ggalluvial)
 library(AnnotationDbi)
 library(org.Hs.eg.db)
-
+library(janitor)
 ```
 
 The purpose of this page is to build a large dataframe for MER61E annotations.
@@ -2014,3 +2014,66 @@ what_mer%>%
   labs(title = "All MER61E width of integrant",
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
+
+
+### Persistantly activated TEs TF enrichment
+
+```{r , fig.width=8}
+PA_MER61 <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/SEA_MER61E_active_output/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+PA_MER61 %>% 
+  clean_names() %>% 
+  mutate(motif_names=toupper(alt_id)) %>% 
+  dplyr::select (tp_percent,fp_percent, motif_names,qvalue) %>% 
+  dplyr::rename("active_MER61E"=tp_percent,"not_persistantly_active_MER61E"=fp_percent) %>% 
+  pivot_longer(cols=c(active_MER61E, not_persistantly_active_MER61E), names_to = "type", values_to="percent") %>% 
+  ggplot(., aes(x=motif_names, y=percent, fill=(type)))+
+  geom_col(stat = "identity", position="dodge")+
+  # geom_text(
+  #   aes(label = signif(qvalue, 2), y = percent + 2),
+  #   position = position_dodge(width = 0.9),
+  #   size = 3
+  # ) +
+  theme_bw()+
+  ggtitle("TF enrichment in persistantly activated TEs")+
+  theme(strip.text = element_text(face = "bold",  hjust = 0, size = 8),
+        strip.background = element_rect(fill = "white", linetype = "solid",
+                                        color = "black", linewidth = 1),
+        panel.spacing = unit(1, 'points'),
+        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+
+```{r , fig.width=8}
+
+PA_MER61 %>% 
+  clean_names() %>% 
+  mutate(motif_names=toupper(alt_id)) %>% 
+  dplyr::filter(motif_names %in% RNA_expressed$SYMBOL) %>% 
+  dplyr::select (tp_percent,fp_percent, motif_names,qvalue) %>% 
+  dplyr::rename("active_MER61E"=tp_percent,"not_persistantly_active_MER61E"=fp_percent) %>% 
+  pivot_longer(cols=c(active_MER61E, not_persistantly_active_MER61E), names_to = "type", values_to="percent") %>% 
+  ggplot(., aes(x=motif_names, y=percent, fill=(type)))+
+  geom_col(stat = "identity", position="dodge")+
+  # geom_text(
+  #   aes(label = signif(qvalue, 2), y = percent + 2),
+  #   position = position_dodge(width = 0.9),
+  #   size = 3
+  # ) +
+  theme_bw()+
+  ggtitle("expressed TF enrichment in persistantly activated TEs")+
+  theme(strip.text = element_text(face = "bold",  hjust = 0, size = 8),
+        strip.background = element_rect(fill = "white", linetype = "solid",
+                                        color = "black", linewidth = 1),
+        panel.spacing = unit(1, 'points'),
+        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+```{r}
+pa_tf_names <- PA_MER61 %>% 
+  clean_names() %>% 
+  mutate(motif_names=toupper(alt_id)) %>%
+  pull(motif_names)
+
+saveRDS(pa_tf_names,"data/RDS_files/pa_tf_names.RDS")
+```
+

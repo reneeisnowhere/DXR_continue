@@ -1280,11 +1280,11 @@ ggVennDiagram::ggVennDiagram(list("LTR"=known_ltr_set3$motif_name,"MER"=known_me
 
 intersect(ltr_genes, mer_genes)
 ```
-```{r}
+```{r, eval=FALSE}
 shared=c("TP53",   "ZFP335", "PRDM1",  "SOX11" , "SOX10" , "ZNF768")
 
 
-shared_set3a_gost <- gost(query = shared,
+pa_tf_names_gost <- gost(query = pa_tf_names,
                     organism = "hsapiens",
                     significant = FALSE,
                     ordered_query = FALSE,
@@ -1297,6 +1297,8 @@ shared_set3a_gost <- gost(query = shared,
                     sources=c("GO:BP","KEGG"))
 
   saveRDS(shared_set3a_gost,"data/RDS_files/shared_set3a_gost.RDS")
+  
+  saveRDS(pa_tf_names_gost,"data/RDS_files/pa_tf_names_gost.RDS")
 ```
 
 ```{r}
@@ -1337,5 +1339,16 @@ RNA_full_toptable %>%
   geom_point(aes(color=SYMBOL, size=6))+
   theme_bw()+
   ggtitle("Expressed MER61E enriched TFs")
+```
+
+
+
+```{r}
+pa_tf_names <- readRDS("data/RDS_files/pa_tf_names.RDS")
+
+pa_tf_names_gost<- readRDS("data/RDS_files/pa_tf_names_gost.RDS")
+
+GO_KEGG_analysis(pa_tf_names_gost,"GO:BP", 0.05,20)
+GO_KEGG_analysis(pa_tf_names_gost,"KEGG", 0.05,20)
 ```
 
