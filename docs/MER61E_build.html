@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-06-15" />
+<meta name="date" content="2026-06-25" />
 
 <title>MER61_building dataframe</title>
 
@@ -370,7 +370,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">MER61_building dataframe</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-06-15</h4>
+<h4 class="date">2026-06-25</h4>
 
 </div>
 
@@ -399,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-06-15
+<strong>Last updated:</strong> 2026-06-25
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec962cc2a2891448943d7a004888a263929bdee2ctargetblankc962cc2a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreef9952d561474591ae56328b7bb00e29fcc87c145targetblankf9952d5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c962cc2a2891448943d7a004888a263929bdee2c" target="_blank">c962cc2</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/f9952d561474591ae56328b7bb00e29fcc87c145" target="_blank">f9952d5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec962cc2a2891448943d7a004888a263929bdee2ctargetblankc962cc2a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreef9952d561474591ae56328b7bb00e29fcc87c145targetblankf9952d5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c962cc2a2891448943d7a004888a263929bdee2c" target="_blank">c962cc2</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/f9952d561474591ae56328b7bb00e29fcc87c145" target="_blank">f9952d5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -580,6 +580,7 @@ Ignored files:
     Ignored:    data/cell_line_info_.tsv
     Ignored:    data/full_p53_canonical.RDS
     Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/lookup_table_andstuff.txt
     Ignored:    data/motif_lists/
     Ignored:    data/number_frag_peaks_summary.txt
     Ignored:    data/p53halfsite_TE_ids.RDS
@@ -603,9 +604,8 @@ Untracked files:
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27ac_TEtype.Rmd
-    Modified:   analysis/H3K27me3_TE_overlap_extend.Rmd
     Modified:   analysis/chromHMM_2.Rmd
+    Modified:   code/corMotifcustom.R
 
 </code></pre>
 <p>
@@ -650,6 +650,58 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/f9952d561474591ae56328b7bb00e29fcc87c145/analysis/MER61E_build.Rmd" target="_blank">f9952d5</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+<td>
+adding in PA-MER61E analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/924c34320e981a44d86ee080493bcceeaf2f2923/analysis/MER61E_build.Rmd" target="_blank">924c343</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+<td>
+wflow_git_commit(c("analysis/H3K27ac_TEtype.Rmd",
+"analysis/H3K27ac_cisRE.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/a0aae83e1d9c46581e2594850b69e40b7e357dd3/docs/MER61E_build.html" target="_blank">a0aae83</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -986,7 +1038,8 @@ library(ComplexHeatmap)
 library(circlize)
 library(ggalluvial)
 library(AnnotationDbi)
-library(org.Hs.eg.db)</code></pre>
+library(org.Hs.eg.db)
+library(janitor)</code></pre>
 <p>The purpose of this page is to build a large dataframe for MER61E
 annotations.</p>
 <pre class="r"><code># ZNF680 narrowpeak binding Hek293 ENCFF935XZI
@@ -5479,6 +5532,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0aae83e1d9c46581e2594850b69e40b7e357dd3/docs/figure/MER61E_build.Rmd/unnamed-chunk-58-2.png" target="_blank">a0aae83</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/75db38663238befe4e75c6ab3a2913a0a24d22cd/docs/figure/MER61E_build.Rmd/unnamed-chunk-58-2.png" target="_blank">75db386</a>
 </td>
 <td>
@@ -5492,6 +5556,7 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code># saveRDS(known_mer_set3, &quot;data/RDS_files/MER61E_set3active_enr.RDS&quot;)</code></pre>
 <p>Filtering for expressed TFs</p>
 <pre class="r"><code>RNA_full_toptable &lt;-  readRDS(&quot;data/Other_paper_data/RNA_full_toptable.RDS&quot;)
 
@@ -5545,6 +5610,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0aae83e1d9c46581e2594850b69e40b7e357dd3/docs/figure/MER61E_build.Rmd/unnamed-chunk-59-1.png" target="_blank">a0aae83</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/75db38663238befe4e75c6ab3a2913a0a24d22cd/docs/figure/MER61E_build.Rmd/unnamed-chunk-59-1.png" target="_blank">75db386</a>
 </td>
 <td>
@@ -5558,6 +5634,268 @@ reneeisnowhere
 </table>
 </div>
 </div>
+</div>
+<div id="persistantly-activated-mer61e" class="section level3">
+<h3>Persistantly Activated MER61E</h3>
+<pre class="r"><code>what_mer &lt;-
+mintermediate_data %&gt;% 
+  mutate(active_DOX= case_when(
+    DOX_144R %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;)&amp;
+      DOX_24R %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;) &amp;
+      DOX_24T %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;)~&quot;Active_DOX&quot;,
+         TRUE~&quot;not_active&quot;),
+    active_VEH= case_when(
+    VEH_144R %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;)&amp;
+      VEH_24R %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;) &amp;
+      VEH_24T %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;)~&quot;Active_VEH&quot;,
+         TRUE~&quot;not_active&quot;)) 
+
+
+what_mer %&gt;% 
+  group_by(my_MER,active_DOX, active_VEH ) %&gt;% 
+  tally()</code></pre>
+<pre><code># A tibble: 8 × 4
+# Groups:   my_MER, active_DOX [4]
+  my_MER active_DOX active_VEH     n
+  &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt;      &lt;int&gt;
+1 no     Active_DOX Active_VEH     2
+2 no     Active_DOX not_active     4
+3 no     not_active Active_VEH     1
+4 no     not_active not_active   193
+5 yes    Active_DOX Active_VEH    13
+6 yes    Active_DOX not_active    10
+7 yes    not_active Active_VEH     2
+8 yes    not_active not_active    42</code></pre>
+<pre class="r"><code>what_mer %&gt;% 
+  group_by(active_DOX, my_MER, p53_halfsite) %&gt;% 
+  tally()</code></pre>
+<pre><code># A tibble: 8 × 4
+# Groups:   active_DOX, my_MER [4]
+  active_DOX my_MER p53_halfsite     n
+  &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;        &lt;int&gt;
+1 Active_DOX no     no               3
+2 Active_DOX no     yes              3
+3 Active_DOX yes    no               2
+4 Active_DOX yes    yes             21
+5 not_active no     no             104
+6 not_active no     yes             90
+7 not_active yes    no               2
+8 not_active yes    yes             42</code></pre>
+<pre class="r"><code>what_mer%&gt;% 
+ 
+  # dplyr::filter(active_DOX==&quot;Active_DOX&quot;) %&gt;% 
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=cluster,y=MER61E_phyloP_mean, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c(&quot;Set_1&quot;, &quot;Set_3&quot;),
+  c(&quot;Set_1&quot;, &quot;not_assigned&quot;),
+  c(&quot;Set_1&quot;, &quot;NA&quot;),
+  c(&quot;Set_3&quot;,&quot;NA&quot;),
+  c(&quot;Set_3&quot;,&quot;not_assigned&quot;)
+),
+    method = &quot;wilcox.test&quot;
+  ) +
+  facet_wrap(~active_DOX)+
+  labs(title = &quot; Active MER61E mean phyloP in groups&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests&quot;)</code></pre>
+<p><img src="figure/MER61E_build.Rmd/unnamed-chunk-61-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_mer%&gt;% 
+ 
+  #dplyr::filter(active_DOX==&quot;Active_DOX&quot;) %&gt;% 
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=cluster,y=milliDiv, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c(&quot;Set_1&quot;, &quot;Set_3&quot;),
+  c(&quot;Set_1&quot;, &quot;not_assigned&quot;),
+  c(&quot;Set_1&quot;, &quot;NA&quot;),
+  c(&quot;Set_3&quot;,&quot;NA&quot;),
+  c(&quot;Set_3&quot;,&quot;not_assigned&quot;)
+),
+    method = &quot;wilcox.test&quot;
+  ) +
+  facet_wrap(~active_DOX)+
+  labs(title = &quot; Active MER61E milliDiv in groups&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests&quot;)</code></pre>
+<p><img src="figure/MER61E_build.Rmd/unnamed-chunk-62-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>Okay, I am going to split out the MER61Es that are persistently
+active compared to those that transition to repressed state. Then I will
+run SEA enrichment instead of xstreme due to only using known motifs
+(Jaspar2024, core vetebrate non-redundant) between these elements. I
+will also only focus on 100+/- bp around the center of the integrant.
+Below is how I made the bedfiles</p>
+<pre class="r"><code>active_df &lt;- what_mer[what_mer$active_DOX == &quot;Active_DOX&quot;, ]
+not_active_df &lt;- what_mer[what_mer$active_DOX == &quot;not_active&quot;, ]
+
+active_names &lt;- active_df$repID
+not_active_names &lt;- not_active_df$repID
+
+gr_names &lt;- mcols(MER61E_regions)$name
+
+missing_active &lt;- setdiff(active_names, gr_names)
+missing_not_active &lt;- setdiff(not_active_names, gr_names)
+
+if (length(missing_active) &gt; 0) {
+  warning(&quot;These Active_DOX regions were not found in MER61E_regions:&quot;)
+  print(missing_active)
+}
+
+if (length(missing_not_active) &gt; 0) {
+  warning(&quot;These not_active regions were not found in MER61E_regions:&quot;)
+  print(missing_not_active)
+}
+
+active_gr &lt;- MER61E_regions[gr_names %in% active_names]
+not_active_gr &lt;- MER61E_regions[gr_names %in% not_active_names]
+
+
+# Center and resize to 100 bp
+active_gr_200bp &lt;- resize(active_gr, width = 200, fix = &quot;center&quot;)
+not_active_gr_200bp &lt;- resize(not_active_gr, width = 200, fix = &quot;center&quot;)
+
+# Keep original MER61E region names as BED column 4
+mcols(active_gr_200bp)$name &lt;- mcols(active_gr)$name
+mcols(not_active_gr_200bp)$name &lt;- mcols(not_active_gr)$name
+
+# Keep score if available
+if (&quot;score&quot; %in% colnames(mcols(active_gr))) {
+  mcols(active_gr_200bp)$score &lt;- mcols(active_gr)$score
+}
+
+if (&quot;score&quot; %in% colnames(mcols(not_active_gr))) {
+  mcols(not_active_gr_200bp)$score &lt;- mcols(not_active_gr)$score
+}
+
+# Trim to chromosome bounds if seqinfo has chromosome lengths
+active_gr_200bp &lt;- trim(active_gr_200bp)
+not_active_gr_200bp &lt;- trim(not_active_gr_200bp)
+
+# Keep only full 100 bp regions
+active_gr_200bp &lt;- active_gr_200bp[width(active_gr_200bp) == 200]
+not_active_gr_200bp &lt;- not_active_gr_200bp[width(not_active_gr_200bp) == 200]
+
+
+export(active_gr_200bp, &quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_Active_DOX_200bp.bed&quot;, format = &quot;BED&quot;)
+export(not_active_gr_200bp, &quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_not_active_DOX_200bp.bed&quot;, format = &quot;BED&quot;)
+
+
+H3K27ac_toptable_list %&gt;% 
+ dplyr::filter(group==&quot;H3K27ac_24T&quot;) %&gt;% 
+ left_join(H3K27ac_lookup,by=c(&quot;genes&quot;=&quot;Peakid&quot;)) %&gt;% 
+ write_delim(., file=&quot;data/lookup_table_andstuff.txt&quot;)</code></pre>
+<pre class="r"><code>what_mer%&gt;% 
+ 
+  # dplyr::filter(active_DOX==&quot;Active_DOX&quot;) %&gt;%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=my_MER,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c(&quot;yes&quot;,&quot;no&quot;)
+),
+    method = &quot;wilcox.test&quot;
+  ) +
+  # facet_wrap(~active_DOX)+
+  labs(title = &quot;All MER61E width of integrant&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests&quot;)</code></pre>
+<p><img src="figure/MER61E_build.Rmd/unnamed-chunk-64-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_mer%&gt;% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %&gt;% 
+  # group_by(my_MER,p53_halfsite) %&gt;% 
+  # summarise(milliDiv_avg=(mean(milliDiv)),
+  #           MYA_jukes_cantor_avg=mean(MYA_jukes_cantor),
+  #           MYA_bourque_avg=mean(MYA_bourque)) %&gt;% 
+ 
+  # dplyr::filter(active_DOX==&quot;Active_DOX&quot;) %&gt;%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=width,y=MYA_jukes_cantor, color=p53_halfsite))+
+  geom_point()+
+#   smplot2::sm_boxplot()+
+#   ggpubr::stat_compare_means(
+#     comparisons = list(
+#    c(&quot;yes&quot;,&quot;no&quot;)
+# ),
+#     method = &quot;wilcox.test&quot;
+#   ) +
+  # facet_wrap(~p53_halfsite)+
+  labs(title = &quot;All MER61E width of integrant&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests&quot;)</code></pre>
+<p><img src="figure/MER61E_build.Rmd/unnamed-chunk-65-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="persistantly-activated-tes-tf-enrichment"
+class="section level3">
+<h3>Persistantly activated TEs TF enrichment</h3>
+<pre class="r"><code>PA_MER61 &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/SEA_MER61E_active_output/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;disc&quot;) %&gt;% slice_head(n = length(.$ID)-3)
+
+PA_MER61 %&gt;% 
+  clean_names() %&gt;% 
+  mutate(motif_names=toupper(alt_id)) %&gt;% 
+  dplyr::select (tp_percent,fp_percent, motif_names,qvalue) %&gt;% 
+  dplyr::rename(&quot;active_MER61E&quot;=tp_percent,&quot;not_persistantly_active_MER61E&quot;=fp_percent) %&gt;% 
+  pivot_longer(cols=c(active_MER61E, not_persistantly_active_MER61E), names_to = &quot;type&quot;, values_to=&quot;percent&quot;) %&gt;% 
+  ggplot(., aes(x=motif_names, y=percent, fill=(type)))+
+  geom_col(stat = &quot;identity&quot;, position=&quot;dodge&quot;)+
+  # geom_text(
+  #   aes(label = signif(qvalue, 2), y = percent + 2),
+  #   position = position_dodge(width = 0.9),
+  #   size = 3
+  # ) +
+  theme_bw()+
+  ggtitle(&quot;TF enrichment in persistantly activated TEs&quot;)+
+  theme(strip.text = element_text(face = &quot;bold&quot;,  hjust = 0, size = 8),
+        strip.background = element_rect(fill = &quot;white&quot;, linetype = &quot;solid&quot;,
+                                        color = &quot;black&quot;, linewidth = 1),
+        panel.spacing = unit(1, &#39;points&#39;),
+        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))</code></pre>
+<p><img src="figure/MER61E_build.Rmd/unnamed-chunk-66-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>PA_MER61 %&gt;% 
+  clean_names() %&gt;% 
+  mutate(motif_names=toupper(alt_id)) %&gt;% 
+  dplyr::filter(motif_names %in% RNA_expressed$SYMBOL) %&gt;% 
+  dplyr::select (tp_percent,fp_percent, motif_names,qvalue) %&gt;% 
+  dplyr::rename(&quot;active_MER61E&quot;=tp_percent,&quot;not_persistantly_active_MER61E&quot;=fp_percent) %&gt;% 
+  pivot_longer(cols=c(active_MER61E, not_persistantly_active_MER61E), names_to = &quot;type&quot;, values_to=&quot;percent&quot;) %&gt;% 
+  ggplot(., aes(x=motif_names, y=percent, fill=(type)))+
+  geom_col(stat = &quot;identity&quot;, position=&quot;dodge&quot;)+
+  # geom_text(
+  #   aes(label = signif(qvalue, 2), y = percent + 2),
+  #   position = position_dodge(width = 0.9),
+  #   size = 3
+  # ) +
+  theme_bw()+
+  ggtitle(&quot;expressed TF enrichment in persistantly activated TEs&quot;)+
+  theme(strip.text = element_text(face = &quot;bold&quot;,  hjust = 0, size = 8),
+        strip.background = element_rect(fill = &quot;white&quot;, linetype = &quot;solid&quot;,
+                                        color = &quot;black&quot;, linewidth = 1),
+        panel.spacing = unit(1, &#39;points&#39;),
+        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))</code></pre>
+<p><img src="figure/MER61E_build.Rmd/unnamed-chunk-67-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pa_tf_names &lt;- PA_MER61 %&gt;% 
+  clean_names() %&gt;% 
+  mutate(motif_names=toupper(alt_id)) %&gt;%
+  pull(motif_names)
+
+saveRDS(pa_tf_names,&quot;data/RDS_files/pa_tf_names.RDS&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -5589,182 +5927,183 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] ChIPseeker_1.42.1     org.Hs.eg.db_3.20.0   AnnotationDbi_1.68.0 
- [4] Biobase_2.66.0        ggalluvial_0.12.6     circlize_0.4.18      
- [7] ComplexHeatmap_2.22.0 DT_0.34.0             ggrepel_0.9.8        
-[10] rtracklayer_1.66.0    genomation_1.38.0     plyranges_1.26.0     
-[13] GenomicRanges_1.58.0  GenomeInfoDb_1.42.3   IRanges_2.40.1       
-[16] S4Vectors_0.44.0      BiocGenerics_0.52.0   lubridate_1.9.5      
-[19] forcats_1.0.1         stringr_1.6.0         dplyr_1.2.1          
-[22] purrr_1.2.2           readr_2.2.0           tidyr_1.3.2          
-[25] tibble_3.3.1          ggplot2_4.0.3         tidyverse_2.0.0      
-[28] workflowr_1.7.2      
+ [1] ChIPseeker_1.42.1     janitor_2.2.1         org.Hs.eg.db_3.20.0  
+ [4] AnnotationDbi_1.68.0  Biobase_2.66.0        ggalluvial_0.12.6    
+ [7] circlize_0.4.18       ComplexHeatmap_2.22.0 DT_0.34.0            
+[10] ggrepel_0.9.8         rtracklayer_1.66.0    genomation_1.38.0    
+[13] plyranges_1.26.0      GenomicRanges_1.58.0  GenomeInfoDb_1.42.3  
+[16] IRanges_2.40.1        S4Vectors_0.44.0      BiocGenerics_0.52.0  
+[19] lubridate_1.9.5       forcats_1.0.1         stringr_1.6.0        
+[22] dplyr_1.2.1           purrr_1.2.2           readr_2.2.0          
+[25] tidyr_1.3.2           tibble_3.3.1          ggplot2_4.0.3        
+[28] tidyverse_2.0.0       workflowr_1.7.2      
 
 loaded via a namespace (and not attached):
-  [1] splines_4.4.2                          
-  [2] later_1.4.8                            
-  [3] BiocIO_1.16.0                          
-  [4] bitops_1.0-9                           
-  [5] ggplotify_0.1.3                        
-  [6] R.oo_1.27.1                            
-  [7] rpart_4.1.27                           
-  [8] XML_3.99-0.23                          
-  [9] lifecycle_1.0.5                        
- [10] rstatix_0.7.3                          
- [11] doParallel_1.0.17                      
- [12] rprojroot_2.1.1                        
- [13] vroom_1.7.1                            
- [14] processx_3.9.0                         
- [15] lattice_0.22-9                         
- [16] crosstalk_1.2.2                        
- [17] backports_1.5.1                        
- [18] magrittr_2.0.5                         
- [19] Hmisc_5.2-5                            
+  [1] fs_2.1.0                               
+  [2] matrixStats_1.5.0                      
+  [3] bitops_1.0-9                           
+  [4] enrichplot_1.26.6                      
+  [5] httr_1.4.8                             
+  [6] RColorBrewer_1.1-3                     
+  [7] doParallel_1.0.17                      
+  [8] tools_4.4.2                            
+  [9] backports_1.5.1                        
+ [10] smplot2_0.2.6                          
+ [11] utf8_1.2.6                             
+ [12] R6_2.6.1                               
+ [13] mgcv_1.9-4                             
+ [14] lazyeval_0.2.3                         
+ [15] GetoptLong_1.1.1                       
+ [16] withr_3.0.2                            
+ [17] gridExtra_2.3                          
+ [18] cli_3.6.6                              
+ [19] labeling_0.4.3                         
  [20] sass_0.4.10                            
- [21] rmarkdown_2.31                         
- [22] jquerylib_0.1.4                        
- [23] yaml_2.3.12                            
- [24] plotrix_3.8-14                         
- [25] httpuv_1.6.17                          
- [26] otel_0.2.0                             
- [27] ggtangle_0.1.2                         
- [28] cowplot_1.2.0                          
- [29] DBI_1.3.0                              
- [30] RColorBrewer_1.1-3                     
- [31] abind_1.4-8                            
- [32] zlibbioc_1.52.0                        
- [33] R.utils_2.13.0                         
- [34] RCurl_1.98-1.18                        
- [35] nnet_7.3-20                            
- [36] yulab.utils_0.2.4                      
- [37] rappdirs_0.3.4                         
- [38] git2r_0.36.2                           
- [39] GenomeInfoDbData_1.2.13                
- [40] enrichplot_1.26.6                      
- [41] tidytree_0.4.7                         
- [42] codetools_0.2-20                       
- [43] DelayedArray_0.32.0                    
- [44] DOSE_4.0.1                             
- [45] tidyselect_1.2.1                       
- [46] shape_1.4.6.1                          
- [47] aplot_0.2.9                            
- [48] UCSC.utils_1.2.0                       
- [49] farver_2.1.2                           
- [50] base64enc_0.1-6                        
- [51] matrixStats_1.5.0                      
- [52] GenomicAlignments_1.42.0               
- [53] jsonlite_2.0.0                         
- [54] GetoptLong_1.1.1                       
- [55] Formula_1.2-5                          
- [56] iterators_1.0.14                       
- [57] foreach_1.5.2                          
- [58] tools_4.4.2                            
- [59] treeio_1.30.0                          
- [60] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
- [61] ggVennDiagram_1.5.7                    
- [62] Rcpp_1.1.1-1.1                         
- [63] glue_1.8.1                             
- [64] gridExtra_2.3                          
- [65] SparseArray_1.6.2                      
- [66] mgcv_1.9-4                             
- [67] xfun_0.57                              
- [68] qvalue_2.38.0                          
- [69] MatrixGenerics_1.18.1                  
- [70] withr_3.0.2                            
- [71] fastmap_1.2.0                          
- [72] boot_1.3-32                            
- [73] caTools_1.18.3                         
- [74] callr_3.7.6                            
- [75] digest_0.6.39                          
- [76] timechange_0.4.0                       
- [77] R6_2.6.1                               
- [78] gridGraphics_0.5-1                     
- [79] seqPattern_1.38.0                      
- [80] colorspace_2.1-2                       
- [81] GO.db_3.20.0                           
- [82] gtools_3.9.5                           
- [83] dichromat_2.0-0.1                      
- [84] RSQLite_3.52.0                         
- [85] R.methodsS3_1.8.2                      
- [86] utf8_1.2.6                             
- [87] generics_0.1.4                         
- [88] data.table_1.18.4                      
- [89] httr_1.4.8                             
- [90] htmlwidgets_1.6.4                      
- [91] S4Arrays_1.6.0                         
- [92] whisker_0.4.1                          
- [93] pkgconfig_2.0.3                        
- [94] gtable_0.3.6                           
- [95] blob_1.3.0                             
- [96] S7_0.2.2                               
- [97] impute_1.80.0                          
- [98] XVector_0.46.0                         
- [99] htmltools_0.5.9                        
-[100] carData_3.0-6                          
-[101] pwr_1.3-0                              
-[102] fgsea_1.32.4                           
-[103] clue_0.3-68                            
-[104] scales_1.4.0                           
-[105] png_0.1-9                              
-[106] ggfun_0.2.0                            
-[107] knitr_1.51                             
-[108] rstudioapi_0.18.0                      
-[109] tzdb_0.5.0                             
-[110] reshape2_1.4.5                         
-[111] rjson_0.2.23                           
-[112] checkmate_2.3.4                        
-[113] nlme_3.1-169                           
-[114] curl_7.1.0                             
-[115] zoo_1.8-15                             
-[116] cachem_1.1.0                           
-[117] GlobalOptions_0.1.4                    
-[118] KernSmooth_2.23-26                     
-[119] parallel_4.4.2                         
-[120] foreign_0.8-91                         
-[121] restfulr_0.0.16                        
-[122] pillar_1.11.1                          
-[123] vctrs_0.7.3                            
-[124] gplots_3.3.0                           
-[125] ggpubr_0.6.3                           
-[126] promises_1.5.0                         
-[127] car_3.1-5                              
-[128] cluster_2.1.8.2                        
-[129] htmlTable_2.5.0                        
-[130] evaluate_1.0.5                         
-[131] GenomicFeatures_1.58.0                 
-[132] cli_3.6.6                              
-[133] compiler_4.4.2                         
-[134] Rsamtools_2.22.0                       
-[135] rlang_1.2.0                            
-[136] crayon_1.5.3                           
-[137] ggsignif_0.6.4                         
-[138] labeling_0.4.3                         
-[139] getPass_0.2-4                          
-[140] plyr_1.8.9                             
-[141] fs_2.1.0                               
-[142] stringi_1.8.7                          
-[143] viridisLite_0.4.3                      
-[144] gridBase_0.4-7                         
-[145] BiocParallel_1.40.2                    
-[146] Biostrings_2.74.1                      
-[147] lazyeval_0.2.3                         
-[148] GOSemSim_2.32.0                        
-[149] Matrix_1.7-5                           
-[150] BSgenome_1.74.0                        
-[151] hms_1.1.4                              
-[152] patchwork_1.3.2                        
-[153] bit64_4.8.0                            
-[154] KEGGREST_1.46.0                        
-[155] SummarizedExperiment_1.36.0            
-[156] smplot2_0.2.6                          
-[157] broom_1.0.12                           
-[158] igraph_2.3.1                           
-[159] memoise_2.0.1                          
-[160] bslib_0.10.0                           
-[161] ggtree_3.14.0                          
-[162] fastmatch_1.1-8                        
-[163] bit_4.6.0                              
-[164] ape_5.8-1                              </code></pre>
+ [21] S7_0.2.2                               
+ [22] Rsamtools_2.22.0                       
+ [23] yulab.utils_0.2.4                      
+ [24] foreign_0.8-91                         
+ [25] DOSE_4.0.1                             
+ [26] R.utils_2.13.0                         
+ [27] dichromat_2.0-0.1                      
+ [28] plotrix_3.8-14                         
+ [29] BSgenome_1.74.0                        
+ [30] pwr_1.3-0                              
+ [31] rstudioapi_0.18.0                      
+ [32] impute_1.80.0                          
+ [33] RSQLite_3.52.0                         
+ [34] generics_0.1.4                         
+ [35] gridGraphics_0.5-1                     
+ [36] ggVennDiagram_1.5.7                    
+ [37] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+ [38] shape_1.4.6.1                          
+ [39] BiocIO_1.16.0                          
+ [40] gtools_3.9.5                           
+ [41] crosstalk_1.2.2                        
+ [42] vroom_1.7.1                            
+ [43] car_3.1-5                              
+ [44] GO.db_3.20.0                           
+ [45] Matrix_1.7-5                           
+ [46] abind_1.4-8                            
+ [47] R.methodsS3_1.8.2                      
+ [48] lifecycle_1.0.5                        
+ [49] whisker_0.4.1                          
+ [50] yaml_2.3.12                            
+ [51] snakecase_0.11.1                       
+ [52] carData_3.0-6                          
+ [53] SummarizedExperiment_1.36.0            
+ [54] gplots_3.3.0                           
+ [55] qvalue_2.38.0                          
+ [56] SparseArray_1.6.2                      
+ [57] blob_1.3.0                             
+ [58] promises_1.5.0                         
+ [59] crayon_1.5.3                           
+ [60] ggtangle_0.1.2                         
+ [61] lattice_0.22-9                         
+ [62] cowplot_1.2.0                          
+ [63] GenomicFeatures_1.58.0                 
+ [64] KEGGREST_1.46.0                        
+ [65] pillar_1.11.1                          
+ [66] knitr_1.51                             
+ [67] fgsea_1.32.4                           
+ [68] rjson_0.2.23                           
+ [69] boot_1.3-32                            
+ [70] codetools_0.2-20                       
+ [71] fastmatch_1.1-8                        
+ [72] glue_1.8.1                             
+ [73] getPass_0.2-4                          
+ [74] ggfun_0.2.0                            
+ [75] data.table_1.18.4                      
+ [76] vctrs_0.7.3                            
+ [77] png_0.1-9                              
+ [78] treeio_1.30.0                          
+ [79] gtable_0.3.6                           
+ [80] cachem_1.1.0                           
+ [81] xfun_0.57                              
+ [82] S4Arrays_1.6.0                         
+ [83] iterators_1.0.14                       
+ [84] nlme_3.1-169                           
+ [85] ggtree_3.14.0                          
+ [86] bit64_4.8.0                            
+ [87] rprojroot_2.1.1                        
+ [88] bslib_0.10.0                           
+ [89] KernSmooth_2.23-26                     
+ [90] otel_0.2.0                             
+ [91] rpart_4.1.27                           
+ [92] colorspace_2.1-2                       
+ [93] DBI_1.3.0                              
+ [94] Hmisc_5.2-5                            
+ [95] seqPattern_1.38.0                      
+ [96] nnet_7.3-20                            
+ [97] tidyselect_1.2.1                       
+ [98] processx_3.9.0                         
+ [99] bit_4.6.0                              
+[100] compiler_4.4.2                         
+[101] curl_7.1.0                             
+[102] git2r_0.36.2                           
+[103] htmlTable_2.5.0                        
+[104] DelayedArray_0.32.0                    
+[105] checkmate_2.3.4                        
+[106] scales_1.4.0                           
+[107] caTools_1.18.3                         
+[108] callr_3.7.6                            
+[109] rappdirs_0.3.4                         
+[110] digest_0.6.39                          
+[111] rmarkdown_2.31                         
+[112] XVector_0.46.0                         
+[113] htmltools_0.5.9                        
+[114] pkgconfig_2.0.3                        
+[115] base64enc_0.1-6                        
+[116] MatrixGenerics_1.18.1                  
+[117] fastmap_1.2.0                          
+[118] rlang_1.2.0                            
+[119] GlobalOptions_0.1.4                    
+[120] htmlwidgets_1.6.4                      
+[121] UCSC.utils_1.2.0                       
+[122] farver_2.1.2                           
+[123] jquerylib_0.1.4                        
+[124] zoo_1.8-15                             
+[125] jsonlite_2.0.0                         
+[126] BiocParallel_1.40.2                    
+[127] GOSemSim_2.32.0                        
+[128] R.oo_1.27.1                            
+[129] RCurl_1.98-1.18                        
+[130] magrittr_2.0.5                         
+[131] Formula_1.2-5                          
+[132] GenomeInfoDbData_1.2.13                
+[133] ggplotify_0.1.3                        
+[134] patchwork_1.3.2                        
+[135] Rcpp_1.1.1-1.1                         
+[136] ape_5.8-1                              
+[137] stringi_1.8.7                          
+[138] zlibbioc_1.52.0                        
+[139] plyr_1.8.9                             
+[140] parallel_4.4.2                         
+[141] Biostrings_2.74.1                      
+[142] splines_4.4.2                          
+[143] hms_1.1.4                              
+[144] igraph_2.3.1                           
+[145] ggpubr_0.6.3                           
+[146] ggsignif_0.6.4                         
+[147] reshape2_1.4.5                         
+[148] XML_3.99-0.23                          
+[149] evaluate_1.0.5                         
+[150] tzdb_0.5.0                             
+[151] foreach_1.5.2                          
+[152] httpuv_1.6.17                          
+[153] clue_0.3-68                            
+[154] gridBase_0.4-7                         
+[155] broom_1.0.12                           
+[156] restfulr_0.0.16                        
+[157] tidytree_0.4.7                         
+[158] rstatix_0.7.3                          
+[159] later_1.4.8                            
+[160] viridisLite_0.4.3                      
+[161] aplot_0.2.9                            
+[162] memoise_2.0.1                          
+[163] GenomicAlignments_1.42.0               
+[164] cluster_2.1.8.2                        
+[165] timechange_0.4.0                       </code></pre>
 </div>
 </div>
 </div>
