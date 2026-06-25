@@ -1280,8 +1280,8 @@ slice_min(EVALUE, with_ties = FALSE) %>%
    mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
   ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
   geom_col(aes(x=log10Evalue))+
-  geom_point(aes(x=`TP%`*2), size =4)+
-  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./2,name="Percent of peaks with motif"))+
+  geom_point(aes(x=`TP%`*1), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1,name="Percent of peaks with motif"))+
   theme_classic()+
   ylab("Enriched TF motif")+
   ggtitle(paste("Motifs enriched in Set 3 active LTR10E vs all others LTR10E"))
@@ -1349,6 +1349,6 @@ slice_min(EVALUE, with_ties = FALSE) %>%
   theme_classic()+
   ylab("Enriched TF motif")+
   ggtitle(paste("Expressed TFs Known Motifs enriched in Set 3 active \n LTR10E vs all others LTR10E n = 14"))
-
+# saveRDS(known_ltr_set3, "data/RDS_files/LTR10E_set3active_enr.RDS")
 ```
 

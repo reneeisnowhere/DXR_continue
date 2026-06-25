@@ -130,7 +130,7 @@ cCRE_discrete_colors
 
 ```{r}
 H3K27ac_cre_hits <- findOverlaps(H3K27ac_summit_gr, SCREEN_hg38_cCREs, ignore.strand = TRUE)
-
+# saveRDS(H3K27ac_cre_df,"data/RDS_files/H3K27ac_cre_df.RDS")
 H3K27ac_cre_df <- tibble(
   Peakid=mcols(H3K27ac_summit_gr)$Peakid[queryHits(H3K27ac_cre_hits)],
   cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(H3K27ac_cre_hits)],
@@ -187,6 +187,8 @@ H3K27ac_cre_counts <- H3K27ac_cre_anno_full %>%
   ) +
   theme_bw()+
      ggtitle("H3K27ac ROI summits crossing :hg38 all cCREs ")+scale_fill_cCREs()
+ 
+ saveRDS(H3K27ac_cre_counts,"data/RDS_files/H3K27ac_cre_hg38_counts.RDS")
    
 ```
 

@@ -1783,7 +1783,7 @@ slice_min(EVALUE, with_ties = FALSE) %>%
   theme_classic()+
   ylab("Enriched TF motif")+
   ggtitle(paste("Known Motifs enriched in Set 3 active \n MER61E vs all others MER61E n = 26"))
-
+# saveRDS(known_mer_set3, "data/RDS_files/MER61E_set3active_enr.RDS")
 ```
 Filtering for expressed TFs
 ```{r}
@@ -1817,3 +1817,200 @@ slice_min(EVALUE, with_ties = FALSE) %>%
 
 ```
 
+### Persistantly Activated MER61E
+
+```{r}
+
+what_mer <-
+mintermediate_data %>% 
+  mutate(active_DOX= case_when(
+    DOX_144R %in% c("Enhancer","Transcription")&
+      DOX_24R %in% c("Enhancer","Transcription") &
+      DOX_24T %in% c("Enhancer","Transcription")~"Active_DOX",
+         TRUE~"not_active"),
+    active_VEH= case_when(
+    VEH_144R %in% c("Enhancer","Transcription")&
+      VEH_24R %in% c("Enhancer","Transcription") &
+      VEH_24T %in% c("Enhancer","Transcription")~"Active_VEH",
+         TRUE~"not_active")) 
+
+
+what_mer %>% 
+  group_by(my_MER,active_DOX, active_VEH ) %>% 
+  tally()
+
+what_mer %>% 
+  group_by(active_DOX, my_MER, p53_halfsite) %>% 
+  tally()
+```
+
+```{r}
+what_mer%>% 
+ 
+  # dplyr::filter(active_DOX=="Active_DOX") %>% 
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=cluster,y=MER61E_phyloP_mean, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  ) +
+  facet_wrap(~active_DOX)+
+  labs(title = " Active MER61E mean phyloP in groups",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+
+
+
+```{r}
+what_mer%>% 
+ 
+  #dplyr::filter(active_DOX=="Active_DOX") %>% 
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=cluster,y=milliDiv, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  ) +
+  facet_wrap(~active_DOX)+
+  labs(title = " Active MER61E milliDiv in groups",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+
+Okay, I am going to split out the MER61Es that are persistently active compared to those that transition to repressed state.  Then I will run SEA enrichment instead of xstreme due to only using known motifs (Jaspar2024, core vetebrate non-redundant) between these elements.  I will also only focus on 100+/- bp around the center of the integrant.
+Below is how I made the bedfiles
+
+```{r, eval=FALSE}
+active_df <- what_mer[what_mer$active_DOX == "Active_DOX", ]
+not_active_df <- what_mer[what_mer$active_DOX == "not_active", ]
+
+active_names <- active_df$repID
+not_active_names <- not_active_df$repID
+
+gr_names <- mcols(MER61E_regions)$name
+
+missing_active <- setdiff(active_names, gr_names)
+missing_not_active <- setdiff(not_active_names, gr_names)
+
+if (length(missing_active) > 0) {
+  warning("These Active_DOX regions were not found in MER61E_regions:")
+  print(missing_active)
+}
+
+if (length(missing_not_active) > 0) {
+  warning("These not_active regions were not found in MER61E_regions:")
+  print(missing_not_active)
+}
+
+active_gr <- MER61E_regions[gr_names %in% active_names]
+not_active_gr <- MER61E_regions[gr_names %in% not_active_names]
+
+
+# Center and resize to 100 bp
+active_gr_200bp <- resize(active_gr, width = 200, fix = "center")
+not_active_gr_200bp <- resize(not_active_gr, width = 200, fix = "center")
+
+# Keep original MER61E region names as BED column 4
+mcols(active_gr_200bp)$name <- mcols(active_gr)$name
+mcols(not_active_gr_200bp)$name <- mcols(not_active_gr)$name
+
+# Keep score if available
+if ("score" %in% colnames(mcols(active_gr))) {
+  mcols(active_gr_200bp)$score <- mcols(active_gr)$score
+}
+
+if ("score" %in% colnames(mcols(not_active_gr))) {
+  mcols(not_active_gr_200bp)$score <- mcols(not_active_gr)$score
+}
+
+# Trim to chromosome bounds if seqinfo has chromosome lengths
+active_gr_200bp <- trim(active_gr_200bp)
+not_active_gr_200bp <- trim(not_active_gr_200bp)
+
+# Keep only full 100 bp regions
+active_gr_200bp <- active_gr_200bp[width(active_gr_200bp) == 200]
+not_active_gr_200bp <- not_active_gr_200bp[width(not_active_gr_200bp) == 200]
+
+
+export(active_gr_200bp, "data/Bed_exports/repeatmasker_sets/ERV1/MER61E_Active_DOX_200bp.bed", format = "BED")
+export(not_active_gr_200bp, "data/Bed_exports/repeatmasker_sets/ERV1/MER61E_not_active_DOX_200bp.bed", format = "BED")
+
+
+H3K27ac_toptable_list %>% 
+ dplyr::filter(group=="H3K27ac_24T") %>% 
+ left_join(H3K27ac_lookup,by=c("genes"="Peakid")) %>% 
+ write_delim(., file="data/lookup_table_andstuff.txt")
+
+```
+
+```{r}
+what_mer%>% 
+ 
+  # dplyr::filter(active_DOX=="Active_DOX") %>%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=my_MER,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c("yes","no")
+),
+    method = "wilcox.test"
+  ) +
+  # facet_wrap(~active_DOX)+
+  labs(title = "All MER61E width of integrant",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+
+```{r}
+what_mer%>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  # group_by(my_MER,p53_halfsite) %>% 
+  # summarise(milliDiv_avg=(mean(milliDiv)),
+  #           MYA_jukes_cantor_avg=mean(MYA_jukes_cantor),
+  #           MYA_bourque_avg=mean(MYA_bourque)) %>% 
+ 
+  # dplyr::filter(active_DOX=="Active_DOX") %>%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=width,y=MYA_jukes_cantor, color=p53_halfsite))+
+  geom_point()+
+#   smplot2::sm_boxplot()+
+#   ggpubr::stat_compare_means(
+#     comparisons = list(
+#    c("yes","no")
+# ),
+#     method = "wilcox.test"
+#   ) +
+  # facet_wrap(~p53_halfsite)+
+  labs(title = "All MER61E width of integrant",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```

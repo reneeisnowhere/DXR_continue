@@ -879,6 +879,8 @@ draw(ht_H3K27ac_MERall, heatmap_legend_side = "right", column_title = paste0("H3
   draw(ht_H3K9me3_MERall, heatmap_legend_side = "right", column_title = paste0("H3K9me3 all MER61"))
   
 ```
+
+
 ```{r}
 
 
