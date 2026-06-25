@@ -1,0 +1,660 @@
+---
+title: "Supplemental Figure draft"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+
+```{r library entries}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+library(ggalluvial)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(edgeR)
+library(RColorBrewer)
+library(ggVennDiagram)
+library(ChIPseeker)
+```
+
+
+Data import:
+```{r data import}
+sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
+peak_ct <- read_delim("data/peaks/peaks_cts_FINAL.txt", delim = "\t")
+H3K27ac_peaks <- read_delim("data/peaks/H3K27ac_FINAl_results.tsv",delim = "\t")
+trimmed_multiqc_fastqc <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/Steven_bed_Files/data/multiqc_data_trim/multiqc_fastqc.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+fastq_fragments <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/fastq_backup_stats.tsv",delim = "\t", escape_double = FALSE,
+    trim_ws = TRUE)
+frag_count_total_no_multi <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/Steven_bed_Files/data/bam_no_multi/frag_count_total_no_multi.tsv",
+    delim = "\t", escape_double = FALSE,
+    trim_ws = TRUE)
+
+fragment_count_totals_final <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/Steven_bed_Files/data/bam_final/fragment_count_totals_final.tsv",
+    delim = "\t", escape_double = FALSE,
+    trim_ws = TRUE)
+
+# creating the fragmenfile
+
+H3K27acfrag_summary_file <- fastq_fragments %>% 
+  mutate(file=str_remove(file, "_R[12]\\.fastq\\.gz$")) %>% 
+  distinct() %>% 
+  left_join(sampleinfo,by=c("file"="Library ID")) %>% 
+  dplyr::filter(Treatment != "5FU" & Histone_Mark =="H3K27ac") %>% 
+  dplyr::select(file, Histone_Mark:Timepoint,num_seqs) %>% 
+  left_join(frag_count_total_no_multi, by=c("file"="sample")) %>% 
+  left_join(fragment_count_totals_final, by=c("file"="sample")) %>% 
+  dplyr::rename("all_fragments"=num_seqs,
+                "mapped_fragments"= fragment_count_total.x,
+                "unique_noM_dedup"=fragment_count_total.y)
+
+
+H3K27ac_toplist <- readRDS( "data/DER_data/H3K27ac_toplist.RDS")
+
+peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+
+H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+```
+
+```{r echo=TRUE, file='code/corMotifcustom.R'}
+
+```
+
+```{r needed functions}
+
+volcanosig <- function(df, psig.lvl) {
+    df <- df %>% 
+    mutate(threshold = case_when(
+        adj.P.Val > psig.lvl ~ "A",
+        adj.P.Val <= psig.lvl & logFC <= 0 ~ "B",
+        adj.P.Val <= psig.lvl & logFC > 0 ~ "C"))
+   
+      ## count significant red and blue points
+  red_n <- sum(df$threshold == "B", na.rm = TRUE)
+  blue_n <- sum(df$threshold == "C", na.rm = TRUE)
+    
+  ggplot(df, aes(x=logFC, y=-log10(P.Value))) + 
+    ggrastr::geom_point_rast(aes(color=threshold))+
+    annotate("text",x = -5.5, y = 24, label = paste0("n = ", red_n), color = "red", hjust = 0,size = 4) +
+    annotate("text", x = 5.5, y = 24, label = paste0("n = ", blue_n), color = "blue", hjust = 1,size = 4) +
+    xlab(expression("Log"[2]*" FC"))+
+    ylab(expression("-log"[10]*"P Value"))+
+    scale_color_manual(values = c("black", "red","blue"))+
+    theme_classic()+
+    ylim(0,25)+
+    xlim(-6,6)+
+    theme(legend.position = "none",
+              plot.title = element_text(size = rel(1.5), hjust = 0.5),
+              axis.title = element_text(size = rel(0.8))) 
+}
+
+standardizeAnnoList <- function(annoList, categories, color_pal = NULL) {
+  if (is.null(color_pal)) {
+    if (!requireNamespace("RColorBrewer", quietly = TRUE)) {
+      stop("Please install RColorBrewer to use the default palette")
+    }
+    color_pal <- RColorBrewer::brewer.pal(length(categories), "Set3")
+    names(color_pal) <- categories
+  }
+
+  for (nm in names(annoList)) {
+    annoStat <- annoList[[nm]]@annoStat
+    
+    # pad missing categories
+    missing_cats <- setdiff(categories, as.character(annoStat$Feature))
+    if (length(missing_cats) > 0) {
+      pad <- data.frame(Feature = missing_cats, Frequency = 0)
+      annoStat <- rbind(annoStat, pad)
+    }
+    
+    # factor + reorder rows
+    annoStat$Feature <- factor(annoStat$Feature, levels = categories)
+    annoStat <- annoStat[order(match(annoStat$Feature, categories)), ]
+    
+    annoList[[nm]]@annoStat <- annoStat
+  }
+  
+  return(list(
+    annoList = annoList,
+    color_pal = color_pal
+  ))
+}
+
+
+
+```
+  
+
+Basics of supplemental data in the context of H3K27ac data first.
+
+### Current Fig 1  
+
+```{r SF1, fig.width=8}
+H3K27acfrag_summary_file %>% 
+  pivot_longer(cols=c(all_fragments:unique_noM_dedup), names_to = "type", values_to = "frag_counts") %>% 
+  mutate(Timepoint=factor(Timepoint, levels = c("24T","24R","144R"),labels = c("0R","24R","144R")),
+         Treatment=factor(Treatment, levels = c("DOX","VEH"))) %>% 
+  ggplot(., aes(x=type, y=frag_counts))+
+  geom_boxplot(aes(fill=Treatment))+
+  geom_point(aes(col=Individual, size=2))+
+   theme_bw()+
+  facet_wrap(~Treatment+Timepoint,nrow = 3, ncol = 6 )+
+ scale_fill_brewer(palette="Set2")+
+  scale_color_brewer(palette = "Dark2")+
+  theme(strip.text = element_text(face = "bold",  hjust = 0, size = 8),
+        strip.background = element_rect(fill = "white", linetype = "solid",
+                                        color = "black", linewidth = 1),
+        panel.spacing = unit(1, 'points'),
+        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
+
+
+### Current Fig 2
+Fragment lengths
+```{r SF2, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+
+file_list_filter <- list.files(path="data/bam_no_multi",
+           pattern ="frag_len_count\\.txt$",full.names = TRUE)
+read_and_label <- function(file) {
+  df <- read_delim(file, delim = "\t", col_names = c("Col1", "Col2"))  # Adjust delimiter if needed
+  df <- df %>%
+    mutate(File = basename(file),  # Add filename column
+  weight = Col2/sum(Col2))
+  return(df)
+}
+combined_df <- map_df(file_list_filter, read_and_label)
+
+annotated_combo_df <- combined_df %>% 
+  mutate(sample = gsub("_frag_len_count.txt","",File)) %>% 
+  left_join(., sampleinfo, by = c("sample"="Library ID"))
+annotated_combo_df <- annotated_combo_df[(!annotated_combo_df$Treatment %in% "5FU"),]
+
+annotated_combo_df %>% 
+  mutate(Timepoint=factor(Timepoint, levels = c("24T","24R","144R"),labels = c("0R","24R","144R")),
+         Treatment=factor(Treatment, levels = c("DOX","VEH"))) %>% 
+  mutate(sample_name=paste0(Individual,"_",Treatment,"_",Timepoint),
+         trt_time=paste0(Treatment,"_",Timepoint),
+         trt_time=factor(trt_time, levels = c("DOX_0R","DOX_24R","DOX_144R","VEH_0R","VEH_24R","VEH_144R"))) %>% 
+   arrange( Treatment,Individual, Timepoint) %>%
+  mutate(sample_name = factor(sample_name, levels = unique(sample_name))) %>%
+  dplyr::filter(Histone_Mark=="H3K27ac") %>%
+  ggplot(., aes(x=sample_name, y=Col1, weight = weight,fill = Treatment))+
+geom_violin(bw = 5) +
+    scale_y_continuous(breaks = seq(0, 800, 50)) +
+   theme_bw(base_size = 15) +
+    ggpubr::rotate_x_text(angle = 90) +
+  ggtitle("Fragment lengths for H3K27ac")+
+    ylab("Fragment Length") +
+    xlab("")+
+  scale_fill_brewer(palette="Set2")
+
+```
+
+### Current Fig 3
+
+```{r SF3}
+
+```
+
+### Current Fig 4
+peak counts
+```{r SF4 peak counts}
+
+Peak_n_FRIP <- H3K27ac_peaks %>% 
+  left_join(sampleinfo, by =c("Sample"='Library ID')) %>% 
+  mutate(Timepoint=factor(Timepoint, levels = c("24T","24R","144R"),labels = c("0R","24R","144R")),
+         Treatment=factor(Treatment, levels = c("DOX","VEH"))) %>% 
+  left_join(peak_ct, by=c("Sample"="Sample")) %>% 
+  mutate(sample_name=paste0(Individual,"_",Treatment,"_",Timepoint),
+         trt_time=paste0(Treatment,"_",Timepoint),
+         trt_time=factor(trt_time, levels = c("DOX_0R","DOX_24R","DOX_144R","VEH_0R","VEH_24R","VEH_144R")))
+
+ggplot(Peak_n_FRIP, aes(x=trt_time, y = Count))+
+  geom_boxplot(aes(fill=Treatment, alpha=.8))+
+  geom_point(aes(color=Individual, size=4))+
+  labs(title="Count of H3K27ac Peaks")+
+  ylab("Number of Peaks")+
+  xlab("Treatment and Time")+
+  theme_bw()+
+  scale_color_brewer(palette="Dark2")+
+  scale_fill_brewer(palette="Set2")
+  
+
+```
+
+### Current Fig 5  
+
+FRiP
+```{r SF5 Frip}
+ggplot(Peak_n_FRIP, aes(x=trt_time, y = FRiP))+
+  geom_boxplot(aes(fill=Treatment, alpha=.8))+
+  geom_point(aes(color=Individual, size=4))+
+  labs(title="Fraction of Reads in Peaks for H3K27ac")+
+  ylab("Reads in Peaks/ Total Reads")+
+  xlab("Treatment and Time")+
+  theme_bw()+
+  scale_color_brewer(palette="Dark2")+
+  scale_fill_brewer(palette="Set2")
+
+```
+
+### Current Fig 6
+
+```{r}
+H3K27ac_merged <- read_delim("data/peaks/H3K27ac_FINAL_counts.txt",
+    delim = "\t", escape_double = FALSE,
+    trim_ws = TRUE, skip = 1)
+rename_list <- sampleinfo %>% 
+  mutate(stem= "_nobl.bam") %>% 
+  mutate(prefix=paste0("/scratch/10819/styu/MW_multiQC/peaks/",Histone_Mark,"/",Treatment,"/",Timepoint,"/")) %>%
+  mutate(oldname=paste0(prefix,`Library ID`,"/",`Library ID`,stem)) %>% 
+  mutate(newname=paste0(Individual,"_",Treatment,"_",Timepoint)) %>% 
+  dplyr::select(oldname,newname)
+rename_vec <- setNames(rename_list$newname, rename_list$oldname)
+names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)] <- rename_vec[names(H3K27ac_merged)[names(H3K27ac_merged) %in% names(rename_vec)]]
+
+
+H3K27ac_merged_raw <- H3K27ac_merged %>%
+  dplyr::select(Geneid,contains("Ind")) %>%
+  column_to_rownames("Geneid") %>%
+  as.matrix()
+H3K27ac_merged_lcpm <- H3K27ac_merged %>%
+  dplyr::select(Geneid,contains("Ind")) %>%
+  column_to_rownames("Geneid") %>%
+  cpm(., log = TRUE)
+
+H3K27ac_merged_raw <- H3K27ac_merged_raw[rowMeans(H3K27ac_merged_lcpm)>0,]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrY",rownames(H3K27ac_merged_raw)),]
+H3K27ac_merged_raw <- H3K27ac_merged_raw[!grepl("chrX",rownames(H3K27ac_merged_raw)),]
+
+H3K27ac_annomat <- data.frame(timeset=colnames(H3K27ac_merged_raw)) %>%
+  mutate(sample=timeset) %>%
+  separate(timeset, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(ind = gsub("Ind", "", ind)) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>%
+  mutate(group = txtime)
+H3K27ac_annomat$group <- H3K27ac_annomat$group %>%
+  gsub("DOX_24T", "1", .) %>%
+  gsub("DOX_24R", "2", .) %>%
+  gsub("DOX_144R", "3", .) %>%
+  gsub("VEH_24T", "4", .) %>%
+  gsub("VEH_24R", "5", .) %>%
+  gsub("VEH_144R", "6", .)
+
+dge_H3K27ac <- edgeR::DGEList(counts = H3K27ac_merged_raw, group = H3K27ac_annomat$group, genes = row.names(H3K27ac_merged_raw))
+
+lcpm_dge_H3K27ac <- cpm(dge_H3K27ac, log = TRUE)
+```
+
+
+```{r}
+
+get_regr_pval <- function(mod) {
+  # Returns the p-value for the Fstatistic of a linear model
+  # mod: class lm
+  stopifnot(class(mod) == "lm")
+  fstat <- summary(mod)$fstatistic
+  pval <- 1 - pf(fstat[1], fstat[2], fstat[3])
+  return(pval)
+}
+
+
+
+plot_versus_pc <- function(df, pc_num, fac) {
+  # df: data.frame
+  # pc_num: numeric, specific PC for plotting
+  # fac: column name of df for plotting against PC
+  pc_char <- paste0("PC", pc_num)
+  # Calculate F-statistic p-value for linear model
+  pval <- get_regr_pval(lm(df[[ pc_char]] ~ df[[ fac]]))
+  # Pick palette based on factor
+  pal <- dplyr::case_when(
+    fac == "ind" ~ "Dark2",
+    fac == "tx"  ~ "Set2",
+    TRUE ~ NA_character_)
+  
+  
+  if (is.numeric(df[[fac]])) {
+    p <- ggplot(df, aes(x=.data[[fac]], y= .data[[pc_char]]))+
+     geom_point() +
+      geom_smooth(method = "lm") + 
+      theme_bw()+
+      labs(title = sprintf("p-val: %.2f", pval))
+  } else {
+     p <- ggplot(df, aes(x = .data[[fac]], y = .data[[pc_char]], fill = .data[[fac]])) +
+      geom_boxplot() +
+       theme_bw()+
+      labs(title = sprintf("p-val: %.3f", pval))
+     if (!is.na(pal)) {
+      p <- p + scale_fill_brewer(palette = pal)
+    }
+  }
+  
+  p
+}
+```
+
+```{r contributes}
+H3K27ac_pr <- prcomp(t(lcpm_dge_H3K27ac)) 
+
+H3K27ac_pr_anno <- H3K27ac_pr$x %>% 
+  as.data.frame() %>% 
+  rownames_to_column("sample") %>% 
+  separate(sample, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>% 
+  mutate(sex=if_else(ind %in% c("Ind1","Ind2"),"F","M"))%>% 
+  mutate(sex=factor(sex, levels=c("F","M")))
+
+
+facs <- c("ind", "tx", "time", "sex")
+names(facs) <- c("Individual", "Treatment", "Time","Sex")
+
+plots_H3K27ac <- lapply(names(facs), function(f_label) {
+  f <- facs[f_label]
+  f_v_pc1 <- plot_versus_pc(H3K27ac_pr_anno, 1, f)
+  f_v_pc2 <- plot_versus_pc(H3K27ac_pr_anno, 2, f)
+  f_v_pc3 <- plot_versus_pc(H3K27ac_pr_anno, 3, f)
+  f_v_pc4 <- plot_versus_pc(H3K27ac_pr_anno, 4, f)
+
+  gridExtra::grid.arrange(f_v_pc1, f_v_pc2, f_v_pc3,f_v_pc4, ncol = 2, top = paste0(f_label," H3K27ac"))
+})
+```
+
+
+### Current Fig 7
+heatmap of log2cpm
+
+```{r heatmap, fig.width=10, fig.height=10}
+H3K27ac_merged_cor <- H3K27ac_merged_lcpm %>% 
+  cor()
+
+annomat <- data.frame(sample=colnames(H3K27ac_merged_cor)) %>% 
+  separate_wider_delim(sample,delim="_",names=c("Ind","Treatment","Timepoint"),cols_remove = FALSE) %>% 
+  mutate(Treatment=factor(Treatment, levels = c("VEH","DOX")),
+         Timepoint=factor(Timepoint, levels =c("24T","24R","144R")),
+         Ind=factor(Ind, levels=c("Ind1","Ind2","Ind3","Ind4","Ind5"))) %>% 
+  column_to_rownames("sample")
+
+dark2_cols <- brewer.pal(8, "Dark2")
+set2_cols  <- brewer.pal(8, "Set2")
+
+ind_cols <- setNames(
+  dark2_cols[seq_along(levels(annomat$Ind))],
+  levels(annomat$Ind))
+
+treatment_cols <- setNames(
+  set2_cols[c(1, 2)],
+  levels(annomat$Treatment))
+
+timepoint_cols <- setNames(
+  set2_cols[c(4, 5, 6)],
+  levels(annomat$Timepoint))
+
+heatmap_first <- ComplexHeatmap::HeatmapAnnotation(
+   df = annomat,
+  col = list(
+    Ind = ind_cols,
+    Treatment = treatment_cols,
+    Timepoint = timepoint_cols))
+
+        
+Heatmap(
+  H3K27ac_merged_cor, 
+  top_annotation = heatmap_first,
+  column_title = "Filtered log2cpm H3K27ac"
+)
+```
+ 
+### Current Fig 8
+
+volcano plots, venn, and proportions 
+
+A:
+```{r fig8a}
+H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
+
+
+
+
+H3K27ac_0R <- volcanosig(H3K27ac_toplist$H3K27ac_24T, 0.05)+ ggtitle("DOX 0R")
+H3K27ac_24R <- volcanosig(H3K27ac_toplist$H3K27ac_24R, 0.05)+ ggtitle("DOX 24R")+ylab("")
+H3K27ac_144R <- volcanosig(H3K27ac_toplist$H3K27ac_144R, 0.05)+ ggtitle("DOX 144R")+ylab("")
+cowplot::plot_grid(H3K27ac_0R, H3K27ac_24R, H3K27ac_144R, rel_widths =c(1,1,1))
+
+```
+
+venn diagram
+```{r fig8b}
+DOX_0R <- H3K27ac_toplist$H3K27ac_24T
+DOX_0R <- DOX_0R %>% dplyr::filter(adj.P.Val<0.05)
+
+DOX_24R <- H3K27ac_toplist$H3K27ac_24R
+DOX_24R <- DOX_24R %>% dplyr::filter(adj.P.Val<0.05)
+
+DOX_144R <- H3K27ac_toplist$H3K27ac_144R
+DOX_144R <- DOX_144R %>% dplyr::filter(adj.P.Val<0.05)
+
+ggVennDiagram(list("DOX_0R"=DOX_0R$genes,
+                   "DOX_24R"=DOX_24R$genes,
+                   "DOX_144R"=DOX_144R$genes),
+              label="count",
+              set_color = c("DOX_0R"=timepoint_cols["24T"],
+                            "DOX_24R"  =timepoint_cols["24R"],
+                            "DOX_144R" = timepoint_cols["144R"]))
+
+
+
+```
+
+
+
+```{r fig8c}
+H3K27ac_toptable_list %>% 
+  dplyr::select(group,genes,logFC,adj.P.Val) %>% 
+  mutate(sig_val=if_else(adj.P.Val<0.05,"sig","not_sig")) %>% 
+  mutate(
+    sig_val = factor(sig_val, levels = c("not_sig", "sig")),
+    group = factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R"))) %>%
+  ggplot(aes(x = group, fill = sig_val)) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  ggtitle("H3K27ac") +
+  ylab("Proportion") +
+  scale_y_continuous(labels = scales::percent)
+
+
+```
+
+### Current Fig 9
+
+```{r Fig9AB}
+cormotif_H3K27ac <- readRDS("data/Cormotif_data/Cormotif_initial_H3K27ac.RDS")
+
+plotIC(cormotif_H3K27ac)
+plotMotif(cormotif_H3K27ac)
+
+grey_vals <- seq(from = 1, to = 0, by = -0.1)
+
+legend_df <- data.frame(
+  motif.q = factor(seq(0, 1, by = 0.1)),
+  x = 1,
+  y = seq(0, 1, by = 0.1)
+)
+
+p <- ggplot(legend_df, aes(x = x, y = y, fill = motif.q)) +
+  geom_tile() +
+  scale_fill_manual(values = gray(grey_vals),
+                    name = "Probability") +
+  theme_void() +
+  theme(legend.position = "right")
+
+legend_only <- cowplot::get_legend(p)
+
+cowplot::plot_grid(legend_only)
+
+```
+
+proportion plot
+```{r}
+all_H3K27ac_regions <- peakAnnoList_H3K27ac$all_H3K27ac %>% as.data.frame() %>% dplyr::select(Peakid)
+
+all_H3K27ac_regions %>%  
+  mutate(group="H3K27ac") %>% 
+  left_join(., H3K27ac_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+  ggplot(., aes(y=group,fill=cluster))+
+  geom_bar()+
+  geom_text(aes( label = scales::percent(..prop..),
+                   x= ..prop.. ), stat= "count", vjust = -.5)+
+  ggtitle("H3K27ac proportions of ROIs")+
+  theme_classic()
+
+
+```
+
+```{r}
+examp_H3K27ac_1 <-
+    c("chr1:77923740-77924468","chr20:25484622-25485357","chr1:229148017-229149226")
+examp_H3K27ac_2 <-
+  c("chr5:85451856-85453893","chr10:114271262-114272616", "chr3:63343167-63344341" )
+examp_H3K27ac_3 <- 
+  c("chr8:8664034-8666371","chr3:141152796-141154087","chr21:43701994-43704465")
+
+
+```
+
+
+```{r}
+plot_example_lcpm <- function(examples, set){
+  
+  df <- lcpm_dge_H3K27ac %>% 
+    as.data.frame() %>% 
+    dplyr::filter(row.names(lcpm_dge_H3K27ac) %in% examples) %>%
+    rownames_to_column("Peakid") %>% 
+    pivot_longer(., cols = !Peakid, names_to = "sample", values_to = "lcpm" ) %>% 
+    separate_wider_delim(., cols=sample, delim="_", names=c("ind","tx","time")) %>% 
+  mutate(ind=factor(ind, levels=c("Ind1", "Ind2", "Ind3", "Ind4","Ind5")),
+         tx=factor(tx,levels = c("VEH","DOX")),
+         time=factor(time, levels=c("24T","24R","144R"), labels=c("0R","24R","144R")),
+         group_graph= paste0(tx, "_", time),
+         group=paste0("H3K27ac_",time),
+      group_graph = factor(group_graph, levels = c(        "VEH_0R", "VEH_24R","VEH_144R", "DOX_0R","DOX_24R","DOX_144R")))
+  
+  geneplot <- ggplot(df, aes(x=group_graph, y=lcpm)) +
+  geom_boxplot(aes(fill=tx))+
+  facet_wrap(~Peakid, scales="free")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle = 90))+
+  ggtitle(paste0(set," H3K27ac samples"))+
+  scale_fill_brewer(palette="Set2")
+
+  
+  plot(geneplot)
+}
+```
+
+```{r fig9exmp plots}
+plot_example_lcpm(examp_H3K27ac_1,"Set 1")
+
+plot_example_lcpm(examp_H3K27ac_2,"Set 2")
+
+plot_example_lcpm(examp_H3K27ac_3,"Set 3")
+```
+
+
+### Current Fig 10  
+
+
+
+```{r Fig10A}
+
+categories <- c(
+  "Distal Intergenic", "Downstream (<=300)", 
+  "Other Intron", "1st Intron", 
+  "Other Exon", "1st Exon", 
+  "3' UTR", "5' UTR", 
+  "Promoter (1-2kb)", "Promoter (<=1kb)"
+)
+
+# Optional: custom color palette
+color_pal <- c(
+  "#6a3d9a", "#cab2d6",
+  "#ff7f00", "#fdbf6f",
+  "#e31a1c", "#fb9a99",
+  "#33a02c", "#b2df8a",
+  "#1f78b4", "#a6cee3"
+)
+names(color_pal) <- categories
+
+res <- standardizeAnnoList(peakAnnoList_H3K27ac, categories, color_pal)
+peakAnnoList_H3K27ac_std <- res$annoList
+color_pal_std <- res$color_pal
+
+# bar plot
+plotAnnoBar(peakAnnoList_H3K27ac_std[c(4,1,2,3)]) +
+  scale_fill_manual(values=color_pal_std) +
+  ggtitle("H3K27ac Feature Distribution")
+```
+
+```{r Fig10B}
+
+H3K27ac_cre_df <- readRDS("data/RDS_files/H3K27ac_cre_df.RDS")
+scale_fill_cCREs <-  function(...){
+  ggplot2:::manual_scale(
+    'fill', 
+    values = setNames(c( "#E64B35FF", "#4DBBD5FF", "#00A087FF" ,"#3C5488FF", "#F39B7FFF", "#8491B4FF", "#91D1C2FF", "#DC0000FF", "#7E6148FF", "#B09C85FF","#008B45FF", "#631879FF",  "#5F559BFF", "#A20056FF", "#808180FF", "#1B1919FF"), c(unique(H3K27ac_cre_df$cCRE_class),"NA","CA-only","Low-DNase")), 
+    ...
+  )
+}
+H3K27ac_cre_counts <- readRDS("data/RDS_files/H3K27ac_cre_hg38_counts.RDS")
+ggplot(H3K27ac_cre_counts, aes(x = cluster, y = percent, fill = cCRE_class)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    y = "Proportion of ROIs",
+    x = "Set",
+    fill = "cCRE class"
+  ) +
+  theme_bw()+
+     ggtitle("H3K27ac ROI summits crossing :hg38 all cCREs ")+scale_fill_cCREs()
+ 
+ 
+```
+
