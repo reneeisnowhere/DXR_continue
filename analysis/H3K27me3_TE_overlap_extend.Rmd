@@ -1407,20 +1407,6 @@ H3K27me3_te_family_clust <- H3K27me3_te_family_long %>%
   mutate(percent = n / sum(n) * 100) %>% 
   rbind((rpt_genome %>% mutate(cluster="hg38")))
 
-# ggplot(H3K27me3_te_family_clust, aes(x = "", y=percent, fill=repClass))+
-#   geom_col(width =1, color="white")+
-#   coord_polar(theta = "y")+
-#   geom_text(
-#     aes(x= 1.5,label = sprintf("%s\n%.1f%%", repClass, percent)),
-#     position = position_stack(vjust = 0.5),
-#     size = 3
-#   ) +
-#   facet_wrap(~cluster)+
-#   theme_void()+
-#   labs(
-#     title = "TE Class composition among TE-overlapping ROIs per set",
-#     fill = "TE family"
-#   )
 
 ggplot(H3K27me3_te_family_clust, aes(x = cluster, y=percent, fill=repClass))+
    geom_col(width = 0.8, color = "white") +
@@ -1467,23 +1453,6 @@ H3K27me3_te_summary %>%
   summarise(n = sum(n), .groups = "drop") %>% 
   group_by(cluster) %>% 
   mutate(percent = n / sum(n) * 100)
-
-
-# ggplot(H3K27me3_long_repFamily, aes(x = "", y=percent, fill=repFamily))+
-#   geom_col(width =1, color="white")+
-#   coord_polar(theta = "y")+
-#     geom_text_repel(
-#     aes(label = sprintf("%s\n%.1f%%", repFamily, percent)),
-#     position = position_stack(vjust = 0.5),
-#     size = 3,
-#     show.legend = FALSE
-#   ) +
-#   facet_wrap(~cluster)+
-#   theme_void()+
-#   labs(
-#     title = "TE family relative abundance among ROIs by set",
-#     fill = "TE family"
-#   )
 
 
 ```
