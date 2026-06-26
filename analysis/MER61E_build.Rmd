@@ -1827,12 +1827,16 @@ mintermediate_data %>%
     DOX_144R %in% c("Enhancer","Transcription")&
       DOX_24R %in% c("Enhancer","Transcription") &
       DOX_24T %in% c("Enhancer","Transcription")~"Active_DOX",
-         TRUE~"not_active"),
+    DOX_144R %in% c("Repressed" ,  "Quiescent")&
+      DOX_24T %in% c("Enhancer","Transcription")~"Transition_DOX",
+    TRUE~"not_active"),
     active_VEH= case_when(
     VEH_144R %in% c("Enhancer","Transcription")&
       VEH_24R %in% c("Enhancer","Transcription") &
       VEH_24T %in% c("Enhancer","Transcription")~"Active_VEH",
-         TRUE~"not_active")) 
+    VEH_144R %in% c("Repressed" ,  "Quiescent")&
+      VEH_24T %in% c("Enhancer","Transcription")~"Transition_VEH",
+    TRUE~"not_active")) 
 
 
 what_mer %>% 
@@ -1981,7 +1985,7 @@ what_mer%>%
 ),
     method = "wilcox.test"
   ) +
-  # facet_wrap(~active_DOX)+
+  facet_wrap(~active_DOX)+
   labs(title = "All MER61E width of integrant",
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
@@ -2014,7 +2018,114 @@ what_mer%>%
   labs(title = "All MER61E width of integrant",
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
+```{r}
+what_mer%>%
+  # dplyr::filter(my_MER=="yes") %>%
+  ggplot(., aes(x=active_DOX,y=milliDiv))+
+  geom_boxplot()+
+   ggpubr::stat_compare_means(
+    comparisons = list(
+   c("Active_DOX","Transition_DOX"),
+   c("not_active","Active_DOX")),
+    method = "wilcox.test" )+
+  facet_wrap(~my_MER)
 
+what_mer%>%
+  group_by(my_MER, active_DOX) %>% tally
+
+```
+
+```{r}
+what_mer%>%
+  dplyr::filter(my_MER=="yes") %>%
+  ggplot(., aes(x=active_DOX,y=milliDiv))+
+  geom_boxplot()+
+   ggpubr::stat_compare_means(
+    comparisons = list(
+   c("Active_DOX","Transition_DOX"),
+   c("not_active","Active_DOX")),
+    method = "wilcox.test" )+
+  facet_wrap(~cluster)
+what_mer%>%
+  dplyr::filter(my_MER=="yes") %>%
+  group_by(active_DOX, cluster) %>% tally
+
+```
+```{r}
+what_mer%>%
+  dplyr::filter(my_MER=="yes") %>%
+mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  count(anno_alt, active_DOX, name = "n") %>%
+  ggplot(aes(x = anno_alt, y = n, fill = active_DOX)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  xlab("Annotation") +
+  ylab("Proportion") +
+  labs(fill = "DOX activity") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+
+
+
+
+what_mer%>%
+  dplyr::filter(my_MER=="yes") %>%
+  group_by(active_DOX, cluster) %>% tally
+```
+```{r}
+what_mer%>%
+  dplyr::filter(my_MER=="yes") %>%
+mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  count(anno_alt, active_DOX, name = "n") %>%
+  ggplot(aes(x = active_DOX, y = n, fill = anno_alt)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  xlab("Annotation") +
+  ylab("Proportion") +
+  labs(fill = "genomic annotation") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+what_mer%>%
+  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  dplyr::filter(my_MER=="yes") %>%
+  group_by( p53_halfsite,anno_alt) %>% 
+  tally()
+
+```
 
 ### Persistantly activated TEs TF enrichment
 
@@ -2068,7 +2179,7 @@ PA_MER61 %>%
         panel.spacing = unit(1, 'points'),
         axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
-```{r}
+```{r,eval=FALSE}
 pa_tf_names <- PA_MER61 %>% 
   clean_names() %>% 
   mutate(motif_names=toupper(alt_id)) %>%
