@@ -40,6 +40,7 @@ library(ggalluvial)
 library(AnnotationDbi)
 library(org.Hs.eg.db)
 library(janitor)
+library(MASS)
 ```
 
 The purpose of this page is to build a large dataframe for MER61E annotations.
@@ -1989,6 +1990,29 @@ what_mer%>%
   labs(title = "All MER61E width of integrant",
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
+```{r}
+what_mer%>% 
+  dplyr::filter(my_MER=="yes") %>%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=active_DOX,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c("Active_DOX","not_active"),
+   c("Active_DOX","Transition_DOX")
+),
+    method = "wilcox.test"
+  ) +
+  # facet_wrap(~active_DOX)+
+  labs(title = "MER61E width of integrant that overlap H3K27ac ROI",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+
+
 
 ```{r}
 what_mer%>% 
@@ -2018,6 +2042,117 @@ what_mer%>%
   labs(title = "All MER61E width of integrant",
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
+
+This leads me to asking if there is a relationship between length and p53 halfsites.
+
+because there is a higher probability of randomly containing a p53 half site because the TE is longer, i want to control for it. I need to quantify number of half site/width.
+
+```{r}
+what_mer%>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  mutate(age_bin=cut(MYA_jukes_cantor, breaks = 10),
+         width_bin= cut(width, breaks=10),
+         p53_binary=if_else(p53_halfsite=="yes",1,0)) %>% 
+  group_by(age_bin, width_bin) %>% 
+  summarise(
+    n = dplyr::n(),
+    prop_p53 = mean(p53_binary),
+    .groups = "drop"
+  ) %>%
+  filter(n >= 5) %>%
+  ggplot(aes(x = age_bin, y = width_bin, fill = prop_p53)) +
+  geom_tile(color = "white") +
+  scale_fill_viridis_c(labels = scales::percent_format()) +
+  theme_bw() +
+  labs(
+    x = "MER61E age bin",
+    y = "MER61E width bin",
+    fill = "p53 halfsite %",
+    title = "p53 halfsite enrichment across MER61E age and width"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+
+
+p53_halfsite_count <- p53halfsite_TE_ids %>% 
+  dplyr::filter(TE_name=="MER61E_ERV1_LTR") %>% 
+  group_by(Peakid) %>% 
+  count()  %>% 
+  dplyr::rename("p53_hscount"=n)
+
+what_mer_width <- what_mer %>% 
+  dplyr::select(repID,width,my_MER,milliDiv:p53_halfsite, MER61E_phyloP_mean:active_VEH)%>% 
+  left_join(p53_halfsite_count, by=c("repID"="Peakid")) %>% 
+  mutate(p53_halfsite_count=if_else(is.na(p53_hscount),0,p53_hscount),
+         p53_site_per_width=p53_halfsite_count/width)
+
+
+  what_mer_width%>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+    ggplot(aes(x=p53_site_per_width,y=MYA_jukes_cantor, color=my_MER))+
+  geom_point()+
+  labs(title = "All MER61E width of integrant")
+  
+```
+```{r}
+
+test_df <- what_mer_width %>% 
+  mutate(p53_site_group = case_when(
+    p53_halfsite_count == 0 ~ "0 sites",
+    p53_halfsite_count == 1 ~ "1 site",
+    p53_halfsite_count == 2 ~ "2 sites",
+    p53_halfsite_count == 3 ~ "3 sites",
+      p53_halfsite_count >= 4 ~ "4+ sites"),
+    p53_site_group = factor(p53_site_group,
+                            levels = c("0 sites", "1 site", "2 sites", "3 sites", "4+ sites")))
+
+
+ggplot(test_df, aes(x = milliDiv, y = width, color = p53_site_group)) +
+  geom_point(alpha = 0.7) +
+  theme_bw() +
+  labs(
+    x = "MER61E age / divergence",
+    y = "MER61E width",
+    color = "p53 halfsite count",
+    title = "MER61E width and age by p53 halfsite count"
+  )
+
+
+
+```
+```{r}
+ggplot(test_df, aes(x = milliDiv, y = width, color = p53_site_per_width)) +
+  geom_point(alpha = 0.7) +
+  scale_color_viridis_c() +
+  theme_bw() +
+  labs(
+    x = "MER61E age / divergence",
+    y = "MER61E width",
+    color = "p53 sites / width",
+    title = "MER61E p53 halfsite density by age and width"
+  )
+```
+```{r}
+
+
+pois_model <- glm(
+  p53_halfsite_count ~ milliDiv + offset(log(width)),
+  data = test_df,
+  family = poisson()
+)
+
+summary(pois_model)
+```
+
+Using a Poisson model with TE width included as an offset, MER61E p53-halfsite count was significantly associated with TE divergence/age. Higher milliDiv was associated with lower p53-halfsite density. This could mean that less-diverged MER61E integrants have more p53 halfsites per unit length.
+
+I used a session with ChatGPT to figure out how to test this.
+
+
 ```{r}
 what_mer%>%
   # dplyr::filter(my_MER=="yes") %>%
