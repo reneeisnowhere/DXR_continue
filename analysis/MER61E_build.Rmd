@@ -2803,6 +2803,7 @@ slice_min(qvalue, with_ties = FALSE) %>%
   ylab("Enriched TF motif")+
   ggtitle(paste("Expressed TFs Motifs enriched in Set 3 DOX transisition MER61E\nMER61E n = 24"))
 
+# saveRDS(filtered_trans_MER,"data/RDS_files/MER61E_filtered_transition_DOX_only_TF_Enrichment.RDS")
 
 ```
 
@@ -2827,10 +2828,11 @@ mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
       TRUE ~ annotation),
       active_DOX = factor(
       active_DOX,
-      levels = c("not_active", "Transition_DOX", "Active_DOX")
-    )) %>% 
-  count(anno_alt, active_DOX, name = "n") %>%
-  ggplot(aes(x = anno_alt, y = n, fill = active_DOX)) +
+      levels = c("neither", "Transition_DOX", "Active_DOX")),
+      trt_specific = factor(trt_specific,
+                            levels = c("neither", "both_transition", "both_active", "transition_DOX_only", "active_DOX_only"))) %>% 
+  count(anno_alt, trt_specific, name = "n") %>%
+  ggplot(aes(x = anno_alt, y = n, fill = trt_specific)) +
   geom_col(position = "fill") +
   scale_y_continuous(labels = scales::percent_format()) +
   xlab("Annotation") +
@@ -2850,6 +2852,9 @@ what_mer%>%
   dplyr::filter(my_MER=="yes") %>%
   group_by(active_DOX, cluster) %>% tally
 ```
+The plot above is based on the chipseeker annotation.  This annotation set includes long non-coding RNA as genes, unlike the GREAT nearest gene annotation, where only protein coding genes are annotated by distance.
+
+
 ```{r}
 what_mer%>%
   dplyr::filter(my_MER=="yes") %>%
@@ -2861,10 +2866,11 @@ mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
       TRUE ~ annotation),
       active_DOX = factor(
       active_DOX,
-      levels = c("not_active", "Transition_DOX", "Active_DOX")
-    )) %>% 
-  count(anno_alt, active_DOX, name = "n") %>%
-  ggplot(aes(x = active_DOX, y = n, fill = anno_alt)) +
+      levels = c("neither", "Transition_DOX", "Active_DOX")),
+      trt_specific = factor(trt_specific,
+                            levels = c("neither", "both_transition", "both_active", "transition_DOX_only", "active_DOX_only"))) %>% 
+   count(anno_alt, trt_specific, name = "n") %>%
+  ggplot(aes(x = trt_specific, y = n, fill = anno_alt)) +
   geom_col(position = "fill") +
   scale_y_continuous(labels = scales::percent_format()) +
   xlab("Annotation") +
@@ -2876,7 +2882,8 @@ mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
   )
 
 what_mer%>%
-  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+  dplyr::filter(my_MER=="yes") %>%
+mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
          str_detect(annotation, "Exon") ~ "Exon",
       str_detect(annotation, "Promoter") ~ "Promoter",
       str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
@@ -2884,18 +2891,18 @@ what_mer%>%
       TRUE ~ annotation),
       active_DOX = factor(
       active_DOX,
-      levels = c("not_active", "Transition_DOX", "Active_DOX")
-    )) %>% 
+      levels = c("neither", "Transition_DOX", "Active_DOX")),
+      trt_specific = factor(trt_specific,
+                            levels = c("neither", "both_transition", "both_active", "transition_DOX_only", "active_DOX_only"))) %>% 
   dplyr::filter(my_MER=="yes") %>%
   group_by( p53_halfsite,anno_alt) %>% 
   tally()
 
 ```
 ```{r}
-what_mer%>% 
-  dplyr::filter(my_MER=="yes" &
-                  active_VEH != "Active_VEH") %>%
-  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+ what_mer%>%
+  dplyr::filter(my_MER=="yes") %>%
+mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
          str_detect(annotation, "Exon") ~ "Exon",
       str_detect(annotation, "Promoter") ~ "Promoter",
       str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
@@ -2903,10 +2910,11 @@ what_mer%>%
       TRUE ~ annotation),
       active_DOX = factor(
       active_DOX,
-      levels = c("not_active", "Transition_DOX", "Active_DOX")
-    )) %>% 
-  count(anno_alt, active_DOX, name = "n") %>%
-  ggplot(aes(x = active_DOX, y = n, fill = anno_alt)) +
+      levels = c("neither", "Transition_DOX", "Active_DOX")),
+      trt_specific = factor(trt_specific,
+                            levels = c("neither", "both_transition", "both_active", "transition_DOX_only", "active_DOX_only"))) %>% 
+  count(anno_alt, trt_specific, name = "n") %>%
+  ggplot(aes(x = trt_specific, y = n, fill = anno_alt)) +
   geom_col(position = "fill") +
   scale_y_continuous(labels = scales::percent_format()) +
   xlab("Annotation") +
@@ -2917,22 +2925,9 @@ what_mer%>%
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-what_mer%>% 
-  dplyr::filter(my_MER=="yes" &
-                  active_VEH != "Active_VEH") %>%
-  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
-         str_detect(annotation, "Exon") ~ "Exon",
-      str_detect(annotation, "Promoter") ~ "Promoter",
-      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
-      str_detect(annotation, "Downstream") ~ "Downstream",
-      TRUE ~ annotation),
-      active_DOX = factor(
-      active_DOX,
-      levels = c("not_active", "Transition_DOX", "Active_DOX")
-    )) %>% 
-  count(anno_alt, active_DOX, name = "n")
+
 ```
-There are two mer61Es in my data that are Transitions and exist in a promotor.These are not the same promotors as the GREAT genes assigned.
+There are two mer61Es in my data that are Transitions and exist in a promotor. These are not the same promotors as the GREAT genes assigned.
 
 ```{r}
 what_mer%>% 
@@ -2952,27 +2947,30 @@ what_mer%>%
 
   
 ```
+
+
 ```{r}
 interested_genes <- c("LRRC7","TRIM24","LIN7C","DEPDC1","AKR1D1","BDNF")
-other_interested_genes <- c("DEPDC1","AKR1D1","BDNF")
-spec_lfc_SYMBOL <- RNA_full_toptable %>% 
-  dplyr::select(SYMBOL,logFC,timepoint) %>% 
-  dplyr::filter(SYMBOL %in% interested_genes) %>% 
-  pivot_wider(., names_from = timepoint, names_prefix = "RNA_LFC_", values_from = logFC)
+# other_interested_genes <- c("DEPDC1","AKR1D1","BDNF")
+RNA_lfc_SYMBOL <-RNA_full_toptable %>% 
+   dplyr::filter(SYMBOL != "NA")%>%
+  dplyr::select(SYMBOL,logFC,timepoint, adj.P.Val) %>% 
+  pivot_wider(., names_from = timepoint,
+    values_from = c(logFC, adj.P.Val),
+    names_glue = "RNA_{.value}_{timepoint}")
 
 
-tibble(interested_genes) %>% 
-  mutate(RNA_exp=if_else(interested_genes %in% RNA_expressed$SYMBOL,"exp","not_exp")) %>% 
-  left_join(spec_lfc_SYMBOL, by=c("interested_genes"="SYMBOL")) %>% 
-  dplyr::filter(RNA_exp!="not_exp") %>% 
-  dplyr::select(interested_genes, RNA_LFC_24T:RNA_LFC_144R)
+# tibble(interested_genes) %>% 
+#   mutate(RNA_exp=if_else(interested_genes %in% RNA_expressed$SYMBOL,"exp","not_exp")) %>% 
+#   left_join(spec_lfc_SYMBOL, by=c("interested_genes"="SYMBOL")) %>% 
+#   dplyr::filter(RNA_exp!="not_exp") %>% 
+#   dplyr::select(interested_genes, RNA_LFC_24T:RNA_LFC_144R)
 
 
 
 
-splitting_mer_df <- what_mer%>% 
-  dplyr::filter(my_MER=="yes" &
-                  active_VEH != "Active_VEH") %>% 
+splitting_dox_mer_df <- what_mer%>% 
+  dplyr::filter(my_MER=="yes" ) %>%
    separate_rows(GREAT_gene_assign, sep = ",\\s*") %>%
   mutate(
     gene = str_extract(GREAT_gene_assign, "^[A-Za-z0-9_.-]+"),
@@ -2991,14 +2989,120 @@ splitting_mer_df <- what_mer%>%
                                        TRUE~"messedup")) %>% 
   mutate(RNA_exp=if_else(gene %in% RNA_expressed$SYMBOL,"exp","not_exp"))
 active_DOX_df <- 
-splitting_mer_df %>% dplyr::filter(active_DOX=="Active_DOX") %>% 
+splitting_dox_mer_df %>% dplyr::filter(trt_specific=="active_DOX_only") %>% 
   dplyr::filter(RNA_exp=="exp")
 
 transition_DOX_df <- 
-splitting_mer_df %>% dplyr::filter(active_DOX=="Transition_DOX") %>% 
+splitting_dox_mer_df %>% dplyr::filter(trt_specific=="transition_DOX_only") %>% 
   dplyr::filter(RNA_exp=="exp")
+
+H3K27ac_lfc_table <- H3K27ac_toptable_list %>%
+  dplyr::select(genes,logFC,group,adj.P.Val) %>% 
+  pivot_wider(., names_from = group,
+    values_from = c(logFC, adj.P.Val),
+    names_glue = "{group}_{.value}" )
+  
 ```
 
+### LFC RNA and H3K27ac LFC heatmap
+
+```{r}
+RNA_H3K27ac_LFC_dataframe <- active_DOX_df %>% 
+  left_join(RNA_lfc_SYMBOL, by=c("gene"="SYMBOL")) %>% 
+  left_join(H3K27ac_lfc_table, by=c("H3K27ac_region"="genes"))
+
+  
+gene_LFC_mat <- 
+  RNA_H3K27ac_LFC_dataframe %>% 
+    dplyr::select(gene, RNA_logFC_24T,RNA_logFC_24R,RNA_logFC_144R,H3K27ac_24T_logFC,H3K27ac_24R_logFC,H3K27ac_144R_logFC) %>% 
+    column_to_rownames("gene") %>% 
+    as.matrix()
+
+sig_mat <- RNA_H3K27ac_LFC_dataframe %>% 
+  dplyr::select(
+    gene,
+    RNA_adj.P.Val_24T, RNA_adj.P.Val_24R, RNA_adj.P.Val_144R,
+    H3K27ac_24T_adj.P.Val, H3K27ac_24R_adj.P.Val, H3K27ac_144R_adj.P.Val
+  ) %>% 
+  column_to_rownames("gene") %>% 
+  as.matrix()
+
+
+
+gene_annotations_ordered <- RNA_H3K27ac_LFC_dataframe %>%
+  dplyr::filter(gene %in% rownames(gene_LFC_mat)) %>%
+  dplyr::slice(match(rownames(gene_LFC_mat), gene))
+
+  
+```
+
+```{r}
+row_anno <- rowAnnotation(
+  cluster = gene_annotations_ordered$cluster,
+  distance = gene_annotations_ordered$direction_range,
+  direction = gene_annotations_ordered$direction)
+
+Heatmap(
+  gene_LFC_mat,
+  column_title = "active_DOX_only",
+  name = "LFC",
+  right_annotation = row_anno, 
+  cluster_rows=FALSE,
+  cluster_columns = FALSE,
+   cell_fun = function(j, i, x, y, width, height, fill) {
+    if (!is.na(sig_mat[i, j]) && sig_mat[i, j] < 0.05) {
+      grid::grid.text("*", x, y, gp = grid::gpar(fontsize = 10))}})
+```
+
+```{r}
+RNA_H3K27ac_LFC_dataframe_trans <- transition_DOX_df %>% 
+  left_join(RNA_lfc_SYMBOL, by=c("gene"="SYMBOL")) %>% 
+  left_join(H3K27ac_lfc_table, by=c("H3K27ac_region"="genes"))
+
+  
+gene_LFC_mat_trans <- 
+  RNA_H3K27ac_LFC_dataframe_trans %>% 
+  mutate(gene_unique=make.unique(gene)) %>% 
+    dplyr::select(gene_unique, RNA_logFC_24T,RNA_logFC_24R,RNA_logFC_144R,H3K27ac_24T_logFC,H3K27ac_24R_logFC,H3K27ac_144R_logFC) %>% 
+  
+    column_to_rownames("gene_unique") %>% 
+    as.matrix()
+
+sig_mat_trans <- RNA_H3K27ac_LFC_dataframe_trans %>% 
+  mutate(gene_unique=make.unique(gene)) %>% 
+    dplyr::select(gene_unique,  RNA_adj.P.Val_24T, RNA_adj.P.Val_24R, RNA_adj.P.Val_144R,
+    H3K27ac_24T_adj.P.Val, H3K27ac_24R_adj.P.Val, H3K27ac_144R_adj.P.Val
+  ) %>% 
+  column_to_rownames("gene_unique") %>% 
+  as.matrix()
+
+
+
+gene_annotations_ordered_trans <- RNA_H3K27ac_LFC_dataframe_trans %>%
+   mutate(gene_unique=make.unique(gene)) %>% 
+  dplyr::filter(gene_unique %in% rownames(gene_LFC_mat_trans)) %>%
+  dplyr::slice(match(rownames(gene_LFC_mat_trans), gene_unique))
+
+  
+```
+
+```{r, fig.height=12}
+row_anno_trans <- rowAnnotation(
+  cluster = gene_annotations_ordered_trans$cluster,
+  distance = gene_annotations_ordered_trans$direction_range,
+  direction = gene_annotations_ordered_trans$direction)
+
+Heatmap(
+  gene_LFC_mat_trans,
+  column_title = "transition_DOX_only",
+  name = "LFC",
+  right_annotation = row_anno_trans, 
+  cluster_rows=FALSE,
+  cluster_columns = FALSE,
+   cell_fun = function(j, i, x, y, width, height, fill) {
+    if (!is.na(sig_mat_trans[i, j]) && sig_mat_trans[i, j] < 0.05) {
+      grid::grid.text("*", x, y, gp = grid::gpar(fontsize = 10))}})
+```
 
 ### Persistantly activated TEs TF enrichment
 
