@@ -588,7 +588,8 @@ mintermediate_data %>%
     cluster = as.character(cluster),
     cluster = if_else(is.na(cluster), "NA", cluster),
     cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
-  ggplot(aes(x=cluster,y=milliDiv, color=case))+
+  # ggplot(aes(x=cluster,y=milliDiv, color=case))+
+  ggplot(aes(x=cluster,y=milliDiv))+
   smplot2::sm_boxplot(legends = TRUE)+
   ggpubr::stat_compare_means(
     comparisons = list(
@@ -602,6 +603,31 @@ mintermediate_data %>%
   )+
   facet_wrap(~p53_halfsite)+
   ggtitle("MER61E with and without p53 halfsites")
+
+# saveRDS(intermediate_data,"data/H3K27ac_MER61E_integrant_anno.RDS")
+
+
+mintermediate_data %>% 
+  # group_by(p53_halfsite) %>% #, p53_fullsite,cluster) %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  # ggplot(aes(x=cluster,y=milliDiv, color=case))+
+  ggplot(aes(x=cluster,y=milliDiv))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  # c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA")
+  # c("Set_3","not_assigned")
+),
+    method = "wilcox.test",
+ method.args = list(exact = FALSE))+
+  facet_wrap(~p53_fullsite)+
+  ggtitle("MER61E with and without p53 full sites")
 
 # saveRDS(intermediate_data,"data/H3K27ac_MER61E_integrant_anno.RDS")
 ```
@@ -720,6 +746,58 @@ mintermediate_data %>%
   ggtitle("MER61E milliDiv of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
 ```
 So there are significantly newer (lower milliDiv) MER61E integrant containing a p53 site in my data than not in my data. There is also a significantly higher milliDiv in integrants not containing a p53 site in my data than integrants not in my data (in my data= overlaps an H3K27ac region. not in my data= does not overlap and H3K27ac region)
+
+### looking at length and cluster  
+
+```{r}
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=cluster,y=width))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  )+
+  # facet_wrap(~p53_halfsite)+
+  ggtitle("MER61E width of TEs")
+```
+
+Width of TE is different between TEs overlapping H3K27ac regions vs those not overlapping H3K27ac regions, but not between clusters.  
+```{r}
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=cluster,y=width))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  # c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA")  # c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~p53_halfsite)+
+  ggtitle("MER61E width of TEs by halfsite of p53")
+
+```
+This width difference does not exist when considering only those containing a p53 halfsite.
+
+
+
+
 
 ### Investigating DAR/CAR
 
@@ -1039,6 +1117,16 @@ plot_trajectory_flow(mfilteredfull_trajectory_test,"MER61E with p53 fullsite")
 ```{r}
 plot_trajectory_flow(MER61E_trajectory_broad,"all MER61E elements")
 ```
+```{r}
+
+rep_ID_set3_MER61E <- mintermediate_data %>% 
+  dplyr::filter(cluster=="Set_3")
+
+acute_cluster_only_broad <- MER61E_trajectory_broad %>% 
+  dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
+  dplyr::filter(te_id %in% rep_ID_set3_MER61E$repID)
+plot_trajectory_flow(acute_cluster_only_broad,"Acute_cluster only MER61E elements")
+```
 
 
 ```{r 780a plot}
@@ -1056,6 +1144,12 @@ filtered_trajectory_680 <- MER61E_trajectory_broad %>%
 
 plot_trajectory_flow(filtered_trajectory_680,"any MER61E with ZNF680 binding")
 ```
+
+
+
+
+
+
 
 ```{r}
 
@@ -1389,7 +1483,7 @@ mintermediate_data %>%
     cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
   mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
          MYA_bourque=milliDiv/2.2) %>% 
-  ggplot(aes(x=my_MER,y=MYA_bourque, color=alt_case))+
+  ggplot(aes(x=my_MER,y=MYA_bourque, color=cluster))+
   smplot2::sm_boxplot(legends = TRUE)+
   ggpubr::stat_compare_means(
     comparisons = list(
@@ -1433,19 +1527,44 @@ mutate(
     cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
   mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
          MYA_bourque=milliDiv/2.2) %>% 
-  dplyr::filter(my_MER=="yes") %>% 
-  ggplot(aes(x=p53_halfsite,y=MYA_bourque, color=alt_case))+
+  dplyr::filter(my_MER=="yes") %>%
+  dplyr::filter(cluster=="Set_3") %>% 
+  ggplot(aes(x=p53_fullsite,y=MYA_bourque, color=cluster))+
   smplot2::sm_boxplot(legends = TRUE)+
   ggpubr::stat_compare_means(
     comparisons = list(
   c("yes", "no")),
-    method = "wilcox.test"
+    method = "wilcox.test",
+   method.args = list(exact = FALSE)
   )+
   ylab("Million Years Ago (Bourque method)")+
   xlab("has a p53 halfsite?")+ 
     # facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
   ggtitle("MER61E MYA (Bourque method) of integrants overlapping my H3K27ac data \nand looking at p53 halfsites")
 
+```
+```{r}
+mintermediate_data %>% 
+mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  dplyr::filter(my_MER=="yes") %>%
+  dplyr::filter(cluster=="Set_3") %>% 
+  ggplot(aes(x=p53_fullsite,y=MYA_bourque, color=cluster))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test",
+   method.args = list(exact = FALSE)
+  )+
+  ylab("Million Years Ago (Bourque method)")+
+  xlab("has a p53 halfsite?")+ 
+    # facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
+  ggtitle("MER61E MYA (Bourque method) of integrants overlapping my H3K27ac data \nand looking at p53 fullsites")
 ```
 
 
@@ -1521,7 +1640,7 @@ found_MER61E %>%
   scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./.25,name="Enrichment Ratio of regions"))+
   theme_classic()+
   ylab("Enriched TF motif")+
-  ggtitle(paste("MER61 enriched motifs compared to all ERV1"))
+  ggtitle(paste("MER61E enriched motifs compared to all ERV1"))
 ```
 
 
@@ -1664,6 +1783,7 @@ add_on_mintermediate_data %>%
    left_join(H3K27ac_toplist$H3K27ac_24T,by =c("H3K27ac_region"="genes")) %>% 
    ggplot(.,aes(x=p53_halfsite,y=logFC)) +
   geom_boxplot(aes(color=p53_halfsite))+
+   geom_point()+
   ggtitle("24T logFC across p53 halfsite content")+
   ggpubr::stat_compare_means(comparisons = list(
   c("yes", "no")),
@@ -1683,7 +1803,36 @@ add_on_mintermediate_data %>%
   # c("Set_1", "not_assigned"),
   # c("Set_1", "NA"),
       method = "wilcox.test")
+
+
   
+```
+```{r}
+add_on_mintermediate_data %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+   left_join(H3K27ac_toplist$H3K27ac_24R,by =c("H3K27ac_region"="genes")) %>% 
+   ggplot(.,aes(x=p53_halfsite,y=logFC)) +
+  geom_boxplot(aes(color=p53_halfsite))+
+  geom_point()+
+  ggtitle("24R logFC across p53 halfsite content")+
+  ggpubr::stat_compare_means(comparisons = list(
+  c("yes", "no")),
+  # c("Set_1", "not_assigned"),
+  # c("Set_1", "NA"),
+      method = "wilcox.test")
+
+add_on_mintermediate_data %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+   left_join(H3K27ac_toplist$H3K27ac_24R,by =c("H3K27ac_region"="genes")) %>% 
+   ggplot(.,aes(x=p53_fullsite,y=logFC)) +
+  geom_boxplot(aes(color=p53_fullsite))+
+  geom_point()+
+  ggtitle("24R logFC across p53 halfsite content")+
+  ggpubr::stat_compare_means(comparisons = list(
+  c("yes", "no")),
+  # c("Set_1", "not_assigned"),
+  # c("Set_1", "NA"),
+      method = "wilcox.test")
 ```
 
 
@@ -1830,14 +1979,19 @@ mintermediate_data %>%
       DOX_24T %in% c("Enhancer","Transcription")~"Active_DOX",
     DOX_144R %in% c("Repressed" ,  "Quiescent")&
       DOX_24T %in% c("Enhancer","Transcription")~"Transition_DOX",
-    TRUE~"not_active"),
+    TRUE~"neither"),
     active_VEH= case_when(
     VEH_144R %in% c("Enhancer","Transcription")&
       VEH_24R %in% c("Enhancer","Transcription") &
       VEH_24T %in% c("Enhancer","Transcription")~"Active_VEH",
     VEH_144R %in% c("Repressed" ,  "Quiescent")&
       VEH_24T %in% c("Enhancer","Transcription")~"Transition_VEH",
-    TRUE~"not_active")) 
+    TRUE~"neither")) %>% 
+  mutate(trt_specific= case_when(active_DOX=="Active_DOX" & active_VEH !="Active_VEH"~"active_DOX_only",
+         active_DOX=="Active_DOX" & active_VEH =="Active_VEH"~"both_active",
+active_DOX=="Transition_DOX" & active_VEH !="Transition_VEH"~"transition_DOX_only",
+active_DOX=="Transition_DOX" & active_VEH =="Transition_VEH"~"both_transition",
+TRUE ~active_DOX))
 
 
 what_mer %>% 
@@ -1847,6 +2001,12 @@ what_mer %>%
 what_mer %>% 
   group_by(active_DOX, my_MER, p53_halfsite) %>% 
   tally()
+
+what_mer %>% 
+  group_by(my_MER,trt_specific) %>% tally %>% 
+  pivot_wider(id_cols=trt_specific, names_from = my_MER, values_from = n) %>% 
+  dplyr::rename("H3K27ac overlap"=yes,"no H3K27ac overlap"=no) %>% 
+  DT::datatable()
 ```
 
 ```{r}
@@ -1858,7 +2018,7 @@ what_mer%>%
     cluster = if_else(is.na(cluster), "NA", cluster),
     cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
   ) %>% 
-  ggplot(aes(x=cluster,y=MER61E_phyloP_mean, color=p53_halfsite))+
+  ggplot(aes(x=cluster,y=MER61E_phyloP_mean, color=cluster))+
   smplot2::sm_boxplot()+
   ggpubr::stat_compare_means(
     comparisons = list(
@@ -1870,7 +2030,7 @@ what_mer%>%
 ),
     method = "wilcox.test"
   ) +
-  facet_wrap(~active_DOX)+
+    facet_wrap(~active_DOX)+
   labs(title = " Active MER61E mean phyloP in groups",
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
@@ -1903,7 +2063,7 @@ what_mer%>%
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
 
-Okay, I am going to split out the MER61Es that are persistently active compared to those that transition to repressed state.  Then I will run SEA enrichment instead of xstreme due to only using known motifs (Jaspar2024, core vetebrate non-redundant) between these elements.  I will also only focus on 100+/- bp around the center of the integrant.
+Okay, I am going to split out the MER61Es that are persistently active compared to those that transition to repressed state.  Then I will run SEA enrichment instead of xstreme due to only using known motifs (Jaspar2024, core vertebrate non-redundant) between these elements.  I will also only focus on 100+/- bp around the center of the integrant.
 Below is how I made the bedfiles
 
 ```{r, eval=FALSE}
@@ -1969,30 +2129,127 @@ H3K27ac_toptable_list %>%
 
 ```
 
+
+
+### treatment focused  
+
+
 ```{r}
 what_mer%>% 
- 
-  # dplyr::filter(active_DOX=="Active_DOX") %>%
-   mutate(
+  mutate(
     cluster = as.character(cluster),
     cluster = if_else(is.na(cluster), "NA", cluster),
     cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
   ) %>% 
-  ggplot(aes(x=my_MER,y=width, color=p53_halfsite))+
-  smplot2::sm_boxplot()+
+  ggplot(aes(x=my_MER,y=width))+
+  geom_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c("yes","no")),
+    method = "wilcox.test") +
+  facet_wrap(~trt_specific, nrow=1, ncol=5)+
+  theme_bw()+
+  labs(title = "All MER61E width of integrant",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+
+
+```
+
+
+```{r}
+what_mer%>% 
+    mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=my_MER,y=width, color=cluster))+
+  smplot2::sm_boxplot(aes(legend=TRUE))+
   ggpubr::stat_compare_means(
     comparisons = list(
    c("yes","no")
 ),
     method = "wilcox.test"
   ) +
-  facet_wrap(~active_DOX)+
+   facet_wrap(~trt_specific, nrow=1, ncol=5)+
   labs(title = "All MER61E width of integrant",
+       subtitle="Pairwise Wilcoxon rank-sum tests")+
+  theme(
+    legend.position = "right",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+what_mer%>% 
+   # dplyr::filter(cluster=="Set_3") %>% 
+  ggplot(aes(x=trt_specific,y=width))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c("active_DOX_only","both_active"),
+   # c("active_DOX_only","both_transition"),
+   c("active_DOX_only","neither"),
+   c("active_DOX_only","transition_DOX_only")
+   # c("transition_DOX_only","both_transition")
+),
+    method = "wilcox.test"
+  ) +
+   facet_wrap(~cluster, nrow=1, ncol=5)+
+  labs(title = "Acute-only cluster MER61E width of integrant",
+       subtitle="Pairwise Wilcoxon rank-sum tests")+
+  theme(axis.text.x = element_text(angle = 90))
+
+what_mer%>% 
+   dplyr::filter(cluster=="Set_3") %>% 
+  ggplot(aes(x=trt_specific,y=width))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c("active_DOX_only","both_active"),
+   c("active_DOX_only","both_transition"),
+   c("active_DOX_only","neither"),
+   c("active_DOX_only","transition_DOX_only"),
+   c("transition_DOX_only","both_transition")
+),
+    method = "wilcox.test"
+  ) +
+   facet_wrap(~cluster, nrow=1, ncol=5)+
+  labs(title = "Acute-only cluster MER61E width of integrant",
        subtitle="Pairwise Wilcoxon rank-sum tests")
+
 ```
+
+
+
+
 ```{r}
 what_mer%>% 
   dplyr::filter(my_MER=="yes") %>%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=trt_specific,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c("active_DOX_only","both_active"),
+   c("active_DOX_only","both_transition"),
+   c("active_DOX_only","neither"),
+   c("active_DOX_only","transition_DOX_only"),
+   c("transition_DOX_only","both_transition")
+),
+    method = "wilcox.test"
+  ) +
+  facet_wrap(~cluster)+
+  labs(title = "MER61E width of integrant that overlap H3K27ac ROI",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+
+```{r}
+what_mer%>% 
+  dplyr::filter(my_MER=="yes" &
+                  active_VEH != "Active_VEH") %>%
    mutate(
     cluster = as.character(cluster),
     cluster = if_else(is.na(cluster), "NA", cluster),
@@ -2002,48 +2259,68 @@ what_mer%>%
   smplot2::sm_boxplot()+
   ggpubr::stat_compare_means(
     comparisons = list(
-   c("Active_DOX","not_active"),
+   c("Active_DOX","neither"),
    c("Active_DOX","Transition_DOX")
 ),
     method = "wilcox.test"
   ) +
   # facet_wrap(~active_DOX)+
   labs(title = "MER61E width of integrant that overlap H3K27ac ROI",
-       subtitle="Pairwise Wilcoxon rank-sum tests")
-```
+       subtitle="Pairwise Wilcoxon rank-sum tests, removed sets where integrants are not Active in VEH")
 
+
+what_mer%>% 
+  dplyr::filter(my_MER=="yes" &
+                  active_VEH != "Active_VEH") %>%
+  group_by(active_DOX, active_VEH) %>% tally
+```
 
 
 ```{r}
 what_mer%>% 
   mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
          MYA_bourque=milliDiv/2.2) %>% 
-  # group_by(my_MER,p53_halfsite) %>% 
-  # summarise(milliDiv_avg=(mean(milliDiv)),
-  #           MYA_jukes_cantor_avg=mean(MYA_jukes_cantor),
-  #           MYA_bourque_avg=mean(MYA_bourque)) %>% 
- 
-  # dplyr::filter(active_DOX=="Active_DOX") %>%
-   mutate(
+    mutate(
     cluster = as.character(cluster),
     cluster = if_else(is.na(cluster), "NA", cluster),
     cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
   ) %>% 
   ggplot(aes(x=width,y=MYA_jukes_cantor, color=p53_halfsite))+
   geom_point()+
-#   smplot2::sm_boxplot()+
-#   ggpubr::stat_compare_means(
-#     comparisons = list(
-#    c("yes","no")
-# ),
-#     method = "wilcox.test"
-#   ) +
-  # facet_wrap(~p53_halfsite)+
-  labs(title = "All MER61E width of integrant",
-       subtitle="Pairwise Wilcoxon rank-sum tests")
+  labs(title = "All MER61E width of integrant")
+
+
+what_mer%>% 
+  dplyr::filter(active_VEH != "Active_VEH" ) %>% 
+  dplyr::filter(active_DOX=="Active_DOX"&my_MER=="yes") %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+    mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=width,y=MYA_jukes_cantor, color=p53_halfsite))+
+  geom_point()+
+  labs(title = "Active_DOX MER61E integrants")
+
+
+what_mer%>% 
+  dplyr::filter(active_VEH != "Transition_VEH" ) %>% 
+  dplyr::filter(active_DOX=="Transition_DOX"&my_MER=="yes") %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+    mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=width,y=MYA_jukes_cantor, color=p53_halfsite))+
+  geom_point()+
+  labs(title = "Transition_DOX MER61E integrants")
 ```
 
-This leads me to asking if there is a relationship between length and p53 halfsites.
+This leads me to asking if there is a relationship between length and p53 halfsites for all of MER61E integrants.
 
 because there is a higher probability of randomly containing a p53 half site because the TE is longer, i want to control for it. I need to quantify number of half site/width.
 
@@ -2063,6 +2340,7 @@ what_mer%>%
   filter(n >= 5) %>%
   ggplot(aes(x = age_bin, y = width_bin, fill = prop_p53)) +
   geom_tile(color = "white") +
+   geom_text(aes(label = n), size = 3) +
   scale_fill_viridis_c(labels = scales::percent_format()) +
   theme_bw() +
   labs(
@@ -2075,6 +2353,66 @@ what_mer%>%
 ```
 
 ```{r}
+what_mer%>% 
+  dplyr::filter(active_VEH != "Active_VEH" ) %>% 
+  dplyr::filter(active_DOX=="Active_DOX"&my_MER=="yes") %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  mutate(age_bin=cut(MYA_jukes_cantor, breaks = 10),
+         width_bin= cut(width, breaks=10),
+         p53_binary=if_else(p53_halfsite=="yes",1,0)) %>% 
+  group_by(age_bin, width_bin) %>% 
+  summarise(
+    n = dplyr::n(),
+    prop_p53 = mean(p53_binary),
+    .groups = "drop"
+  ) %>%
+  # filter(n >= 5) %>%
+  ggplot(aes(x = age_bin, y = width_bin, fill = prop_p53)) +
+  geom_tile(color = "white") +
+   geom_text(aes(label = n), size = 3) +
+  scale_fill_viridis_c(labels = scales::percent_format()) +
+  theme_bw() +
+  labs(
+    x = "MER61E age bin",
+    y = "MER61E width bin",
+    fill = "p53 halfsite %",
+    title = "Active_DOX only MER61E p53 breakdown"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+```{r}
+what_mer%>% 
+  dplyr::filter(active_VEH != "Active_VEH" & active_DOX=="Transition_DOX"&my_MER=="yes") %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  mutate(age_bin=cut(MYA_jukes_cantor, breaks = 10),
+         width_bin= cut(width, breaks=10),
+         p53_binary=if_else(p53_halfsite=="yes",1,0)) %>% 
+  group_by(age_bin, width_bin) %>% 
+  summarise(
+    n = dplyr::n(),
+    prop_p53 = mean(p53_binary),
+    .groups = "drop"
+  ) %>%
+  # filter(n >= 5) %>%
+  ggplot(aes(x = age_bin, y = width_bin, fill = prop_p53)) +
+  geom_tile(color = "white") +
+   geom_text(aes(label = n), size = 3) +
+  scale_fill_viridis_c(labels = scales::percent_format()) +
+  theme_bw() +
+  labs(
+    x = "MER61E age bin",
+    y = "MER61E width bin",
+    fill = "p53 halfsite %",
+    title = "Transition_DOX only MER61E p53 breakdown, n=32"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+Summary so far, there appears to be a p53 relationship with width and MER61E, however that appearance is not seen in my data because the MER61E integrants in my H3K27ac data because all but one has a p53 halfsite.
+
+```{r}
 
 
 p53_halfsite_count <- p53halfsite_TE_ids %>% 
@@ -2084,7 +2422,7 @@ p53_halfsite_count <- p53halfsite_TE_ids %>%
   dplyr::rename("p53_hscount"=n)
 
 what_mer_width <- what_mer %>% 
-  dplyr::select(repID,width,my_MER,milliDiv:p53_halfsite, MER61E_phyloP_mean:active_VEH)%>% 
+  dplyr::select(repID,width,my_MER,milliDiv:p53_halfsite, MER61E_phyloP_mean:trt_specific,cluster)%>% 
   left_join(p53_halfsite_count, by=c("repID"="Peakid")) %>% 
   mutate(p53_halfsite_count=if_else(is.na(p53_hscount),0,p53_hscount),
          p53_site_per_width=p53_halfsite_count/width)
@@ -2098,6 +2436,124 @@ what_mer_width <- what_mer %>%
   labs(title = "All MER61E width of integrant")
   
 ```
+```{r}
+
+what_mer_width %>%
+  dplyr::filter(my_MER == "yes" & active_VEH !="Active_VEH"& active_DOX=="Active_DOX") %>%
+  mutate(
+    p53_density = p53_halfsite_count / width
+  ) %>%
+  ggplot(aes(x = width, y = p53_density)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(
+    x = "MER61E width",
+    y = "p53 half-site density",
+    title = " Active_DOX and p53 half-site density across MER61E width"
+  )
+
+what_mer_width %>%
+  dplyr::filter(my_MER == "yes") %>%
+  ggplot(aes(x = width, y = p53_halfsite_count)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "glm", method.args = list(family = "poisson")) +
+  theme_bw() +
+  labs(
+    x = "MER61E width",
+    y = "p53 half-site count",
+    title = "Across all MER61E, does p53 half-site count increases with available sequence length?"
+  )
+```
+Wait, does the active_DOX_only MERs (those not including the active_VEH MERs) have more half_sites or whole sites?
+
+```{r}
+what_mer_width %>%
+  dplyr::filter(my_MER == "yes") %>% 
+  # dplyr::filter(active_VEH != "Active_VEH") %>% 
+  ggplot(aes(x=trt_specific, y= p53_halfsite_count))+
+  geom_violin()+
+  theme_bw()+
+  ggtitle("Looking at MER61E number of halfsites")
+
+
+# p53_model <- glm(
+#   p53_halfsite_count ~ trt_specific + offset(log(width)),
+#   family = poisson(),
+#   data = what_mer_width %>%
+#     dplyr::filter(my_MER == "yes") %>%
+#     dplyr::filter(active_VEH != "Active_VEH")
+#   
+# )
+# 
+# summary(p53_model)
+```
+```{r}
+plot_df_all <- what_mer_width %>%
+  dplyr::filter(my_MER == "yes") %>% 
+  # dplyr::filter(cluster=="Set_3") %>% 
+  dplyr::filter(active_VEH != "Active_VEH") %>%
+  mutate(
+    p53_per_kb = p53_halfsite_count / width * 1000)
+
+n_labs_all <- plot_df_all %>%
+  count(trt_specific) %>%
+  mutate(label = paste0(trt_specific, "\n(n=", n, ")"))
+
+label_vec_all <- n_labs_all$label
+names(label_vec_all) <- n_labs_all$trt_specfic
+
+plot_df_all %>%
+  ggplot(aes(x = trt_specific, y = p53_per_kb)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(width = 0.15, alpha = 0.5) +
+  ggpubr::stat_compare_means(
+    comparisons = list(
+      c("active_DOX_only", "transition_DOX_only")
+    ),
+     method = "wilcox.test",
+  method.args = list(exact = FALSE))+
+  scale_x_discrete(labels = label_vec_all) +
+  theme_bw() +
+  labs(
+    x = "DOX activity state",
+    y = "p53 halfsites per kb",
+    title = "Width-normalized p53 halfsite density across DOX states H3K27ac overlapping")
+```
+```{r}
+plot_df <- what_mer_width %>%
+  dplyr::filter(my_MER == "yes") %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+  dplyr::filter(active_VEH != "Active_VEH") %>%
+  mutate(
+    p53_per_kb = p53_halfsite_count / width * 1000)
+
+n_labs <- plot_df %>%
+  count(trt_specific) %>%
+  mutate(label = paste0(trt_specific, "\n(n=", n, ")"))
+
+label_vec <- n_labs$label
+names(label_vec) <- n_labs$trt_specfic
+
+plot_df %>%
+  ggplot(aes(x = trt_specific, y = p53_per_kb)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(width = 0.15, alpha = 0.5) +
+  ggpubr::stat_compare_means(
+    comparisons = list(
+      c("active_DOX_only", "transition_DOX_only")
+    ),
+     method = "wilcox.test",
+  method.args = list(exact = FALSE))+
+  scale_x_discrete(labels = label_vec) +
+  theme_bw() +
+  labs(
+    x = "DOX activity state",
+    y = "p53 halfsites per kb",
+    title = "Width-normalized p53 halfsite density across DOX states Set_3 only")
+```
+
+
 ```{r}
 
 test_df <- what_mer_width %>% 
@@ -2124,6 +2580,21 @@ ggplot(test_df, aes(x = milliDiv, y = width, color = p53_site_group)) +
 
 
 ```
+```{r}
+ggplot(test_df, aes(x = milliDiv, y = width, color = trt_specific)) +
+  geom_point(alpha = 0.7) +
+  theme_bw() +
+  labs(
+    x = "MER61E age / divergence",
+    y = "MER61E width",
+    color = "ChromHMM type",
+    title = "MER61E width and age color by ChromHMM"
+  )
+
+```
+
+
+
 ```{r}
 ggplot(test_df, aes(x = milliDiv, y = width, color = p53_site_per_width)) +
   geom_point(alpha = 0.7) +
@@ -2173,19 +2644,178 @@ what_mer%>%
 ```{r}
 what_mer%>%
   dplyr::filter(my_MER=="yes") %>%
-  ggplot(., aes(x=active_DOX,y=milliDiv))+
+  ggplot(., aes(x=trt_specific,y=milliDiv))+
   geom_boxplot()+
    ggpubr::stat_compare_means(
     comparisons = list(
-   c("Active_DOX","Transition_DOX"),
-   c("not_active","Active_DOX")),
+   c("active_DOX_only","transition_DOX_only")),
+   # c("neither","Active_DOX")),
     method = "wilcox.test" )+
-  facet_wrap(~cluster)
+  facet_wrap(~cluster)+
+  theme_bw()+
+  ggtitle("Looking at milliDiv across ChromHMM lables")+
+  theme(axis.text.x=element_text(angle=90))
+
+
 what_mer%>%
   dplyr::filter(my_MER=="yes") %>%
-  group_by(active_DOX, cluster) %>% tally
+  ggplot(., aes(x=trt_specific,y=milliDiv))+
+  geom_boxplot()+
+   ggpubr::stat_compare_means(
+    comparisons = list(
+   c("active_DOX_only","transition_DOX_only")),
+   # c("neither","Active_DOX")),
+    method = "wilcox.test" )+
+  # facet_wrap(~cluster)+
+  theme_bw()+
+  ggtitle("Looking at milliDiv across ChromHMM lables")+
+  theme(axis.text.x=element_text(angle=90))
+  
+  
+what_mer%>%
+  dplyr::filter(my_MER=="yes") %>%
+  group_by(trt_specific, cluster) %>% tally
 
 ```
+### Transisiton only DOX from Acute cluster
+ 
+ I wanna look at TF enrichment of this group.  
+
+
+```{r, eval=FALSE}
+transisition_df <- what_mer[what_mer$trt_specific == "transition_DOX_only" & what_mer$cluster=="Set_3", ]
+
+newactive_df <- what_mer[what_mer$trt_specific == "active_DOX_only" & what_mer$cluster=="Set_3", ]
+other_mer_df <- what_mer[what_mer$trt_specific %in% c("both_active","both_transition","neither"), ]
+
+trans_names <- transisition_df$repID
+not_trans_names <- other_mer_df$repID
+newactive_names <- newactive_df$repID
+
+gr_names <- mcols(MER61E_regions)$name
+
+missing_trans <- setdiff(trans_names, gr_names)
+missing_not_trans <- setdiff(not_trans_names, gr_names)
+
+if (length(missing_trans) > 0) {
+  warning("These Active_DOX regions were not found in MER61E_regions:")
+  print(missing_trans)
+}
+
+if (length(missing_not_trans) > 0) {
+  warning("These not_active regions were not found in MER61E_regions:")
+  print(missing_not_trans)
+}
+
+trans_gr <- MER61E_regions[gr_names %in% trans_names]
+not_trans_gr <- MER61E_regions[gr_names %in% not_trans_names]
+
+newactive_gr <- MER61E_regions[gr_names %in% newactive_names]
+# Center and resize to 100 bp
+trans_gr_200bp <- resize(trans_gr, width = 200, fix = "center")
+not_trans_gr_200bp <- resize(not_trans_gr, width = 200, fix = "center")
+newactive_gr_200bp <- resize(newactive_gr, width=200, fix="center")
+# Keep original MER61E region names as BED column 4
+mcols(trans_gr_200bp)$name <- mcols(trans_gr)$name
+mcols(not_trans_gr_200bp)$name <- mcols(not_trans_gr)$name
+mcols(newactive_gr_200bp)$name <- mcols(newactive_gr)$name
+# Keep score if available
+if ("score" %in% colnames(mcols(trans_gr))) {
+  mcols(trans_gr_200bp)$score <- mcols(trans_gr)$score
+}
+
+if ("score" %in% colnames(mcols(not_trans_gr))) {
+  mcols(not_trans_gr_200bp)$score <- mcols(not_trans_gr)$score
+}
+
+# Trim to chromosome bounds if seqinfo has chromosome lengths
+trans_gr_200bp <- trim(trans_gr_200bp)
+not_trans_gr_200bp <- trim(not_trans_gr_200bp)
+newactive_gr_200bp <- trim(newactive_gr_200bp)
+# Keep only full 100 bp regions
+trans_gr_200bp <- trans_gr_200bp[width(trans_gr_200bp) == 200]
+not_trans_gr_200bp <- not_trans_gr_200bp[width(not_trans_gr_200bp) == 200]
+newactive_gr_200bp <- newactive_gr_200bp[width(newactive_gr_200bp) == 200]
+
+export(trans_gr_200bp, "data/Bed_exports/repeatmasker_sets/ERV1/MER61E_trans_DOX_200bp.bed", format = "BED")
+export(not_trans_gr_200bp, "data/Bed_exports/repeatmasker_sets/ERV1/MER61E_not_trans_DOX_200bp.bed", format = "BED")
+
+export(newactive_gr_200bp, "data/Bed_exports/repeatmasker_sets/ERV1/MER61E_newactive_DOX_200bp.bed", format = "BED")
+```
+
+### TF for transition MER61Es
+
+```{r, fig.width=8}
+trans_MER61 <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/SEA_MER61E_trans_output/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+trans_MER61 %>% 
+  clean_names() %>% 
+  mutate(motif_names=toupper(alt_id)) %>% 
+  dplyr::select (tp_percent,fp_percent, motif_names,qvalue) %>%
+  dplyr::filter(qvalue<0.05) %>% 
+  dplyr::rename("transition_MER61E"=tp_percent,"not_transition_MER61E"=fp_percent) %>% 
+  pivot_longer(cols=c(transition_MER61E, not_transition_MER61E), names_to = "type", values_to="percent") %>% 
+  ggplot(., aes(x=motif_names, y=percent, fill=(type)))+
+  geom_col(stat = "identity", position="dodge")+
+  # geom_text(
+  #   aes(label = signif(qvalue, 2), y = percent + 2),
+  #   position = position_dodge(width = 0.9),
+  #   size = 3
+  # ) +
+  theme_bw()+
+  ggtitle("Significant TF enrichment in transition MER61Es\nq value < 0.05")+
+  theme(strip.text = element_text(face = "bold",  hjust = 0, size = 8),
+        strip.background = element_rect(fill = "white", linetype = "solid",
+                                        color = "black", linewidth = 1),
+        panel.spacing = unit(1, 'points'),
+        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
+Some interesting finds
+
+
+```{r fig.height=7}
+trans_MER_motifs <- trans_MER61 %>% 
+  clean_names() %>% 
+  mutate(motif_names=toupper(alt_id)) %>% 
+  dplyr::filter(qvalue<0.05) 
+ 
+### had to add in a special filter to account for the :: in the names of the motifs
+symbols <- str_to_upper(RNA_expressed$SYMBOL)
+
+filtered_trans_MER <- trans_MER_motifs %>%
+  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
+  mutate(motif_tokens = str_split(str_to_upper(motif_names), "::")) %>%
+  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
+  dplyr::select(-motif_tokens)
+
+
+filtered_trans_MER %>% 
+group_by(motif_names) %>%
+slice_min(qvalue, with_ties = FALSE) %>%
+   mutate(log10qvalue= log(qvalue, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_names,log10qvalue))) +
+  geom_col(aes(x=log10qvalue))+
+  geom_point(aes(x=enr_ratio*.07), size =4)+
+  scale_x_continuous(expand=expansion(mult=c(0,.125)),sec.axis = sec_axis(transform= ~./.07,name="Enrichment Ratio"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("Expressed TFs Motifs enriched in Set 3 DOX transisition MER61E\nMER61E n = 24"))
+
+
+```
+
+```{r}
+filtered_trans_MER %>% 
+group_by(motif_names) %>%
+slice_min(qvalue, with_ties = FALSE) %>%
+   mutate(log10qvalue= log(qvalue, base = 10)*(-1)) %>% 
+  summarise(log10qvalue)
+```
+
+
+
 ```{r}
 what_mer%>%
   dplyr::filter(my_MER=="yes") %>%
@@ -2261,6 +2891,114 @@ what_mer%>%
   tally()
 
 ```
+```{r}
+what_mer%>% 
+  dplyr::filter(my_MER=="yes" &
+                  active_VEH != "Active_VEH") %>%
+  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  count(anno_alt, active_DOX, name = "n") %>%
+  ggplot(aes(x = active_DOX, y = n, fill = anno_alt)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  xlab("Annotation") +
+  ylab("Proportion") +
+  labs(fill = "genomic annotation") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+what_mer%>% 
+  dplyr::filter(my_MER=="yes" &
+                  active_VEH != "Active_VEH") %>%
+  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  count(anno_alt, active_DOX, name = "n")
+```
+There are two mer61Es in my data that are Transitions and exist in a promotor.These are not the same promotors as the GREAT genes assigned.
+
+```{r}
+what_mer%>% 
+  dplyr::filter(my_MER=="yes" &
+                  active_VEH != "Active_VEH") %>%
+  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  dplyr::filter(active_DOX=="Active_DOX")
+
+  
+```
+```{r}
+interested_genes <- c("LRRC7","TRIM24","LIN7C","DEPDC1","AKR1D1","BDNF")
+other_interested_genes <- c("DEPDC1","AKR1D1","BDNF")
+spec_lfc_SYMBOL <- RNA_full_toptable %>% 
+  dplyr::select(SYMBOL,logFC,timepoint) %>% 
+  dplyr::filter(SYMBOL %in% interested_genes) %>% 
+  pivot_wider(., names_from = timepoint, names_prefix = "RNA_LFC_", values_from = logFC)
+
+
+tibble(interested_genes) %>% 
+  mutate(RNA_exp=if_else(interested_genes %in% RNA_expressed$SYMBOL,"exp","not_exp")) %>% 
+  left_join(spec_lfc_SYMBOL, by=c("interested_genes"="SYMBOL")) %>% 
+  dplyr::filter(RNA_exp!="not_exp") %>% 
+  dplyr::select(interested_genes, RNA_LFC_24T:RNA_LFC_144R)
+
+
+
+
+splitting_mer_df <- what_mer%>% 
+  dplyr::filter(my_MER=="yes" &
+                  active_VEH != "Active_VEH") %>% 
+   separate_rows(GREAT_gene_assign, sep = ",\\s*") %>%
+  mutate(
+    gene = str_extract(GREAT_gene_assign, "^[A-Za-z0-9_.-]+"),
+    distance = str_extract(GREAT_gene_assign,"(?<=\\()[+-]?\\d+(?=\\))") %>% as.numeric(),
+    direction = case_when(
+      distance < 0 ~ "upstream",
+      distance > 0 ~ "downstream",
+      distance == 0 ~ "overlapping",
+      TRUE ~ NA_character_)) %>% 
+  dplyr::select(repID,my_MER,cluster, H3K27ac_region, H3K27ac_region_geneId, H3K27ac_region_distanceToTSS, active_DOX:direction) %>% 
+  mutate(direction_range=case_when(is.na(direction)~"no_gene",
+                                   abs(distance)>100000~">100kb",
+                                   abs(distance)<100000 & abs(distance)>50000~"100-50kb",
+                                   abs(distance)<50000 & abs(distance)>10000~ "50-10kb",
+                                   abs(distance)<10000~"<10kb",
+                                       TRUE~"messedup")) %>% 
+  mutate(RNA_exp=if_else(gene %in% RNA_expressed$SYMBOL,"exp","not_exp"))
+active_DOX_df <- 
+splitting_mer_df %>% dplyr::filter(active_DOX=="Active_DOX") %>% 
+  dplyr::filter(RNA_exp=="exp")
+
+transition_DOX_df <- 
+splitting_mer_df %>% dplyr::filter(active_DOX=="Transition_DOX") %>% 
+  dplyr::filter(RNA_exp=="exp")
+```
+
 
 ### Persistantly activated TEs TF enrichment
 
