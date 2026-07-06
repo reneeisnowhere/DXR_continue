@@ -1063,6 +1063,16 @@ plot_trajectory_flow(filteredfull_trajectory_test,"LTR10E with p53 fullsite")
 plot_trajectory(LTR10E_trajectory_broad,"all LTR10E elements")
 ```
 
+```{r}
+rep_ID_set3_LTR10E <- LTR10E_intermediate_data %>% 
+  dplyr::filter(cluster=="Set_3")
+
+acute_cluster_only_broad <- LTR10E_trajectory_broad %>% 
+  dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
+  dplyr::filter(te_id %in% rep_ID_set3_LTR10E$repID)
+plot_trajectory_flow(acute_cluster_only_broad,"Acute_cluster only LTR10E elements")
+```
+
 
 
 ```{r}
@@ -1350,5 +1360,928 @@ slice_min(EVALUE, with_ties = FALSE) %>%
   ylab("Enriched TF motif")+
   ggtitle(paste("Expressed TFs Known Motifs enriched in Set 3 active \n LTR10E vs all others LTR10E n = 14"))
 # saveRDS(known_ltr_set3, "data/RDS_files/LTR10E_set3active_enr.RDS")
+```
+
+### Persistantly Activated MER61E
+
+```{r}
+
+what_ltr <-
+LTR10E_intermediate_data %>% 
+  mutate(active_DOX= case_when(
+    DOX_144R %in% c("Enhancer","Transcription")&
+      DOX_24R %in% c("Enhancer","Transcription") &
+      DOX_24T %in% c("Enhancer","Transcription")~"Active_DOX",
+    DOX_144R %in% c("Repressed" ,  "Quiescent")&
+      DOX_24T %in% c("Enhancer","Transcription")~"Transition_DOX",
+    TRUE~"not_active"),
+    active_VEH= case_when(
+    VEH_144R %in% c("Enhancer","Transcription")&
+      VEH_24R %in% c("Enhancer","Transcription") &
+      VEH_24T %in% c("Enhancer","Transcription")~"Active_VEH",
+    VEH_144R %in% c("Repressed" ,  "Quiescent")&
+      VEH_24T %in% c("Enhancer","Transcription")~"Transition_VEH",
+    TRUE~"not_active")) %>% 
+  mutate(trt_specific= case_when(active_DOX=="Active_DOX" & active_VEH !="Active_VEH"~"active_DOX_only",
+         active_DOX=="Active_DOX" & active_VEH =="Active_VEH"~"both_active",
+active_DOX=="Transition_DOX" & active_VEH !="Transition_VEH"~"transition_DOX_only",
+active_DOX=="Transition_DOX" & active_VEH =="Transition_VEH"~"both_transition",
+TRUE ~active_DOX))
+
+
+what_ltr %>% 
+  group_by(my_LTR,active_DOX, active_VEH ) %>% 
+  tally()
+
+what_ltr %>% 
+  group_by(active_DOX, my_LTR, p53_halfsite) %>% 
+  tally()
+```
+
+```{r}
+what_ltr%>% 
+ 
+  # dplyr::filter(active_DOX=="Active_DOX") %>% 
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=cluster,y=LTR10E_phyloP_mean, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  ) +
+  facet_wrap(~trt_specific)+
+  labs(title = " Active LTR10E mean phyloP in groups",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+
+
+
+```{r}
+what_ltr%>% 
+ 
+  #dplyr::filter(active_DOX=="Active_DOX") %>% 
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=cluster,y=milliDiv, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  ) +
+  facet_wrap(~trt_specific)+
+  labs(title = " Active LTR10E milliDiv in groups",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+### changed from MER61E
+Okay, I am going to split out the LTR10Es that are persistently active compared to those that transition to repressed state.  Then I will run SEA enrichment instead of xstreme due to only using known motifs (Jaspar2024, core vetebrate non-redundant) between these elements.  I will also only focus on 100+/- bp around the center of the integrant.
+Below is how I made the bedfiles
+
+```{r, eval=FALSE}
+active_df <- what_ltr[what_ltr$active_DOX == "Active_DOX", ]
+not_active_df <- what_ltr[what_ltr$active_DOX == "not_active", ]
+
+active_names <- active_df$repID
+not_active_names <- not_active_df$repID
+
+gr_names <- mcols(MER61E_regions)$name
+
+missing_active <- setdiff(active_names, gr_names)
+missing_not_active <- setdiff(not_active_names, gr_names)
+
+if (length(missing_active) > 0) {
+  warning("These Active_DOX regions were not found in MER61E_regions:")
+  print(missing_active)
+}
+
+if (length(missing_not_active) > 0) {
+  warning("These not_active regions were not found in MER61E_regions:")
+  print(missing_not_active)
+}
+
+active_gr <- MER61E_regions[gr_names %in% active_names]
+not_active_gr <- MER61E_regions[gr_names %in% not_active_names]
+
+
+# Center and resize to 100 bp
+active_gr_200bp <- resize(active_gr, width = 200, fix = "center")
+not_active_gr_200bp <- resize(not_active_gr, width = 200, fix = "center")
+
+# Keep original MER61E region names as BED column 4
+mcols(active_gr_200bp)$name <- mcols(active_gr)$name
+mcols(not_active_gr_200bp)$name <- mcols(not_active_gr)$name
+
+# Keep score if available
+if ("score" %in% colnames(mcols(active_gr))) {
+  mcols(active_gr_200bp)$score <- mcols(active_gr)$score
+}
+
+if ("score" %in% colnames(mcols(not_active_gr))) {
+  mcols(not_active_gr_200bp)$score <- mcols(not_active_gr)$score
+}
+
+# Trim to chromosome bounds if seqinfo has chromosome lengths
+active_gr_200bp <- trim(active_gr_200bp)
+not_active_gr_200bp <- trim(not_active_gr_200bp)
+
+# Keep only full 100 bp regions
+active_gr_200bp <- active_gr_200bp[width(active_gr_200bp) == 200]
+not_active_gr_200bp <- not_active_gr_200bp[width(not_active_gr_200bp) == 200]
+
+
+export(active_gr_200bp, "data/Bed_exports/repeatmasker_sets/ERV1/MER61E_Active_DOX_200bp.bed", format = "BED")
+export(not_active_gr_200bp, "data/Bed_exports/repeatmasker_sets/ERV1/MER61E_not_active_DOX_200bp.bed", format = "BED")
+
+
+H3K27ac_toptable_list %>% 
+ dplyr::filter(group=="H3K27ac_24T") %>% 
+ left_join(H3K27ac_lookup,by=c("genes"="Peakid")) %>% 
+ write_delim(., file="data/lookup_table_andstuff.txt")
+
+```
+
+```{r}
+what_ltr%>% 
+ 
+  # dplyr::filter(active_DOX=="Active_DOX") %>%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=my_LTR,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c("yes","no")
+),
+    method = "wilcox.test"
+  ) +
+  facet_wrap(~trt_specific)+
+  labs(title = "All LTR10E width of integrant",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+```{r}
+what_ltr%>% 
+  dplyr::filter(my_LTR=="yes") %>%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=trt_specific,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c("active_DOX_only","not_active"),
+   c("active_DOX_only","transition_DOX_only")
+),
+    method = "wilcox.test"
+  ) +
+  # facet_wrap(~active_DOX)+
+  labs(title = "LTR10E width of integrant that overlap H3K27ac ROI",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+
+```{r}
+what_ltr%>% 
+  dplyr::filter(my_LTR=="yes" &
+                  active_VEH != "Active_VEH") %>%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=active_DOX,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c("Active_DOX","not_active"),
+   c("Active_DOX","Transition_DOX")
+),
+    method = "wilcox.test"
+  ) +
+  # facet_wrap(~active_DOX)+
+  labs(title = "LTR10E width of integrant that overlap H3K27ac ROI",
+       subtitle="Pairwise Wilcoxon rank-sum tests, removed sets where integrants are not Active in VEH")
+
+
+what_ltr%>% 
+  dplyr::filter(my_LTR=="yes" &
+                  active_VEH != "Active_VEH") %>%
+  group_by(active_DOX) %>% tally
+
+# trt_specific = factor(trt_specific,
+#                             levels = c("neither", "both_transition", "both_active", "transition_DOX_only", "active_DOX_only"))) %>%
+```
+
+
+```{r}
+what_ltr%>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  # group_by(my_MER,p53_halfsite) %>% 
+  # summarise(milliDiv_avg=(mean(milliDiv)),
+  #           MYA_jukes_cantor_avg=mean(MYA_jukes_cantor),
+  #           MYA_bourque_avg=mean(MYA_bourque)) %>% 
+ 
+  # dplyr::filter(active_DOX=="Active_DOX") %>%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=width,y=MYA_jukes_cantor, color=trt_specific))+
+  geom_point()+
+#   smplot2::sm_boxplot()+
+#   ggpubr::stat_compare_means(
+#     comparisons = list(
+#    c("yes","no")
+# ),
+#     method = "wilcox.test"
+#   ) +
+  # facet_wrap(~p53_halfsite)+
+  labs(title = "All LTR10E width of integrant",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
+
+This leads me to asking if there is a relationship between length and p53 halfsites.
+
+because there is a higher probability of randomly containing a p53 half site because the TE is longer, i want to control for it. I need to quantify number of half site/width.
+
+```{r}
+what_ltr%>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  mutate(age_bin=cut(MYA_jukes_cantor, breaks = 10),
+         width_bin= cut(width, breaks=10),
+         p53_binary=if_else(p53_halfsite=="yes",1,0)) %>% 
+  group_by(age_bin, width_bin) %>% 
+  summarise(
+    n = dplyr::n(),
+    prop_p53 = mean(p53_binary),
+    .groups = "drop"
+  ) %>%
+  filter(n >= 5) %>%
+  ggplot(aes(x = age_bin, y = width_bin, fill = prop_p53)) +
+  geom_tile(color = "white") +
+  scale_fill_viridis_c(labels = scales::percent_format()) +
+  theme_bw() +
+  labs(
+    x = "LTR10E age bin",
+    y = "LTR10E width bin",
+    fill = "p53 halfsite %",
+    title = "p53 halfsite enrichment across LTR10E age and width"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+
+
+p53_halfsite_count_10E <- p53halfsite_TE_ids %>% 
+  dplyr::filter(TE_name=="LTR10E_ERV1_LTR") %>% 
+  group_by(Peakid) %>% 
+  count()  %>% 
+  dplyr::rename("p53_hscount"=n)
+
+what_ltr_width <- what_ltr %>% 
+  dplyr::select(repID,width,my_LTR,milliDiv:p53_halfsite, LTR10E_phyloP_mean:active_VEH)%>% 
+  left_join(p53_halfsite_count_10E, by=c("repID"="Peakid")) %>% 
+  mutate(p53_halfsite_count=if_else(is.na(p53_hscount),0,p53_hscount),
+         p53_site_per_width=p53_halfsite_count/width)
+
+
+  what_ltr_width%>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+    ggplot(aes(x=p53_site_per_width,y=MYA_jukes_cantor, color=my_LTR))+
+  geom_point()+
+  labs(title = "All LTR10E width of integrant")
+  
+```
+```{r}
+
+test_df_10E <- what_ltr_width %>% 
+  mutate(p53_site_group = case_when(
+    p53_halfsite_count == 0 ~ "0 sites",
+    p53_halfsite_count == 1 ~ "1 site",
+    p53_halfsite_count == 2 ~ "2 sites",
+    p53_halfsite_count == 3 ~ "3 sites",
+      p53_halfsite_count >= 4 ~ "4+ sites"),
+    p53_site_group = factor(p53_site_group,
+                            levels = c("0 sites", "1 site", "2 sites", "3 sites", "4+ sites")))
+
+
+ggplot(test_df_10E, aes(x = milliDiv, y = width, color = p53_site_group)) +
+  geom_point(alpha = 0.7) +
+  theme_bw() +
+  labs(
+    x = "LTR10E age / divergence",
+    y = "LTR10E width",
+    color = "p53 halfsite count",
+    title = "LTR10E width and age by p53 halfsite count"
+  )
+
+
+
+```
+```{r}
+ggplot(test_df_10E, aes(x = milliDiv, y = width, color = p53_site_per_width)) +
+  geom_point(alpha = 0.7) +
+  scale_color_viridis_c() +
+  theme_bw() +
+  labs(
+    x = "LTR10E age / divergence",
+    y = "LTR10E width",
+    color = "p53 sites / width",
+    title = "LTR10E p53 halfsite density by age and width"
+  )
+```
+```{r}
+
+
+pois_model_10E <- glm(
+  p53_halfsite_count ~ milliDiv + offset(log(width)),
+  data = test_df_10E,
+  family = poisson()
+)
+
+summary(pois_model_10E )
+```
+
+```{r}
+
+
+what_ltr_width %>%
+  dplyr::filter(my_LTR == "yes"& active_VEH !="Active_VEH") %>%
+  mutate(
+    p53_density = p53_halfsite_count / width
+  ) %>%
+  ggplot(aes(x = width, y = p53_density)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(
+    x = "LTR10E width",
+    y = "p53 half-site density",
+    title = "p53 half-site density across LTR10E width"
+  )
+```
+
+
+
+Using a Poisson model with TE width included as an offset, LTR10E p53-halfsite count was not significantly associated with TE divergence/age. 
+
+I used a session with ChatGPT to figure out how to test this.
+
+
+```{r}
+what_ltr%>%
+  # dplyr::filter(my_MER=="yes") %>%
+  ggplot(., aes(x=trt_specific,y=milliDiv))+
+  geom_boxplot()+
+   ggpubr::stat_compare_means(
+    comparisons = list(
+   c("active_DOX_only","transition_DOX_only"),
+   c("not_active","active_DOX_only")),
+    method = "wilcox.test" )+
+  facet_wrap(~my_LTR)
+
+what_ltr%>%
+  group_by(my_LTR, trt_specific) %>% tally
+
+```
+
+```{r}
+what_ltr%>%
+  dplyr::filter(my_LTR=="yes") %>%
+  ggplot(., aes(x=trt_specific,y=milliDiv))+
+  geom_boxplot()+
+   ggpubr::stat_compare_means(
+    comparisons = list(
+   c("active_DOX_only","transition_DOX_only"),
+   c("not_active","active_DOX_only")),
+    method = "wilcox.test" )+
+  facet_wrap(~cluster)+
+  ggtitle("LTR10E overlapping my H3K27ac regions")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=90))
+what_ltr%>%
+  dplyr::filter(my_LTR=="yes") %>%
+  group_by(trt_specific, cluster) %>% tally
+
+```
+
+
+```{r}
+what_ltr%>%
+  dplyr::filter(my_LTR=="yes") %>%
+mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  count(anno_alt, active_DOX, name = "n") %>%
+  ggplot(aes(x = anno_alt, y = n, fill = active_DOX)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  xlab("Annotation") +
+  ylab("Proportion") +
+  labs(fill = "DOX activity") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+
+
+
+
+what_ltr%>%
+  dplyr::filter(my_LTR=="yes") %>%
+  group_by(active_DOX, cluster) %>% tally
+```
+```{r}
+what_ltr%>%
+  dplyr::filter(my_LTR=="yes") %>%
+mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  count(anno_alt, active_DOX, name = "n") %>%
+  ggplot(aes(x = active_DOX, y = n, fill = anno_alt)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  xlab("Annotation") +
+  ylab("Proportion") +
+  labs(fill = "genomic annotation") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+what_ltr%>%
+  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  dplyr::filter(my_LTR=="yes") %>%
+  group_by( p53_halfsite,anno_alt) %>% 
+  tally()
+
+```
+```{r}
+what_ltr%>% 
+  dplyr::filter(my_LTR=="yes" &
+                  active_VEH != "Active_VEH") %>%
+  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  count(anno_alt, active_DOX, name = "n") %>%
+  ggplot(aes(x = active_DOX, y = n, fill = anno_alt)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  xlab("Annotation") +
+  ylab("Proportion") +
+  labs(fill = "genomic annotation") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+what_ltr%>% 
+  dplyr::filter(my_LTR=="yes" &
+                  active_VEH != "Active_VEH") %>%
+  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c("not_active", "Transition_DOX", "Active_DOX")
+    )) %>% 
+  count(anno_alt, active_DOX, name = "n")
+```
+There are no LTR10Es in my data that are Transition_DOX and exist in a promotor, however there are  8 LTR10E integrants that are transition DOX and are within an Intron of a gene.  There are 5 that are ACtive DOX that are in an intron of a gene.  This is after filtering out any LTR10Es that are Active VEH, so these represent interesting treatment specific intronic integrants.
+
+
+### p53 intersection
+
+```{r}
+what_ltr %>% 
+  dplyr::select(repID,my_LTR,cluster, width,milliDiv:p53_fullsite, DOX_144R:VEH_24T, trt_specific) %>% 
+  group_by(my_LTR,trt_specific,p53_halfsite) %>% 
+  summarize(total=dplyr::n(),.groups = "drop") %>% 
+  group_by(my_LTR,trt_specific) %>% 
+  mutate( sum_total = sum(total),
+          prop = total / sum_total) %>% 
+  ungroup() %>% 
+  ggplot(., aes(x=trt_specific, y=prop,fill=p53_halfsite))+
+   geom_col(position = "fill") +
+  geom_text(
+    aes(label =total),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ my_LTR) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title ="LTR10E p53 halfsite enrichment, in my LTR vs not my MER",
+    x = "Treatment specificity",
+    y = "Proportion",
+    fill = "p53 half-site"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+```{r}
+
+  what_ltr %>%
+  dplyr::filter(my_LTR=="yes") %>% 
+  dplyr::select(repID,my_LTR,cluster, width,milliDiv:p53_fullsite, DOX_144R:VEH_24T, trt_specific) %>% 
+  group_by(cluster,trt_specific,p53_halfsite) %>% 
+  summarize(total=dplyr::n(),.groups = "drop") %>% 
+  group_by(cluster,trt_specific) %>% 
+  mutate( sum_total = sum(total),
+          prop = total / sum_total) %>% 
+  ungroup() %>% 
+  ggplot(., aes(x=trt_specific, y=prop,fill=p53_halfsite))+
+   geom_col(position = "fill") +
+  geom_text(
+    aes(label =total),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ cluster) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title="looking at LTR10E within clusters p53 halfsites",
+    x = "Treatment specificity",
+    y = "Proportion",
+    fill = "p53 half-site"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+```{r}
+what_ltr %>% 
+  dplyr::select(repID,my_LTR,cluster, width,milliDiv:p53_fullsite, DOX_144R:VEH_24T, trt_specific) %>% 
+  dplyr::filter(my_LTR=="yes") %>%
+  group_by(cluster,trt_specific,p53_fullsite) %>% 
+  summarize(total=dplyr::n(),.groups = "drop") %>% 
+  group_by(cluster,trt_specific) %>% 
+  mutate( sum_total = sum(total),
+          prop = total / sum_total) %>% 
+  ungroup() %>% 
+  ggplot(., aes(x=trt_specific, y=prop,fill=p53_fullsite))+
+   geom_col(position = "fill") +
+  geom_text(
+    aes(label =total),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ cluster) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title="looking at LTR10E within clusters p53 fullsites",
+    x = "Treatment specificity",
+    y = "Proportion",
+    fill = "p53 full-site"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+```{r}
+halfsite_summary <- what_ltr %>% 
+  dplyr::filter(
+    my_LTR == "yes",
+    !is.na(cluster),
+    p53_halfsite %in% c("yes", "no")
+  ) %>% 
+  group_by(cluster) %>% 
+  summarise(
+    yes = sum(p53_halfsite == "yes"),
+    no = sum(p53_halfsite == "no"),
+    total = dplyr::n(),
+    prop_yes = yes / total,
+    .groups = "drop"
+  )
+
+halfsite_summary
+
+cluster_pairs <- combn(halfsite_summary$cluster, 2, simplify = FALSE)
+
+fisher_pairwise <- map_dfr(cluster_pairs, function(pair) {
+  
+  test_df <- halfsite_summary %>% 
+    dplyr::filter(cluster %in% pair)
+  
+  test_mat <- test_df %>% 
+    dplyr::select(yes, no) %>% 
+    as.matrix()
+  
+  rownames(test_mat) <- test_df$cluster
+  
+  fisher_result <- fisher.test(test_mat)
+  
+  tibble(
+    cluster_1 = pair[1],
+    cluster_2 = pair[2],
+    p_value = fisher_result$p.value,
+    odds_ratio = fisher_result$estimate
+  )
+}) %>% 
+  mutate(
+    p_adj_BH = p.adjust(p_value, method = "BH")
+  )
+
+fisher_pairwise
+```
+```{r}
+pairwise_halfsite_tests <- what_ltr %>% 
+  dplyr::filter(my_LTR=="yes") %>% 
+  dplyr::filter(!is.na(cluster), p53_halfsite %in% c("yes", "no")) %>% 
+  group_by(cluster) %>% 
+  summarise(
+    yes = sum(p53_halfsite == "yes"),
+    total = dplyr::n(),
+    prop_yes = yes / total,
+    .groups = "drop"
+  )
+
+pairwise_halfsite_tests
+yes_counts <- pairwise_halfsite_tests$yes
+total_counts <- pairwise_halfsite_tests$total
+
+names(yes_counts) <- pairwise_halfsite_tests$cluster
+names(total_counts) <- pairwise_halfsite_tests$cluster
+
+pairwise.prop.test(
+  x = yes_counts,
+  n = total_counts,
+  p.adjust.method = "BH"
+)
+
+
+```
+
+```{r}
+RNA_lfc_SYMBOL <-RNA_full_toptable %>% 
+   dplyr::filter(SYMBOL != "NA")%>%
+  dplyr::select(SYMBOL,logFC,timepoint, adj.P.Val) %>% 
+  pivot_wider(., names_from = timepoint,
+    values_from = c(logFC, adj.P.Val),
+    names_glue = "RNA_{.value}_{timepoint}")
+
+
+splitting_dox_ltr_df <- what_ltr%>% 
+  dplyr::filter(my_LTR=="yes" ) %>%
+   separate_rows(GREAT_gene_assign, sep = ",\\s*") %>%
+  mutate(
+    gene = str_extract(GREAT_gene_assign, "^[A-Za-z0-9_.-]+"),
+    distance = str_extract(GREAT_gene_assign,"(?<=\\()[+-]?\\d+(?=\\))") %>% as.numeric(),
+    direction = case_when(
+      distance < 0 ~ "upstream",
+      distance > 0 ~ "downstream",
+      distance == 0 ~ "overlapping",
+      TRUE ~ NA_character_)) %>% 
+  dplyr::select(repID,my_LTR,cluster, H3K27ac_region, H3K27ac_region_geneId, H3K27ac_region_distanceToTSS, active_DOX:direction,p53_halfsite) %>% 
+  mutate(direction_range=case_when(is.na(direction)~"no_gene",
+                                   abs(distance)>100000~">100kb",
+                                   abs(distance)<100000 & abs(distance)>50000~"100-50kb",
+                                   abs(distance)<50000 & abs(distance)>10000~ "50-10kb",
+                                   abs(distance)<10000~"<10kb",
+                                       TRUE~"messedup")) %>% 
+  mutate(RNA_exp=if_else(gene %in% RNA_expressed$SYMBOL,"exp","not_exp"))
+
+active_DOX_df <- 
+splitting_dox_ltr_df %>% dplyr::filter(trt_specific=="active_DOX_only") %>% 
+  dplyr::filter(RNA_exp=="exp")
+
+transition_DOX_df <- 
+splitting_dox_ltr_df %>% dplyr::filter(trt_specific=="transition_DOX_only") %>% 
+  dplyr::filter(RNA_exp=="exp")
+
+H3K27ac_lfc_table <- H3K27ac_toptable_list %>%
+  dplyr::select(genes,logFC,group,adj.P.Val) %>% 
+  pivot_wider(., names_from = group,
+    values_from = c(logFC, adj.P.Val),
+    names_glue = "{group}_{.value}" )
+
+  
+```
+
+
+### LFC RNA and H3K27ac LFC heatmap
+
+```{r}
+RNA_H3K27ac_LFC_dataframe <- active_DOX_df %>% 
+  left_join(RNA_lfc_SYMBOL, by=c("gene"="SYMBOL")) %>% 
+  left_join(H3K27ac_lfc_table, by=c("H3K27ac_region"="genes"))
+
+  
+gene_LFC_mat <- 
+  RNA_H3K27ac_LFC_dataframe %>% 
+    dplyr::select(gene, RNA_logFC_24T,RNA_logFC_24R,RNA_logFC_144R,H3K27ac_24T_logFC,H3K27ac_24R_logFC,H3K27ac_144R_logFC) %>% 
+    column_to_rownames("gene") %>% 
+    as.matrix()
+
+sig_mat <- RNA_H3K27ac_LFC_dataframe %>% 
+  dplyr::select(
+    gene,
+    RNA_adj.P.Val_24T, RNA_adj.P.Val_24R, RNA_adj.P.Val_144R,
+    H3K27ac_24T_adj.P.Val, H3K27ac_24R_adj.P.Val, H3K27ac_144R_adj.P.Val
+  ) %>% 
+  column_to_rownames("gene") %>% 
+  as.matrix()
+
+
+
+gene_annotations_ordered <- RNA_H3K27ac_LFC_dataframe %>%
+  dplyr::filter(gene %in% rownames(gene_LFC_mat)) %>%
+  dplyr::slice(match(rownames(gene_LFC_mat), gene))
+
+  
+```
+
+```{r}
+row_anno <- rowAnnotation(
+  cluster = gene_annotations_ordered$cluster,
+  distance = gene_annotations_ordered$direction_range,
+  direction = gene_annotations_ordered$direction)
+
+Heatmap(
+  gene_LFC_mat,
+  column_title = "LTR10E active_DOX_only",
+  name = "LFC",
+  right_annotation = row_anno, 
+  cluster_rows=FALSE,
+  cluster_columns = FALSE,
+   cell_fun = function(j, i, x, y, width, height, fill) {
+    if (!is.na(sig_mat[i, j]) && sig_mat[i, j] < 0.05) {
+      grid::grid.text("*", x, y, gp = grid::gpar(fontsize = 10))}})
+```
+
+
+```{r}
+RNA_H3K27ac_LFC_dataframe_trans <- transition_DOX_df %>% 
+  left_join(RNA_lfc_SYMBOL, by=c("gene"="SYMBOL")) %>% 
+  left_join(H3K27ac_lfc_table, by=c("H3K27ac_region"="genes"))
+
+  
+gene_LFC_mat_trans <- 
+  RNA_H3K27ac_LFC_dataframe_trans %>% 
+  mutate(gene_unique=make.unique(gene)) %>% 
+    dplyr::select(gene_unique, RNA_logFC_24T,RNA_logFC_24R,RNA_logFC_144R,H3K27ac_24T_logFC,H3K27ac_24R_logFC,H3K27ac_144R_logFC) %>% 
+  
+    column_to_rownames("gene_unique") %>% 
+    as.matrix()
+
+sig_mat_trans <- RNA_H3K27ac_LFC_dataframe_trans %>% 
+  mutate(gene_unique=make.unique(gene)) %>% 
+    dplyr::select(gene_unique,  RNA_adj.P.Val_24T, RNA_adj.P.Val_24R, RNA_adj.P.Val_144R,
+    H3K27ac_24T_adj.P.Val, H3K27ac_24R_adj.P.Val, H3K27ac_144R_adj.P.Val
+  ) %>% 
+  column_to_rownames("gene_unique") %>% 
+  as.matrix()
+
+
+
+gene_annotations_ordered_trans <- RNA_H3K27ac_LFC_dataframe_trans %>%
+   mutate(gene_unique=make.unique(gene)) %>% 
+  dplyr::filter(gene_unique %in% rownames(gene_LFC_mat_trans)) %>%
+  dplyr::slice(match(rownames(gene_LFC_mat_trans), gene_unique))
+
+  
+```
+
+
+
+
+```{r, fig.height=6}
+row_anno_trans <- rowAnnotation(
+  cluster = gene_annotations_ordered_trans$cluster,
+  distance = gene_annotations_ordered_trans$direction_range,
+  direction = gene_annotations_ordered_trans$direction)
+
+Heatmap(
+  gene_LFC_mat_trans,
+  column_title = "LTR10E transition_DOX_only",
+  name = "LFC",
+  right_annotation = row_anno_trans, 
+  cluster_rows=FALSE,
+  cluster_columns = FALSE,
+   cell_fun = function(j, i, x, y, width, height, fill) {
+    if (!is.na(sig_mat_trans[i, j]) && sig_mat_trans[i, j] < 0.05) {
+      grid::grid.text("*", x, y, gp = grid::gpar(fontsize = 10))}})
+```
+
+```{r}
+trans_DOX_alt_dataframe <- transition_DOX_df %>% 
+  dplyr::select(repID,cluster,H3K27ac_region:trt_specific,p53_halfsite) %>% 
+  mutate(direction_range=case_when(                              abs(H3K27ac_region_distanceToTSS)>100000~">100kb",
+                                   abs(H3K27ac_region_distanceToTSS)<100000 & abs(H3K27ac_region_distanceToTSS)>50000~"100-50kb",
+                                   abs(H3K27ac_region_distanceToTSS)<50000 & abs(H3K27ac_region_distanceToTSS)>10000~ "50-10kb",
+                                   abs(H3K27ac_region_distanceToTSS)<10000~"<10kb",
+                                       TRUE~"messedup")) %>% 
+  mutate(H3K27ac_region_geneId=as.numeric(H3K27ac_region_geneId)) %>% 
+  left_join(RNA_expressed, by=c("H3K27ac_region_geneId"="Entrez_ID")) %>% 
+  distinct() %>% 
+   left_join(RNA_lfc_SYMBOL, by=c("SYMBOL"="SYMBOL")) %>% 
+  left_join(H3K27ac_lfc_table, by=c("H3K27ac_region"="genes")) %>% 
+  na.omit(SYMBOL)
+
+
+trans_gene_LFC_mat <- 
+  trans_DOX_alt_dataframe %>% 
+  mutate(gene_unique=make.unique(SYMBOL)) %>% 
+    dplyr::select(gene_unique, RNA_logFC_24T,RNA_logFC_24R,RNA_logFC_144R,H3K27ac_24T_logFC,H3K27ac_24R_logFC,H3K27ac_144R_logFC) %>% 
+  
+    column_to_rownames("gene_unique") %>% 
+    as.matrix()
+
+trans_sig_mat <- trans_DOX_alt_dataframe %>% 
+  mutate(gene_unique=make.unique(SYMBOL)) %>% 
+    dplyr::select(gene_unique,  RNA_adj.P.Val_24T, RNA_adj.P.Val_24R, RNA_adj.P.Val_144R,
+    H3K27ac_24T_adj.P.Val, H3K27ac_24R_adj.P.Val, H3K27ac_144R_adj.P.Val
+  ) %>% 
+  column_to_rownames("gene_unique") %>% 
+  as.matrix()
+
+
+
+trans_gene_annotations_ordered <- trans_DOX_alt_dataframe %>%
+   mutate(gene_unique=make.unique(SYMBOL)) %>% 
+  dplyr::filter(gene_unique %in% rownames(trans_gene_LFC_mat)) %>%
+  dplyr::slice(match(rownames(trans_gene_LFC_mat), gene_unique))
+
+```
+
+
+```{r, fig.height=6}
+row_anno_trans_again <- rowAnnotation(
+  cluster = trans_gene_annotations_ordered$cluster,
+  distance = trans_gene_annotations_ordered$direction_range,
+  p53 = trans_gene_annotations_ordered$p53_halfsite)
+
+Heatmap(
+  trans_gene_LFC_mat,
+  column_title = "transition_DOX_only",
+  name = "LFC",
+  right_annotation = row_anno_trans_again, 
+  cluster_rows=FALSE,
+  cluster_columns = FALSE,
+   cell_fun = function(j, i, x, y, width, height, fill) {
+    if (!is.na(trans_sig_mat[i, j]) && trans_sig_mat[i, j] < 0.05) {
+      grid::grid.text("*", x, y, gp = grid::gpar(fontsize = 10))}})
 ```
 
