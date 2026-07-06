@@ -2275,7 +2275,7 @@ row_anno_trans_again <- rowAnnotation(
 
 Heatmap(
   trans_gene_LFC_mat,
-  column_title = "transition_DOX_only",
+  column_title = "LTR10E H3K27ac assigned gene transition_DOX_only",
   name = "LFC",
   right_annotation = row_anno_trans_again, 
   cluster_rows=FALSE,
