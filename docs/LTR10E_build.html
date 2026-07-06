@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-06-15" />
+<meta name="date" content="2026-07-06" />
 
 <title>LTR10_building dataframe</title>
 
@@ -370,7 +370,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">LTR10_building dataframe</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-06-15</h4>
+<h4 class="date">2026-07-06</h4>
 
 </div>
 
@@ -399,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-06-15
+<strong>Last updated:</strong> 2026-07-06
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec962cc2a2891448943d7a004888a263929bdee2ctargetblankc962cc2a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeb7b571a87ca9e25390c5eec519fd3b0ef5ec3e05targetblankb7b571aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c962cc2a2891448943d7a004888a263929bdee2c" target="_blank">c962cc2</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/b7b571a87ca9e25390c5eec519fd3b0ef5ec3e05" target="_blank">b7b571a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreec962cc2a2891448943d7a004888a263929bdee2ctargetblankc962cc2a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeb7b571a87ca9e25390c5eec519fd3b0ef5ec3e05targetblankb7b571aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/c962cc2a2891448943d7a004888a263929bdee2c" target="_blank">c962cc2</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/b7b571a87ca9e25390c5eec519fd3b0ef5ec3e05" target="_blank">b7b571a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -580,6 +580,7 @@ Ignored files:
     Ignored:    data/cell_line_info_.tsv
     Ignored:    data/full_p53_canonical.RDS
     Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/lookup_table_andstuff.txt
     Ignored:    data/motif_lists/
     Ignored:    data/number_frag_peaks_summary.txt
     Ignored:    data/p53halfsite_TE_ids.RDS
@@ -603,9 +604,10 @@ Untracked files:
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27ac_TEtype.Rmd
-    Modified:   analysis/H3K27me3_TE_overlap_extend.Rmd
+    Modified:   analysis/Goanalysis_TFs.Rmd
+    Modified:   analysis/MER61E_build.Rmd
     Modified:   analysis/chromHMM_2.Rmd
+    Modified:   code/corMotifcustom.R
 
 </code></pre>
 <p>
@@ -650,6 +652,75 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/b7b571a87ca9e25390c5eec519fd3b0ef5ec3e05/analysis/LTR10E_build.Rmd" target="_blank">b7b571a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-06
+</td>
+<td>
+updates and heatmaps
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/011cd70d679ee04e58b52c90f2115c2aea34c270/analysis/LTR10E_build.Rmd" target="_blank">011cd70</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-06
+</td>
+<td>
+updates and heatmaps
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/924c34320e981a44d86ee080493bcceeaf2f2923/analysis/LTR10E_build.Rmd" target="_blank">924c343</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+<td>
+wflow_git_commit(c("analysis/H3K27ac_TEtype.Rmd",
+"analysis/H3K27ac_cisRE.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/a0aae83e1d9c46581e2594850b69e40b7e357dd3/docs/LTR10E_build.html" target="_blank">a0aae83</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2621,6 +2692,14 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>rep_ID_set3_LTR10E &lt;- LTR10E_intermediate_data %&gt;% 
+  dplyr::filter(cluster==&quot;Set_3&quot;)
+
+acute_cluster_only_broad &lt;- LTR10E_trajectory_broad %&gt;% 
+  dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %&gt;% 
+  dplyr::filter(te_id %in% rep_ID_set3_LTR10E$repID)
+plot_trajectory_flow(acute_cluster_only_broad,&quot;Acute_cluster only LTR10E elements&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-20-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>LTR10E_intermediate_data %&gt;% 
   group_by(cluster,my_LTR,overall_compare) %&gt;%
   tally()</code></pre>
@@ -2731,13 +2810,13 @@ site than integrants not in my data.</p>
   c(&quot;Set_3&quot;,&quot;not_assigned&quot;)),
     method = &quot;wilcox.test&quot;)+
   ggtitle(&quot;distance to nearest gene?&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-23-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-24-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
-Past versions of unnamed-chunk-23-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
+Past versions of unnamed-chunk-24-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div id="fig-unnamed-chunk-24-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2756,7 +2835,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/2f6e923e5b141ec93f4b5ba4c4377e1bc8040898/docs/figure/LTR10E_build.Rmd/unnamed-chunk-23-1.png" target="_blank">2f6e923</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0aae83e1d9c46581e2594850b69e40b7e357dd3/docs/figure/LTR10E_build.Rmd/unnamed-chunk-24-1.png" target="_blank">a0aae83</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/2f6e923e5b141ec93f4b5ba4c4377e1bc8040898/docs/figure/LTR10E_build.Rmd/unnamed-chunk-24-1.png" target="_blank">2f6e923</a>
 </td>
 <td>
 reneeisnowhere
@@ -2767,7 +2857,7 @@ reneeisnowhere
 </tr>
 <tr>
 <td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/5d03f33b26398391bc20ede0a8b77ac1d5e6a789/docs/figure/LTR10E_build.Rmd/unnamed-chunk-23-1.png" target="_blank">5d03f33</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/5d03f33b26398391bc20ede0a8b77ac1d5e6a789/docs/figure/LTR10E_build.Rmd/unnamed-chunk-24-1.png" target="_blank">5d03f33</a>
 </td>
 <td>
 reneeisnowhere
@@ -2787,7 +2877,55 @@ reneeisnowhere
   ggpubr::stat_compare_means(comparisons = list(c(&quot;yes&quot;, &quot;no&quot;)),
                                                 method = &quot;wilcox.test&quot;)+
   ggtitle(&quot;distance to nearest gene no broken up by set&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-23-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-24-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-2">
+Past versions of unnamed-chunk-24-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-24-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0aae83e1d9c46581e2594850b69e40b7e357dd3/docs/figure/LTR10E_build.Rmd/unnamed-chunk-24-2.png" target="_blank">a0aae83</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/2f6e923e5b141ec93f4b5ba4c4377e1bc8040898/docs/figure/LTR10E_build.Rmd/unnamed-chunk-24-2.png" target="_blank">2f6e923</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="tf-enrichment" class="section level3">
@@ -2828,68 +2966,7 @@ found_LTR10E &lt;- LTR10E_set_data %&gt;% dplyr::filter(!is.na(MOTIF_URL))</code
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;LTR10E novel enriched motifs compared to all ERV1&quot;))</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-24-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
-Past versions of unnamed-chunk-24-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-24-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/2f6e923e5b141ec93f4b5ba4c4377e1bc8040898/docs/figure/LTR10E_build.Rmd/unnamed-chunk-24-1.png" target="_blank">2f6e923</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-06-11
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/5d03f33b26398391bc20ede0a8b77ac1d5e6a789/docs/figure/LTR10E_build.Rmd/unnamed-chunk-24-1.png" target="_blank">5d03f33</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-06-08
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>found_LTR10E %&gt;% 
-  dplyr::filter(EVALUE&lt;0.05) %&gt;% 
-  group_by(motif_name) %&gt;%
-  slice_min(EVALUE, with_ties = FALSE) %&gt;%
-   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
-  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
-  geom_col(aes(x=log10Evalue))+
-  # geom_point(aes(x=`TP%`*4), size =4)+
-  # scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./4,name=&quot;Enrichment Ratio of regions&quot;))+
-  theme_classic()+
-  ylab(&quot;Enriched TF motif&quot;)+
-  ggtitle(paste(&quot;LTR10 enriched motifs compared to all ERV1&quot;))</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-25-1.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-25-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
 Past versions of unnamed-chunk-25-1.png
@@ -2914,7 +2991,79 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0aae83e1d9c46581e2594850b69e40b7e357dd3/docs/figure/LTR10E_build.Rmd/unnamed-chunk-25-1.png" target="_blank">a0aae83</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/2f6e923e5b141ec93f4b5ba4c4377e1bc8040898/docs/figure/LTR10E_build.Rmd/unnamed-chunk-25-1.png" target="_blank">2f6e923</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>found_LTR10E %&gt;% 
+  dplyr::filter(EVALUE&lt;0.05) %&gt;% 
+  group_by(motif_name) %&gt;%
+  slice_min(EVALUE, with_ties = FALSE) %&gt;%
+   mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  # geom_point(aes(x=`TP%`*4), size =4)+
+  # scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./4,name=&quot;Enrichment Ratio of regions&quot;))+
+  theme_classic()+
+  ylab(&quot;Enriched TF motif&quot;)+
+  ggtitle(paste(&quot;LTR10 enriched motifs compared to all ERV1&quot;))</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-26-1.png" alt="" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
+Past versions of unnamed-chunk-26-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0aae83e1d9c46581e2594850b69e40b7e357dd3/docs/figure/LTR10E_build.Rmd/unnamed-chunk-26-1.png" target="_blank">a0aae83</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/2f6e923e5b141ec93f4b5ba4c4377e1bc8040898/docs/figure/LTR10E_build.Rmd/unnamed-chunk-26-1.png" target="_blank">2f6e923</a>
 </td>
 <td>
 reneeisnowhere
@@ -3041,12 +3190,49 @@ slice_min(EVALUE, with_ties = FALSE) %&gt;%
    mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
   ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
   geom_col(aes(x=log10Evalue))+
-  geom_point(aes(x=`TP%`*2), size =4)+
-  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./2,name=&quot;Percent of peaks with motif&quot;))+
+  geom_point(aes(x=`TP%`*1), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1,name=&quot;Percent of peaks with motif&quot;))+
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;Motifs enriched in Set 3 active LTR10E vs all others LTR10E&quot;))</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-30-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-31-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-1">
+Past versions of unnamed-chunk-31-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0aae83e1d9c46581e2594850b69e40b7e357dd3/docs/figure/LTR10E_build.Rmd/unnamed-chunk-31-1.png" target="_blank">a0aae83</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>novel_ltr_set3 &lt;- ltr_set3_table %&gt;% 
   dplyr::filter(is.na(MOTIF_URL))
 
@@ -3063,7 +3249,44 @@ slice_min(EVALUE, with_ties = FALSE) %&gt;%
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;Novel Motifs enriched in Set 3 active \n LTR10E vs all others LTR10E n = 13&quot;))</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-31-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-32-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-32-1">
+Past versions of unnamed-chunk-32-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-32-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/a0aae83e1d9c46581e2594850b69e40b7e357dd3/docs/figure/LTR10E_build.Rmd/unnamed-chunk-32-1.png" target="_blank">a0aae83</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>known_ltr_set3 %&gt;% 
 group_by(motif_name) %&gt;% 
 slice_min(EVALUE, with_ties = FALSE) %&gt;%
@@ -3075,7 +3298,7 @@ slice_min(EVALUE, with_ties = FALSE) %&gt;%
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;Known Motifs enriched in Set 3 active \n LTR10E vs all others LTR10E n = 20&quot;))</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-31-2.png" alt="" width="672" style="display: block; margin: auto;" />
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-32-2.png" alt="" width="672" style="display: block; margin: auto;" />
 Filtering for expressed TFs</p>
 <pre class="r"><code>RNA_full_toptable &lt;-  readRDS(&quot;data/Other_paper_data/RNA_full_toptable.RDS&quot;)
 
@@ -3104,7 +3327,974 @@ slice_min(EVALUE, with_ties = FALSE) %&gt;%
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;Expressed TFs Known Motifs enriched in Set 3 active \n LTR10E vs all others LTR10E n = 14&quot;))</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-32-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-33-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># saveRDS(known_ltr_set3, &quot;data/RDS_files/LTR10E_set3active_enr.RDS&quot;)</code></pre>
+</div>
+<div id="persistantly-activated-mer61e" class="section level3">
+<h3>Persistantly Activated MER61E</h3>
+<pre class="r"><code>what_ltr &lt;-
+LTR10E_intermediate_data %&gt;% 
+  mutate(active_DOX= case_when(
+    DOX_144R %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;)&amp;
+      DOX_24R %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;) &amp;
+      DOX_24T %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;)~&quot;Active_DOX&quot;,
+    DOX_144R %in% c(&quot;Repressed&quot; ,  &quot;Quiescent&quot;)&amp;
+      DOX_24T %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;)~&quot;Transition_DOX&quot;,
+    TRUE~&quot;not_active&quot;),
+    active_VEH= case_when(
+    VEH_144R %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;)&amp;
+      VEH_24R %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;) &amp;
+      VEH_24T %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;)~&quot;Active_VEH&quot;,
+    VEH_144R %in% c(&quot;Repressed&quot; ,  &quot;Quiescent&quot;)&amp;
+      VEH_24T %in% c(&quot;Enhancer&quot;,&quot;Transcription&quot;)~&quot;Transition_VEH&quot;,
+    TRUE~&quot;not_active&quot;)) %&gt;% 
+  mutate(trt_specific= case_when(active_DOX==&quot;Active_DOX&quot; &amp; active_VEH !=&quot;Active_VEH&quot;~&quot;active_DOX_only&quot;,
+         active_DOX==&quot;Active_DOX&quot; &amp; active_VEH ==&quot;Active_VEH&quot;~&quot;both_active&quot;,
+active_DOX==&quot;Transition_DOX&quot; &amp; active_VEH !=&quot;Transition_VEH&quot;~&quot;transition_DOX_only&quot;,
+active_DOX==&quot;Transition_DOX&quot; &amp; active_VEH ==&quot;Transition_VEH&quot;~&quot;both_transition&quot;,
+TRUE ~active_DOX))
+
+
+what_ltr %&gt;% 
+  group_by(my_LTR,active_DOX, active_VEH ) %&gt;% 
+  tally()</code></pre>
+<pre><code># A tibble: 14 × 4
+# Groups:   my_LTR, active_DOX [6]
+   my_LTR active_DOX     active_VEH         n
+   &lt;chr&gt;  &lt;chr&gt;          &lt;chr&gt;          &lt;int&gt;
+ 1 no     Active_DOX     Active_VEH        18
+ 2 no     Active_DOX     Transition_VEH     1
+ 3 no     Active_DOX     not_active         4
+ 4 no     Transition_DOX Active_VEH         2
+ 5 no     Transition_DOX not_active        30
+ 6 no     not_active     Active_VEH         1
+ 7 no     not_active     Transition_VEH     4
+ 8 no     not_active     not_active       160
+ 9 yes    Active_DOX     Active_VEH         6
+10 yes    Active_DOX     Transition_VEH     2
+11 yes    Active_DOX     not_active         5
+12 yes    Transition_DOX not_active        17
+13 yes    not_active     Transition_VEH     1
+14 yes    not_active     not_active         4</code></pre>
+<pre class="r"><code>what_ltr %&gt;% 
+  group_by(active_DOX, my_LTR, p53_halfsite) %&gt;% 
+  tally()</code></pre>
+<pre><code># A tibble: 12 × 4
+# Groups:   active_DOX, my_LTR [6]
+   active_DOX     my_LTR p53_halfsite     n
+   &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;        &lt;int&gt;
+ 1 Active_DOX     no     no              10
+ 2 Active_DOX     no     yes             13
+ 3 Active_DOX     yes    no               3
+ 4 Active_DOX     yes    yes             10
+ 5 Transition_DOX no     no              11
+ 6 Transition_DOX no     yes             21
+ 7 Transition_DOX yes    no               7
+ 8 Transition_DOX yes    yes             10
+ 9 not_active     no     no              69
+10 not_active     no     yes             96
+11 not_active     yes    no               1
+12 not_active     yes    yes              4</code></pre>
+<pre class="r"><code>what_ltr%&gt;% 
+ 
+  # dplyr::filter(active_DOX==&quot;Active_DOX&quot;) %&gt;% 
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=cluster,y=LTR10E_phyloP_mean, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c(&quot;Set_1&quot;, &quot;Set_3&quot;),
+  c(&quot;Set_1&quot;, &quot;not_assigned&quot;),
+  c(&quot;Set_1&quot;, &quot;NA&quot;),
+  c(&quot;Set_3&quot;,&quot;NA&quot;),
+  c(&quot;Set_3&quot;,&quot;not_assigned&quot;)
+),
+    method = &quot;wilcox.test&quot;
+  ) +
+  facet_wrap(~trt_specific)+
+  labs(title = &quot; Active LTR10E mean phyloP in groups&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-35-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_ltr%&gt;% 
+ 
+  #dplyr::filter(active_DOX==&quot;Active_DOX&quot;) %&gt;% 
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=cluster,y=milliDiv, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c(&quot;Set_1&quot;, &quot;Set_3&quot;),
+  c(&quot;Set_1&quot;, &quot;not_assigned&quot;),
+  c(&quot;Set_1&quot;, &quot;NA&quot;),
+  c(&quot;Set_3&quot;,&quot;NA&quot;),
+  c(&quot;Set_3&quot;,&quot;not_assigned&quot;)
+),
+    method = &quot;wilcox.test&quot;
+  ) +
+  facet_wrap(~trt_specific)+
+  labs(title = &quot; Active LTR10E milliDiv in groups&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-36-1.png" alt="" width="672" style="display: block; margin: auto;" />
+### changed from MER61E Okay, I am going to split out the LTR10Es that
+are persistently active compared to those that transition to repressed
+state. Then I will run SEA enrichment instead of xstreme due to only
+using known motifs (Jaspar2024, core vetebrate non-redundant) between
+these elements. I will also only focus on 100+/- bp around the center of
+the integrant. Below is how I made the bedfiles</p>
+<pre class="r"><code>active_df &lt;- what_ltr[what_ltr$active_DOX == &quot;Active_DOX&quot;, ]
+not_active_df &lt;- what_ltr[what_ltr$active_DOX == &quot;not_active&quot;, ]
+
+active_names &lt;- active_df$repID
+not_active_names &lt;- not_active_df$repID
+
+gr_names &lt;- mcols(MER61E_regions)$name
+
+missing_active &lt;- setdiff(active_names, gr_names)
+missing_not_active &lt;- setdiff(not_active_names, gr_names)
+
+if (length(missing_active) &gt; 0) {
+  warning(&quot;These Active_DOX regions were not found in MER61E_regions:&quot;)
+  print(missing_active)
+}
+
+if (length(missing_not_active) &gt; 0) {
+  warning(&quot;These not_active regions were not found in MER61E_regions:&quot;)
+  print(missing_not_active)
+}
+
+active_gr &lt;- MER61E_regions[gr_names %in% active_names]
+not_active_gr &lt;- MER61E_regions[gr_names %in% not_active_names]
+
+
+# Center and resize to 100 bp
+active_gr_200bp &lt;- resize(active_gr, width = 200, fix = &quot;center&quot;)
+not_active_gr_200bp &lt;- resize(not_active_gr, width = 200, fix = &quot;center&quot;)
+
+# Keep original MER61E region names as BED column 4
+mcols(active_gr_200bp)$name &lt;- mcols(active_gr)$name
+mcols(not_active_gr_200bp)$name &lt;- mcols(not_active_gr)$name
+
+# Keep score if available
+if (&quot;score&quot; %in% colnames(mcols(active_gr))) {
+  mcols(active_gr_200bp)$score &lt;- mcols(active_gr)$score
+}
+
+if (&quot;score&quot; %in% colnames(mcols(not_active_gr))) {
+  mcols(not_active_gr_200bp)$score &lt;- mcols(not_active_gr)$score
+}
+
+# Trim to chromosome bounds if seqinfo has chromosome lengths
+active_gr_200bp &lt;- trim(active_gr_200bp)
+not_active_gr_200bp &lt;- trim(not_active_gr_200bp)
+
+# Keep only full 100 bp regions
+active_gr_200bp &lt;- active_gr_200bp[width(active_gr_200bp) == 200]
+not_active_gr_200bp &lt;- not_active_gr_200bp[width(not_active_gr_200bp) == 200]
+
+
+export(active_gr_200bp, &quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_Active_DOX_200bp.bed&quot;, format = &quot;BED&quot;)
+export(not_active_gr_200bp, &quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_not_active_DOX_200bp.bed&quot;, format = &quot;BED&quot;)
+
+
+H3K27ac_toptable_list %&gt;% 
+ dplyr::filter(group==&quot;H3K27ac_24T&quot;) %&gt;% 
+ left_join(H3K27ac_lookup,by=c(&quot;genes&quot;=&quot;Peakid&quot;)) %&gt;% 
+ write_delim(., file=&quot;data/lookup_table_andstuff.txt&quot;)</code></pre>
+<pre class="r"><code>what_ltr%&gt;% 
+ 
+  # dplyr::filter(active_DOX==&quot;Active_DOX&quot;) %&gt;%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=my_LTR,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c(&quot;yes&quot;,&quot;no&quot;)
+),
+    method = &quot;wilcox.test&quot;
+  ) +
+  facet_wrap(~trt_specific)+
+  labs(title = &quot;All LTR10E width of integrant&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-38-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_ltr%&gt;% 
+  dplyr::filter(my_LTR==&quot;yes&quot;) %&gt;%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=trt_specific,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c(&quot;active_DOX_only&quot;,&quot;not_active&quot;),
+   c(&quot;active_DOX_only&quot;,&quot;transition_DOX_only&quot;)
+),
+    method = &quot;wilcox.test&quot;
+  ) +
+  # facet_wrap(~active_DOX)+
+  labs(title = &quot;LTR10E width of integrant that overlap H3K27ac ROI&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-39-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_ltr%&gt;% 
+  dplyr::filter(my_LTR==&quot;yes&quot; &amp;
+                  active_VEH != &quot;Active_VEH&quot;) %&gt;%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=active_DOX,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c(&quot;Active_DOX&quot;,&quot;not_active&quot;),
+   c(&quot;Active_DOX&quot;,&quot;Transition_DOX&quot;)
+),
+    method = &quot;wilcox.test&quot;
+  ) +
+  # facet_wrap(~active_DOX)+
+  labs(title = &quot;LTR10E width of integrant that overlap H3K27ac ROI&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests, removed sets where integrants are not Active in VEH&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-40-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_ltr%&gt;% 
+  dplyr::filter(my_LTR==&quot;yes&quot; &amp;
+                  active_VEH != &quot;Active_VEH&quot;) %&gt;%
+  group_by(active_DOX) %&gt;% tally</code></pre>
+<pre><code># A tibble: 3 × 2
+  active_DOX         n
+  &lt;chr&gt;          &lt;int&gt;
+1 Active_DOX         7
+2 Transition_DOX    17
+3 not_active         5</code></pre>
+<pre class="r"><code># trt_specific = factor(trt_specific,
+#                             levels = c(&quot;neither&quot;, &quot;both_transition&quot;, &quot;both_active&quot;, &quot;transition_DOX_only&quot;, &quot;active_DOX_only&quot;))) %&gt;%</code></pre>
+<pre class="r"><code>what_ltr%&gt;% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %&gt;% 
+  # group_by(my_MER,p53_halfsite) %&gt;% 
+  # summarise(milliDiv_avg=(mean(milliDiv)),
+  #           MYA_jukes_cantor_avg=mean(MYA_jukes_cantor),
+  #           MYA_bourque_avg=mean(MYA_bourque)) %&gt;% 
+ 
+  # dplyr::filter(active_DOX==&quot;Active_DOX&quot;) %&gt;%
+   mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=width,y=MYA_jukes_cantor, color=trt_specific))+
+  geom_point()+
+#   smplot2::sm_boxplot()+
+#   ggpubr::stat_compare_means(
+#     comparisons = list(
+#    c(&quot;yes&quot;,&quot;no&quot;)
+# ),
+#     method = &quot;wilcox.test&quot;
+#   ) +
+  # facet_wrap(~p53_halfsite)+
+  labs(title = &quot;All LTR10E width of integrant&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-41-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>This leads me to asking if there is a relationship between length and
+p53 halfsites.</p>
+<p>because there is a higher probability of randomly containing a p53
+half site because the TE is longer, i want to control for it. I need to
+quantify number of half site/width.</p>
+<pre class="r"><code>what_ltr%&gt;% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %&gt;% 
+  mutate(age_bin=cut(MYA_jukes_cantor, breaks = 10),
+         width_bin= cut(width, breaks=10),
+         p53_binary=if_else(p53_halfsite==&quot;yes&quot;,1,0)) %&gt;% 
+  group_by(age_bin, width_bin) %&gt;% 
+  summarise(
+    n = dplyr::n(),
+    prop_p53 = mean(p53_binary),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  filter(n &gt;= 5) %&gt;%
+  ggplot(aes(x = age_bin, y = width_bin, fill = prop_p53)) +
+  geom_tile(color = &quot;white&quot;) +
+  scale_fill_viridis_c(labels = scales::percent_format()) +
+  theme_bw() +
+  labs(
+    x = &quot;LTR10E age bin&quot;,
+    y = &quot;LTR10E width bin&quot;,
+    fill = &quot;p53 halfsite %&quot;,
+    title = &quot;p53 halfsite enrichment across LTR10E age and width&quot;
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-42-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p53_halfsite_count_10E &lt;- p53halfsite_TE_ids %&gt;% 
+  dplyr::filter(TE_name==&quot;LTR10E_ERV1_LTR&quot;) %&gt;% 
+  group_by(Peakid) %&gt;% 
+  count()  %&gt;% 
+  dplyr::rename(&quot;p53_hscount&quot;=n)
+
+what_ltr_width &lt;- what_ltr %&gt;% 
+  dplyr::select(repID,width,my_LTR,milliDiv:p53_halfsite, LTR10E_phyloP_mean:active_VEH)%&gt;% 
+  left_join(p53_halfsite_count_10E, by=c(&quot;repID&quot;=&quot;Peakid&quot;)) %&gt;% 
+  mutate(p53_halfsite_count=if_else(is.na(p53_hscount),0,p53_hscount),
+         p53_site_per_width=p53_halfsite_count/width)
+
+
+  what_ltr_width%&gt;% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %&gt;% 
+    ggplot(aes(x=p53_site_per_width,y=MYA_jukes_cantor, color=my_LTR))+
+  geom_point()+
+  labs(title = &quot;All LTR10E width of integrant&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-43-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>test_df_10E &lt;- what_ltr_width %&gt;% 
+  mutate(p53_site_group = case_when(
+    p53_halfsite_count == 0 ~ &quot;0 sites&quot;,
+    p53_halfsite_count == 1 ~ &quot;1 site&quot;,
+    p53_halfsite_count == 2 ~ &quot;2 sites&quot;,
+    p53_halfsite_count == 3 ~ &quot;3 sites&quot;,
+      p53_halfsite_count &gt;= 4 ~ &quot;4+ sites&quot;),
+    p53_site_group = factor(p53_site_group,
+                            levels = c(&quot;0 sites&quot;, &quot;1 site&quot;, &quot;2 sites&quot;, &quot;3 sites&quot;, &quot;4+ sites&quot;)))
+
+
+ggplot(test_df_10E, aes(x = milliDiv, y = width, color = p53_site_group)) +
+  geom_point(alpha = 0.7) +
+  theme_bw() +
+  labs(
+    x = &quot;LTR10E age / divergence&quot;,
+    y = &quot;LTR10E width&quot;,
+    color = &quot;p53 halfsite count&quot;,
+    title = &quot;LTR10E width and age by p53 halfsite count&quot;
+  )</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-44-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(test_df_10E, aes(x = milliDiv, y = width, color = p53_site_per_width)) +
+  geom_point(alpha = 0.7) +
+  scale_color_viridis_c() +
+  theme_bw() +
+  labs(
+    x = &quot;LTR10E age / divergence&quot;,
+    y = &quot;LTR10E width&quot;,
+    color = &quot;p53 sites / width&quot;,
+    title = &quot;LTR10E p53 halfsite density by age and width&quot;
+  )</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-45-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pois_model_10E &lt;- glm(
+  p53_halfsite_count ~ milliDiv + offset(log(width)),
+  data = test_df_10E,
+  family = poisson()
+)
+
+summary(pois_model_10E )</code></pre>
+<pre><code>
+Call:
+glm(formula = p53_halfsite_count ~ milliDiv + offset(log(width)), 
+    family = poisson(), data = test_df_10E)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -6.436822   0.240451 -26.770   &lt;2e-16 ***
+milliDiv     0.001515   0.001778   0.852    0.394    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 148.96  on 254  degrees of freedom
+Residual deviance: 148.25  on 253  degrees of freedom
+AIC: 494.05
+
+Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>what_ltr_width %&gt;%
+  dplyr::filter(my_LTR == &quot;yes&quot;&amp; active_VEH !=&quot;Active_VEH&quot;) %&gt;%
+  mutate(
+    p53_density = p53_halfsite_count / width
+  ) %&gt;%
+  ggplot(aes(x = width, y = p53_density)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = &quot;lm&quot;) +
+  theme_bw() +
+  labs(
+    x = &quot;LTR10E width&quot;,
+    y = &quot;p53 half-site density&quot;,
+    title = &quot;p53 half-site density across LTR10E width&quot;
+  )</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-47-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>Using a Poisson model with TE width included as an offset, LTR10E
+p53-halfsite count was not significantly associated with TE
+divergence/age.</p>
+<p>I used a session with ChatGPT to figure out how to test this.</p>
+<pre class="r"><code>what_ltr%&gt;%
+  # dplyr::filter(my_MER==&quot;yes&quot;) %&gt;%
+  ggplot(., aes(x=trt_specific,y=milliDiv))+
+  geom_boxplot()+
+   ggpubr::stat_compare_means(
+    comparisons = list(
+   c(&quot;active_DOX_only&quot;,&quot;transition_DOX_only&quot;),
+   c(&quot;not_active&quot;,&quot;active_DOX_only&quot;)),
+    method = &quot;wilcox.test&quot; )+
+  facet_wrap(~my_LTR)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-48-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_ltr%&gt;%
+  group_by(my_LTR, trt_specific) %&gt;% tally</code></pre>
+<pre><code># A tibble: 8 × 3
+# Groups:   my_LTR [2]
+  my_LTR trt_specific            n
+  &lt;chr&gt;  &lt;chr&gt;               &lt;int&gt;
+1 no     active_DOX_only         5
+2 no     both_active            18
+3 no     not_active            165
+4 no     transition_DOX_only    32
+5 yes    active_DOX_only         7
+6 yes    both_active             6
+7 yes    not_active              5
+8 yes    transition_DOX_only    17</code></pre>
+<pre class="r"><code>what_ltr%&gt;%
+  dplyr::filter(my_LTR==&quot;yes&quot;) %&gt;%
+  ggplot(., aes(x=trt_specific,y=milliDiv))+
+  geom_boxplot()+
+   ggpubr::stat_compare_means(
+    comparisons = list(
+   c(&quot;active_DOX_only&quot;,&quot;transition_DOX_only&quot;),
+   c(&quot;not_active&quot;,&quot;active_DOX_only&quot;)),
+    method = &quot;wilcox.test&quot; )+
+  facet_wrap(~cluster)+
+  ggtitle(&quot;LTR10E overlapping my H3K27ac regions&quot;)+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=90))</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-49-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_ltr%&gt;%
+  dplyr::filter(my_LTR==&quot;yes&quot;) %&gt;%
+  group_by(trt_specific, cluster) %&gt;% tally</code></pre>
+<pre><code># A tibble: 9 × 3
+# Groups:   trt_specific [4]
+  trt_specific        cluster          n
+  &lt;chr&gt;               &lt;chr&gt;        &lt;int&gt;
+1 active_DOX_only     Set_3            7
+2 both_active         Set_1            2
+3 both_active         Set_3            3
+4 both_active         not_assigned     1
+5 not_active          Set_1            2
+6 not_active          Set_3            2
+7 not_active          not_assigned     1
+8 transition_DOX_only Set_3           16
+9 transition_DOX_only not_assigned     1</code></pre>
+<pre class="r"><code>what_ltr%&gt;%
+  dplyr::filter(my_LTR==&quot;yes&quot;) %&gt;%
+mutate(anno_alt=case_when(str_detect(annotation,&quot;Intron&quot;)~&quot;Intron&quot;,
+         str_detect(annotation, &quot;Exon&quot;) ~ &quot;Exon&quot;,
+      str_detect(annotation, &quot;Promoter&quot;) ~ &quot;Promoter&quot;,
+      str_detect(annotation, &quot;Distal Intergenic&quot;) ~ &quot;Distal Intergenic&quot;,
+      str_detect(annotation, &quot;Downstream&quot;) ~ &quot;Downstream&quot;,
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c(&quot;not_active&quot;, &quot;Transition_DOX&quot;, &quot;Active_DOX&quot;)
+    )) %&gt;% 
+  count(anno_alt, active_DOX, name = &quot;n&quot;) %&gt;%
+  ggplot(aes(x = anno_alt, y = n, fill = active_DOX)) +
+  geom_col(position = &quot;fill&quot;) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  xlab(&quot;Annotation&quot;) +
+  ylab(&quot;Proportion&quot;) +
+  labs(fill = &quot;DOX activity&quot;) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-50-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_ltr%&gt;%
+  dplyr::filter(my_LTR==&quot;yes&quot;) %&gt;%
+  group_by(active_DOX, cluster) %&gt;% tally</code></pre>
+<pre><code># A tibble: 8 × 3
+# Groups:   active_DOX [3]
+  active_DOX     cluster          n
+  &lt;chr&gt;          &lt;chr&gt;        &lt;int&gt;
+1 Active_DOX     Set_1            2
+2 Active_DOX     Set_3           10
+3 Active_DOX     not_assigned     1
+4 Transition_DOX Set_3           16
+5 Transition_DOX not_assigned     1
+6 not_active     Set_1            2
+7 not_active     Set_3            2
+8 not_active     not_assigned     1</code></pre>
+<pre class="r"><code>what_ltr%&gt;%
+  dplyr::filter(my_LTR==&quot;yes&quot;) %&gt;%
+mutate(anno_alt=case_when(str_detect(annotation,&quot;Intron&quot;)~&quot;Intron&quot;,
+         str_detect(annotation, &quot;Exon&quot;) ~ &quot;Exon&quot;,
+      str_detect(annotation, &quot;Promoter&quot;) ~ &quot;Promoter&quot;,
+      str_detect(annotation, &quot;Distal Intergenic&quot;) ~ &quot;Distal Intergenic&quot;,
+      str_detect(annotation, &quot;Downstream&quot;) ~ &quot;Downstream&quot;,
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c(&quot;not_active&quot;, &quot;Transition_DOX&quot;, &quot;Active_DOX&quot;)
+    )) %&gt;% 
+  count(anno_alt, active_DOX, name = &quot;n&quot;) %&gt;%
+  ggplot(aes(x = active_DOX, y = n, fill = anno_alt)) +
+  geom_col(position = &quot;fill&quot;) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  xlab(&quot;Annotation&quot;) +
+  ylab(&quot;Proportion&quot;) +
+  labs(fill = &quot;genomic annotation&quot;) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-51-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_ltr%&gt;%
+  mutate(anno_alt=case_when(str_detect(annotation,&quot;Intron&quot;)~&quot;Intron&quot;,
+         str_detect(annotation, &quot;Exon&quot;) ~ &quot;Exon&quot;,
+      str_detect(annotation, &quot;Promoter&quot;) ~ &quot;Promoter&quot;,
+      str_detect(annotation, &quot;Distal Intergenic&quot;) ~ &quot;Distal Intergenic&quot;,
+      str_detect(annotation, &quot;Downstream&quot;) ~ &quot;Downstream&quot;,
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c(&quot;not_active&quot;, &quot;Transition_DOX&quot;, &quot;Active_DOX&quot;)
+    )) %&gt;% 
+  dplyr::filter(my_LTR==&quot;yes&quot;) %&gt;%
+  group_by( p53_halfsite,anno_alt) %&gt;% 
+  tally()</code></pre>
+<pre><code># A tibble: 7 × 3
+# Groups:   p53_halfsite [2]
+  p53_halfsite anno_alt              n
+  &lt;chr&gt;        &lt;chr&gt;             &lt;int&gt;
+1 no           Distal Intergenic     6
+2 no           Intron                4
+3 no           Promoter              1
+4 yes          Distal Intergenic     8
+5 yes          Exon                  1
+6 yes          Intron               10
+7 yes          Promoter              5</code></pre>
+<pre class="r"><code>what_ltr%&gt;% 
+  dplyr::filter(my_LTR==&quot;yes&quot; &amp;
+                  active_VEH != &quot;Active_VEH&quot;) %&gt;%
+  mutate(anno_alt=case_when(str_detect(annotation,&quot;Intron&quot;)~&quot;Intron&quot;,
+         str_detect(annotation, &quot;Exon&quot;) ~ &quot;Exon&quot;,
+      str_detect(annotation, &quot;Promoter&quot;) ~ &quot;Promoter&quot;,
+      str_detect(annotation, &quot;Distal Intergenic&quot;) ~ &quot;Distal Intergenic&quot;,
+      str_detect(annotation, &quot;Downstream&quot;) ~ &quot;Downstream&quot;,
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c(&quot;not_active&quot;, &quot;Transition_DOX&quot;, &quot;Active_DOX&quot;)
+    )) %&gt;% 
+  count(anno_alt, active_DOX, name = &quot;n&quot;) %&gt;%
+  ggplot(aes(x = active_DOX, y = n, fill = anno_alt)) +
+  geom_col(position = &quot;fill&quot;) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  xlab(&quot;Annotation&quot;) +
+  ylab(&quot;Proportion&quot;) +
+  labs(fill = &quot;genomic annotation&quot;) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-52-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_ltr%&gt;% 
+  dplyr::filter(my_LTR==&quot;yes&quot; &amp;
+                  active_VEH != &quot;Active_VEH&quot;) %&gt;%
+  mutate(anno_alt=case_when(str_detect(annotation,&quot;Intron&quot;)~&quot;Intron&quot;,
+         str_detect(annotation, &quot;Exon&quot;) ~ &quot;Exon&quot;,
+      str_detect(annotation, &quot;Promoter&quot;) ~ &quot;Promoter&quot;,
+      str_detect(annotation, &quot;Distal Intergenic&quot;) ~ &quot;Distal Intergenic&quot;,
+      str_detect(annotation, &quot;Downstream&quot;) ~ &quot;Downstream&quot;,
+      TRUE ~ annotation),
+      active_DOX = factor(
+      active_DOX,
+      levels = c(&quot;not_active&quot;, &quot;Transition_DOX&quot;, &quot;Active_DOX&quot;)
+    )) %&gt;% 
+  count(anno_alt, active_DOX, name = &quot;n&quot;)</code></pre>
+<pre><code># A tibble: 8 × 3
+  anno_alt          active_DOX         n
+  &lt;chr&gt;             &lt;fct&gt;          &lt;int&gt;
+1 Distal Intergenic not_active         3
+2 Distal Intergenic Transition_DOX     8
+3 Distal Intergenic Active_DOX         1
+4 Exon              Transition_DOX     1
+5 Intron            Transition_DOX     8
+6 Intron            Active_DOX         5
+7 Promoter          not_active         2
+8 Promoter          Active_DOX         1</code></pre>
+<p>There are no LTR10Es in my data that are Transition_DOX and exist in
+a promotor, however there are 8 LTR10E integrants that are transition
+DOX and are within an Intron of a gene. There are 5 that are ACtive DOX
+that are in an intron of a gene. This is after filtering out any LTR10Es
+that are Active VEH, so these represent interesting treatment specific
+intronic integrants.</p>
+</div>
+<div id="p53-intersection" class="section level3">
+<h3>p53 intersection</h3>
+<pre class="r"><code>what_ltr %&gt;% 
+  dplyr::select(repID,my_LTR,cluster, width,milliDiv:p53_fullsite, DOX_144R:VEH_24T, trt_specific) %&gt;% 
+  group_by(my_LTR,trt_specific,p53_halfsite) %&gt;% 
+  summarize(total=dplyr::n(),.groups = &quot;drop&quot;) %&gt;% 
+  group_by(my_LTR,trt_specific) %&gt;% 
+  mutate( sum_total = sum(total),
+          prop = total / sum_total) %&gt;% 
+  ungroup() %&gt;% 
+  ggplot(., aes(x=trt_specific, y=prop,fill=p53_halfsite))+
+   geom_col(position = &quot;fill&quot;) +
+  geom_text(
+    aes(label =total),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ my_LTR) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title =&quot;LTR10E p53 halfsite enrichment, in my LTR vs not my MER&quot;,
+    x = &quot;Treatment specificity&quot;,
+    y = &quot;Proportion&quot;,
+    fill = &quot;p53 half-site&quot;
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-53-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>  what_ltr %&gt;%
+  dplyr::filter(my_LTR==&quot;yes&quot;) %&gt;% 
+  dplyr::select(repID,my_LTR,cluster, width,milliDiv:p53_fullsite, DOX_144R:VEH_24T, trt_specific) %&gt;% 
+  group_by(cluster,trt_specific,p53_halfsite) %&gt;% 
+  summarize(total=dplyr::n(),.groups = &quot;drop&quot;) %&gt;% 
+  group_by(cluster,trt_specific) %&gt;% 
+  mutate( sum_total = sum(total),
+          prop = total / sum_total) %&gt;% 
+  ungroup() %&gt;% 
+  ggplot(., aes(x=trt_specific, y=prop,fill=p53_halfsite))+
+   geom_col(position = &quot;fill&quot;) +
+  geom_text(
+    aes(label =total),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ cluster) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title=&quot;looking at LTR10E within clusters p53 halfsites&quot;,
+    x = &quot;Treatment specificity&quot;,
+    y = &quot;Proportion&quot;,
+    fill = &quot;p53 half-site&quot;
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-54-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>what_ltr %&gt;% 
+  dplyr::select(repID,my_LTR,cluster, width,milliDiv:p53_fullsite, DOX_144R:VEH_24T, trt_specific) %&gt;% 
+  dplyr::filter(my_LTR==&quot;yes&quot;) %&gt;%
+  group_by(cluster,trt_specific,p53_fullsite) %&gt;% 
+  summarize(total=dplyr::n(),.groups = &quot;drop&quot;) %&gt;% 
+  group_by(cluster,trt_specific) %&gt;% 
+  mutate( sum_total = sum(total),
+          prop = total / sum_total) %&gt;% 
+  ungroup() %&gt;% 
+  ggplot(., aes(x=trt_specific, y=prop,fill=p53_fullsite))+
+   geom_col(position = &quot;fill&quot;) +
+  geom_text(
+    aes(label =total),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ cluster) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title=&quot;looking at LTR10E within clusters p53 fullsites&quot;,
+    x = &quot;Treatment specificity&quot;,
+    y = &quot;Proportion&quot;,
+    fill = &quot;p53 full-site&quot;
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-55-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>halfsite_summary &lt;- what_ltr %&gt;% 
+  dplyr::filter(
+    my_LTR == &quot;yes&quot;,
+    !is.na(cluster),
+    p53_halfsite %in% c(&quot;yes&quot;, &quot;no&quot;)
+  ) %&gt;% 
+  group_by(cluster) %&gt;% 
+  summarise(
+    yes = sum(p53_halfsite == &quot;yes&quot;),
+    no = sum(p53_halfsite == &quot;no&quot;),
+    total = dplyr::n(),
+    prop_yes = yes / total,
+    .groups = &quot;drop&quot;
+  )
+
+halfsite_summary</code></pre>
+<pre><code># A tibble: 3 × 5
+  cluster        yes    no total prop_yes
+  &lt;chr&gt;        &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;dbl&gt;
+1 Set_1            2     2     4    0.5  
+2 Set_3           20     8    28    0.714
+3 not_assigned     2     1     3    0.667</code></pre>
+<pre class="r"><code>cluster_pairs &lt;- combn(halfsite_summary$cluster, 2, simplify = FALSE)
+
+fisher_pairwise &lt;- map_dfr(cluster_pairs, function(pair) {
+  
+  test_df &lt;- halfsite_summary %&gt;% 
+    dplyr::filter(cluster %in% pair)
+  
+  test_mat &lt;- test_df %&gt;% 
+    dplyr::select(yes, no) %&gt;% 
+    as.matrix()
+  
+  rownames(test_mat) &lt;- test_df$cluster
+  
+  fisher_result &lt;- fisher.test(test_mat)
+  
+  tibble(
+    cluster_1 = pair[1],
+    cluster_2 = pair[2],
+    p_value = fisher_result$p.value,
+    odds_ratio = fisher_result$estimate
+  )
+}) %&gt;% 
+  mutate(
+    p_adj_BH = p.adjust(p_value, method = &quot;BH&quot;)
+  )
+
+fisher_pairwise</code></pre>
+<pre><code># A tibble: 3 × 5
+  cluster_1 cluster_2    p_value odds_ratio p_adj_BH
+  &lt;chr&gt;     &lt;chr&gt;          &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;
+1 Set_1     Set_3          0.572      0.413        1
+2 Set_1     not_assigned   1          0.552        1
+3 Set_3     not_assigned   1          1.24         1</code></pre>
+<pre class="r"><code>pairwise_halfsite_tests &lt;- what_ltr %&gt;% 
+  dplyr::filter(my_LTR==&quot;yes&quot;) %&gt;% 
+  dplyr::filter(!is.na(cluster), p53_halfsite %in% c(&quot;yes&quot;, &quot;no&quot;)) %&gt;% 
+  group_by(cluster) %&gt;% 
+  summarise(
+    yes = sum(p53_halfsite == &quot;yes&quot;),
+    total = dplyr::n(),
+    prop_yes = yes / total,
+    .groups = &quot;drop&quot;
+  )
+
+pairwise_halfsite_tests</code></pre>
+<pre><code># A tibble: 3 × 4
+  cluster        yes total prop_yes
+  &lt;chr&gt;        &lt;int&gt; &lt;int&gt;    &lt;dbl&gt;
+1 Set_1            2     4    0.5  
+2 Set_3           20    28    0.714
+3 not_assigned     2     3    0.667</code></pre>
+<pre class="r"><code>yes_counts &lt;- pairwise_halfsite_tests$yes
+total_counts &lt;- pairwise_halfsite_tests$total
+
+names(yes_counts) &lt;- pairwise_halfsite_tests$cluster
+names(total_counts) &lt;- pairwise_halfsite_tests$cluster
+
+pairwise.prop.test(
+  x = yes_counts,
+  n = total_counts,
+  p.adjust.method = &quot;BH&quot;
+)</code></pre>
+<pre><code>
+    Pairwise comparisons using Pairwise comparison of proportions 
+
+data:  yes_counts out of total_counts 
+
+             Set_1 Set_3
+Set_3        1     -    
+not_assigned 1     1    
+
+P value adjustment method: BH </code></pre>
+<pre class="r"><code>RNA_lfc_SYMBOL &lt;-RNA_full_toptable %&gt;% 
+   dplyr::filter(SYMBOL != &quot;NA&quot;)%&gt;%
+  dplyr::select(SYMBOL,logFC,timepoint, adj.P.Val) %&gt;% 
+  pivot_wider(., names_from = timepoint,
+    values_from = c(logFC, adj.P.Val),
+    names_glue = &quot;RNA_{.value}_{timepoint}&quot;)
+
+
+splitting_dox_ltr_df &lt;- what_ltr%&gt;% 
+  dplyr::filter(my_LTR==&quot;yes&quot; ) %&gt;%
+   separate_rows(GREAT_gene_assign, sep = &quot;,\\s*&quot;) %&gt;%
+  mutate(
+    gene = str_extract(GREAT_gene_assign, &quot;^[A-Za-z0-9_.-]+&quot;),
+    distance = str_extract(GREAT_gene_assign,&quot;(?&lt;=\\()[+-]?\\d+(?=\\))&quot;) %&gt;% as.numeric(),
+    direction = case_when(
+      distance &lt; 0 ~ &quot;upstream&quot;,
+      distance &gt; 0 ~ &quot;downstream&quot;,
+      distance == 0 ~ &quot;overlapping&quot;,
+      TRUE ~ NA_character_)) %&gt;% 
+  dplyr::select(repID,my_LTR,cluster, H3K27ac_region, H3K27ac_region_geneId, H3K27ac_region_distanceToTSS, active_DOX:direction,p53_halfsite) %&gt;% 
+  mutate(direction_range=case_when(is.na(direction)~&quot;no_gene&quot;,
+                                   abs(distance)&gt;100000~&quot;&gt;100kb&quot;,
+                                   abs(distance)&lt;100000 &amp; abs(distance)&gt;50000~&quot;100-50kb&quot;,
+                                   abs(distance)&lt;50000 &amp; abs(distance)&gt;10000~ &quot;50-10kb&quot;,
+                                   abs(distance)&lt;10000~&quot;&lt;10kb&quot;,
+                                       TRUE~&quot;messedup&quot;)) %&gt;% 
+  mutate(RNA_exp=if_else(gene %in% RNA_expressed$SYMBOL,&quot;exp&quot;,&quot;not_exp&quot;))
+
+active_DOX_df &lt;- 
+splitting_dox_ltr_df %&gt;% dplyr::filter(trt_specific==&quot;active_DOX_only&quot;) %&gt;% 
+  dplyr::filter(RNA_exp==&quot;exp&quot;)
+
+transition_DOX_df &lt;- 
+splitting_dox_ltr_df %&gt;% dplyr::filter(trt_specific==&quot;transition_DOX_only&quot;) %&gt;% 
+  dplyr::filter(RNA_exp==&quot;exp&quot;)
+
+H3K27ac_lfc_table &lt;- H3K27ac_toptable_list %&gt;%
+  dplyr::select(genes,logFC,group,adj.P.Val) %&gt;% 
+  pivot_wider(., names_from = group,
+    values_from = c(logFC, adj.P.Val),
+    names_glue = &quot;{group}_{.value}&quot; )</code></pre>
+</div>
+<div id="lfc-rna-and-h3k27ac-lfc-heatmap" class="section level3">
+<h3>LFC RNA and H3K27ac LFC heatmap</h3>
+<pre class="r"><code>RNA_H3K27ac_LFC_dataframe &lt;- active_DOX_df %&gt;% 
+  left_join(RNA_lfc_SYMBOL, by=c(&quot;gene&quot;=&quot;SYMBOL&quot;)) %&gt;% 
+  left_join(H3K27ac_lfc_table, by=c(&quot;H3K27ac_region&quot;=&quot;genes&quot;))
+
+  
+gene_LFC_mat &lt;- 
+  RNA_H3K27ac_LFC_dataframe %&gt;% 
+    dplyr::select(gene, RNA_logFC_24T,RNA_logFC_24R,RNA_logFC_144R,H3K27ac_24T_logFC,H3K27ac_24R_logFC,H3K27ac_144R_logFC) %&gt;% 
+    column_to_rownames(&quot;gene&quot;) %&gt;% 
+    as.matrix()
+
+sig_mat &lt;- RNA_H3K27ac_LFC_dataframe %&gt;% 
+  dplyr::select(
+    gene,
+    RNA_adj.P.Val_24T, RNA_adj.P.Val_24R, RNA_adj.P.Val_144R,
+    H3K27ac_24T_adj.P.Val, H3K27ac_24R_adj.P.Val, H3K27ac_144R_adj.P.Val
+  ) %&gt;% 
+  column_to_rownames(&quot;gene&quot;) %&gt;% 
+  as.matrix()
+
+
+
+gene_annotations_ordered &lt;- RNA_H3K27ac_LFC_dataframe %&gt;%
+  dplyr::filter(gene %in% rownames(gene_LFC_mat)) %&gt;%
+  dplyr::slice(match(rownames(gene_LFC_mat), gene))</code></pre>
+<pre class="r"><code>row_anno &lt;- rowAnnotation(
+  cluster = gene_annotations_ordered$cluster,
+  distance = gene_annotations_ordered$direction_range,
+  direction = gene_annotations_ordered$direction)
+
+Heatmap(
+  gene_LFC_mat,
+  column_title = &quot;LTR10E active_DOX_only&quot;,
+  name = &quot;LFC&quot;,
+  right_annotation = row_anno, 
+  cluster_rows=FALSE,
+  cluster_columns = FALSE,
+   cell_fun = function(j, i, x, y, width, height, fill) {
+    if (!is.na(sig_mat[i, j]) &amp;&amp; sig_mat[i, j] &lt; 0.05) {
+      grid::grid.text(&quot;*&quot;, x, y, gp = grid::gpar(fontsize = 10))}})</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-60-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>RNA_H3K27ac_LFC_dataframe_trans &lt;- transition_DOX_df %&gt;% 
+  left_join(RNA_lfc_SYMBOL, by=c(&quot;gene&quot;=&quot;SYMBOL&quot;)) %&gt;% 
+  left_join(H3K27ac_lfc_table, by=c(&quot;H3K27ac_region&quot;=&quot;genes&quot;))
+
+  
+gene_LFC_mat_trans &lt;- 
+  RNA_H3K27ac_LFC_dataframe_trans %&gt;% 
+  mutate(gene_unique=make.unique(gene)) %&gt;% 
+    dplyr::select(gene_unique, RNA_logFC_24T,RNA_logFC_24R,RNA_logFC_144R,H3K27ac_24T_logFC,H3K27ac_24R_logFC,H3K27ac_144R_logFC) %&gt;% 
+  
+    column_to_rownames(&quot;gene_unique&quot;) %&gt;% 
+    as.matrix()
+
+sig_mat_trans &lt;- RNA_H3K27ac_LFC_dataframe_trans %&gt;% 
+  mutate(gene_unique=make.unique(gene)) %&gt;% 
+    dplyr::select(gene_unique,  RNA_adj.P.Val_24T, RNA_adj.P.Val_24R, RNA_adj.P.Val_144R,
+    H3K27ac_24T_adj.P.Val, H3K27ac_24R_adj.P.Val, H3K27ac_144R_adj.P.Val
+  ) %&gt;% 
+  column_to_rownames(&quot;gene_unique&quot;) %&gt;% 
+  as.matrix()
+
+
+
+gene_annotations_ordered_trans &lt;- RNA_H3K27ac_LFC_dataframe_trans %&gt;%
+   mutate(gene_unique=make.unique(gene)) %&gt;% 
+  dplyr::filter(gene_unique %in% rownames(gene_LFC_mat_trans)) %&gt;%
+  dplyr::slice(match(rownames(gene_LFC_mat_trans), gene_unique))</code></pre>
+<pre class="r"><code>row_anno_trans &lt;- rowAnnotation(
+  cluster = gene_annotations_ordered_trans$cluster,
+  distance = gene_annotations_ordered_trans$direction_range,
+  direction = gene_annotations_ordered_trans$direction)
+
+Heatmap(
+  gene_LFC_mat_trans,
+  column_title = &quot;LTR10E transition_DOX_only&quot;,
+  name = &quot;LFC&quot;,
+  right_annotation = row_anno_trans, 
+  cluster_rows=FALSE,
+  cluster_columns = FALSE,
+   cell_fun = function(j, i, x, y, width, height, fill) {
+    if (!is.na(sig_mat_trans[i, j]) &amp;&amp; sig_mat_trans[i, j] &lt; 0.05) {
+      grid::grid.text(&quot;*&quot;, x, y, gp = grid::gpar(fontsize = 10))}})</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-62-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>trans_DOX_alt_dataframe &lt;- transition_DOX_df %&gt;% 
+  dplyr::select(repID,cluster,H3K27ac_region:trt_specific,p53_halfsite) %&gt;% 
+  mutate(direction_range=case_when(                              abs(H3K27ac_region_distanceToTSS)&gt;100000~&quot;&gt;100kb&quot;,
+                                   abs(H3K27ac_region_distanceToTSS)&lt;100000 &amp; abs(H3K27ac_region_distanceToTSS)&gt;50000~&quot;100-50kb&quot;,
+                                   abs(H3K27ac_region_distanceToTSS)&lt;50000 &amp; abs(H3K27ac_region_distanceToTSS)&gt;10000~ &quot;50-10kb&quot;,
+                                   abs(H3K27ac_region_distanceToTSS)&lt;10000~&quot;&lt;10kb&quot;,
+                                       TRUE~&quot;messedup&quot;)) %&gt;% 
+  mutate(H3K27ac_region_geneId=as.numeric(H3K27ac_region_geneId)) %&gt;% 
+  left_join(RNA_expressed, by=c(&quot;H3K27ac_region_geneId&quot;=&quot;Entrez_ID&quot;)) %&gt;% 
+  distinct() %&gt;% 
+   left_join(RNA_lfc_SYMBOL, by=c(&quot;SYMBOL&quot;=&quot;SYMBOL&quot;)) %&gt;% 
+  left_join(H3K27ac_lfc_table, by=c(&quot;H3K27ac_region&quot;=&quot;genes&quot;)) %&gt;% 
+  na.omit(SYMBOL)
+
+
+trans_gene_LFC_mat &lt;- 
+  trans_DOX_alt_dataframe %&gt;% 
+  mutate(gene_unique=make.unique(SYMBOL)) %&gt;% 
+    dplyr::select(gene_unique, RNA_logFC_24T,RNA_logFC_24R,RNA_logFC_144R,H3K27ac_24T_logFC,H3K27ac_24R_logFC,H3K27ac_144R_logFC) %&gt;% 
+  
+    column_to_rownames(&quot;gene_unique&quot;) %&gt;% 
+    as.matrix()
+
+trans_sig_mat &lt;- trans_DOX_alt_dataframe %&gt;% 
+  mutate(gene_unique=make.unique(SYMBOL)) %&gt;% 
+    dplyr::select(gene_unique,  RNA_adj.P.Val_24T, RNA_adj.P.Val_24R, RNA_adj.P.Val_144R,
+    H3K27ac_24T_adj.P.Val, H3K27ac_24R_adj.P.Val, H3K27ac_144R_adj.P.Val
+  ) %&gt;% 
+  column_to_rownames(&quot;gene_unique&quot;) %&gt;% 
+  as.matrix()
+
+
+
+trans_gene_annotations_ordered &lt;- trans_DOX_alt_dataframe %&gt;%
+   mutate(gene_unique=make.unique(SYMBOL)) %&gt;% 
+  dplyr::filter(gene_unique %in% rownames(trans_gene_LFC_mat)) %&gt;%
+  dplyr::slice(match(rownames(trans_gene_LFC_mat), gene_unique))</code></pre>
+<pre class="r"><code>row_anno_trans_again &lt;- rowAnnotation(
+  cluster = trans_gene_annotations_ordered$cluster,
+  distance = trans_gene_annotations_ordered$direction_range,
+  p53 = trans_gene_annotations_ordered$p53_halfsite)
+
+Heatmap(
+  trans_gene_LFC_mat,
+  column_title = &quot;LTR10E H3K27ac assigned gene transition_DOX_only&quot;,
+  name = &quot;LFC&quot;,
+  right_annotation = row_anno_trans_again, 
+  cluster_rows=FALSE,
+  cluster_columns = FALSE,
+   cell_fun = function(j, i, x, y, width, height, fill) {
+    if (!is.na(trans_sig_mat[i, j]) &amp;&amp; trans_sig_mat[i, j] &lt; 0.05) {
+      grid::grid.text(&quot;*&quot;, x, y, gp = grid::gpar(fontsize = 10))}})</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-64-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -3148,167 +4338,171 @@ other attached packages:
 [28] workflowr_1.7.2      
 
 loaded via a namespace (and not attached):
-  [1] splines_4.4.2                          
-  [2] later_1.4.8                            
-  [3] BiocIO_1.16.0                          
-  [4] bitops_1.0-9                           
-  [5] ggplotify_0.1.3                        
-  [6] R.oo_1.27.1                            
-  [7] rpart_4.1.27                           
-  [8] XML_3.99-0.23                          
-  [9] lifecycle_1.0.5                        
- [10] rstatix_0.7.3                          
- [11] doParallel_1.0.17                      
- [12] rprojroot_2.1.1                        
- [13] vroom_1.7.1                            
- [14] processx_3.9.0                         
- [15] lattice_0.22-9                         
- [16] crosstalk_1.2.2                        
- [17] backports_1.5.1                        
- [18] magrittr_2.0.5                         
- [19] Hmisc_5.2-5                            
- [20] sass_0.4.10                            
- [21] rmarkdown_2.31                         
- [22] jquerylib_0.1.4                        
- [23] yaml_2.3.12                            
- [24] plotrix_3.8-14                         
- [25] httpuv_1.6.17                          
- [26] otel_0.2.0                             
- [27] ggtangle_0.1.2                         
- [28] cowplot_1.2.0                          
- [29] DBI_1.3.0                              
- [30] RColorBrewer_1.1-3                     
- [31] abind_1.4-8                            
- [32] zlibbioc_1.52.0                        
- [33] R.utils_2.13.0                         
- [34] RCurl_1.98-1.18                        
- [35] nnet_7.3-20                            
- [36] yulab.utils_0.2.4                      
- [37] rappdirs_0.3.4                         
- [38] git2r_0.36.2                           
- [39] GenomeInfoDbData_1.2.13                
- [40] enrichplot_1.26.6                      
- [41] tidytree_0.4.7                         
- [42] codetools_0.2-20                       
- [43] DelayedArray_0.32.0                    
- [44] DOSE_4.0.1                             
- [45] tidyselect_1.2.1                       
- [46] shape_1.4.6.1                          
- [47] aplot_0.2.9                            
- [48] UCSC.utils_1.2.0                       
- [49] farver_2.1.2                           
- [50] base64enc_0.1-6                        
- [51] matrixStats_1.5.0                      
- [52] GenomicAlignments_1.42.0               
- [53] jsonlite_2.0.0                         
- [54] GetoptLong_1.1.1                       
- [55] Formula_1.2-5                          
- [56] iterators_1.0.14                       
- [57] foreach_1.5.2                          
- [58] tools_4.4.2                            
- [59] treeio_1.30.0                          
- [60] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
- [61] Rcpp_1.1.1-1.1                         
- [62] glue_1.8.1                             
- [63] gridExtra_2.3                          
- [64] SparseArray_1.6.2                      
- [65] xfun_0.57                              
- [66] qvalue_2.38.0                          
- [67] MatrixGenerics_1.18.1                  
- [68] withr_3.0.2                            
- [69] fastmap_1.2.0                          
- [70] boot_1.3-32                            
- [71] caTools_1.18.3                         
- [72] callr_3.7.6                            
- [73] digest_0.6.39                          
- [74] timechange_0.4.0                       
- [75] R6_2.6.1                               
- [76] gridGraphics_0.5-1                     
- [77] seqPattern_1.38.0                      
- [78] colorspace_2.1-2                       
- [79] GO.db_3.20.0                           
- [80] gtools_3.9.5                           
- [81] dichromat_2.0-0.1                      
- [82] RSQLite_3.52.0                         
- [83] R.methodsS3_1.8.2                      
- [84] utf8_1.2.6                             
- [85] generics_0.1.4                         
- [86] data.table_1.18.4                      
- [87] httr_1.4.8                             
- [88] htmlwidgets_1.6.4                      
- [89] S4Arrays_1.6.0                         
- [90] whisker_0.4.1                          
- [91] pkgconfig_2.0.3                        
- [92] gtable_0.3.6                           
- [93] blob_1.3.0                             
- [94] S7_0.2.2                               
- [95] impute_1.80.0                          
- [96] XVector_0.46.0                         
- [97] htmltools_0.5.9                        
- [98] carData_3.0-6                          
- [99] pwr_1.3-0                              
-[100] fgsea_1.32.4                           
-[101] clue_0.3-68                            
-[102] scales_1.4.0                           
-[103] png_0.1-9                              
-[104] ggfun_0.2.0                            
-[105] knitr_1.51                             
-[106] rstudioapi_0.18.0                      
-[107] tzdb_0.5.0                             
-[108] reshape2_1.4.5                         
-[109] rjson_0.2.23                           
-[110] checkmate_2.3.4                        
-[111] nlme_3.1-169                           
-[112] curl_7.1.0                             
-[113] zoo_1.8-15                             
-[114] cachem_1.1.0                           
-[115] GlobalOptions_0.1.4                    
-[116] KernSmooth_2.23-26                     
-[117] parallel_4.4.2                         
-[118] foreign_0.8-91                         
-[119] restfulr_0.0.16                        
-[120] pillar_1.11.1                          
-[121] vctrs_0.7.3                            
-[122] gplots_3.3.0                           
-[123] ggpubr_0.6.3                           
-[124] promises_1.5.0                         
-[125] car_3.1-5                              
-[126] cluster_2.1.8.2                        
-[127] htmlTable_2.5.0                        
-[128] evaluate_1.0.5                         
-[129] GenomicFeatures_1.58.0                 
-[130] cli_3.6.6                              
-[131] compiler_4.4.2                         
-[132] Rsamtools_2.22.0                       
-[133] rlang_1.2.0                            
-[134] crayon_1.5.3                           
-[135] ggsignif_0.6.4                         
-[136] labeling_0.4.3                         
-[137] getPass_0.2-4                          
-[138] plyr_1.8.9                             
-[139] fs_2.1.0                               
-[140] stringi_1.8.7                          
-[141] gridBase_0.4-7                         
-[142] BiocParallel_1.40.2                    
-[143] Biostrings_2.74.1                      
-[144] lazyeval_0.2.3                         
-[145] GOSemSim_2.32.0                        
-[146] Matrix_1.7-5                           
-[147] BSgenome_1.74.0                        
-[148] hms_1.1.4                              
-[149] patchwork_1.3.2                        
-[150] bit64_4.8.0                            
-[151] KEGGREST_1.46.0                        
-[152] SummarizedExperiment_1.36.0            
-[153] smplot2_0.2.6                          
-[154] broom_1.0.12                           
-[155] igraph_2.3.1                           
-[156] memoise_2.0.1                          
-[157] bslib_0.10.0                           
-[158] ggtree_3.14.0                          
-[159] fastmatch_1.1-8                        
-[160] bit_4.6.0                              
-[161] ape_5.8-1                              </code></pre>
+  [1] fs_2.1.0                               
+  [2] matrixStats_1.5.0                      
+  [3] bitops_1.0-9                           
+  [4] enrichplot_1.26.6                      
+  [5] httr_1.4.8                             
+  [6] RColorBrewer_1.1-3                     
+  [7] doParallel_1.0.17                      
+  [8] tools_4.4.2                            
+  [9] backports_1.5.1                        
+ [10] smplot2_0.2.6                          
+ [11] utf8_1.2.6                             
+ [12] R6_2.6.1                               
+ [13] lazyeval_0.2.3                         
+ [14] mgcv_1.9-4                             
+ [15] GetoptLong_1.1.1                       
+ [16] withr_3.0.2                            
+ [17] gridExtra_2.3                          
+ [18] cli_3.6.6                              
+ [19] Cairo_1.7-0                            
+ [20] labeling_0.4.3                         
+ [21] sass_0.4.10                            
+ [22] S7_0.2.2                               
+ [23] Rsamtools_2.22.0                       
+ [24] yulab.utils_0.2.4                      
+ [25] foreign_0.8-91                         
+ [26] DOSE_4.0.1                             
+ [27] R.utils_2.13.0                         
+ [28] dichromat_2.0-0.1                      
+ [29] plotrix_3.8-14                         
+ [30] BSgenome_1.74.0                        
+ [31] pwr_1.3-0                              
+ [32] rstudioapi_0.18.0                      
+ [33] impute_1.80.0                          
+ [34] RSQLite_3.52.0                         
+ [35] generics_0.1.4                         
+ [36] gridGraphics_0.5-1                     
+ [37] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+ [38] shape_1.4.6.1                          
+ [39] BiocIO_1.16.0                          
+ [40] gtools_3.9.5                           
+ [41] crosstalk_1.2.2                        
+ [42] vroom_1.7.1                            
+ [43] car_3.1-5                              
+ [44] GO.db_3.20.0                           
+ [45] Matrix_1.7-5                           
+ [46] abind_1.4-8                            
+ [47] R.methodsS3_1.8.2                      
+ [48] lifecycle_1.0.5                        
+ [49] whisker_0.4.1                          
+ [50] yaml_2.3.12                            
+ [51] carData_3.0-6                          
+ [52] SummarizedExperiment_1.36.0            
+ [53] gplots_3.3.0                           
+ [54] qvalue_2.38.0                          
+ [55] SparseArray_1.6.2                      
+ [56] blob_1.3.0                             
+ [57] promises_1.5.0                         
+ [58] crayon_1.5.3                           
+ [59] ggtangle_0.1.2                         
+ [60] lattice_0.22-9                         
+ [61] cowplot_1.2.0                          
+ [62] GenomicFeatures_1.58.0                 
+ [63] KEGGREST_1.46.0                        
+ [64] magick_2.9.1                           
+ [65] pillar_1.11.1                          
+ [66] knitr_1.51                             
+ [67] fgsea_1.32.4                           
+ [68] rjson_0.2.23                           
+ [69] boot_1.3-32                            
+ [70] codetools_0.2-20                       
+ [71] fastmatch_1.1-8                        
+ [72] glue_1.8.1                             
+ [73] getPass_0.2-4                          
+ [74] ggfun_0.2.0                            
+ [75] data.table_1.18.4                      
+ [76] vctrs_0.7.3                            
+ [77] png_0.1-9                              
+ [78] treeio_1.30.0                          
+ [79] gtable_0.3.6                           
+ [80] cachem_1.1.0                           
+ [81] xfun_0.57                              
+ [82] S4Arrays_1.6.0                         
+ [83] iterators_1.0.14                       
+ [84] nlme_3.1-169                           
+ [85] ggtree_3.14.0                          
+ [86] bit64_4.8.0                            
+ [87] rprojroot_2.1.1                        
+ [88] bslib_0.10.0                           
+ [89] KernSmooth_2.23-26                     
+ [90] otel_0.2.0                             
+ [91] rpart_4.1.27                           
+ [92] colorspace_2.1-2                       
+ [93] DBI_1.3.0                              
+ [94] Hmisc_5.2-5                            
+ [95] seqPattern_1.38.0                      
+ [96] nnet_7.3-20                            
+ [97] tidyselect_1.2.1                       
+ [98] processx_3.9.0                         
+ [99] bit_4.6.0                              
+[100] compiler_4.4.2                         
+[101] curl_7.1.0                             
+[102] git2r_0.36.2                           
+[103] htmlTable_2.5.0                        
+[104] DelayedArray_0.32.0                    
+[105] checkmate_2.3.4                        
+[106] scales_1.4.0                           
+[107] caTools_1.18.3                         
+[108] callr_3.7.6                            
+[109] rappdirs_0.3.4                         
+[110] digest_0.6.39                          
+[111] rmarkdown_2.31                         
+[112] XVector_0.46.0                         
+[113] htmltools_0.5.9                        
+[114] pkgconfig_2.0.3                        
+[115] base64enc_0.1-6                        
+[116] MatrixGenerics_1.18.1                  
+[117] fastmap_1.2.0                          
+[118] rlang_1.2.0                            
+[119] GlobalOptions_0.1.4                    
+[120] htmlwidgets_1.6.4                      
+[121] UCSC.utils_1.2.0                       
+[122] farver_2.1.2                           
+[123] jquerylib_0.1.4                        
+[124] zoo_1.8-15                             
+[125] jsonlite_2.0.0                         
+[126] BiocParallel_1.40.2                    
+[127] GOSemSim_2.32.0                        
+[128] R.oo_1.27.1                            
+[129] RCurl_1.98-1.18                        
+[130] magrittr_2.0.5                         
+[131] Formula_1.2-5                          
+[132] GenomeInfoDbData_1.2.13                
+[133] ggplotify_0.1.3                        
+[134] patchwork_1.3.2                        
+[135] Rcpp_1.1.1-1.1                         
+[136] ape_5.8-1                              
+[137] stringi_1.8.7                          
+[138] zlibbioc_1.52.0                        
+[139] plyr_1.8.9                             
+[140] parallel_4.4.2                         
+[141] Biostrings_2.74.1                      
+[142] splines_4.4.2                          
+[143] hms_1.1.4                              
+[144] igraph_2.3.1                           
+[145] ggpubr_0.6.3                           
+[146] ggsignif_0.6.4                         
+[147] reshape2_1.4.5                         
+[148] XML_3.99-0.23                          
+[149] evaluate_1.0.5                         
+[150] tzdb_0.5.0                             
+[151] foreach_1.5.2                          
+[152] httpuv_1.6.17                          
+[153] clue_0.3-68                            
+[154] gridBase_0.4-7                         
+[155] broom_1.0.12                           
+[156] restfulr_0.0.16                        
+[157] tidytree_0.4.7                         
+[158] rstatix_0.7.3                          
+[159] later_1.4.8                            
+[160] viridisLite_0.4.3                      
+[161] aplot_0.2.9                            
+[162] memoise_2.0.1                          
+[163] GenomicAlignments_1.42.0               
+[164] cluster_2.1.8.2                        
+[165] timechange_0.4.0                       </code></pre>
 </div>
 </div>
 </div>
