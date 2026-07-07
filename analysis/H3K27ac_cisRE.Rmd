@@ -157,7 +157,17 @@ scale_fill_cCREs <-  function(...){
     ...
   )
 }
-
+ccre_cols_v4 <- c(
+  "PLS"        = "#FF0000",
+  "pELS"       = "#FFA700",
+  "dELS"       = "#FFCD00",
+  "CA-H3K4me3" = "#FFAAAA",
+  "CA-CTCF"    = "#00B0F0",
+  "CA-TF"      = "#808080",
+  "CA"         = "#06DA93",
+  "TF"         = "#A020F0",
+  "NA"  ="#7E6148FF"
+)
 
 ```
 
@@ -186,7 +196,8 @@ H3K27ac_cre_counts <- H3K27ac_cre_anno_full %>%
     fill = "cCRE class"
   ) +
   theme_bw()+
-     ggtitle("H3K27ac ROI summits crossing :hg38 all cCREs ")+scale_fill_cCREs()
+     ggtitle("H3K27ac ROI summits crossing :hg38 all cCREs ")+scale_fill_cCREs()+
+   scale_fill_cCREs()
  
  saveRDS(H3K27ac_cre_counts,"data/RDS_files/H3K27ac_cre_hg38_counts.RDS")
    
@@ -210,11 +221,17 @@ H3K27ac_heart_cre_df <- tibble(
   Peakid=mcols(H3K27ac_summit_gr)$Peakid[queryHits(H3K27ac_heart_cre_hits)],
   cluster   = mcols(H3K27ac_summit_gr)$cluster[queryHits(H3K27ac_heart_cre_hits)],
   cCRE_ID   = mcols(SCREEN_heart_hg38_cCREs)$cCRE_ID[subjectHits(H3K27ac_heart_cre_hits)],
-  cCRE_class= mcols(SCREEN_heart_hg38_cCREs)$cCRE_class[subjectHits(H3K27ac_heart_cre_hits)])
+  cCRE_class= mcols(SCREEN_heart_hg38_cCREs)$cCRE_class[subjectHits(H3K27ac_heart_cre_hits)],
+  cCRE_name = mcols(SCREEN_heart_hg38_cCREs)$name[subjectHits(H3K27ac_heart_cre_hits)])
 
-H3K27ac_heart_cre_anno <- H3K27ac_anno_ROIs$all_H3K27ac %>% as.data.frame() %>% 
+screen_labels <-SCREEN_hg38_cCREs %>% 
+  as.data.frame() %>% 
+  dplyr::select(DHS_ID,cCRE_ID,cCRE_class)
+
+H3K27ac_heart_cre_anno <-H3K27ac_anno_ROIs$all_H3K27ac %>% as.data.frame() %>% 
   left_join(.,H3K27ac_heart_cre_df ) %>% 
-  dplyr::select(Peakid,cluster, cCRE_ID,cCRE_class) %>% 
+  dplyr::select(Peakid,cluster, cCRE_ID,cCRE_name) %>% 
+    left_join(screen_labels, by = c("cCRE_name"="cCRE_ID")) %>% 
   mutate(cluster = if_else(is.na(cluster), "not_assigned", cluster), 
          cCRE_ID=if_else(is.na(cCRE_ID),"NA",cCRE_ID),
          cCRE_class=if_else(is.na(cCRE_class),"NA",cCRE_class))
@@ -223,21 +240,22 @@ H3K27ac_heart_cre_anno <- H3K27ac_anno_ROIs$all_H3K27ac %>% as.data.frame() %>%
 
 ```{r heart cre plot}
 H3K27ac_heart_cre_counts <- H3K27ac_heart_cre_anno %>% 
-  count(cluster, cCRE_ID) %>% 
+  count(cluster, cCRE_class) %>% 
   group_by(cluster) %>% 
   mutate(percent= n/sum(n))
 
- ggplot(H3K27ac_heart_cre_counts, aes(x = cluster, y = percent, fill = cCRE_ID)) +
+ ggplot(H3K27ac_heart_cre_counts, aes(x = cluster, y = percent, fill = cCRE_class)) +
   geom_col() +
   scale_y_continuous(labels = scales::percent) +
   labs(
-    yy = "Proportion of ROIs",
+    y = "Proportion of ROIs",
     x = "Set",
     fill = "cCRE class"
   ) +
   theme_classic()+
  #     
- ggtitle("Heart-left ventricle cCREs")+scale_fill_cCREs()
+ ggtitle("Heart-left ventricle cCREs")+scale_fill_cCREs()+
+   scale_fill_manual(values=ccre_cols_v4)
    
    
 ```
@@ -251,7 +269,7 @@ H3K27ac_heart_cre_counts <- H3K27ac_heart_cre_anno %>%
 # 
 # dplyr::left_join((SCREEN_heart_hg38_cCREs %>% as.data.frame()),(SCREEN_hg38_cCREs %>% as.data.frame()) 
 
-H3K27ac_heart_cre_counts %>% ungroup %>% distinct (cCRE_ID)
+# H3K27ac_heart_cre_counts %>% ungroup %>% distinct (cCRE_ID)
 ```
 ```{r}
 
