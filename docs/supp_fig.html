@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-06-25" />
+<meta name="date" content="2026-07-08" />
 
 <title>Supplemental Figure draft</title>
 
@@ -361,7 +361,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Supplemental Figure draft</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-06-25</h4>
+<h4 class="date">2026-07-08</h4>
 
 </div>
 
@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-06-25
+<strong>Last updated:</strong> 2026-07-08
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree1a7a8fd00542250a92ed94bea3c06d3c5a6b7b89targetblank1a7a8fda">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreedab34eed17abb0b4fcf04273e44ae18c1013cc38targetblankdab34eea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/1a7a8fd00542250a92ed94bea3c06d3c5a6b7b89" target="_blank">1a7a8fd</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/dab34eed17abb0b4fcf04273e44ae18c1013cc38" target="_blank">dab34ee</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree1a7a8fd00542250a92ed94bea3c06d3c5a6b7b89targetblank1a7a8fda"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreedab34eed17abb0b4fcf04273e44ae18c1013cc38targetblankdab34eea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/1a7a8fd00542250a92ed94bea3c06d3c5a6b7b89" target="_blank">1a7a8fd</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/dab34eed17abb0b4fcf04273e44ae18c1013cc38" target="_blank">dab34ee</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -556,7 +556,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
     Ignored:    data/Cormotif_data/
@@ -596,9 +595,9 @@ Untracked files:
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27ac_TEtype.Rmd
+    Modified:   analysis/Goanalysis_TFs.Rmd
+    Modified:   analysis/H3K27_TE_overlap_extend.Rmd
     Modified:   analysis/H3K27ac_cisRE.Rmd
-    Modified:   analysis/H3K27me3_TE_overlap_extend.Rmd
     Modified:   analysis/LTR10E_build.Rmd
     Modified:   analysis/MER61E_build.Rmd
     Modified:   analysis/chromHMM_2.Rmd
@@ -647,6 +646,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dab34eed17abb0b4fcf04273e44ae18c1013cc38/analysis/supp_fig.Rmd" target="_blank">dab34ee</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-08
+</td>
+<td>
+updates to color and last plot
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/supp_fig.html" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1578,7 +1611,7 @@ standardizeAnnoList &lt;- function(annoList, categories, color_pal = NULL) {
 <pre class="r"><code>H3K27acfrag_summary_file %&gt;% 
   pivot_longer(cols=c(all_fragments:unique_noM_dedup), names_to = &quot;type&quot;, values_to = &quot;frag_counts&quot;) %&gt;% 
   mutate(Timepoint=factor(Timepoint, levels = c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;),labels = c(&quot;0R&quot;,&quot;24R&quot;,&quot;144R&quot;)),
-         Treatment=factor(Treatment, levels = c(&quot;DOX&quot;,&quot;VEH&quot;))) %&gt;% 
+         Treatment=factor(Treatment, levels = c(&quot;VEH&quot;,&quot;DOX&quot;))) %&gt;% 
   ggplot(., aes(x=type, y=frag_counts))+
   geom_boxplot(aes(fill=Treatment))+
   geom_point(aes(col=Individual, size=2))+
@@ -1592,6 +1625,43 @@ standardizeAnnoList &lt;- function(annoList, categories, color_pal = NULL) {
         panel.spacing = unit(1, &#39;points&#39;),
         axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))</code></pre>
 <p><img src="figure/supp_fig.Rmd/SF1-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-SF1-1">
+Past versions of SF1-1.png
+</button>
+</p>
+<div id="fig-SF1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/SF1-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="current-fig-2" class="section level3">
 <h3>Current Fig 2</h3>
@@ -1614,10 +1684,10 @@ annotated_combo_df &lt;- annotated_combo_df[(!annotated_combo_df$Treatment %in% 
 
 annotated_combo_df %&gt;% 
   mutate(Timepoint=factor(Timepoint, levels = c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;),labels = c(&quot;0R&quot;,&quot;24R&quot;,&quot;144R&quot;)),
-         Treatment=factor(Treatment, levels = c(&quot;DOX&quot;,&quot;VEH&quot;))) %&gt;% 
+         Treatment=factor(Treatment, levels = c(&quot;VEH&quot;,&quot;DOX&quot;))) %&gt;% 
   mutate(sample_name=paste0(Individual,&quot;_&quot;,Treatment,&quot;_&quot;,Timepoint),
          trt_time=paste0(Treatment,&quot;_&quot;,Timepoint),
-         trt_time=factor(trt_time, levels = c(&quot;DOX_0R&quot;,&quot;DOX_24R&quot;,&quot;DOX_144R&quot;,&quot;VEH_0R&quot;,&quot;VEH_24R&quot;,&quot;VEH_144R&quot;))) %&gt;% 
+         trt_time=factor(trt_time, levels = c(&quot;VEH_0R&quot;,&quot;VEH_24R&quot;,&quot;VEH_144R&quot;,&quot;DOX_0R&quot;,&quot;DOX_24R&quot;,&quot;DOX_144R&quot;))) %&gt;% 
    arrange( Treatment,Individual, Timepoint) %&gt;%
   mutate(sample_name = factor(sample_name, levels = unique(sample_name))) %&gt;%
   dplyr::filter(Histone_Mark==&quot;H3K27ac&quot;) %&gt;%
@@ -1631,6 +1701,43 @@ geom_violin(bw = 5) +
     xlab(&quot;&quot;)+
   scale_fill_brewer(palette=&quot;Set2&quot;)</code></pre>
 <p><img src="figure/supp_fig.Rmd/SF2-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-SF2-1">
+Past versions of SF2-1.png
+</button>
+</p>
+<div id="fig-SF2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/SF2-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="current-fig-3" class="section level3">
 <h3>Current Fig 3</h3>
@@ -1641,11 +1748,11 @@ geom_violin(bw = 5) +
 <pre class="r"><code>Peak_n_FRIP &lt;- H3K27ac_peaks %&gt;% 
   left_join(sampleinfo, by =c(&quot;Sample&quot;=&#39;Library ID&#39;)) %&gt;% 
   mutate(Timepoint=factor(Timepoint, levels = c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;),labels = c(&quot;0R&quot;,&quot;24R&quot;,&quot;144R&quot;)),
-         Treatment=factor(Treatment, levels = c(&quot;DOX&quot;,&quot;VEH&quot;))) %&gt;% 
+         Treatment=factor(Treatment, levels = c(&quot;VEH&quot;,&quot;DOX&quot;))) %&gt;% 
   left_join(peak_ct, by=c(&quot;Sample&quot;=&quot;Sample&quot;)) %&gt;% 
   mutate(sample_name=paste0(Individual,&quot;_&quot;,Treatment,&quot;_&quot;,Timepoint),
          trt_time=paste0(Treatment,&quot;_&quot;,Timepoint),
-         trt_time=factor(trt_time, levels = c(&quot;DOX_0R&quot;,&quot;DOX_24R&quot;,&quot;DOX_144R&quot;,&quot;VEH_0R&quot;,&quot;VEH_24R&quot;,&quot;VEH_144R&quot;)))
+         trt_time=factor(trt_time, levels = c(&quot;VEH_0R&quot;,&quot;VEH_24R&quot;,&quot;VEH_144R&quot;,&quot;DOX_0R&quot;,&quot;DOX_24R&quot;,&quot;DOX_144R&quot;)))
 
 ggplot(Peak_n_FRIP, aes(x=trt_time, y = Count))+
   geom_boxplot(aes(fill=Treatment, alpha=.8))+
@@ -1657,6 +1764,43 @@ ggplot(Peak_n_FRIP, aes(x=trt_time, y = Count))+
   scale_color_brewer(palette=&quot;Dark2&quot;)+
   scale_fill_brewer(palette=&quot;Set2&quot;)</code></pre>
 <p><img src="figure/supp_fig.Rmd/SF4%20peak%20counts-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-SF4-peak-counts-1">
+Past versions of "SF4 peak counts-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-SF4-peak-counts-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/SF4 peak counts-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="current-fig-5" class="section level3">
 <h3>Current Fig 5</h3>
@@ -1671,6 +1815,43 @@ ggplot(Peak_n_FRIP, aes(x=trt_time, y = Count))+
   scale_color_brewer(palette=&quot;Dark2&quot;)+
   scale_fill_brewer(palette=&quot;Set2&quot;)</code></pre>
 <p><img src="figure/supp_fig.Rmd/SF5%20Frip-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-SF5-Frip-1">
+Past versions of "SF5 Frip-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-SF5-Frip-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/SF5 Frip-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="current-fig-6" class="section level3">
 <h3>Current Fig 6</h3>
@@ -1787,7 +1968,158 @@ plots_H3K27ac &lt;- lapply(names(facs), function(f_label) {
 
   gridExtra::grid.arrange(f_v_pc1, f_v_pc2, f_v_pc3,f_v_pc4, ncol = 2, top = paste0(f_label,&quot; H3K27ac&quot;))
 })</code></pre>
-<p><img src="figure/supp_fig.Rmd/contributes-1.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/supp_fig.Rmd/contributes-2.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/supp_fig.Rmd/contributes-3.png" alt="" width="672" style="display: block; margin: auto;" /><img src="figure/supp_fig.Rmd/contributes-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/supp_fig.Rmd/contributes-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-contributes-1">
+Past versions of contributes-1.png
+</button>
+</p>
+<div id="fig-contributes-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/contributes-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/supp_fig.Rmd/contributes-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-contributes-2">
+Past versions of contributes-2.png
+</button>
+</p>
+<div id="fig-contributes-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/contributes-2.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/supp_fig.Rmd/contributes-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-contributes-3">
+Past versions of contributes-3.png
+</button>
+</p>
+<div id="fig-contributes-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/contributes-3.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/supp_fig.Rmd/contributes-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-contributes-4">
+Past versions of contributes-4.png
+</button>
+</p>
+<div id="fig-contributes-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/contributes-4.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="current-fig-7" class="section level3">
 <h3>Current Fig 7</h3>
@@ -1814,7 +2146,7 @@ treatment_cols &lt;- setNames(
   levels(annomat$Treatment))
 
 timepoint_cols &lt;- setNames(
-  set2_cols[c(4, 5, 6)],
+  set2_cols[c(4, 5, 7)],
   levels(annomat$Timepoint))
 
 heatmap_first &lt;- ComplexHeatmap::HeatmapAnnotation(
@@ -1831,6 +2163,43 @@ Heatmap(
   column_title = &quot;Filtered log2cpm H3K27ac&quot;
 )</code></pre>
 <p><img src="figure/supp_fig.Rmd/heatmap-1.png" alt="" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-heatmap-1">
+Past versions of heatmap-1.png
+</button>
+</p>
+<div id="fig-heatmap-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/heatmap-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="current-fig-8" class="section level3">
 <h3>Current Fig 8</h3>
@@ -1846,6 +2215,43 @@ H3K27ac_24R &lt;- volcanosig(H3K27ac_toplist$H3K27ac_24R, 0.05)+ ggtitle(&quot;D
 H3K27ac_144R &lt;- volcanosig(H3K27ac_toplist$H3K27ac_144R, 0.05)+ ggtitle(&quot;DOX 144R&quot;)+ylab(&quot;&quot;)
 cowplot::plot_grid(H3K27ac_0R, H3K27ac_24R, H3K27ac_144R, rel_widths =c(1,1,1))</code></pre>
 <p><img src="figure/supp_fig.Rmd/fig8a-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fig8a-1">
+Past versions of fig8a-1.png
+</button>
+</p>
+<div id="fig-fig8a-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/fig8a-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>venn diagram</p>
 <pre class="r"><code>DOX_0R &lt;- H3K27ac_toplist$H3K27ac_24T
 DOX_0R &lt;- DOX_0R %&gt;% dplyr::filter(adj.P.Val&lt;0.05)
@@ -1864,6 +2270,43 @@ ggVennDiagram(list(&quot;DOX_0R&quot;=DOX_0R$genes,
                             &quot;DOX_24R&quot;  =timepoint_cols[&quot;24R&quot;],
                             &quot;DOX_144R&quot; = timepoint_cols[&quot;144R&quot;]))</code></pre>
 <p><img src="figure/supp_fig.Rmd/fig8b-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fig8b-1">
+Past versions of fig8b-1.png
+</button>
+</p>
+<div id="fig-fig8b-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/fig8b-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K27ac_toptable_list %&gt;% 
   dplyr::select(group,genes,logFC,adj.P.Val) %&gt;% 
   mutate(sig_val=if_else(adj.P.Val&lt;0.05,&quot;sig&quot;,&quot;not_sig&quot;)) %&gt;% 
@@ -1877,6 +2320,43 @@ ggVennDiagram(list(&quot;DOX_0R&quot;=DOX_0R$genes,
   ylab(&quot;Proportion&quot;) +
   scale_y_continuous(labels = scales::percent)</code></pre>
 <p><img src="figure/supp_fig.Rmd/fig8c-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fig8c-1">
+Past versions of fig8c-1.png
+</button>
+</p>
+<div id="fig-fig8c-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/fig8c-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="current-fig-9" class="section level3">
 <h3>Current Fig 9</h3>
@@ -1884,8 +2364,82 @@ ggVennDiagram(list(&quot;DOX_0R&quot;=DOX_0R$genes,
 
 plotIC(cormotif_H3K27ac)</code></pre>
 <p><img src="figure/supp_fig.Rmd/Fig9AB-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-Fig9AB-1">
+Past versions of Fig9AB-1.png
+</button>
+</p>
+<div id="fig-Fig9AB-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/Fig9AB-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotMotif(cormotif_H3K27ac)</code></pre>
 <p><img src="figure/supp_fig.Rmd/Fig9AB-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-Fig9AB-2">
+Past versions of Fig9AB-2.png
+</button>
+</p>
+<div id="fig-Fig9AB-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/Fig9AB-2.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>grey_vals &lt;- seq(from = 1, to = 0, by = -0.1)
 
 legend_df &lt;- data.frame(
@@ -1905,6 +2459,43 @@ legend_only &lt;- cowplot::get_legend(p)
 
 cowplot::plot_grid(legend_only)</code></pre>
 <p><img src="figure/supp_fig.Rmd/Fig9AB-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-Fig9AB-3">
+Past versions of Fig9AB-3.png
+</button>
+</p>
+<div id="fig-Fig9AB-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/Fig9AB-3.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>proportion plot</p>
 <pre class="r"><code>all_H3K27ac_regions &lt;- peakAnnoList_H3K27ac$all_H3K27ac %&gt;% as.data.frame() %&gt;% dplyr::select(Peakid)
 
@@ -1919,6 +2510,43 @@ all_H3K27ac_regions %&gt;%
   ggtitle(&quot;H3K27ac proportions of ROIs&quot;)+
   theme_classic()</code></pre>
 <p><img src="figure/supp_fig.Rmd/unnamed-chunk-5-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/unnamed-chunk-5-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>examp_H3K27ac_1 &lt;-
     c(&quot;chr1:77923740-77924468&quot;,&quot;chr20:25484622-25485357&quot;,&quot;chr1:229148017-229149226&quot;)
 examp_H3K27ac_2 &lt;-
@@ -1953,10 +2581,121 @@ examp_H3K27ac_3 &lt;-
 }</code></pre>
 <pre class="r"><code>plot_example_lcpm(examp_H3K27ac_1,&quot;Set 1&quot;)</code></pre>
 <p><img src="figure/supp_fig.Rmd/fig9exmp%20plots-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-fig9exmp-plots-1">
+Past versions of "fig9exmp plots-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-fig9exmp-plots-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/fig9exmp plots-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_example_lcpm(examp_H3K27ac_2,&quot;Set 2&quot;)</code></pre>
 <p><img src="figure/supp_fig.Rmd/fig9exmp%20plots-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-fig9exmp-plots-2">
+Past versions of "fig9exmp plots-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-fig9exmp-plots-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/fig9exmp plots-2.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_example_lcpm(examp_H3K27ac_3,&quot;Set 3&quot;)</code></pre>
 <p><img src="figure/supp_fig.Rmd/fig9exmp%20plots-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-fig9exmp-plots-3">
+Past versions of "fig9exmp plots-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-fig9exmp-plots-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/fig9exmp plots-3.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="current-fig-10" class="section level3">
 <h3>Current Fig 10</h3>
@@ -1987,6 +2726,43 @@ plotAnnoBar(peakAnnoList_H3K27ac_std[c(4,1,2,3)]) +
   scale_fill_manual(values=color_pal_std) +
   ggtitle(&quot;H3K27ac Feature Distribution&quot;)</code></pre>
 <p><img src="figure/supp_fig.Rmd/Fig10A-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-Fig10A-1">
+Past versions of Fig10A-1.png
+</button>
+</p>
+<div id="fig-Fig10A-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/Fig10A-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>H3K27ac_cre_df &lt;- readRDS(&quot;data/RDS_files/H3K27ac_cre_df.RDS&quot;)
 scale_fill_cCREs &lt;-  function(...){
   ggplot2:::manual_scale(
@@ -1995,7 +2771,9 @@ scale_fill_cCREs &lt;-  function(...){
     ...
   )
 }
-H3K27ac_cre_counts &lt;- readRDS(&quot;data/RDS_files/H3K27ac_cre_hg38_counts.RDS&quot;)
+
+
+H3K27ac_cre_counts &lt;- readRDS(&quot;data/RDS_files/H3K27ac_cre_LVheart_counts.RDS&quot;)
 ggplot(H3K27ac_cre_counts, aes(x = cluster, y = percent, fill = cCRE_class)) +
   geom_col() +
   scale_y_continuous(labels = scales::percent) +
@@ -2005,8 +2783,45 @@ ggplot(H3K27ac_cre_counts, aes(x = cluster, y = percent, fill = cCRE_class)) +
     fill = &quot;cCRE class&quot;
   ) +
   theme_bw()+
-     ggtitle(&quot;H3K27ac ROI summits crossing :hg38 all cCREs &quot;)+scale_fill_cCREs()</code></pre>
+     ggtitle(&quot;H3K27ac ROI summits crossing heart LV all cCREs &quot;)+scale_fill_cCREs()</code></pre>
 <p><img src="figure/supp_fig.Rmd/Fig10B-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-Fig10B-1">
+Past versions of Fig10B-1.png
+</button>
+</p>
+<div id="fig-Fig10B-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/Fig10B-1.png" target="_blank">d10e690</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-06-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
