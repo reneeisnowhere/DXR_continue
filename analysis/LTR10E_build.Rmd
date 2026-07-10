@@ -521,6 +521,87 @@ DT::datatable(LTR10E_intermediate_data,
                            paging=TRUE,
                            autoWidth=TRUE))
 ```
+
+
+### Specs of LTR10E
+
+```{r chrom number}
+LTR10E_intermediate_data %>% 
+  group_by (seqnames, my_LTR) %>% 
+  tally() %>% 
+  ggplot(aes(x=seqnames, y=n, fill=my_LTR))+
+  geom_col()+
+  geom_text(aes(label=n), position = position_stack(vjust = 0.5))+
+  ggtitle("LTR10E distribution across chromosomes")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(fill="overlaps an\nH3K27ac region")+
+  scale_fill_brewer(palette = "Paired")
+```
+
+```{r}
+LTR10E_intermediate_data %>% 
+group_by (seqnames, p53_halfsite) %>% 
+  tally() %>% 
+  ggplot(aes(x=seqnames, y=n, fill=p53_halfsite))+
+  geom_col()+
+  geom_text(aes(label=n), position = position_stack(vjust = 0.5))+
+  ggtitle("LTR10E distribution across chromosomes with p53halfsite")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(fill="Has a p53\nhalfsite")
+```
+
+distance from neargene
+```{r}
+LTR10E_intermediate_data %>% 
+  mutate(distance_to_closest=abs(closest_distance)) %>% 
+  ggplot(., aes(x=my_LTR, y=distance_to_closest))+
+  geom_boxplot(aes(color=p53_halfsite))+
+  # geom_point()
+  ggpubr::stat_compare_means(
+    aes(group = p53_halfsite),
+    method = "wilcox.test",
+    label = "p.signif"
+  ) +
+  theme_bw()+
+  ggtitle("nearest assigned gene distance with and without a p53 halfsite")
+```
+Below I tested if distance to closes assigned gene was different between those that have a p53halfsite and those that don't
+```{r}
+ltr_tests <- LTR10E_intermediate_data %>%
+  mutate(distance_to_closest=abs(closest_distance)) %>% 
+  dplyr::filter(
+    my_LTR %in% c("yes", "no"),
+    p53_halfsite %in% c("yes", "no"),
+    !is.na(distance_to_closest)
+  ) %>%
+  dplyr::group_by(p53_halfsite) %>%
+  rstatix::wilcox_test(
+    distance_to_closest ~ my_LTR
+  ) %>%
+  rstatix::adjust_pvalue(method = "BH") %>%
+  rstatix::add_significance("p.adj")
+
+ltr_tests
+```
+
+There appears to be an association between elements specifically without a p53halfsite having a difference being my_LTR (overlapping an H3K27ac region) and no my_LTR.
+
+
+```{r}
+distance_model_ltr <- lm(
+  log1p(distance_to_closest) ~ my_LTR * p53_halfsite,
+  data = (LTR10E_intermediate_data %>%
+  mutate(distance_to_closest=abs(closest_distance)))
+)
+
+anova(distance_model_ltr)
+summary(distance_model_ltr)
+```
+
+This is really telling me the association of distance with my_LTR yes (in otherwords, the nearest gene distance to an integrant without a p53halfsite that overlap my data vs and the nearest gene distance to an integrant without a p53halfsite, that does not overlap my data ) may be a weak effect, but could likely not be real.  We do not have the power to really test the interaction.
+
 ### looking at milliDiv etc...  
 
 
@@ -1400,7 +1481,7 @@ what_ltr %>%
 
 ```{r}
 what_ltr%>% 
- 
+ dplyr::filter(my_LTR=="yes") %>% 
   # dplyr::filter(active_DOX=="Active_DOX") %>% 
    mutate(
     cluster = as.character(cluster),
@@ -1413,13 +1494,13 @@ what_ltr%>%
     comparisons = list(
   c("Set_1", "Set_3"),
   c("Set_1", "not_assigned"),
-  c("Set_1", "NA"),
-  c("Set_3","NA"),
+  # c("Set_1", "NA"),
+  # c("Set_3","NA"),
   c("Set_3","not_assigned")
 ),
     method = "wilcox.test"
   ) +
-  facet_wrap(~trt_specific)+
+  # facet_wrap(~trt_specific)+
   labs(title = " Active LTR10E mean phyloP in groups",
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
@@ -1439,9 +1520,9 @@ what_ltr%>%
   smplot2::sm_boxplot()+
   ggpubr::stat_compare_means(
     comparisons = list(
-  c("Set_1", "Set_3"),
-  c("Set_1", "not_assigned"),
-  c("Set_1", "NA"),
+  # c("Set_1", "Set_3"),
+  # c("Set_1", "not_assigned"),
+  # c("Set_1", "NA"),
   c("Set_3","NA"),
   c("Set_3","not_assigned")
 ),
@@ -1563,9 +1644,7 @@ what_ltr%>%
 
 ```{r}
 what_ltr%>% 
-  dplyr::filter(my_LTR=="yes" &
-                  active_VEH != "Active_VEH") %>%
-   mutate(
+  dplyr::filter(my_LTR=="yes" ) %>%    mutate(
     cluster = as.character(cluster),
     cluster = if_else(is.na(cluster), "NA", cluster),
     cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
@@ -1591,6 +1670,27 @@ what_ltr%>%
 
 # trt_specific = factor(trt_specific,
 #                             levels = c("neither", "both_transition", "both_active", "transition_DOX_only", "active_DOX_only"))) %>%
+```
+```{r}
+what_ltr%>% 
+  dplyr::filter(my_LTR=="yes" ) %>%   
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=trt_specific,y=width, color=p53_halfsite))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+   c("active_DOX_only","not_active"),
+   c("active_DOX_only","transition_DOX_only")
+),
+    method = "wilcox.test"
+  ) +
+  # facet_wrap(~active_DOX)+
+  labs(title = "LTR10E width of integrant that overlap H3K27ac ROI",
+       subtitle="Pairwise Wilcoxon rank-sum tests, removed sets where integrants are not Active in VEH")
 ```
 
 
@@ -1650,6 +1750,82 @@ what_ltr%>%
     y = "LTR10E width bin",
     fill = "p53 halfsite %",
     title = "p53 halfsite enrichment across LTR10E age and width"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r}
+what_ltr %>% 
+   dplyr::filter(my_LTR=="yes" ) %>% 
+  group_by(my_LTR,cluster, trt_specific) %>% 
+  tally()
+
+what_ltr %>% 
+   dplyr::filter(my_LTR=="yes" ) %>% 
+  group_by(cluster, p53_halfsite, trt_specific) %>% 
+  tally()
+```
+
+```{r}
+
+what_ltr%>% 
+  dplyr::filter(my_LTR=="yes" & trt_specific=="transition_DOX_only") %>% 
+  # dplyr::filter(active_VEH != "Active_VEH" & active_DOX=="Transition_DOX"&my_LTR=="yes") %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  mutate(age_bin=cut(MYA_jukes_cantor, breaks = 10),
+         width_bin= cut(width, breaks=10),
+         p53_binary=if_else(p53_halfsite=="yes",1,0)) %>% 
+  group_by(age_bin, width_bin) %>% 
+  summarise(
+    n = dplyr::n(),
+    prop_p53 = mean(p53_binary),
+    .groups = "drop"
+  ) %>%
+  # filter(n >= 5) %>%
+  ggplot(aes(x = age_bin, y = width_bin, fill = prop_p53)) +
+  geom_tile(color = "white") +
+   geom_text(aes(label = n), size = 3) +
+  scale_fill_viridis_c(labels = scales::percent_format()) +
+  theme_bw() +
+  labs(
+    x = "LTR10E age bin",
+    y = "LTR10E width bin",
+    fill = "p53 halfsite %",
+    title = "Transition_DOX only LTR10E p53 breakdown, n=16"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r}
+
+what_ltr%>% 
+  dplyr::filter(my_LTR=="yes" & trt_specific=="active_DOX_only") %>% 
+  # dplyr::filter(active_VEH != "Active_VEH" & active_DOX=="Transition_DOX"&my_LTR=="yes") %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  mutate(age_bin=cut(MYA_jukes_cantor, breaks = 10),
+         width_bin= cut(width, breaks=10),
+         p53_binary=if_else(p53_halfsite=="yes",1,0)) %>% 
+  group_by(age_bin, width_bin) %>% 
+  summarise(
+    n = dplyr::n(),
+    prop_p53 = mean(p53_binary),
+    .groups = "drop"
+  ) %>%
+  # filter(n >= 5) %>%
+  ggplot(aes(x = age_bin, y = width_bin, fill = prop_p53)) +
+  geom_tile(color = "white") +
+   geom_text(aes(label = n), size = 3) +
+  scale_fill_viridis_c(labels = scales::percent_format()) +
+  theme_bw() +
+  labs(
+    x = "LTR10E age bin",
+    y = "LTR10E width bin",
+    fill = "p53 halfsite %",
+    title = "Active_DOX only LTR10E p53 breakdown, n=8"
   ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```

@@ -504,6 +504,81 @@ DT::datatable(mintermediate_data,
                            paging=TRUE,
                            autoWidth=TRUE))
 ```
+
+###  Specs about MER61E
+
+```{r chrom number}
+mintermediate_data %>% 
+  group_by (seqnames, my_MER) %>% 
+  tally() %>% 
+  ggplot(aes(x=seqnames, y=n, fill=my_MER))+
+  geom_col()+
+  geom_text(aes(label=n), position = position_stack(vjust = 0.5))+
+  ggtitle("MER61E distribution across chromosomes")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(fill="overlaps an\nH3K27ac region")+
+  scale_fill_brewer(palette = "Paired")
+```
+```{r}
+mintermediate_data %>% 
+  group_by (seqnames, p53_halfsite) %>% 
+  tally() %>% 
+  ggplot(aes(x=seqnames, y=n, fill=p53_halfsite))+
+  geom_col()+
+  geom_text(aes(label=n), position = position_stack(vjust = 0.5))+
+  ggtitle("MER61E distribution across chromosomes and p53halfsite containing")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(fill="Has a p53\nhalfsite")
+```
+distance from neargene
+```{r}
+mintermediate_data %>% 
+  mutate(distance_to_closest=abs(closest_distance)) %>% 
+  ggplot(., aes(x=my_MER, y=distance_to_closest))+
+  geom_boxplot(aes(color=p53_halfsite))+
+  # geom_point()
+  ggpubr::stat_compare_means(
+    aes(group = p53_halfsite),
+    method = "wilcox.test",
+    label = "p.signif"
+  ) +
+  theme_bw()+
+  ggtitle("nearest gene distance(GREAT) to MER61E")
+```
+Below I tested if distance to closes assigned gene was different between those that have a p53halfsite and those that don't
+```{r}
+mer_tests <- mintermediate_data %>%
+  mutate(distance_to_closest=abs(closest_distance)) %>% 
+  dplyr::filter(
+    my_MER %in% c("yes", "no"),
+    p53_halfsite %in% c("yes", "no"),
+    !is.na(distance_to_closest)
+  ) %>%
+  dplyr::group_by(p53_halfsite) %>%
+  rstatix::wilcox_test(
+    distance_to_closest ~ my_MER
+  ) %>%
+  rstatix::adjust_pvalue(method = "BH") %>%
+  rstatix::add_significance("p.adj")
+
+mer_tests
+```
+
+
+```{r}
+distance_model <- lm(
+  log1p(distance_to_closest) ~ my_MER * p53_halfsite,
+  data = (mintermediate_data %>%
+  mutate(distance_to_closest=abs(closest_distance)))
+)
+
+anova(distance_model)
+summary(distance_model)
+```
+So the conclusion is that the distances to the nearest gene are not associated with being in H3K27ac data (my_MER) or having a p53halfsite or the interaction of p53halfsite and my_MER.
+
 ### Age between MER61E elements in my data vs not in my H3K27ac data
 ```{r}
 
@@ -2383,32 +2458,7 @@ what_mer%>%
 
 ```
 ```{r}
-what_mer%>% 
-  dplyr::filter(active_VEH != "Active_VEH" & active_DOX=="Transition_DOX"&my_MER=="yes") %>% 
-  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
-         MYA_bourque=milliDiv/2.2) %>% 
-  mutate(age_bin=cut(MYA_jukes_cantor, breaks = 10),
-         width_bin= cut(width, breaks=10),
-         p53_binary=if_else(p53_halfsite=="yes",1,0)) %>% 
-  group_by(age_bin, width_bin) %>% 
-  summarise(
-    n = dplyr::n(),
-    prop_p53 = mean(p53_binary),
-    .groups = "drop"
-  ) %>%
-  # filter(n >= 5) %>%
-  ggplot(aes(x = age_bin, y = width_bin, fill = prop_p53)) +
-  geom_tile(color = "white") +
-   geom_text(aes(label = n), size = 3) +
-  scale_fill_viridis_c(labels = scales::percent_format()) +
-  theme_bw() +
-  labs(
-    x = "MER61E age bin",
-    y = "MER61E width bin",
-    fill = "p53 halfsite %",
-    title = "Transition_DOX only MER61E p53 breakdown, n=32"
-  ) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+c
 ```
 Summary so far, there appears to be a p53 relationship with width and MER61E, however that appearance is not seen in my data because the MER61E integrants in my H3K27ac data because all but one has a p53 halfsite.
 
@@ -2815,6 +2865,140 @@ slice_min(qvalue, with_ties = FALSE) %>%
   summarise(log10qvalue)
 ```
 
+#### P53 information relationships:
+
+```{r}
+what_mer %>% 
+  dplyr::select(repID,my_MER,cluster, width,milliDiv:p53_fullsite, DOX_144R:VEH_24T, trt_specific) %>% 
+  group_by(my_MER,trt_specific,p53_halfsite) %>% 
+  summarize(total=dplyr::n(),.groups = "drop") %>% 
+  group_by(my_MER,trt_specific) %>% 
+  mutate( sum_total = sum(total),
+          prop = total / sum_total) %>% 
+  ungroup() %>% 
+  ggplot(., aes(x=trt_specific, y=prop,fill=p53_halfsite))+
+   geom_col(position = "fill") +
+  geom_text(
+    aes(label =total),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ my_MER) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title ="MER61E p53 halfsite enrichment, in my MER vs not my MER",
+    x = "Treatment specificity",
+    y = "Proportion",
+    fill = "p53 half-site"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+```{r}
+what_mer %>% 
+  dplyr::select(repID,my_MER,cluster, width,milliDiv:p53_fullsite, DOX_144R:VEH_24T, trt_specific) %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+  group_by(cluster,trt_specific,p53_halfsite) %>% 
+  summarize(total=dplyr::n(),.groups = "drop") %>% 
+  group_by(cluster,trt_specific) %>% 
+  mutate( sum_total = sum(total),
+          prop = total / sum_total) %>% 
+  ungroup() %>% 
+  ggplot(., aes(x=trt_specific, y=prop,fill=p53_halfsite))+
+   geom_col(position = "fill") +
+  geom_text(
+    aes(label =total),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ cluster) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title="looking at MER61E within clusters p53 halfsites",
+    x = "Treatment specificity",
+    y = "Proportion",
+    fill = "p53 half-site"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+```{r}
+what_mer %>% 
+  dplyr::select(repID,my_MER,cluster, width,milliDiv:p53_fullsite, DOX_144R:VEH_24T, trt_specific) %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+  group_by(cluster,trt_specific,p53_fullsite) %>% 
+  summarize(total=dplyr::n(),.groups = "drop") %>% 
+  group_by(cluster,trt_specific) %>% 
+  mutate( sum_total = sum(total),
+          prop = total / sum_total) %>% 
+  ungroup() %>% 
+  ggplot(., aes(x=trt_specific, y=prop,fill=p53_fullsite))+
+   geom_col(position = "fill") +
+  geom_text(
+    aes(label =total),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ cluster) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title="looking at MER61E within clusters p53 fullsites",
+    x = "Treatment specificity",
+    y = "Proportion",
+    fill = "p53 full-site"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+
+```{r}
+halfsite_table <- what_mer %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+  dplyr::filter(!is.na(cluster), !is.na(p53_halfsite)) %>% 
+  count(cluster, p53_halfsite) %>% 
+  tidyr::pivot_wider(
+    names_from = p53_halfsite,
+    values_from = n,
+    values_fill = 0
+  ) %>% 
+  tibble::column_to_rownames("cluster") %>% 
+  as.matrix()
+
+halfsite_table
+
+chisq.test(halfsite_table)
+```
+```{r}
+pairwise_halfsite_tests <- what_mer %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+  dplyr::filter(!is.na(cluster), p53_halfsite %in% c("yes", "no")) %>% 
+  group_by(cluster) %>% 
+  summarise(
+    yes = sum(p53_halfsite == "yes"),
+    total = dplyr::n(),
+    prop_yes = yes / total,
+    .groups = "drop"
+  )
+
+pairwise_halfsite_tests
+yes_counts <- pairwise_halfsite_tests$yes
+total_counts <- pairwise_halfsite_tests$total
+
+names(yes_counts) <- pairwise_halfsite_tests$cluster
+names(total_counts) <- pairwise_halfsite_tests$cluster
+
+pairwise.prop.test(
+  x = yes_counts,
+  n = total_counts,
+  p.adjust.method = "BH"
+)
+
+
+```
 
 
 ```{r}
@@ -2980,7 +3164,7 @@ splitting_dox_mer_df <- what_mer%>%
       distance > 0 ~ "downstream",
       distance == 0 ~ "overlapping",
       TRUE ~ NA_character_)) %>% 
-  dplyr::select(repID,my_MER,cluster, H3K27ac_region, H3K27ac_region_geneId, H3K27ac_region_distanceToTSS, active_DOX:direction) %>% 
+  dplyr::select(repID,my_MER,cluster, H3K27ac_region, H3K27ac_region_geneId, H3K27ac_region_distanceToTSS, active_DOX:direction,p53_halfsite) %>% 
   mutate(direction_range=case_when(is.na(direction)~"no_gene",
                                    abs(distance)>100000~">100kb",
                                    abs(distance)<100000 & abs(distance)>50000~"100-50kb",
@@ -3086,6 +3270,9 @@ gene_annotations_ordered_trans <- RNA_H3K27ac_LFC_dataframe_trans %>%
   
 ```
 
+
+
+
 ```{r, fig.height=12}
 row_anno_trans <- rowAnnotation(
   cluster = gene_annotations_ordered_trans$cluster,
@@ -3104,6 +3291,65 @@ Heatmap(
       grid::grid.text("*", x, y, gp = grid::gpar(fontsize = 10))}})
 ```
 
+```{r}
+trans_DOX_alt_dataframe <- transition_DOX_df %>% 
+  dplyr::select(repID,cluster,H3K27ac_region:trt_specific,p53_halfsite) %>% 
+  mutate(direction_range=case_when(                              abs(H3K27ac_region_distanceToTSS)>100000~">100kb",
+                                   abs(H3K27ac_region_distanceToTSS)<100000 & abs(H3K27ac_region_distanceToTSS)>50000~"100-50kb",
+                                   abs(H3K27ac_region_distanceToTSS)<50000 & abs(H3K27ac_region_distanceToTSS)>10000~ "50-10kb",
+                                   abs(H3K27ac_region_distanceToTSS)<10000~"<10kb",
+                                       TRUE~"messedup")) %>% 
+  mutate(H3K27ac_region_geneId=as.numeric(H3K27ac_region_geneId)) %>% 
+  left_join(RNA_expressed, by=c("H3K27ac_region_geneId"="Entrez_ID")) %>% 
+  distinct() %>% 
+   left_join(RNA_lfc_SYMBOL, by=c("SYMBOL"="SYMBOL")) %>% 
+  left_join(H3K27ac_lfc_table, by=c("H3K27ac_region"="genes")) %>% 
+  na.omit(SYMBOL)
+
+
+trans_gene_LFC_mat <- 
+  trans_DOX_alt_dataframe %>% 
+  mutate(gene_unique=make.unique(SYMBOL)) %>% 
+    dplyr::select(gene_unique, RNA_logFC_24T,RNA_logFC_24R,RNA_logFC_144R,H3K27ac_24T_logFC,H3K27ac_24R_logFC,H3K27ac_144R_logFC) %>% 
+  
+    column_to_rownames("gene_unique") %>% 
+    as.matrix()
+
+trans_sig_mat <- trans_DOX_alt_dataframe %>% 
+  mutate(gene_unique=make.unique(SYMBOL)) %>% 
+    dplyr::select(gene_unique,  RNA_adj.P.Val_24T, RNA_adj.P.Val_24R, RNA_adj.P.Val_144R,
+    H3K27ac_24T_adj.P.Val, H3K27ac_24R_adj.P.Val, H3K27ac_144R_adj.P.Val
+  ) %>% 
+  column_to_rownames("gene_unique") %>% 
+  as.matrix()
+
+
+
+trans_gene_annotations_ordered <- trans_DOX_alt_dataframe %>%
+   mutate(gene_unique=make.unique(SYMBOL)) %>% 
+  dplyr::filter(gene_unique %in% rownames(trans_gene_LFC_mat)) %>%
+  dplyr::slice(match(rownames(trans_gene_LFC_mat), gene_unique))
+
+```
+
+
+```{r, fig.height=6}
+row_anno_trans_again <- rowAnnotation(
+  cluster = trans_gene_annotations_ordered$cluster,
+  distance = trans_gene_annotations_ordered$direction_range,
+  p53 = trans_gene_annotations_ordered$p53_halfsite)
+
+Heatmap(
+  trans_gene_LFC_mat,
+  column_title = "transition_DOX_only",
+  name = "LFC",
+  right_annotation = row_anno_trans_again, 
+  cluster_rows=FALSE,
+  cluster_columns = FALSE,
+   cell_fun = function(j, i, x, y, width, height, fill) {
+    if (!is.na(trans_sig_mat[i, j]) && trans_sig_mat[i, j] < 0.05) {
+      grid::grid.text("*", x, y, gp = grid::gpar(fontsize = 10))}})
+```
 ### Persistantly activated TEs TF enrichment
 
 ```{r , fig.width=8}
@@ -3163,5 +3409,17 @@ pa_tf_names <- PA_MER61 %>%
   pull(motif_names)
 
 saveRDS(pa_tf_names,"data/RDS_files/pa_tf_names.RDS")
+```
+
+### TAD info
+
+```{r}
+Left_ventricle_TAD <- import(
+  con = "C://Users/renee/Downloads/hg38.TADs/hg38/VentricleLeft_STL003_Leung_2015-raw_TADs.txt",
+  format = "bed",
+  genome = "hg38"
+)
+
+mcols(Left_ventricle_TAD)$TAD_id <- paste0("TAD_", seq_along(Left_ventricle_TAD))
 ```
 
