@@ -503,6 +503,8 @@ DT::datatable(mintermediate_data,
                            scrollY="500px",
                            paging=TRUE,
                            autoWidth=TRUE))
+
+# saveRDS(mintermediate_data, "data/RDS_files/MER61E_intermediate_dataframe.RDS")
 ```
 
 ###  Specs about MER61E
@@ -532,6 +534,23 @@ mintermediate_data %>%
   theme(axis.text.x=element_text(angle=90))+
   labs(fill="Has a p53\nhalfsite")
 ```
+
+
+```{r}
+mintermediate_data %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+  group_by (seqnames, p53_halfsite) %>% 
+  tally() %>% 
+  ggplot(aes(x=seqnames, y=n, fill=p53_halfsite))+
+  geom_col()+
+  geom_text(aes(label=n), position = position_stack(vjust = 0.5))+
+  ggtitle("MER61E in my data distribution across chromosomes and p53halfsite containing")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(fill="Has a p53\nhalfsite")
+```
+
+
 distance from neargene
 ```{r}
 mintermediate_data %>% 
@@ -610,6 +629,28 @@ mintermediate_data %>%
 
 
 ```
+```{r}
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1","Set_2", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=my_MER,y=milliDiv))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no"))
+#   # c("Set_1", "not_assigned"),
+#   # c("Set_1", "NA"),
+#   # c("Set_3","NA"),
+#   # c("Set_3","not_assigned")
+# ),
+#     method = "wilcox.test"
+  ) +
+  labs(title = "MER61E milliDiv dispersion in vs out of my data",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+```
 
 ```{r}
 mintermediate_data %>% 
@@ -655,6 +696,8 @@ mintermediate_data %>%
   labs(title = "MER61E milliIns dispersion in groups",
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
+
+
 
 ```{r}
 mintermediate_data %>% 
@@ -823,7 +866,27 @@ mintermediate_data %>%
 So there are significantly newer (lower milliDiv) MER61E integrant containing a p53 site in my data than not in my data. There is also a significantly higher milliDiv in integrants not containing a p53 site in my data than integrants not in my data (in my data= overlaps an H3K27ac region. not in my data= does not overlap and H3K27ac region)
 
 ### looking at length and cluster  
-
+```{r}
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=my_MER,y=width))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")
+  # c("Set_1", "not_assigned"),
+  # c("Set_1", "NA"),
+  # c("Set_3","NA"),
+  # c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  )+
+  # facet_wrap(~p53_halfsite)+
+  ggtitle("MER61E width of TEs")
+```
 ```{r}
 mintermediate_data %>% 
   mutate(
@@ -922,6 +985,7 @@ Set3_MER61E_DARvCAR_mat <- matrix(c(30,10,6,34),nrow=2,byrow = TRUE)
 fisher.test(Set3_MER61E_DARvCAR_mat)
 ```
 Now I am testing if MER61E in Set3 are enriched in DARs v CARs, and yes with an OR of 16.21, p value= 9.508e-8, MER61E in set 3 are enriched in DARs.
+
 ```{r}
 mintermediate_data %>% 
   mutate(
@@ -975,6 +1039,30 @@ mintermediate_data %>%
 ```
 
 
+```{r}
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  dplyr::filter(my_MER=="yes") %>% 
+  ggplot(aes(x=p53_halfsite,y=MYA_bourque, color=alt_case))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")),
+    method = "wilcox.test"
+  )+
+  ylab("Million Years Ago (Bourque method)")+
+  xlab("has a p53 halfsite?") +
+    # facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
+  ggtitle("MER61E MYA (Bourque method) of integrants overlapping my\n H3K27ac data and looking at p53 halfsites")
+```
+
+
+
 ### other TF binding enrichment
 
 
@@ -990,17 +1078,17 @@ plot_trajectory <- function(input_df, TE) {
   "Quiescent" = "#D9D9D9")
   
   trajectory_cols <- c(
+    "VEH_24T",
+  "VEH_24R",
+  "VEH_144R",
   "DOX_24T",
   "DOX_24R",
-  "DOX_144R",
-  "VEH_24T",
-  "VEH_24R",
-  "VEH_144R"
+  "DOX_144R"
 )
 
 trajectory_complete <- input_df %>%
   tidyr::pivot_longer(
-    cols = c(DOX_24T, DOX_24R, DOX_144R, VEH_24T, VEH_24R, VEH_144R),
+    cols = c( VEH_24T, VEH_24R, VEH_144R,DOX_24T, DOX_24R, DOX_144R),
     names_to = c("Condition", "Time"),
     names_sep = "_",
     values_to = "State"
@@ -1011,7 +1099,7 @@ trajectory_complete <- input_df %>%
     values_from = State
   ) %>%
   mutate(
-    Condition = factor(Condition, levels = c("DOX", "VEH"))
+    Condition = factor(Condition, levels = c("VEH", "DOX"))
   )
 
 plot_input <-  ggplot(trajectory_complete, aes(axis1 = `24T`,
@@ -1053,8 +1141,8 @@ plot_trajectory_flow <- function(input_df, TE) {
   )
   
   axis_order <- c(
-    "DOX_24T", "DOX_24R", "DOX_144R",
-    "VEH_24T", "VEH_24R", "VEH_144R"
+    "VEH_24T", "VEH_24R", "VEH_144R",
+    "DOX_24T", "DOX_24R", "DOX_144R"
   )
   
   # ---- DOX trajectories only ----
@@ -1140,8 +1228,8 @@ plot_trajectory_flow <- function(input_df, TE) {
     scale_x_discrete(
       limits = axis_order,
       labels = c(
-        "DOX 24T", "DOX 24R", "DOX 144R",
-        "VEH 24T", "VEH 24R", "VEH 144R"
+        "VEH 24T", "VEH 24R", "VEH 144R",
+        "DOX 24T", "DOX 24R", "DOX 144R"
       ),
       expand = c(0.08, 0.05)
     ) +
@@ -1510,9 +1598,29 @@ mintermediate_data  %>%
 
 ```{r}
 mintermediate_data %>% 
-  ggplot(., aes(x=CS_distanceToTSS, y = MER61E_phyloP_mean,color=cluster))+
+  dplyr::filter(my_MER=="yes") %>% 
+  ggplot(., aes(x=CS_distanceToTSS, y = p53_halfsite,color=cluster))+
   geom_point()
 
+
+mintermediate_data %>% 
+  # dplyr::filter(my_MER=="yes") %>% 
+  # dplyr::filter(p53_halfsite=="yes") %>% 
+  ggplot(., aes(y=CS_distanceToTSS, x = cluster))+
+  geom_boxplot() +
+  # geom_point()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1","not_assigned")),
+      method = "wilcox.test")+
+  labs(
+    title = "Distance to TSS for MER61E elements",
+    x = "Cluster",
+    y = "Distance to TSS"
+  ) +
+  theme_classic()
+  
 ```
 ```{r}
 p53_label <- c(yes="p53 overlap",no="no p53 overlap")
@@ -1567,6 +1675,27 @@ mintermediate_data %>%
   )+
   ylab("Million Years Ago (Bourque method)")+
     facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label)) +
+  ggtitle("MER61E MYA (Bourque method) of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
+
+
+mintermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  ggplot(aes(x=cluster,y=MYA_bourque, color=my_MER))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1","NA"),
+  c("Set_3","NA")),
+    method = "wilcox.test"
+  )+
+  ylab("Million Years Ago (Bourque method)")+
+    # facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label)) +
   ggtitle("MER61E MYA (Bourque method) of integrants overlapping p53 halfsites\nnot overlapping and overlapping my H3K27ac data")
 
 ```
@@ -2393,6 +2522,21 @@ what_mer%>%
   ggplot(aes(x=width,y=MYA_jukes_cantor, color=p53_halfsite))+
   geom_point()+
   labs(title = "Transition_DOX MER61E integrants")
+
+
+what_mer%>% 
+  dplyr::filter(active_VEH != "Transition_VEH" ) %>% 
+  dplyr::filter(trt_specific%in%c("transition_DOX_only","active_DOX_only","neither")&my_MER=="yes") %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+    mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))
+  ) %>% 
+  ggplot(aes(x=width,y=MYA_jukes_cantor, color=trt_specific))+
+  geom_point()+
+  labs(title = "Active and transition MER61E integrants")
 ```
 
 This leads me to asking if there is a relationship between length and p53 halfsites for all of MER61E integrants.
@@ -2489,18 +2633,21 @@ what_mer_width <- what_mer %>%
 ```{r}
 
 what_mer_width %>%
-  dplyr::filter(my_MER == "yes" & active_VEH !="Active_VEH"& active_DOX=="Active_DOX") %>%
+  dplyr::filter(my_MER == "yes") %>% # & trt_specific=="active_DOX_only") %>%
   mutate(
     p53_density = p53_halfsite_count / width
   ) %>%
   ggplot(aes(x = width, y = p53_density)) +
   geom_point(alpha = 0.4) +
   geom_smooth(method = "lm") +
+  ggpubr::stat_cor(
+    method = "spearman"
+      ) +
   theme_bw() +
   labs(
     x = "MER61E width",
     y = "p53 half-site density",
-    title = " Active_DOX and p53 half-site density across MER61E width"
+    title = "p53 half-site density across MER61E width"
   )
 
 what_mer_width %>%
@@ -2538,6 +2685,7 @@ what_mer_width %>%
 # 
 # summary(p53_model)
 ```
+
 ```{r}
 plot_df_all <- what_mer_width %>%
   dplyr::filter(my_MER == "yes") %>% 
@@ -2568,7 +2716,7 @@ plot_df_all %>%
   labs(
     x = "DOX activity state",
     y = "p53 halfsites per kb",
-    title = "Width-normalized p53 halfsite density across DOX states H3K27ac overlapping")
+    title = "Width-normalized MER61E p53 halfsite density across DOX states H3K27ac overlapping")
 ```
 ```{r}
 plot_df <- what_mer_width %>%
@@ -3421,5 +3569,43 @@ Left_ventricle_TAD <- import(
 )
 
 mcols(Left_ventricle_TAD)$TAD_id <- paste0("TAD_", seq_along(Left_ventricle_TAD))
+
+SCREEN_heart_hg38_cCREs <- import(
+  "data/Other_paper_data/SCREEN_LVHEART_F_53_ENCFF417JSF_ENCFF651XRK_ENCFF320IPT_ENCFF440RUS.bed",
+  format = "BED",
+  extraCols = c(
+    DHS_ID = "character",
+    cCRE_ID = "character",
+    cCRE_class = "character"))
+
+SCREEN_hg38_cCREs <- import(
+  "data/Bed_exports/cisRE/GRCh38-cCREs.bed",
+  format = "BED",
+  extraCols = c(
+    DHS_ID = "character",
+    cCRE_ID = "character",
+    cCRE_class = "character"))
+```
+
+```{r}
+MER61E_tad <- mergeByOverlaps(MER61E_regions,Left_ventricle_TAD)
+
+MER61E_tad %>%as.data.frame() %>% 
+  group_by(TAD_id) %>%tally() 
+  
+  
+```
+```{r}
+MER61E_cre <- mergeByOverlaps(MER61E_regions,SCREEN_heart_hg38_cCREs)
+
+MER61E_cre %>% 
+  as.data.frame() %>% 
+  group_by(MER61E_regions.name) %>% 
+  dplyr::filter(MER61E_regions.name %in%MER61E_mydata) %>% 
+  left_join((SCREEN_hg38_cCREs %>% as.data.frame()), by=c("SCREEN_heart_hg38_cCREs.name" = "cCRE_ID")) %>% 
+  dplyr::select(name,name.1,cCRE_class.y) %>% 
+  group_by(name,cCRE_class.y) %>% tally() %>% 
+  left_join(mintermediate_data,by=c("name"="repID"))
+
 ```
 

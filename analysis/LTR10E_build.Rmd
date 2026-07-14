@@ -520,6 +520,8 @@ DT::datatable(LTR10E_intermediate_data,
                            scrollY="500px",
                            paging=TRUE,
                            autoWidth=TRUE))
+
+# saveRDS(LTR10E_intermediate_data,"data/RDS_files/LTR10E_intermediate_dataframe.RDS")
 ```
 
 
@@ -547,6 +549,19 @@ group_by (seqnames, p53_halfsite) %>%
   geom_col()+
   geom_text(aes(label=n), position = position_stack(vjust = 0.5))+
   ggtitle("LTR10E distribution across chromosomes with p53halfsite")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(fill="Has a p53\nhalfsite")
+```
+```{r}
+LTR10E_intermediate_data %>%
+  dplyr::filter(my_LTR=="yes") %>% 
+group_by (seqnames, p53_halfsite) %>% 
+  tally() %>% 
+  ggplot(aes(x=seqnames, y=n, fill=p53_halfsite))+
+  geom_col()+
+  geom_text(aes(label=n), position = position_stack(vjust = 0.5))+
+  ggtitle("LTR10E in my data with p53halfsite")+
   theme_bw()+
   theme(axis.text.x=element_text(angle=90))+
   labs(fill="Has a p53\nhalfsite")
@@ -706,6 +721,10 @@ LTR10E_intermediate_data %>%
   labs(title = "LTR10E milliIns dispersion in groups",
        subtitle="Pairwise Wilcoxon rank-sum tests")
 ```
+
+
+
+
 #### P53 halfsite plot 
 
 
@@ -901,6 +920,72 @@ LTR10E_intermediate_data %>%
     columns = c("milliDiv_avg", "MYA_jukes_cantor_avg", "MYA_bourque_avg"),
     digits = 2)
 ```
+### looking at length and cluster  
+```{r}
+LTR10E_intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=my_LTR,y=width))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("yes", "no")
+),
+    method = "wilcox.test"
+  )+
+  # facet_wrap(~p53_halfsite)+
+  ggtitle("LTR10E width of TEs")
+```
+
+```{r}
+LTR10E_intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=cluster,y=width))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA"),
+  c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  )+
+  # facet_wrap(~p53_halfsite)+
+  ggtitle("LTR10E width of TEs")
+```
+
+Width of TE is not different between TEs overlapping H3K27ac regions vs those not overlapping H3K27ac regions.  
+
+```{r}
+LTR10E_intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  ggplot(aes(x=cluster,y=width))+
+  smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("Set_1", "Set_3"),
+  # c("Set_1", "not_assigned"),
+  c("Set_1", "NA"),
+  c("Set_3","NA")  # c("Set_3","not_assigned")
+),
+    method = "wilcox.test"
+  )+
+  facet_wrap(~p53_halfsite)+
+  ggtitle("LTR10E width of TEs by halfsite of p53")
+
+```
+This width difference does not exist when considering only those containing a p53 halfsite.
+
 
 comparing between my LTRs and p53/no p53
 
@@ -940,17 +1025,17 @@ plot_trajectory <- function(input_df, TE) {
   "Quiescent" = "#D9D9D9")
   
   trajectory_cols <- c(
-  "DOX_24T",
-  "DOX_24R",
-  "DOX_144R",
   "VEH_24T",
   "VEH_24R",
-  "VEH_144R"
+  "VEH_144R",
+  "DOX_24T",
+  "DOX_24R",
+  "DOX_144R"
 )
 
 trajectory_complete <- input_df %>%
   tidyr::pivot_longer(
-    cols = c(DOX_24T, DOX_24R, DOX_144R, VEH_24T, VEH_24R, VEH_144R),
+    cols = c( VEH_24T, VEH_24R, VEH_144R,DOX_24T, DOX_24R, DOX_144R),
     names_to = c("Condition", "Time"),
     names_sep = "_",
     values_to = "State"
@@ -961,7 +1046,7 @@ trajectory_complete <- input_df %>%
     values_from = State
   ) %>%
   mutate(
-    Condition = factor(Condition, levels = c("DOX", "VEH"))
+    Condition = factor(Condition, levels = c( "VEH","DOX"))
   )
 
 plot_input <-  ggplot(trajectory_complete, aes(axis1 = `24T`,
@@ -1003,8 +1088,9 @@ plot_trajectory_flow <- function(input_df, TE) {
   )
   
   axis_order <- c(
-    "DOX_24T", "DOX_24R", "DOX_144R",
-    "VEH_24T", "VEH_24R", "VEH_144R"
+    
+    "VEH_24T", "VEH_24R", "VEH_144R",
+    "DOX_24T", "DOX_24R", "DOX_144R"
   )
   
   # ---- DOX trajectories only ----
@@ -1090,8 +1176,8 @@ plot_trajectory_flow <- function(input_df, TE) {
     scale_x_discrete(
       limits = axis_order,
       labels = c(
-        "DOX 24T", "DOX 24R", "DOX 144R",
-        "VEH 24T", "VEH 24R", "VEH 144R"
+        "VEH 24T", "VEH 24R", "VEH 144R",
+        "DOX 24T", "DOX 24R", "DOX 144R"
       ),
       expand = c(0.08, 0.05)
     ) +
@@ -1840,7 +1926,7 @@ p53_halfsite_count_10E <- p53halfsite_TE_ids %>%
   dplyr::rename("p53_hscount"=n)
 
 what_ltr_width <- what_ltr %>% 
-  dplyr::select(repID,width,my_LTR,milliDiv:p53_halfsite, LTR10E_phyloP_mean:active_VEH)%>% 
+  dplyr::select(repID,width,my_LTR,milliDiv:p53_halfsite, trt_specific, LTR10E_phyloP_mean:active_VEH)%>% 
   left_join(p53_halfsite_count_10E, by=c("repID"="Peakid")) %>% 
   mutate(p53_halfsite_count=if_else(is.na(p53_hscount),0,p53_hscount),
          p53_site_per_width=p53_halfsite_count/width)
@@ -1908,18 +1994,21 @@ summary(pois_model_10E )
 
 
 what_ltr_width %>%
-  dplyr::filter(my_LTR == "yes"& active_VEH !="Active_VEH") %>%
+  dplyr::filter(my_LTR == "yes") %>% #& active_VEH !="Active_VEH") %>%
   mutate(
     p53_density = p53_halfsite_count / width
   ) %>%
   ggplot(aes(x = width, y = p53_density)) +
   geom_point(alpha = 0.4) +
   geom_smooth(method = "lm") +
+   ggpubr::stat_cor(
+    method = "spearman"
+      ) +
   theme_bw() +
   labs(
     x = "LTR10E width",
     y = "p53 half-site density",
-    title = "p53 half-site density across LTR10E width"
+    title = "p53 half-site density across LTR10E width (Spearman)"
   )
 ```
 
@@ -1928,7 +2017,47 @@ what_ltr_width %>%
 Using a Poisson model with TE width included as an offset, LTR10E p53-halfsite count was not significantly associated with TE divergence/age. 
 
 I used a session with ChatGPT to figure out how to test this.
+```{r}
+what_ltr_width %>%
+  dplyr::filter(my_LTR == "yes") %>% 
+  # dplyr::filter(active_VEH != "Active_VEH") %>% 
+  ggplot(aes(x=trt_specific, y= p53_halfsite_count))+
+  geom_violin()+
+  theme_bw()+
+  ggtitle("Looking at LTR10E number of halfsites")
+```
+```{r}
+plot_df_all_ltr <- what_ltr_width %>%
+  dplyr::filter(my_LTR == "yes") %>% 
+  # dplyr::filter(cluster=="Set_3") %>% 
+  dplyr::filter(active_VEH != "Active_VEH") %>%
+  mutate(
+    p53_per_kb = p53_halfsite_count / width * 1000)
 
+n_labs_all_ltr <- plot_df_all_ltr %>%
+  count(trt_specific) %>%
+  mutate(label = paste0(trt_specific, "\n(n=", n, ")"))
+
+label_vec_all_ltr <- n_labs_all_ltr$label
+names(label_vec_all_ltr) <- n_labs_all_ltr$trt_specfic
+
+plot_df_all_ltr %>%
+  ggplot(aes(x = trt_specific, y = p53_per_kb)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(width = 0.15, alpha = 0.5) +
+  ggpubr::stat_compare_means(
+    comparisons = list(
+      c("active_DOX_only", "transition_DOX_only")
+    ),
+     method = "wilcox.test",
+  method.args = list(exact = FALSE))+
+  scale_x_discrete(labels = label_vec_all_ltr) +
+  theme_bw() +
+  labs(
+    x = "DOX activity state",
+    y = "p53 halfsites per kb",
+    title = "Width-normalized p53 LTR halfsite density across DOX states H3K27ac overlapping")
+```
 
 ```{r}
 what_ltr%>%
@@ -2459,5 +2588,50 @@ Heatmap(
    cell_fun = function(j, i, x, y, width, height, fill) {
     if (!is.na(trans_sig_mat[i, j]) && trans_sig_mat[i, j] < 0.05) {
       grid::grid.text("*", x, y, gp = grid::gpar(fontsize = 10))}})
+```
+
+### TAD info
+
+```{r}
+Left_ventricle_TAD <- import(
+  con = "C://Users/renee/Downloads/hg38.TADs/hg38/VentricleLeft_STL003_Leung_2015-raw_TADs.txt",
+  format = "bed",
+  genome = "hg38"
+)
+mcols(Left_ventricle_TAD)$TAD_id <- paste0("TAD_", seq_along(Left_ventricle_TAD))
+
+SCREEN_heart_hg38_cCREs <- import(
+  "data/Other_paper_data/SCREEN_LVHEART_F_53_ENCFF417JSF_ENCFF651XRK_ENCFF320IPT_ENCFF440RUS.bed",
+  format = "BED",
+  extraCols = c(
+    DHS_ID = "character",
+    cCRE_ID = "character",
+    cCRE_class = "character"))
+
+SCREEN_hg38_cCREs <- import(
+  "data/Bed_exports/cisRE/GRCh38-cCREs.bed",
+  format = "BED",
+  extraCols = c(
+    DHS_ID = "character",
+    cCRE_ID = "character",
+    cCRE_class = "character"))
+```
+
+```{r}
+LTR10E_tad <- mergeByOverlaps(LTR10E_regions,Left_ventricle_TAD)
+```
+
+```{r}
+
+
+LTR10E_cre <- mergeByOverlaps(LTR10E_regions,SCREEN_heart_hg38_cCREs)
+
+LTR10E_cre %>% 
+  as.data.frame() %>% 
+  group_by(LTR10E_regions.name) %>% 
+  dplyr::filter(LTR10E_regions.name %in% LTR10E_mydata) %>%
+  left_join((SCREEN_hg38_cCREs %>% as.data.frame()), by=c("SCREEN_heart_hg38_cCREs.name" = "cCRE_ID")) %>% 
+  dplyr::select(name,name.1,cCRE_class.y) %>% 
+  group_by(name,cCRE_class.y) %>% tally()
 ```
 
