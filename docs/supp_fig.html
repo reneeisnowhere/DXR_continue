@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-07-08" />
+<meta name="date" content="2026-07-15" />
 
 <title>Supplemental Figure draft</title>
 
@@ -361,7 +361,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Supplemental Figure draft</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-07-08</h4>
+<h4 class="date">2026-07-15</h4>
 
 </div>
 
@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-07-08
+<strong>Last updated:</strong> 2026-07-15
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreedab34eed17abb0b4fcf04273e44ae18c1013cc38targetblankdab34eea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree3592202caf3abc9e50eb11ce77ed1ad9e981befftargetblank3592202a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/dab34eed17abb0b4fcf04273e44ae18c1013cc38" target="_blank">dab34ee</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/3592202caf3abc9e50eb11ce77ed1ad9e981beff" target="_blank">3592202</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreedab34eed17abb0b4fcf04273e44ae18c1013cc38targetblankdab34eea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree3592202caf3abc9e50eb11ce77ed1ad9e981befftargetblank3592202a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/dab34eed17abb0b4fcf04273e44ae18c1013cc38" target="_blank">dab34ee</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/3592202caf3abc9e50eb11ce77ed1ad9e981beff" target="_blank">3592202</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -651,6 +651,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/3592202caf3abc9e50eb11ce77ed1ad9e981beff/analysis/supp_fig.Rmd" target="_blank">3592202</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-15
+</td>
+<td>
+adding more files
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/dfcb603569727df9c9476092abbf014fe75fafae/docs/supp_fig.html" target="_blank">dfcb603</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/dab34eed17abb0b4fcf04273e44ae18c1013cc38/analysis/supp_fig.Rmd" target="_blank">dab34ee</a>
 </td>
 <td>
@@ -736,6 +770,13 @@ library(ChIPseeker)</code></pre>
 <pre class="r"><code>sampleinfo &lt;- read_delim(&quot;data/sample_info.tsv&quot;, delim = &quot;\t&quot;)
 peak_ct &lt;- read_delim(&quot;data/peaks/peaks_cts_FINAL.txt&quot;, delim = &quot;\t&quot;)
 H3K27ac_peaks &lt;- read_delim(&quot;data/peaks/H3K27ac_FINAl_results.tsv&quot;,delim = &quot;\t&quot;)
+
+H3K27me3_peaks &lt;- read_delim(&quot;data/peaks/H3K27me3_final_results.tsv&quot;,delim = &quot;\t&quot;)
+
+H3K9me3_peaks &lt;- read_delim(&quot;data/peaks/H3K9me3_final_results.tsv&quot;,delim = &quot;\t&quot;)
+
+H3K36me3_peaks &lt;- read_delim(&quot;data/peaks/H3K36me3_final_results.tsv&quot;,delim = &quot;\t&quot;)
+
 trimmed_multiqc_fastqc &lt;- read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/Steven_bed_Files/data/multiqc_data_trim/multiqc_fastqc.txt&quot;, 
     delim = &quot;\t&quot;, escape_double = FALSE, 
     trim_ws = TRUE)
@@ -1623,7 +1664,8 @@ standardizeAnnoList &lt;- function(annoList, categories, color_pal = NULL) {
         strip.background = element_rect(fill = &quot;white&quot;, linetype = &quot;solid&quot;,
                                         color = &quot;black&quot;, linewidth = 1),
         panel.spacing = unit(1, &#39;points&#39;),
-        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))</code></pre>
+        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))+
+  coord_cartesian(ylim=c(0,19000000))</code></pre>
 <p><img src="figure/supp_fig.Rmd/SF1-1.png" alt="" width="768" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-SF1-1">
@@ -1647,6 +1689,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dfcb603569727df9c9476092abbf014fe75fafae/docs/figure/supp_fig.Rmd/SF1-1.png" target="_blank">dfcb603</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-08
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/SF1-1.png" target="_blank">d10e690</a>
@@ -1725,6 +1778,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dfcb603569727df9c9476092abbf014fe75fafae/docs/figure/supp_fig.Rmd/SF2-1.png" target="_blank">dfcb603</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-08
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/SF2-1.png" target="_blank">d10e690</a>
 </td>
 <td>
@@ -1762,7 +1826,8 @@ ggplot(Peak_n_FRIP, aes(x=trt_time, y = Count))+
   xlab(&quot;Treatment and Time&quot;)+
   theme_bw()+
   scale_color_brewer(palette=&quot;Dark2&quot;)+
-  scale_fill_brewer(palette=&quot;Set2&quot;)</code></pre>
+  scale_fill_brewer(palette=&quot;Set2&quot;)+
+  coord_cartesian(ylim = c(0,3e5))</code></pre>
 <p><img src="figure/supp_fig.Rmd/SF4%20peak%20counts-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-SF4-peak-counts-1">
@@ -1786,6 +1851,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dfcb603569727df9c9476092abbf014fe75fafae/docs/figure/supp_fig.Rmd/SF4 peak counts-1.png" target="_blank">dfcb603</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-08
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/SF4 peak counts-1.png" target="_blank">d10e690</a>
@@ -1813,7 +1889,8 @@ reneeisnowhere
   xlab(&quot;Treatment and Time&quot;)+
   theme_bw()+
   scale_color_brewer(palette=&quot;Dark2&quot;)+
-  scale_fill_brewer(palette=&quot;Set2&quot;)</code></pre>
+  scale_fill_brewer(palette=&quot;Set2&quot;)+
+  coord_cartesian(ylim=c(0,1))</code></pre>
 <p><img src="figure/supp_fig.Rmd/SF5%20Frip-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-SF5-Frip-1">
@@ -1837,6 +1914,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dfcb603569727df9c9476092abbf014fe75fafae/docs/figure/supp_fig.Rmd/SF5 Frip-1.png" target="_blank">dfcb603</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-08
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/SF5 Frip-1.png" target="_blank">d10e690</a>
@@ -2187,6 +2275,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dfcb603569727df9c9476092abbf014fe75fafae/docs/figure/supp_fig.Rmd/heatmap-1.png" target="_blank">dfcb603</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-08
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/heatmap-1.png" target="_blank">d10e690</a>
 </td>
 <td>
@@ -2292,6 +2391,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dfcb603569727df9c9476092abbf014fe75fafae/docs/figure/supp_fig.Rmd/fig8b-1.png" target="_blank">dfcb603</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-08
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/fig8b-1.png" target="_blank">d10e690</a>
@@ -2809,6 +2919,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dfcb603569727df9c9476092abbf014fe75fafae/docs/figure/supp_fig.Rmd/Fig10B-1.png" target="_blank">dfcb603</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-07-08
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/d10e6902c9db080e7a6fdf6fbf9c7b9808a2c719/docs/figure/supp_fig.Rmd/Fig10B-1.png" target="_blank">d10e690</a>
 </td>
 <td>
@@ -2822,6 +2943,108 @@ reneeisnowhere
 </table>
 </div>
 </div>
+</div>
+<div id="current-fig-11" class="section level3">
+<h3>Current Fig 11</h3>
+<pre class="r"><code>### make the summary of fragments for all histones
+other_frag_summary_file &lt;- fastq_fragments %&gt;% 
+  mutate(file=str_remove(file, &quot;_R[12]\\.fastq\\.gz$&quot;)) %&gt;% 
+  distinct() %&gt;% 
+  left_join(sampleinfo,by=c(&quot;file&quot;=&quot;Library ID&quot;)) %&gt;% 
+  dplyr::filter(Treatment != &quot;5FU&quot; &amp; Histone_Mark %in% c(&quot;H3K9me3&quot;,&quot;H3K27me3&quot;,&quot;H3K36me3&quot;)) %&gt;% 
+  dplyr::select(file, Histone_Mark:Timepoint,num_seqs) %&gt;% 
+  left_join(frag_count_total_no_multi, by=c(&quot;file&quot;=&quot;sample&quot;)) %&gt;% 
+  left_join(fragment_count_totals_final, by=c(&quot;file&quot;=&quot;sample&quot;)) %&gt;% 
+  dplyr::rename(&quot;all_fragments&quot;=num_seqs,
+                &quot;mapped_fragments&quot;= fragment_count_total.x,
+                &quot;unique_noM_dedup&quot;=fragment_count_total.y)
+
+other_frag_summary_file %&gt;% 
+   pivot_longer(cols=c(all_fragments:unique_noM_dedup), names_to = &quot;type&quot;, values_to = &quot;frag_counts&quot;) %&gt;% 
+  mutate(Timepoint=factor(Timepoint, levels = c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;),labels = c(&quot;0R&quot;,&quot;24R&quot;,&quot;144R&quot;)),
+         Treatment=factor(Treatment, levels = c(&quot;VEH&quot;,&quot;DOX&quot;))) %&gt;% 
+  mutate(group=paste0(Timepoint,&quot;_&quot;,Treatment)) %&gt;% 
+  mutate(group=factor(group,levels = c(&quot;0R_VEH&quot;,&quot;24R_VEH&quot;,&quot;144R_VEH&quot;,&quot;0R_DOX&quot;, &quot;24R_DOX&quot;, &quot;144R_DOX&quot;))) %&gt;% 
+  ggplot(., aes(x=type, y=frag_counts))+
+  geom_boxplot(aes(fill=Treatment))+
+  geom_point(aes(col=Individual, size=2))+
+   theme_bw()+
+  facet_wrap(Histone_Mark~group,nrow = 3, ncol = 6 )+
+ scale_fill_brewer(palette=&quot;Set2&quot;)+
+  scale_color_brewer(palette = &quot;Dark2&quot;)+
+  theme(strip.text = element_text(face = &quot;bold&quot;,  hjust = 0, size = 8),
+        strip.background = element_rect(fill = &quot;white&quot;, linetype = &quot;solid&quot;,
+                                        color = &quot;black&quot;, linewidth = 1),
+        panel.spacing = unit(1, &#39;points&#39;),
+        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))+
+  coord_cartesian(ylim=c(0,19000000))</code></pre>
+<p><img src="figure/supp_fig.Rmd/SF11-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="current-fig-12" class="section level3">
+<h3>Current Fig 12</h3>
+<pre class="r"><code>annotated_combo_df %&gt;% 
+  mutate(Timepoint=factor(Timepoint, levels = c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;),labels = c(&quot;0R&quot;,&quot;24R&quot;,&quot;144R&quot;)),
+         Treatment=factor(Treatment, levels = c(&quot;VEH&quot;,&quot;DOX&quot;))) %&gt;% 
+  mutate(sample_name=paste0(Individual,&quot;_&quot;,Treatment,&quot;_&quot;,Timepoint),
+         trt_time=paste0(Treatment,&quot;_&quot;,Timepoint),
+         trt_time=factor(trt_time, levels = c(&quot;VEH_0R&quot;,&quot;VEH_24R&quot;,&quot;VEH_144R&quot;,&quot;DOX_0R&quot;,&quot;DOX_24R&quot;,&quot;DOX_144R&quot;))) %&gt;% 
+   arrange( Treatment,Individual, Timepoint) %&gt;%
+  mutate(sample_name = factor(sample_name, levels = unique(sample_name))) %&gt;%
+  dplyr::filter(Histone_Mark!=&quot;H3K27ac&quot;) %&gt;%
+  ggplot(., aes(x=sample_name, y=Col1, weight = weight,fill = Treatment))+
+geom_violin(bw = 5) +
+    scale_y_continuous(breaks = seq(0, 800, 50)) +
+   theme_bw(base_size = 15) +
+  facet_wrap(~Histone_Mark, nrow=3, ncol=1)+
+    ggpubr::rotate_x_text(angle = 90) +
+  ggtitle(&quot;Fragment lengths for other histones&quot;)+
+    ylab(&quot;Fragment Length&quot;) +
+    xlab(&quot;&quot;)+
+  scale_fill_brewer(palette=&quot;Set2&quot;)</code></pre>
+<p><img src="figure/supp_fig.Rmd/SF12-1.png" alt="" width="960" style="display: block; margin: auto;" />
+### Current Fig 13</p>
+</div>
+<div id="current-fig-14" class="section level3">
+<h3>Current Fig 14</h3>
+<pre class="r"><code>Peak_n_FRIP_other &lt;- H3K27me3_peaks %&gt;% 
+  bind_rows(H3K9me3_peaks) %&gt;% 
+  bind_rows(H3K36me3_peaks) %&gt;% 
+  left_join(sampleinfo, by =c(&quot;Sample&quot;=&#39;Library ID&#39;)) %&gt;% 
+  mutate(Timepoint=factor(Timepoint, levels = c(&quot;24T&quot;,&quot;24R&quot;,&quot;144R&quot;),labels = c(&quot;0R&quot;,&quot;24R&quot;,&quot;144R&quot;)),
+         Treatment=factor(Treatment, levels = c(&quot;VEH&quot;,&quot;DOX&quot;))) %&gt;% 
+  left_join(peak_ct, by=c(&quot;Sample&quot;=&quot;Sample&quot;)) %&gt;% 
+  mutate(sample_name=paste0(Individual,&quot;_&quot;,Treatment,&quot;_&quot;,Timepoint),
+         trt_time=paste0(Treatment,&quot;_&quot;,Timepoint),
+         trt_time=factor(trt_time, levels = c(&quot;VEH_0R&quot;,&quot;VEH_24R&quot;,&quot;VEH_144R&quot;,&quot;DOX_0R&quot;,&quot;DOX_24R&quot;,&quot;DOX_144R&quot;)))
+
+
+ggplot(Peak_n_FRIP_other, aes(x=trt_time, y = Count))+
+  geom_boxplot(aes(fill=Treatment, alpha=.8))+
+  geom_point(aes(color=Individual, size=4))+
+  labs(title=&quot;Count of Histone peaks&quot;)+
+  ylab(&quot;Number of Peaks&quot;)+
+  xlab(&quot;Treatment and Time&quot;)+
+  facet_wrap(~Histone,nrow=3, ncol=1)+
+  theme_bw()+
+  scale_color_brewer(palette=&quot;Dark2&quot;)+
+  scale_fill_brewer(palette=&quot;Set2&quot;)+
+  coord_cartesian(ylim = c(0,3e5))</code></pre>
+<p><img src="figure/supp_fig.Rmd/SF14-1.png" alt="" width="576" style="display: block; margin: auto;" /></p>
+</div>
+<div id="current-fig-15" class="section level3">
+<h3>Current Fig 15</h3>
+<pre class="r"><code>ggplot(Peak_n_FRIP_other, aes(x=trt_time, y = FRiP))+
+  geom_boxplot(aes(fill=Treatment, alpha=.8))+
+  geom_point(aes(color=Individual, size=4))+
+  labs(title=&quot;Fraction of Reads in Peaks other histones&quot;)+
+  ylab(&quot;Reads in Peaks/ Total Reads&quot;)+
+  xlab(&quot;Treatment and Time&quot;)+
+  theme_bw()+
+  facet_wrap(~Histone,nrow=3, ncol=1)+
+  scale_color_brewer(palette=&quot;Dark2&quot;)+
+  scale_fill_brewer(palette=&quot;Set2&quot;)+
+  coord_cartesian(ylim=c(0,1))</code></pre>
+<p><img src="figure/supp_fig.Rmd/SF15-1.png" alt="" width="576" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
