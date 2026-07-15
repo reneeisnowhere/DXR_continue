@@ -52,6 +52,13 @@ Data import:
 sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
 peak_ct <- read_delim("data/peaks/peaks_cts_FINAL.txt", delim = "\t")
 H3K27ac_peaks <- read_delim("data/peaks/H3K27ac_FINAl_results.tsv",delim = "\t")
+
+H3K27me3_peaks <- read_delim("data/peaks/H3K27me3_final_results.tsv",delim = "\t")
+
+H3K9me3_peaks <- read_delim("data/peaks/H3K9me3_final_results.tsv",delim = "\t")
+
+H3K36me3_peaks <- read_delim("data/peaks/H3K36me3_final_results.tsv",delim = "\t")
+
 trimmed_multiqc_fastqc <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/Steven_bed_Files/data/multiqc_data_trim/multiqc_fastqc.txt", 
     delim = "\t", escape_double = FALSE, 
     trim_ws = TRUE)
@@ -177,7 +184,8 @@ H3K27acfrag_summary_file %>%
         strip.background = element_rect(fill = "white", linetype = "solid",
                                         color = "black", linewidth = 1),
         panel.spacing = unit(1, 'points'),
-        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))
+        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))+
+  coord_cartesian(ylim=c(0,19000000))
 
 ```
 
@@ -250,7 +258,8 @@ ggplot(Peak_n_FRIP, aes(x=trt_time, y = Count))+
   xlab("Treatment and Time")+
   theme_bw()+
   scale_color_brewer(palette="Dark2")+
-  scale_fill_brewer(palette="Set2")
+  scale_fill_brewer(palette="Set2")+
+  coord_cartesian(ylim = c(0,3e5))
   
 
 ```
@@ -267,7 +276,8 @@ ggplot(Peak_n_FRIP, aes(x=trt_time, y = FRiP))+
   xlab("Treatment and Time")+
   theme_bw()+
   scale_color_brewer(palette="Dark2")+
-  scale_fill_brewer(palette="Set2")
+  scale_fill_brewer(palette="Set2")+
+  coord_cartesian(ylim=c(0,1))
 
 ```
 
@@ -659,5 +669,121 @@ ggplot(H3K27ac_cre_counts, aes(x = cluster, y = percent, fill = cCRE_class)) +
      ggtitle("H3K27ac ROI summits crossing heart LV all cCREs ")+scale_fill_cCREs()
  
  
+```
+
+### Current Fig 11
+
+```{r SF11, fig.width=7,fig.height=8}
+### make the summary of fragments for all histones
+other_frag_summary_file <- fastq_fragments %>% 
+  mutate(file=str_remove(file, "_R[12]\\.fastq\\.gz$")) %>% 
+  distinct() %>% 
+  left_join(sampleinfo,by=c("file"="Library ID")) %>% 
+  dplyr::filter(Treatment != "5FU" & Histone_Mark %in% c("H3K9me3","H3K27me3","H3K36me3")) %>% 
+  dplyr::select(file, Histone_Mark:Timepoint,num_seqs) %>% 
+  left_join(frag_count_total_no_multi, by=c("file"="sample")) %>% 
+  left_join(fragment_count_totals_final, by=c("file"="sample")) %>% 
+  dplyr::rename("all_fragments"=num_seqs,
+                "mapped_fragments"= fragment_count_total.x,
+                "unique_noM_dedup"=fragment_count_total.y)
+
+other_frag_summary_file %>% 
+   pivot_longer(cols=c(all_fragments:unique_noM_dedup), names_to = "type", values_to = "frag_counts") %>% 
+  mutate(Timepoint=factor(Timepoint, levels = c("24T","24R","144R"),labels = c("0R","24R","144R")),
+         Treatment=factor(Treatment, levels = c("VEH","DOX"))) %>% 
+  mutate(group=paste0(Timepoint,"_",Treatment)) %>% 
+  mutate(group=factor(group,levels = c("0R_VEH","24R_VEH","144R_VEH","0R_DOX", "24R_DOX", "144R_DOX"))) %>% 
+  ggplot(., aes(x=type, y=frag_counts))+
+  geom_boxplot(aes(fill=Treatment))+
+  geom_point(aes(col=Individual, size=2))+
+   theme_bw()+
+  facet_wrap(Histone_Mark~group,nrow = 3, ncol = 6 )+
+ scale_fill_brewer(palette="Set2")+
+  scale_color_brewer(palette = "Dark2")+
+  theme(strip.text = element_text(face = "bold",  hjust = 0, size = 8),
+        strip.background = element_rect(fill = "white", linetype = "solid",
+                                        color = "black", linewidth = 1),
+        panel.spacing = unit(1, 'points'),
+        axis.text.x=element_text(angle = 90, vjust = 0.5, hjust=1))+
+  coord_cartesian(ylim=c(0,19000000))
+
+```
+ 
+### Current Fig 12  
+
+```{r SF12,fig.width=10,fig.height=10}
+annotated_combo_df %>% 
+  mutate(Timepoint=factor(Timepoint, levels = c("24T","24R","144R"),labels = c("0R","24R","144R")),
+         Treatment=factor(Treatment, levels = c("VEH","DOX"))) %>% 
+  mutate(sample_name=paste0(Individual,"_",Treatment,"_",Timepoint),
+         trt_time=paste0(Treatment,"_",Timepoint),
+         trt_time=factor(trt_time, levels = c("VEH_0R","VEH_24R","VEH_144R","DOX_0R","DOX_24R","DOX_144R"))) %>% 
+   arrange( Treatment,Individual, Timepoint) %>%
+  mutate(sample_name = factor(sample_name, levels = unique(sample_name))) %>%
+  dplyr::filter(Histone_Mark!="H3K27ac") %>%
+  ggplot(., aes(x=sample_name, y=Col1, weight = weight,fill = Treatment))+
+geom_violin(bw = 5) +
+    scale_y_continuous(breaks = seq(0, 800, 50)) +
+   theme_bw(base_size = 15) +
+  facet_wrap(~Histone_Mark, nrow=3, ncol=1)+
+    ggpubr::rotate_x_text(angle = 90) +
+  ggtitle("Fragment lengths for other histones")+
+    ylab("Fragment Length") +
+    xlab("")+
+  scale_fill_brewer(palette="Set2")
+
+
+```
+### Current Fig 13 
+ 
+```{r SF13}
+
+```
+ 
+ 
+### Current Fig 14  
+
+```{r SF14,fig.width=6,fig.height=10}
+Peak_n_FRIP_other <- H3K27me3_peaks %>% 
+  bind_rows(H3K9me3_peaks) %>% 
+  bind_rows(H3K36me3_peaks) %>% 
+  left_join(sampleinfo, by =c("Sample"='Library ID')) %>% 
+  mutate(Timepoint=factor(Timepoint, levels = c("24T","24R","144R"),labels = c("0R","24R","144R")),
+         Treatment=factor(Treatment, levels = c("VEH","DOX"))) %>% 
+  left_join(peak_ct, by=c("Sample"="Sample")) %>% 
+  mutate(sample_name=paste0(Individual,"_",Treatment,"_",Timepoint),
+         trt_time=paste0(Treatment,"_",Timepoint),
+         trt_time=factor(trt_time, levels = c("VEH_0R","VEH_24R","VEH_144R","DOX_0R","DOX_24R","DOX_144R")))
+
+
+ggplot(Peak_n_FRIP_other, aes(x=trt_time, y = Count))+
+  geom_boxplot(aes(fill=Treatment, alpha=.8))+
+  geom_point(aes(color=Individual, size=4))+
+  labs(title="Count of Histone peaks")+
+  ylab("Number of Peaks")+
+  xlab("Treatment and Time")+
+  facet_wrap(~Histone,nrow=3, ncol=1)+
+  theme_bw()+
+  scale_color_brewer(palette="Dark2")+
+  scale_fill_brewer(palette="Set2")+
+  coord_cartesian(ylim = c(0,3e5))
+  
+```
+
+### Current Fig 15
+
+```{r SF15,fig.width=6,fig.height=10}
+ggplot(Peak_n_FRIP_other, aes(x=trt_time, y = FRiP))+
+  geom_boxplot(aes(fill=Treatment, alpha=.8))+
+  geom_point(aes(color=Individual, size=4))+
+  labs(title="Fraction of Reads in Peaks other histones")+
+  ylab("Reads in Peaks/ Total Reads")+
+  xlab("Treatment and Time")+
+  theme_bw()+
+  facet_wrap(~Histone,nrow=3, ncol=1)+
+  scale_color_brewer(palette="Dark2")+
+  scale_fill_brewer(palette="Set2")+
+  coord_cartesian(ylim=c(0,1))
+
 ```
 
