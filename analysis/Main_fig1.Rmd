@@ -1,0 +1,288 @@
+---
+title: "Main_fig1"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+
+```{r library entries}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+library(ggalluvial)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(edgeR)
+library(RColorBrewer)
+library(ggVennDiagram)
+library(ChIPseeker)
+```
+
+Data import:
+```{r data import}
+sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
+
+
+H3K27ac_toplist <- readRDS( "data/DER_data/H3K27ac_toplist.RDS")
+
+peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+
+H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+
+
+H3K27ac_filtered_lcpm <- readRDS("data/RDS_files/H3K27ac_merged_raw_lcpm.RDS")
+
+H3K27ac_annomat <- data.frame(timeset=colnames(H3K27ac_filtered_lcpm)) %>%
+  mutate(sample=timeset) %>%
+  separate(timeset, into = c("ind","tx","time")) %>%
+  mutate(tx=factor(tx, levels = c("VEH", "DOX")),
+         time=factor(time, levels =c("24T","24R","144R"))) %>%
+  mutate(ind = gsub("Ind", "", ind)) %>%
+  mutate(txtime = paste0(tx, "_", time)) %>%
+  mutate(group = txtime)
+
+H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
+```
+
+
+```{r}
+
+calc_pca <- function(x) {
+  # Performs principal components analysis with prcomp
+  # x: a sample-by-gene numeric matrix
+  prcomp(x, scale. = TRUE, retx = TRUE)
+}
+pca_plot <- function(pca_obj, df,
+                     col_var = NULL,
+                     shape_var = NULL,
+                     text_var = NULL,
+                     title = "") {
+  
+  # variance explained
+  a <- prop_var_percent(pca_obj)
+  
+  ggplot(df, aes_string(x = "PC1", y = "PC2")) +
+    geom_point(aes_string(color = col_var, shape = shape_var), size = 5) +
+    ggrepel::geom_text_repel(aes_string(label = text_var),
+                             vjust = -.5,
+                             max.overlaps = 30) +
+    labs(
+      title = title,
+      x = paste0("PC1 (", round(a[1], 1), "%)"),
+      y = paste0("PC2 (", round(a[2], 1), "%)")
+    ) +
+    scale_color_manual(values = c(
+      "#8B006D", "#DF707E", "#F1B72B",
+      "#3386DD", "#707031", "#41B333"
+    ))
+}
+
+prop_var_percent <- function(pca_result){ 
+  # Ensure the input is a PCA result object
+  if (!inherits(pca_result, "prcomp")) {
+    stop("Input must be a result from prcomp()")
+  }
+  
+  # Get the standard deviations from the PCA result
+  sdev <- pca_result$sdev
+  
+  # Calculate the proportion of variance
+  proportion_variance <- (sdev^2) / sum(sdev^2)*100
+  
+  return(proportion_variance)
+}
+```
+
+
+```{r PCA}
+pca_H3K27ac <- calc_pca(t(H3K27ac_filtered_lcpm))
+
+pca_H3K27ac_df <- data.frame(pca_H3K27ac$x , H3K27ac_annomat)
+
+pca_plot(
+  pca_H3K27ac,
+  pca_H3K27ac_df,
+  col_var = "time",
+  shape_var = "tx",
+  text_var = "ind",   # <-- string, not vector
+  title = "H3K27ac filtered lcpm PCA"
+)   +theme_bw() 
+
+```
+```{r H3K27ac_prop}
+all_H3K27ac_regions <- peakAnnoList_H3K27ac$all_H3K27ac %>% as.data.frame() %>% dplyr::select(Peakid)
+
+all_H3K27ac_regions %>%  
+  mutate(group="H3K27ac") %>% 
+  left_join(., H3K27ac_lookup) %>% 
+   tidyr::replace_na(list(cluster = "NA")) %>% 
+   count(group, cluster, name = "n") %>%
+  group_by(group) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>%
+  ggplot(., aes(y=group,x=prop,fill=cluster))+
+  geom_col()+
+  geom_text(aes(label = scales::percent(prop, accuracy = 0.1)),
+    position = position_stack(vjust = 0.5)) +
+  scale_x_continuous(labels = scales::percent_format(),
+    limits = c(0, 1), expand = expansion(mult = c(0, 0.02))) +
+  ggtitle("H3K27ac proportions of ROIs")+
+  labs(
+    title = "H3K27ac proportions of ROIs",
+    x = "Proportion",
+    y = NULL,
+    fill = "Cluster"
+  ) +
+  theme_classic()
+
+```
+
+```{r LFC}
+ H3K27ac_toptable_list %>%
+  dplyr::filter(genes %in% H3K27ac_lookup$Peakid) %>% 
+  dplyr::select(group,genes,logFC) %>%
+  left_join(H3K27ac_lookup,by=c("genes"="Peakid")) %>% 
+  mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R")),
+         logFC=abs(logFC)) %>% 
+  group_by(group,cluster) %>% 
+  summarize(med_Set3=median(logFC),.groups="drop") %>% 
+  
+  ggplot(., aes(x=group, y=med_Set3, group=cluster, color=cluster))+
+  geom_point(size=4)+
+  geom_line(aes(linewidth = 4))+
+  theme_bw()+
+  ggtitle("LFC across time for H3K27ac sets")
+```
+
+```{r}
+
+
+
+
+
+
+```
+
+
+```{r}
+
+
+H3K27ac_Set2_data <- readRDS("data/RDS_files/H3K27ac_Set2_enrmotif_data.RDS")
+H3K27ac_Set3_data <- readRDS("data/RDS_files/H3K27ac_Set3_enrmotif_data.RDS")
+RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
+
+RNA_expressed <- RNA_full_toptable %>% 
+  dplyr::select(Entrez_ID, SYMBOL)
+
+### had to add in a special filter to account for the :: in the names of the motifs
+symbols <- str_to_upper(RNA_expressed$SYMBOL)
+
+filtered_H3K27ac_Set3_data <- H3K27ac_Set3_data %>%
+  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
+  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
+  dplyr::select(-motif_tokens)
+
+
+filtered_H3K27ac_Set2_data <- H3K27ac_Set2_data %>%
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
+  dplyr::select(-motif_tokens)
+KZFP_2026_list <- readxl::read_excel("data/Other_paper_data/human_protein_coding_KZFPs_Davis_natgen_2026.xlsx")
+
+filtered_H3K27ac_Set2_data <- filtered_H3K27ac_Set2_data %>% 
+  mutate(KZFP=if_else(motif_name %in%KZFP_2026_list$Label,"KZFP","not_KZFP"))
+filtered_H3K27ac_Set3_data <- filtered_H3K27ac_Set3_data %>% 
+  mutate(KZFP=if_else(motif_name %in%KZFP_2026_list$Label,"KZFP","not_KZFP"))
+
+plot_topnum_ratio_KZFP <- function(df, title = NULL, signif.num = 0.05,top_num=20, color_limits = NULL){
+  
+  ### getting the name of the data frame for plotting
+ if (is.null(title)) {
+    title <- deparse(substitute(df))
+ }
+ 
+  ### Getting the data ready
+  plot_df <- df %>%
+    dplyr::filter(EVALUE < signif.num) %>%
+    dplyr::filter(!ENR_RATIO<1) %>% 
+    group_by(CLUSTER) %>%
+    slice_min(RANK, with_ties = FALSE) %>%
+    ungroup() %>%
+    mutate(log10Evalue = -log10(EVALUE)) %>%
+    arrange(desc(log10Evalue)) %>%
+    mutate(motif_name_wrapped = stringr::str_wrap(motif_name, width = 10)) %>% 
+     slice_head(., n=top_num)
+#   
+  scaler <- max(plot_df$log10Evalue) / max(plot_df$ENR_RATIO)
+
+  ##plotting the data
+   ggplot(plot_df, aes(y = reorder(motif_name_wrapped, log10Evalue))) +
+    geom_col(aes(x = log10Evalue, fill=KZFP)) +
+    geom_point(aes(x = ENR_RATIO* scaler, color = ENR_RATIO), size = 4)+
+    scale_x_continuous(
+      expand = c(0, .125),
+      sec.axis = sec_axis(~ . / scaler, name = "Enrichment Ratio")
+    ) +
+   scale_color_viridis_c(
+  name = "Enrichment Ratio",
+  option = "plasma",
+  limits = color_limits,
+  oob = scales::squish
+)+
+    scale_y_discrete(labels = function(x) stringr::str_wrap(gsub("__.*$", "", x), width = 10)) +
+        theme_classic() +
+    ylab("Enriched TF motif") +
+    ggtitle(paste(title, "-", top_num))
+}
+
+```
+
+```{r TFplot, fig.width=8}
+
+global_combo2 <- bind_rows(filtered_H3K27ac_Set2_data, filtered_H3K27ac_Set3_data)
+
+global_limits2 <-  quantile(global_combo2$ENR_RATIO, probs = c(0.05, 0.95), na.rm = TRUE)
+### plot seperately
+  filt_A2 <- plot_topnum_ratio_KZFP(filtered_H3K27ac_Set3_data,signif.num = 0.05, top_num = 10,color_limits = global_limits2)
+  
+  filt_B2 <- plot_topnum_ratio_KZFP(filtered_H3K27ac_Set2_data,signif.num = 0.05, top_num = 10,color_limits = global_limits2)
+ ## Good ole cowplot to align plots vertically 
+  aligned_filt_plots <- cowplot::align_plots(filt_B2, filt_A2, align = "v", axis = "l")
+
+cowplot::plot_grid(aligned_filt_plots[[1]],
+          aligned_filt_plots[[2]],
+          ncol = 2)
+
+```
+
