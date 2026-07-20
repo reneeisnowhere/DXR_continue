@@ -503,7 +503,7 @@ pca_plot(
   col_var = "time",
   shape_var = "tx",
   text_var = "ind",   # <-- string, not vector
-  title = "H3K27me3 filtered lcpm PCA"
+  title = "H3K27ac filtered lcpm PCA"
 )   +theme_bw() 
 ```
 
