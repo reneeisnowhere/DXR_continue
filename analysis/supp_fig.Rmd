@@ -234,12 +234,68 @@ geom_violin(bw = 5) +
 ### Current Fig 3
 
 ```{r SF3}
+profile_all <- read.delim(
+  "c:/Users/renee/Other_projects_data/DXR_data/Promoter_enrichment/H3K27ac_TSS_enrichment/H3K27ac_TSS_profile_values.tsv",
+  header = FALSE,
+  sep = "\t",
+  fill = TRUE,
+  quote = "",
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+sample_rows <- profile_all[-c(1, 2), ]
+profile_long <- sample_rows %>%
+  as_tibble(.name_repair = "minimal") %>%
+  dplyr::rename(sample = 1,region_group = 2) %>%
+  mutate(across(-c(sample, region_group), as.character)) %>% 
+  pivot_longer(cols = -c(sample, region_group),
+    names_to = "matrix_column",
+    values_to = "signal") %>%
+  mutate(
+    matrix_column = as.integer(str_remove(matrix_column, "^V")),
+    signal = suppressWarnings(as.numeric(signal))) %>%
+  filter(!is.na(signal))%>%
+  group_by(sample, region_group) %>%
+  arrange(matrix_column, .by_group = TRUE) %>%
+  mutate(bin = row_number(),
+    position = -3000 + (bin - 0.5) * 25) %>%
+  ungroup() %>% 
+   mutate(
+    sample_id = sub("_noM_final$", "", sample)) %>% 
+  left_join(sampleinfo, by=c("sample_id"="Library ID")) %>% 
+  mutate(group=paste0(Treatment,"_",Timepoint)) %>% 
+  mutate(group=factor(group, levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T","DOX_24R","DOX_144R")),Treatment=factor(Treatment,levels = c("VEH","DOX")))
+  
+ggplot(profile_long, aes(x = position,y = signal, group = Individual,
+    color = Individual)) +
+  geom_line(linewidth = 0.7, alpha= 0.85) +
+  geom_vline(xintercept = 0,linetype = "dashed") +
+  ggplot2::facet_wrap(
+    facets = vars(group),
+    nrow = 2) +
+  scale_x_continuous(
+    breaks = c(-3000, 0, 3000),
+    labels = c("-3 kb", "TSS", "+3 kb")) +
+  labs(x = "Distance from TSS",
+       y = "CPM-normalized H3K27ac signal",
+       color = "Sample") +
+  theme_classic() +
+  scale_color_brewer(palette = "Set2")
+```
+
+
+### Current Fig 4 
+
+
+```{r SF4}
 
 ```
 
-### Current Fig 4
+
+### Current Fig 5
 peak counts
-```{r SF4 peak counts}
+```{r SF5 peak counts}
 
 Peak_n_FRIP <- H3K27ac_peaks %>% 
   left_join(sampleinfo, by =c("Sample"='Library ID')) %>% 
@@ -264,10 +320,10 @@ ggplot(Peak_n_FRIP, aes(x=trt_time, y = Count))+
 
 ```
 
-### Current Fig 5  
+### Current Fig 6 
 
 FRiP
-```{r SF5 Frip}
+```{r SF6 Frip}
 ggplot(Peak_n_FRIP, aes(x=trt_time, y = FRiP))+
   geom_boxplot(aes(fill=Treatment, alpha=.8))+
   geom_point(aes(color=Individual, size=4))+
@@ -281,7 +337,7 @@ ggplot(Peak_n_FRIP, aes(x=trt_time, y = FRiP))+
 
 ```
 
-### Current Fig 6
+### Current Fig 7
 
 ```{r}
 H3K27ac_merged <- read_delim("data/peaks/H3K27ac_FINAL_counts.txt",
@@ -379,7 +435,7 @@ plot_versus_pc <- function(df, pc_num, fac) {
 }
 ```
 
-```{r contributes}
+```{r SF7 contributes}
 
 H3K27ac_pr <- prcomp(t(lcpm_dge_H3K27ac)) 
 
@@ -409,10 +465,10 @@ plots_H3K27ac <- lapply(names(facs), function(f_label) {
 ```
 
 
-### Current Fig 7
+### Current Fig 8
 heatmap of log2cpm
 
-```{r heatmap, fig.width=10, fig.height=10}
+```{r SF8 heatmap, fig.width=10, fig.height=10}
 H3K27ac_merged_cor <- H3K27ac_merged_lcpm %>% 
   cor()
 
@@ -453,12 +509,12 @@ Heatmap(
 )
 ```
  
-### Current Fig 8
+### Current Fig 9
 
 volcano plots, venn, and proportions 
 
 A:
-```{r fig8a}
+```{r SF9a}
 H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
 
 
@@ -472,7 +528,7 @@ cowplot::plot_grid(H3K27ac_0R, H3K27ac_24R, H3K27ac_144R, rel_widths =c(1,1,1))
 ```
 
 venn diagram
-```{r fig8b}
+```{r SF9B}
 DOX_0R <- H3K27ac_toplist$H3K27ac_24T
 DOX_0R <- DOX_0R %>% dplyr::filter(adj.P.Val<0.05)
 
@@ -496,7 +552,7 @@ ggVennDiagram(list("DOX_0R"=DOX_0R$genes,
 
 
 
-```{r fig8c}
+```{r SF9c}
 H3K27ac_toptable_list %>% 
   dplyr::select(group,genes,logFC,adj.P.Val) %>% 
   mutate(sig_val=if_else(adj.P.Val<0.05,"sig","not_sig")) %>% 
@@ -513,9 +569,9 @@ H3K27ac_toptable_list %>%
 
 ```
 
-### Current Fig 9
+### Current Fig 10
 
-```{r Fig9AB}
+```{r SF10a}
 cormotif_H3K27ac <- readRDS("data/Cormotif_data/Cormotif_initial_H3K27ac.RDS")
 
 plotIC(cormotif_H3K27ac)
@@ -601,7 +657,7 @@ plot_example_lcpm <- function(examples, set){
 }
 ```
 
-```{r fig9exmp plots}
+```{r SF10C plots}
 plot_example_lcpm(examp_H3K27ac_1,"Set 1")
 
 plot_example_lcpm(examp_H3K27ac_2,"Set 2")
@@ -610,11 +666,11 @@ plot_example_lcpm(examp_H3K27ac_3,"Set 3")
 ```
 
 
-### Current Fig 10  
+### Current Fig 11  
 
 
 
-```{r Fig10A}
+```{r Fig11A}
 
 categories <- c(
   "Distal Intergenic", "Downstream (<=300)", 
@@ -644,7 +700,7 @@ plotAnnoBar(peakAnnoList_H3K27ac_std[c(4,1,2,3)]) +
   ggtitle("H3K27ac Feature Distribution")
 ```
 
-```{r Fig10B}
+```{r Fig11B}
 
 H3K27ac_cre_df <- readRDS("data/RDS_files/H3K27ac_cre_df.RDS")
 scale_fill_cCREs <-  function(...){
@@ -671,9 +727,9 @@ ggplot(H3K27ac_cre_counts, aes(x = cluster, y = percent, fill = cCRE_class)) +
  
 ```
 
-### Current Fig 11
+### Current Fig 12
 
-```{r SF11, fig.width=7,fig.height=8}
+```{r SF12, fig.width=7,fig.height=8}
 ### make the summary of fragments for all histones
 other_frag_summary_file <- fastq_fragments %>% 
   mutate(file=str_remove(file, "_R[12]\\.fastq\\.gz$")) %>% 
@@ -709,9 +765,9 @@ other_frag_summary_file %>%
 
 ```
  
-### Current Fig 12  
+### Current Fig 13  
 
-```{r SF12,fig.width=10,fig.height=10}
+```{r SF13,fig.width=10,fig.height=10}
 annotated_combo_df %>% 
   mutate(Timepoint=factor(Timepoint, levels = c("24T","24R","144R"),labels = c("0R","24R","144R")),
          Treatment=factor(Treatment, levels = c("VEH","DOX"))) %>% 
@@ -734,16 +790,16 @@ geom_violin(bw = 5) +
 
 
 ```
-### Current Fig 13 
+### Current Fig 14 
  
-```{r SF13}
+```{r SF14}
 
 ```
  
  
-### Current Fig 14  
+### Current Fig 15  
 
-```{r SF14,fig.width=6,fig.height=10}
+```{r SF15,fig.width=6,fig.height=10}
 Peak_n_FRIP_other <- H3K27me3_peaks %>% 
   bind_rows(H3K9me3_peaks) %>% 
   bind_rows(H3K36me3_peaks) %>% 
@@ -770,9 +826,9 @@ ggplot(Peak_n_FRIP_other, aes(x=trt_time, y = Count))+
   
 ```
 
-### Current Fig 15
+### Current Fig 16
 
-```{r SF15,fig.width=6,fig.height=10}
+```{r SF16,fig.width=6,fig.height=10}
 ggplot(Peak_n_FRIP_other, aes(x=trt_time, y = FRiP))+
   geom_boxplot(aes(fill=Treatment, alpha=.8))+
   geom_point(aes(color=Individual, size=4))+
