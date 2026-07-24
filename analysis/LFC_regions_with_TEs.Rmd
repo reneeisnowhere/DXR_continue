@@ -145,7 +145,8 @@ Heatmap(
   row_title_rot = 0,
   show_row_names = FALSE,
   ## use precomputed clustering
-  cluster_rows = FALSE)
+  cluster_rows = FALSE,
+  cluster_columns = FALSE)
 
 
 ```
