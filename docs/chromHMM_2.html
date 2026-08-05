@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-05-22" />
+<meta name="date" content="2026-08-05" />
 
 <title>ChromHMM_2</title>
 
@@ -37,6 +37,15 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.34.0/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -361,7 +370,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">ChromHMM_2</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-05-22</h4>
+<h4 class="date">2026-08-05</h4>
 
 </div>
 
@@ -390,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-05-22
+<strong>Last updated:</strong> 2026-08-05
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreed981cf135244d471b6cb0b0b22b29cad019b3cd0targetblankd981cf1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree983dd5a9bbbdd54888df99b0a0448e027f3b200atargetblank983dd5aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/d981cf135244d471b6cb0b0b22b29cad019b3cd0" target="_blank">d981cf1</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/983dd5a9bbbdd54888df99b0a0448e027f3b200a" target="_blank">983dd5a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreed981cf135244d471b6cb0b0b22b29cad019b3cd0targetblankd981cf1a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree983dd5a9bbbdd54888df99b0a0448e027f3b200atargetblank983dd5aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/d981cf135244d471b6cb0b0b22b29cad019b3cd0" target="_blank">d981cf1</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/983dd5a9bbbdd54888df99b0a0448e027f3b200a" target="_blank">983dd5a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -556,10 +565,13 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
+    Ignored:    data/H3K27ac_LTR10E_integrant_anno.RDS
+    Ignored:    data/H3K27ac_MER61E_integrant_anno.RDS
     Ignored:    data/MER61intermediatemarking_protein.RDS
     Ignored:    data/Other_paper_data/
     Ignored:    data/RDS_files/
@@ -567,9 +579,12 @@ Ignored files:
     Ignored:    data/alignment_summary.txt
     Ignored:    data/all_peak_final_dataframe.txt
     Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_p53_canonical.RDS
     Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/lookup_table_andstuff.txt
     Ignored:    data/motif_lists/
     Ignored:    data/number_frag_peaks_summary.txt
+    Ignored:    data/p53halfsite_TE_ids.RDS
 
 Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
@@ -581,17 +596,31 @@ Untracked files:
     Untracked:  analysis/H3K27ac_TE_investigation_200bp.Rmd
     Untracked:  analysis/H3K27me3_TE_investigation.Rmd
     Untracked:  analysis/H3K36me3_TE_investigation.Rmd
-    Untracked:  analysis/LFC_regions_with_TEs.Rmd
+    Untracked:  analysis/HIstone_supp_profiles.Rmd
+    Untracked:  analysis/Main_fig2.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
     Untracked:  analysis/drill_down_KZFPs.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
     Untracked:  code/For_john.R
+    Untracked:  code/RNA_gene_locations.R
+    Untracked:  code/State_color_code_igv.R
+    Untracked:  code/score_phylop.py
+    Untracked:  hg38_TSS_1bp.bed
     Untracked:  other_analysis/
 
 Unstaged changes:
-    Modified:   analysis/H3K27me3_TE_overlap_extend.Rmd
-    Modified:   analysis/TP53_motif_interrogation.Rmd
+    Modified:   analysis/Goanalysis_TFs.Rmd
+    Modified:   analysis/H3K27_TE_overlap_extend.Rmd
+    Modified:   analysis/H3K27ac_TEtype.Rmd
+    Modified:   analysis/H3K27ac_cisRE.Rmd
+    Modified:   analysis/LFC_regions_with_TEs.Rmd
+    Modified:   analysis/LTR10E_build.Rmd
+    Modified:   analysis/MER61E_build.Rmd
+    Modified:   analysis/chromHMM.Rmd
+    Modified:   analysis/computeMatrixplots.Rmd
+    Modified:   analysis/supp_fig.Rmd
+    Modified:   code/corMotifcustom.R
 
 </code></pre>
 <p>
@@ -636,6 +665,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/983dd5a9bbbdd54888df99b0a0448e027f3b200a/analysis/chromHMM_2.Rmd" target="_blank">983dd5a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-05
+</td>
+<td>
+adding updates to state assignments
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/chromHMM_2.html" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -826,7 +889,24 @@ cluster_lookup &lt;- annotated_H3K27ac_ext200 %&gt;%
 
 # annotated_H3K27ac_ext200 %&gt;% 
 #   dplyr::filter(str_detect(repName,&quot;^HERVIP&quot;))
-KZFP_tss_gr &lt;- import(&quot;data/Bed_exports/KZFP_tss_ensembl.bed&quot;)</code></pre>
+KZFP_tss_gr &lt;- import(&quot;data/Bed_exports/KZFP_tss_ensembl.bed&quot;)
+acute_repid &lt;- annotated_H3K27ac_ext200 %&gt;% 
+  dplyr::filter(cluster==&quot;Set_3&quot;) %&gt;% 
+   tidyr::separate_longer_delim(
+    cols = c(repClass, repFamily, repName, repID),
+    delim = &quot;;&quot;
+  ) %&gt;% 
+  dplyr::filter(repName==&quot;MER61E&quot;) %&gt;% 
+  pull(repID)
+
+acute_LTR_repid &lt;- annotated_H3K27ac_ext200 %&gt;% 
+  dplyr::filter(cluster==&quot;Set_3&quot;) %&gt;% 
+   tidyr::separate_longer_delim(
+    cols = c(repClass, repFamily, repName, repID),
+    delim = &quot;;&quot;
+  ) %&gt;% 
+  dplyr::filter(repName==&quot;LTR10E&quot;) %&gt;% 
+  pull(repID)</code></pre>
 </div>
 <div id="loading-state-segment-files" class="section level3">
 <h3>Loading State segment files</h3>
@@ -1165,6 +1245,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-8-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a39c65d43e387fb125332425eb19c723559af3/docs/figure/chromHMM_2.Rmd/unnamed-chunk-8-1.png" target="_blank">68a39c6</a>
 </td>
 <td>
@@ -1209,6 +1300,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-8-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a39c65d43e387fb125332425eb19c723559af3/docs/figure/chromHMM_2.Rmd/unnamed-chunk-8-2.png" target="_blank">68a39c6</a>
@@ -1259,6 +1361,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-8-3.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a39c65d43e387fb125332425eb19c723559af3/docs/figure/chromHMM_2.Rmd/unnamed-chunk-8-3.png" target="_blank">68a39c6</a>
@@ -1320,6 +1433,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-9-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a39c65d43e387fb125332425eb19c723559af3/docs/figure/chromHMM_2.Rmd/unnamed-chunk-9-1.png" target="_blank">68a39c6</a>
@@ -1438,6 +1562,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-10-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/68a39c65d43e387fb125332425eb19c723559af3/docs/figure/chromHMM_2.Rmd/unnamed-chunk-10-2.png" target="_blank">68a39c6</a>
 </td>
 <td>
@@ -1522,6 +1657,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-11-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-11-1.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -1581,6 +1727,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-11-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-11-2.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -1623,10 +1780,10 @@ reneeisnowhere
  9 chr13:64274294-64275039     6
 10 chr13:83941331-83942800     6
 # ℹ 57 more rows</code></pre>
-<p>Cases are incomplete. Time to filter out. note there are 68 MER61E
-overlapping regions in my data. For quantification purposes, 16 are not
-assigned a cluster, 40 are assigned Acute cluster (set 3) and 12 are
-assigned non response cluster (set 1)</p>
+<p>Cases NOT incomplete anymore. Time to filter out. note there are 68
+MER61E overlapping regions in my data. For quantification purposes, 16
+are not assigned a cluster, 40 are assigned Acute cluster (set 3) and 12
+are assigned non response cluster (set 1)</p>
 <p>Why are they incomplete: maybe there is reduced chromatin state
 confidence? I have tested to make sure that there is</p>
 <pre class="r"><code>trajectory_clean &lt;- trajectory %&gt;%
@@ -1665,6 +1822,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/clean-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/clean-1.png" target="_blank">5fdd23a</a>
@@ -1724,6 +1892,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/clean-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/clean-2.png" target="_blank">5fdd23a</a>
@@ -1820,6 +1999,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-12-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-12-1.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -1884,6 +2074,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-13-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-13-1.png" target="_blank">5fdd23a</a>
@@ -2121,6 +2322,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-1.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -2170,6 +2382,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-2.png" target="_blank">5fdd23a</a>
@@ -2223,6 +2446,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-3.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-3.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -2274,6 +2508,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-4.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-4.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -2323,6 +2568,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-5.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-5.png" target="_blank">5fdd23a</a>
@@ -2402,6 +2658,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-6.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-6.png" target="_blank">5fdd23a</a>
@@ -2794,6 +3061,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-13.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-13.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -2843,6 +3121,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-14.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-14.png" target="_blank">5fdd23a</a>
@@ -2896,6 +3185,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-15.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-15.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -2947,6 +3247,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-16.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-16.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -2996,6 +3307,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-17.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-17.png" target="_blank">5fdd23a</a>
@@ -3077,6 +3399,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-18.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-18.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -3126,6 +3459,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-19.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-19.png" target="_blank">5fdd23a</a>
@@ -3179,6 +3523,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-20.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-20.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -3228,6 +3583,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-21.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-21.png" target="_blank">5fdd23a</a>
@@ -3281,6 +3647,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-22.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-22.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -3330,6 +3707,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-23.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-23.png" target="_blank">5fdd23a</a>
@@ -3411,6 +3799,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-24.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-24.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -3460,6 +3859,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-25.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-25.png" target="_blank">5fdd23a</a>
@@ -3513,6 +3923,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-26.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-26.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -3562,6 +3983,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-27.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-27.png" target="_blank">5fdd23a</a>
@@ -3615,6 +4047,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-28.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-28.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -3664,6 +4107,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-29.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-29.png" target="_blank">5fdd23a</a>
@@ -3743,6 +4197,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-30.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-30.png" target="_blank">5fdd23a</a>
@@ -4130,6 +4595,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-37.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-37.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -4179,6 +4655,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-38.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-38.png" target="_blank">5fdd23a</a>
@@ -4232,6 +4719,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-39.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-39.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -4283,6 +4781,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-40.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-40.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -4332,6 +4841,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-41.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-41.png" target="_blank">5fdd23a</a>
@@ -4411,6 +4931,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61B-42.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/MER61B-42.png" target="_blank">5fdd23a</a>
@@ -5130,6 +5661,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-7.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-7.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -5179,6 +5721,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-8.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-8.png" target="_blank">5fdd23a</a>
@@ -5232,6 +5785,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-9.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-9.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -5283,6 +5847,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-10.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-10.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -5332,6 +5907,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-11.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-11.png" target="_blank">5fdd23a</a>
@@ -5413,6 +5999,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-12.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-12.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -5466,6 +6063,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-13.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-13.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -5515,6 +6123,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-14.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-14.png" target="_blank">5fdd23a</a>
@@ -5568,6 +6187,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-15.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-15.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -5619,6 +6249,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-16.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-16.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -5668,6 +6309,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-17.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-17.png" target="_blank">5fdd23a</a>
@@ -5747,6 +6399,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-18.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-17-18.png" target="_blank">5fdd23a</a>
@@ -6123,18 +6786,203 @@ reneeisnowhere
 SVAF_results</code></pre>
 <pre><code>$DOX_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-2">
+Past versions of unnamed-chunk-18-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $DOX_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-3">
+Past versions of unnamed-chunk-18-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-3.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-4">
+Past versions of unnamed-chunk-18-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-4.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $completion_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-5">
+Past versions of unnamed-chunk-18-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-5.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $QC_data
 # A tibble: 48 × 7
@@ -6166,22 +7014,244 @@ $QC_missing
 
 $qc_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-6">
+Past versions of unnamed-chunk-18-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-6.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>L1PA3_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;L1PA3&quot;)
 L1PA3_results</code></pre>
 <pre><code>$DOX_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-7">
+Past versions of unnamed-chunk-18-7.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-7.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-8">
+Past versions of unnamed-chunk-18-8.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-8.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $DOX_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-9">
+Past versions of unnamed-chunk-18-9.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-9.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-10">
+Past versions of unnamed-chunk-18-10.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-10.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $completion_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-11">
+Past versions of unnamed-chunk-18-11.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-11.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $QC_data
 # A tibble: 60 × 7
@@ -6213,22 +7283,244 @@ $QC_missing
 
 $qc_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-12">
+Past versions of unnamed-chunk-18-12.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-12" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-12.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ALUSX1_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;AluSx1&quot;)
 ALUSX1_results</code></pre>
 <pre><code>$DOX_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-13.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-13">
+Past versions of unnamed-chunk-18-13.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-13" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-13.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-14.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-14">
+Past versions of unnamed-chunk-18-14.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-14" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-14.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $DOX_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-15.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-15">
+Past versions of unnamed-chunk-18-15.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-15" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-15.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-16.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-16">
+Past versions of unnamed-chunk-18-16.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-16" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-16.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $completion_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-17.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-17">
+Past versions of unnamed-chunk-18-17.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-17" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-17.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $QC_data
 # A tibble: 4,794 × 7
@@ -6260,22 +7552,244 @@ $QC_missing
 
 $qc_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-18.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-18">
+Past versions of unnamed-chunk-18-18.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-18" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-18.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>THE1C_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;THE1C&quot;)
 THE1C_results</code></pre>
 <pre><code>$DOX_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-19.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-19">
+Past versions of unnamed-chunk-18-19.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-19" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-19.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-20.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-20">
+Past versions of unnamed-chunk-18-20.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-20" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-20.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $DOX_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-21.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-21">
+Past versions of unnamed-chunk-18-21.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-21" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-21.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-22.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-22">
+Past versions of unnamed-chunk-18-22.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-22" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-22.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $completion_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-23.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-23">
+Past versions of unnamed-chunk-18-23.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-23" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-23.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $QC_data
 # A tibble: 184 × 7
@@ -6307,22 +7821,244 @@ $QC_missing
 
 $qc_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-18-24.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-24">
+Past versions of unnamed-chunk-18-24.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-24" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-18-24.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>Tigger7_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;Tigger7&quot;)
 Tigger7_results</code></pre>
 <pre><code>$DOX_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-2">
+Past versions of unnamed-chunk-19-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $DOX_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-3">
+Past versions of unnamed-chunk-19-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-3.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-4">
+Past versions of unnamed-chunk-19-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-4.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $completion_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-5">
+Past versions of unnamed-chunk-19-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-5.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $QC_data
 # A tibble: 256 × 7
@@ -6354,22 +8090,244 @@ $QC_missing
 
 $qc_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-6">
+Past versions of unnamed-chunk-19-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-6.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>Chap1mam_results &lt;- plot_trajectory_TE_spec(annotated_H3K27ac_ext200, all_results, &quot;Chap1_Mam&quot;)
 Chap1mam_results</code></pre>
 <pre><code>$DOX_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-7">
+Past versions of unnamed-chunk-19-7.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-7.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-8">
+Past versions of unnamed-chunk-19-8.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-8.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $DOX_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-9">
+Past versions of unnamed-chunk-19-9.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-9.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_clean</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-10.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-10">
+Past versions of unnamed-chunk-19-10.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-10.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $completion_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-11.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-11">
+Past versions of unnamed-chunk-19-11.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-11.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $QC_data
 # A tibble: 96 × 7
@@ -6401,6 +8359,43 @@ $QC_missing
 
 $qc_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-19-12.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-12">
+Past versions of unnamed-chunk-19-12.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-12" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-19-12.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="kzfp-tss" class="section level3">
 <h3>KZFP TSS</h3>
@@ -6654,6 +8649,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-23-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-23-1.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -6694,6 +8700,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-23-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-23-2.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -6732,6 +8749,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-23-3.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-23-3.png" target="_blank">5fdd23a</a>
@@ -6802,6 +8830,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-23-4.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/5fdd23ab80585c192a038c97c25a933d663527b9/docs/figure/chromHMM_2.Rmd/unnamed-chunk-23-4.png" target="_blank">5fdd23a</a>
 </td>
 <td>
@@ -6852,12 +8891,123 @@ KZFP_1kb_results_df &lt;-
 <pre class="r"><code>plot_trajectory_KZFP(KZFP_50bp_results_df, &quot;KZFP TSS +/- 50bp&quot;)</code></pre>
 <pre><code>$DOX_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-25-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
+Past versions of unnamed-chunk-25-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-25-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-25-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-25-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-2">
+Past versions of unnamed-chunk-25-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-25-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-25-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $completion_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-25-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-3">
+Past versions of unnamed-chunk-25-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-25-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-25-3.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $QC_data
 # A tibble: 754 × 6
@@ -6889,15 +9039,163 @@ $QC_missing
 
 $qc_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-25-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-4">
+Past versions of unnamed-chunk-25-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-25-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-25-4.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_trajectory_KZFP(KZFP_1kb_results_df, &quot;KZFP TSS +/- 1kb&quot;)</code></pre>
 <pre><code>$DOX_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-26-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
+Past versions of unnamed-chunk-26-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-26-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $VEH_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-26-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-2">
+Past versions of unnamed-chunk-26-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-26-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $completion_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-26-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-3">
+Past versions of unnamed-chunk-26-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-26-3.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $QC_data
 # A tibble: 754 × 6
@@ -6929,6 +9227,43 @@ $QC_missing
 
 $qc_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-26-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-4">
+Past versions of unnamed-chunk-26-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-26-4.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>KZFP_results_50bp_list$VEH_24T %&gt;% 
   dplyr::filter(!is.na(roi_width)) %&gt;% 
   count(Tx_ID) %&gt;% dplyr::filter(n&gt;1)</code></pre>
@@ -6982,7 +9317,7 @@ state_transitions &lt;- data.frame(
   VEH_24R  = assign_state(all_segments, chrom_24R_VEH),
   VEH_144R = assign_state(all_segments, chrom_144R_VEH))
 
-### summarizing state transitions becuase of number
+### summarizing state transitions because of number
 # transition_counts &lt;- state_transitions %&gt;%
 #   count(DOX_24T, DOX_24R, DOX_144R, VEH_24T,VEH_24R,VEH_144R)
 
@@ -7024,6 +9359,43 @@ ggplot( aes(x = TX_timepoint, y = prop, fill = State)) +
   theme_minimal()+
   scale_fill_manual(values = state_colors)</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-29-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-29-1">
+Past versions of unnamed-chunk-29-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-29-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/unnamed-chunk-29-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># names(state_transitions)
 # grep(&quot;_anno&quot;, names(state_transitions), value = TRUE)
 # str(state_transitions)
@@ -7099,7 +9471,268 @@ MER61E_trajectory_broad &lt;- MER61E_dominant %&gt;%
   dplyr::select(te_id, te_name, Condition, Timepoint, Broad_state) %&gt;%
   pivot_wider(
     names_from = c(Condition, Timepoint),
-    values_from = Broad_state)</code></pre>
+    values_from = Broad_state)
+  all_results</code></pre>
+<pre><code># A tibble: 14,145,024 × 8
+   Peak_name                state total_width  frac cluster   Name  recode Set  
+   &lt;chr&gt;                    &lt;chr&gt;       &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;fct&gt; &lt;fct&gt;  &lt;chr&gt;
+ 1 chr1:100006296-100006947 E1             NA 0     not_assi… Hete… N      VEH_…
+ 2 chr1:100006296-100006947 E10            NA 0     not_assi… Biva… H      VEH_…
+ 3 chr1:100006296-100006947 E11           191 0.476 not_assi… Acti… E      VEH_…
+ 4 chr1:100006296-100006947 E12            NA 0     not_assi… Stro… F      VEH_…
+ 5 chr1:100006296-100006947 E13           200 0.499 not_assi… Acti… A      VEH_…
+ 6 chr1:100006296-100006947 E14            NA 0     not_assi… Very… D      VEH_…
+ 7 chr1:100006296-100006947 E15            NA 0     not_assi… Geni… B      VEH_…
+ 8 chr1:100006296-100006947 E16            NA 0     not_assi… Geni… C      VEH_…
+ 9 chr1:100006296-100006947 E2             NA 0     not_assi… Quie… P      VEH_…
+10 chr1:100006296-100006947 E3             NA 0     not_assi… Repr… M      VEH_…
+# ℹ 14,145,014 more rows</code></pre>
+<p>The above code created my dominant state dataframe, then a detailed
+version and a broad version of each dominant state.</p>
+<p>We wanted to investigate how many states there are within MER61E
+groups and what the breakdown is.</p>
+<pre class="r"><code>MER61E_state_wide &lt;- MER61E_results_df %&gt;%
+  group_by(te_id, Set, state) %&gt;%
+  summarise(
+    TE_width = dplyr::first(TE_width),
+    total_width = sum(total_width, na.rm = TRUE),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  mutate(
+    frac = total_width / TE_width
+  ) %&gt;%
+  pivot_wider(
+    id_cols = c(te_id, Set, TE_width),
+    names_from = state,
+    values_from = c(total_width, frac),
+    names_glue = &quot;{state}_{.value}&quot;,
+    values_fill = list(
+      total_width = 0,
+      frac = 0
+    )
+  ) %&gt;%
+  arrange(te_id, Set)
+ 
+ MER61E_state_mixed &lt;- MER61E_state_wide %&gt;%
+  filter(
+    !if_any(ends_with(&quot;_frac&quot;), ~ .x == 1)
+  )
+ 
+ 
+ MER61E_fifty_fifty &lt;- MER61E_state_wide %&gt;%
+  rowwise() %&gt;%
+  filter(
+    sum(
+      dplyr::near(
+        c_across(ends_with(&quot;_frac&quot;)),
+        0.5,
+        tol = 1e-6
+      )
+    ) == 2,
+    dplyr::near(
+      sum(c_across(ends_with(&quot;_frac&quot;)), na.rm = TRUE),
+      1,
+      tol = 1e-6
+    )
+  ) %&gt;%
+  ungroup()
+ 
+MER61E_state_counts &lt;- MER61E_state_wide %&gt;%
+  rowwise() %&gt;%
+  mutate(
+    n_states = sum(c_across(ends_with(&quot;_frac&quot;)) &gt; 0, na.rm = TRUE)
+  ) %&gt;%
+  ungroup() %&gt;%
+  select(te_id, Set, TE_width, n_states)
+  
+  
+  
+  
+MER61E_state_counts %&gt;% 
+     group_by(n_states, Set) %&gt;% 
+     tally() %&gt;% 
+     pivot_wider(id_cols = Set, values_from = n, names_from = n_states) %&gt;% 
+  datatable(.,caption = &quot;MER61E state  breakdowns&quot;,
+            options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-c7fc7fd0704f0fe11c1f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c7fc7fd0704f0fe11c1f">{"x":{"filter":"none","vertical":false,"caption":"<caption>MER61E state  breakdowns<\/caption>","data":[["DOX_144R","DOX_24R","DOX_24T","VEH_144R","VEH_24R","VEH_24T"],[168,164,164,163,170,165],[85,80,89,98,83,91],[14,21,12,6,12,10],[null,2,2,null,2,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Set<\/th>\n      <th>1<\/th>\n      <th>2<\/th>\n      <th>3<\/th>\n      <th>4<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"name":"Set","targets":0},{"name":"1","targets":1},{"name":"2","targets":2},{"name":"3","targets":3},{"name":"4","targets":4}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<p>I also created a data frame of just the single states and the
+directly 50/50 split states.</p>
+<pre class="r"><code>state_frac_long &lt;- MER61E_state_wide %&gt;%
+   rowwise() %&gt;%
+  mutate(
+    n_states = sum(c_across(ends_with(&quot;_frac&quot;)) &gt; 0, na.rm = TRUE)
+  ) %&gt;%
+  ungroup() %&gt;% 
+  pivot_longer(
+    cols = ends_with(&quot;_frac&quot;),
+    names_to = &quot;state&quot;,
+    values_to = &quot;frac&quot;
+  ) %&gt;%
+  mutate(
+    state = sub(&quot;_frac$&quot;, &quot;&quot;, state)
+  ) %&gt;%
+  filter(frac &gt; 0) %&gt;% 
+  left_join(States_anno[1:2], by=c(&quot;state&quot;=&quot;State&quot;))
+
+ggplot(
+  state_frac_long %&gt;% filter(frac &gt; 0),
+  aes(x = Name, y = frac)
+) +
+  geom_violin(trim = TRUE, scale = &quot;width&quot;) +
+  geom_boxplot(
+    width = 0.15,
+    outlier.shape = NA
+  ) +
+  labs(
+    x = &quot;ChromHMM state&quot;,
+    y = &quot;Fraction of MER61E element covered&quot;,
+    title = &quot;Distribution of nonzero ChromHMM state fractions across all MER61E elements&quot;
+  ) +
+  theme_classic()+
+  theme(axis.text.x=element_text(angle = 90))</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-31-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>two_state_long &lt;- state_frac_long %&gt;%
+  filter(n_states == 2)
+ggplot(two_state_long,
+       aes(x = frac)) +
+  geom_histogram(binwidth = 0.05) +
+  labs(
+    x = &quot;Fraction of TE covered by two states&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_classic()+
+  theme(axis.text.x=element_text(angle = 90))</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-31-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>major_minor &lt;- two_state_long %&gt;%
+  group_by(te_id, Set) %&gt;%
+  arrange(desc(frac), .by_group = TRUE) %&gt;%
+  mutate(rank = c(&quot;Major&quot;, &quot;Minor&quot;)) %&gt;%
+  ungroup()
+
+
+major_minor_MER &lt;- two_state_long %&gt;%
+  group_by(te_id, Set) %&gt;%
+  arrange(desc(frac), .by_group = TRUE) %&gt;%
+  summarise(
+    major_state = dplyr::first(state),
+    major_frac  = dplyr::first(frac),
+    minor_state = dplyr::last(state),
+    minor_frac  = dplyr::last(frac),
+    .groups = &quot;drop&quot;
+  )
+
+ggplot(major_minor,
+       aes(rank, frac)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.15, alpha = 0.4) +
+  theme_classic()+
+  ggtitle(&quot;Distribution of major and minor fractions&quot;)</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-31-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>   major_minor %&gt;%
+  group_by(te_id, Set) %&gt;%
+  arrange(desc(frac), .by_group = TRUE) %&gt;%
+  summarise(
+    major_state = dplyr::first(state),
+    major_frac  = dplyr::first(frac),
+    minor_state = dplyr::last(state),
+    minor_frac  = dplyr::last(frac),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  count(major_state, minor_state, sort = TRUE) %&gt;% 
+     left_join(States_anno[,1:2],by=c(&quot;major_state&quot;=&quot;State&quot;)) %&gt;% 
+     left_join(States_anno[1:2], by=c(&quot;minor_state&quot;=&quot;State&quot;)) %&gt;% 
+     dplyr::rename(&quot;Minor_name&quot;=Name.y, &quot;Major_name&quot;=Name.x) %&gt;% 
+     dplyr::select(Major_name, Minor_name,n,major_state,minor_state) %&gt;% 
+   
+   datatable(.,caption=&quot;MER61E state pairs (for 2 state fractions)&quot;,
+               options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1aee943cb026952af47d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1aee943cb026952af47d">{"x":{"filter":"none","vertical":false,"caption":"<caption>MER61E state pairs (for 2 state fractions)<\/caption>","data":[["Repressed_ZFP_genes","Repressed_ZFP_genes","Repressed_Heterochromatin","Active_Enhancer","Active_TSS","Active_Enhancer","Heterochromatin_1","Active_Enhancer","Strong_Polycomb_Repressed","Heterochromatin_1","Heterochromatin_2","Very_Weak_Transcription","Active_TSS","Weak_Genic_Enhancer","Heterochromatin_1","Active_Enhancer","Active_TSS","Heterochromatin_1","Active_Enhancer","Repressed_ZFP_genes","Strong_Polycomb_Repressed","Polycomb_Repressed","Weak_Genic_Enhancer","Heterochromatin_1","Bivalent_Poised_TSS","Strong_Genic_Enhancer","Active_TSS","Active_TSS","Repressed_Heterochromatin","Repressed_ZFP_genes","Strong_Polycomb_Repressed","Heterochromatin_2","Weak_Genic_Enhancer"],["Repressed_Heterochromatin","Heterochromatin_1","Repressed_ZFP_genes","Very_Weak_Transcription","Active_Enhancer","Heterochromatin_1","Repressed_ZFP_genes","Active_TSS","Heterochromatin_2","Active_Enhancer","Strong_Polycomb_Repressed","Active_Enhancer","Heterochromatin_1","Heterochromatin_2","Weak_Genic_Enhancer","Repressed_ZFP_genes","Repressed_ZFP_genes","Repressed_Heterochromatin","Bivalent_Poised_TSS","Active_TSS","Repressed_Heterochromatin","Heterochromatin_2","Bivalent_Poised_TSS","Very_Weak_Transcription","Weak_Genic_Enhancer","Active_TSS","Very_Weak_Transcription","Genic_Strong_Transcription","Heterochromatin_1","Active_Enhancer","Repressed_ZFP_genes","Weak_Genic_Enhancer","Heterochromatin_1"],[170,90,71,35,32,25,23,17,7,6,6,5,4,4,3,3,3,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1],["E4","E4","E3","E11","E13","E11","E1","E11","E5","E1","E7","E14","E13","E9","E1","E11","E13","E1","E11","E4","E5","E8","E9","E1","E10","E12","E13","E13","E3","E4","E5","E7","E9"],["E3","E1","E4","E14","E11","E1","E4","E13","E7","E11","E5","E11","E1","E7","E9","E4","E4","E3","E10","E13","E3","E7","E10","E14","E9","E13","E14","E15","E1","E11","E4","E9","E1"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Major_name<\/th>\n      <th>Minor_name<\/th>\n      <th>n<\/th>\n      <th>major_state<\/th>\n      <th>minor_state<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"Major_name","targets":0},{"name":"Minor_name","targets":1},{"name":"n","targets":2},{"name":"major_state","targets":3},{"name":"minor_state","targets":4}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<p>The above plot is showing the overall distribution of fractions of
+MER61E elements by each state in a violin plot. Note only 15 of 16
+states are showing. The absent state is E6 aka Bivalent_Enhancer.</p>
+<pre class="r"><code>ggplot(two_state_long,
+       aes(Name, frac)) +
+  geom_boxplot() +
+  theme_classic() +
+  theme(axis.text.x =
+          element_text(angle = 45, hjust = 1))+
+  ggtitle(&quot;Fraction of MER61E elements assigned to each ChromHMM state\n(all exactly two-state overlaps)&quot;)+
+  theme(axis.text.x=element_text(angle = 90))</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-32-1.png" alt="" width="672" style="display: block; margin: auto;" />
+The Fraction of MER61E elements-twostate overlaps plot above is a
+boxplot showing the distribution of fractions of the 526 2-state
+instances. Note this plot is also missing E6 Bivalent_Enhancer marks; E2
+aka Quiescent_Low_Coverage,and E16 Genic_Weak_Transcription.</p>
+<p>Now I am interested in how these two state (pairs, major/minor) are
+occuring…</p>
+<pre class="r"><code>major_minor_MER %&gt;%
+   
+  ggplot(., aes(x=major_frac))+
+  geom_histogram(binwidth = 0.05)</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-33-1.png" alt="" width="672" style="display: block; margin: auto;" />
+This is the plot of the Major fraction amounts. A fraction that is
+labelled major occurs when grouping by te_id and Set
+(treatment-timepoint) then ordering by the fraction. The first value is
+labelled Major, the second value is labelled Minor. In the case of ties
+(3 instances) the state that came first from left to right on the TE is
+considered the Major state. (note, in R the default order of states is
+(E1, E10, E11,…, E16, E2, E3,……,E9)) (how r orders character
+strings)</p>
+<pre class="r"><code>te_state_frequency_MER &lt;- MER61E_state_counts %&gt;%
+  count(te_id, n_states, name = &quot;n_sets&quot;) %&gt;%
+  arrange(te_id, n_states)
+
+te_state_frequency_wide_MER &lt;- MER61E_state_counts %&gt;%
+  count(te_id, n_states, name = &quot;n_sets&quot;) %&gt;%
+  mutate(
+    n_states = paste0(&quot;n_states_&quot;, n_states)
+  ) %&gt;%
+  pivot_wider(
+    names_from = n_states,
+    values_from = n_sets,
+    values_fill = 0
+  )
+te_state_frequency_wide_MER %&gt;% 
+datatable(.,caption=&quot;MER61E state frequency&quot;,
+               options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-15ac70e14e0faa7e6fac" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-15ac70e14e0faa7e6fac">{"x":{"filter":"none","vertical":false,"caption":"<caption>MER61E state frequency<\/caption>","data":[["chr10:107585335-107585905:5","chr10:129687289-129687703:5","chr10:16360166-16360706:3","chr10:17247301-17247868:3","chr10:37917615-37917683:4","chr10:37917988-37918014:4","chr10:5163636-5163849:3","chr10:51766029-51766616:4","chr10:64867288-64867987:4","chr10:84525091-84525370:4","chr10:84531070-84531326:4","chr10:9437418-9437479:3","chr10:9437551-9437701:3","chr10:9825470-9826030:3","chr11:102687331-102687763:7","chr11:112388599-112389129:7","chr11:115587434-115587984:7","chr11:17369842-17370373:5","chr11:17378688-17379258:5","chr11:23518953-23519654:6","chr11:27635561-27636102:6","chr11:38709983-38710112:6","chr11:38710459-38710528:6","chr11:56151159-56151681:6","chr11:97963447-97964133:7","chr11:97973243-97973850:7","chr12:124142562-124143133:9","chr12:21248480-21248802:8","chr12:22899020-22899590:8","chr12:24969926-24970463:8","chr12:33179415-33180118:8","chr12:38830580-38830654:8","chr12:47556306-47556834:8","chr12:50914542-50914751:8","chr12:67759751-67759863:8","chr12:67759969-67760032:8","chr12:70090836-70091394:8","chr12:74203895-74204612:8","chr12:7647344-7647455:7","chr12:87253591-87253674:9","chr12:98345398-98345950:9","chr13:100798858-100799249:1","chr13:100799549-100799715:1","chr13:37914792-37915343:1","chr13:41150307-41150513:1","chr13:48619101-48619663:1","chr13:52067292-52067676:1","chr13:52067992-52068315:1","chr13:64274384-64275072:1","chr13:83941698-83942245:1","chr13:90591899-90592436:1","chr14:20820191-20820707:1","chr14:30811988-30812670:1","chr14:32020721-32021296:1","chr14:43001435-43001517:1","chr14:45785332-45785887:1","chr14:45793107-45793724:1","chr14:48080935-48081173:1","chr14:48081740-48082074:1","chr14:56666304-56666833:1","chr14:63565188-63565747:1","chr14:71773997-71774553:1","chr14:79040549-79041070:1","chr14:83765264-83765956:1","chr15:31150365-31150424:1","chr15:31150733-31151231:1","chr15:73165573-73166145:1","chr16:10357466-10357557:1","chr16:25553531-25554078:1","chr16:25568787-25569348:1","chr16:27993630-27994189:1","chr16:64003321-64003502:1","chr16:64003813-64004339:1","chr16:64421712-64422245:1","chr16:65768863-65769426:1","chr16:65769902-65770002:1","chr16:65770886-65771432:1","chr16:77013341-77013396:1","chr17:10205618-10206195:1","chr17:62143664-62143828:1","chr17:62144136-62144539:1","chr18:25533226-25533770:1","chr18:35862125-35862676:1","chr18:35880369-35880692:1","chr18:35880934-35881288:1","chr18:40215764-40216311:1","chr19:29712459-29712851:1","chr19:47891935-47892121:1","chr1:103398742-103398809:1","chr1:103589544-103589763:1","chr1:111214269-111214827:1","chr1:115036804-115037516:1","chr1:151352423-151352558:2","chr1:169202936-169203494:2","chr1:178277927-178278487:2","chr1:182761291-182761744:2","chr1:187408015-187408559:2","chr1:187410263-187410340:2","chr1:198079256-198079956:2","chr1:210280364-210280930:3","chr1:238809987-238810130:3","chr1:244735453-244736010:3","chr1:63032708-63032840:1","chr1:63033080-63033512:1","chr1:69055252-69055817:1","chr1:71345731-71345939:1","chr1:72000825-72001353:1","chr1:76040193-76040658:1","chr1:86461466-86461862:1","chr20:47992898-47993420:2","chr20:51978108-51978532:2","chr20:51978828-51979009:2","chr20:55103003-55103542:2","chr21:20213340-20213404:2","chr21:20213512-20213621:2","chr21:20592278-20592811:2","chr21:26440589-26440708:2","chr21:26441026-26441467:2","chr21:29514058-29514157:2","chr21:38106057-38106141:2","chr22:28315771-28316325:2","chr2:122519867-122520432:2","chr2:134590788-134591329:2","chr2:139864873-139865409:2","chr2:141814104-141814179:2","chr2:141814264-141814390:2","chr2:146696994-146697560:2","chr2:163953194-163953756:2","chr2:173291214-173291767:2","chr2:173300204-173300761:2","chr2:18252694-18252774:1","chr2:191482985-191483681:2","chr2:192808066-192808141:2","chr2:192808229-192808354:2","chr2:193199345-193199429:2","chr2:193658938-193659035:2","chr2:204763991-204764545:2","chr2:21746198-21746752:1","chr2:225602429-225602543:2","chr2:230158577-230159113:2","chr2:237939676-237940080:2","chr2:237940340-237940488:2","chr2:30498511-30498634:1","chr2:47695265-47695601:1","chr2:47695915-47696011:1","chr2:60226863-60227368:2","chr3:116618168-116618734:2","chr3:146582136-146583110:2","chr3:180132961-180133648:2","chr3:35439718-35440303:2","chr3:46027578-46027711:2","chr3:46027793-46027870:2","chr3:56162459-56162502:2","chr3:69472566-69472763:2","chr3:75048466-75049026:2","chr3:83934488-83935024:2","chr3:94829890-94830007:2","chr3:97504177-97504716:2","chr4:116866039-116866303:2","chr4:128685896-128686432:2","chr4:131061893-131061976:2","chr4:131332720-131332798:2","chr4:132284517-132284626:2","chr4:132284729-132284803:2","chr4:137463438-137464126:2","chr4:148903852-148904552:2","chr4:155978965-155979118:3","chr4:156074150-156074267:3","chr4:164720783-164721358:3","chr4:165426754-165427314:3","chr4:168029639-168030064:3","chr4:28351817-28352076:2","chr4:28352077-28352220:2","chr4:34890000-34890113:2","chr4:55386892-55387472:2","chr4:68864611-68864921:2","chr4:68864951-68864994:2","chr4:68954406-68954755:2","chr4:69178608-69179074:2","chr4:69179176-69179262:2","chr4:69239499-69240222:2","chr4:69309672-69310243:2","chr4:69343542-69344022:2","chr4:69649519-69649615:2","chr4:69649752-69650211:2","chr5:108531424-108532124:3","chr5:111920453-111921129:3","chr5:113674936-113675493:3","chr5:115032779-115033276:3","chr5:121678465-121678575:3","chr5:121681299-121681741:3","chr5:130313751-130313857:3","chr5:134022585-134022784:3","chr5:134023499-134023531:3","chr5:139231345-139231481:3","chr5:139232118-139232581:3","chr5:162982811-162983514:3","chr5:19400792-19401346:3","chr5:34544556-34545121:3","chr5:34547437-34547907:3","chr5:34547895-34548130:3","chr5:36442167-36442687:3","chr5:44479161-44479718:3","chr5:54471487-54472061:3","chr6:103226719-103226800:3","chr6:114195736-114196254:3","chr6:132876668-132876820:3","chr6:132876851-132876909:3","chr6:145377777-145377857:3","chr6:145377956-145378066:3","chr6:151523855-151524345:3","chr6:16031246-16031331:3","chr6:16031415-16031909:3","chr6:18089474-18089549:3","chr6:18090195-18090715:3","chr6:20188405-20188960:3","chr6:23300484-23301011:3","chr6:31390293-31390861:3","chr6:31487208-31487776:3","chr6:41189645-41190217:3","chr6:62643979-62644506:3","chr6:62648003-62648559:3","chr7:110734654-110734719:3","chr7:110734752-110734856:3","chr7:110735110-110735465:3","chr7:111622209-111622776:3","chr7:125661748-125662306:3","chr7:138164541-138165108:3","chr7:138223473-138224091:3","chr7:138256568-138256772:3","chr7:138257403-138257858:3","chr7:138310975-138311205:3","chr7:138431304-138431874:3","chr7:155000069-155000159:3","chr7:33287834-33288406:3","chr7:46461134-46461772:3","chr7:46470946-46471492:3","chr7:54169315-54169886:3","chr7:67344815-67345377:3","chr7:67356816-67356980:3","chr7:67357291-67357515:3","chr7:67357784-67357931:3","chr7:67709138-67709698:3","chr7:74148755-74148922:3","chr7:74149223-74149378:3","chr7:83708853-83709432:3","chr7:87322827-87323381:3","chr7:87330749-87331310:3","chr8:139179339-139179895:3","chr8:15585320-15585878:3","chr8:26090079-26090161:3","chr8:40256869-40257422:3","chr8:41818754-41819299:3","chr8:49110428-49110995:3","chr8:5164189-5164739:3","chr8:55210612-55211171:3","chr9:121518863-121519356:4","chr9:121520505-121520587:4","chr9:122537704-122538138:4","chr9:122538162-122538283:4","chr9:30154088-30154194:4","chr9:30189182-30189293:4","chr9:5598997-5599420:4","chr9:61573110-61573252:4","chr9:88368264-88368439:4","chr9:88368750-88368970:4","chr9:91458804-91459467:4"],[3,6,4,1,6,5,6,3,5,4,5,6,6,0,4,0,3,6,2,1,1,6,6,0,1,6,3,3,5,2,4,6,1,6,6,5,4,3,6,4,2,0,5,2,0,4,2,3,0,2,4,1,5,1,6,1,2,6,6,1,0,4,2,2,6,6,0,6,0,4,6,6,6,2,2,3,1,6,5,5,4,5,3,3,5,3,3,6,3,4,2,3,6,6,3,0,2,6,0,6,6,6,4,3,0,6,1,1,4,3,6,5,2,5,3,1,6,0,6,6,0,1,5,5,6,6,4,1,5,0,6,1,6,6,5,6,1,6,6,1,4,2,3,4,6,3,1,1,5,4,3,2,6,5,0,2,5,0,5,3,6,6,5,4,2,1,6,4,3,4,5,4,2,3,6,6,6,6,6,6,0,6,6,2,1,3,2,0,1,6,2,4,6,6,6,4,2,0,2,3,6,4,2,3,6,2,5,6,5,2,5,6,4,6,4,4,1,6,6,6,3,2,6,5,5,5,5,4,4,4,4,4,3,6,1,5,6,6,2,6,5,5,3,6,6,3,0,1,3,2,6,5,1,2,4,4,2,6,2,1,6,3,6,6,6,4,1],[2,0,1,5,0,1,0,3,1,2,1,0,0,5,1,4,3,0,3,5,3,0,0,4,4,0,3,3,1,3,1,0,4,0,0,1,2,2,0,2,3,6,1,2,6,2,4,3,3,4,2,3,1,5,0,5,4,0,0,5,5,2,3,4,0,0,6,0,5,2,0,0,0,4,2,3,4,0,1,1,2,1,3,3,1,3,3,0,3,2,3,3,0,0,3,6,4,0,5,0,0,0,2,3,5,0,5,5,2,3,0,1,4,1,3,4,0,5,0,0,5,5,1,0,0,0,2,5,1,6,0,5,0,0,1,0,4,0,0,3,1,4,3,2,0,3,4,5,1,1,3,4,0,1,2,3,1,6,1,2,0,0,1,2,4,1,0,2,2,1,1,2,4,3,0,0,0,0,0,0,3,0,0,4,5,3,2,5,5,0,4,2,0,0,0,2,4,5,4,1,0,2,4,1,0,2,1,0,1,4,1,0,2,0,2,2,3,0,0,0,2,4,0,1,1,1,0,2,1,2,2,2,3,0,4,1,0,0,4,0,1,1,3,0,0,3,6,5,3,2,0,1,5,3,2,2,4,0,3,5,0,3,0,0,0,2,1],[1,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,0,2,0,0,2,1,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,1,0,0,2,0,0,0,0,3,0,0,2,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,1,0,0,0,0,4,1,0,0,0,1,0,0,0,0,0,4,0,0,1,1,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,1,0,2,0,0,0,2,0,2,0,0,0,0,0,0,0,0,0,0,2,0,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,3],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>te_id<\/th>\n      <th>n_states_1<\/th>\n      <th>n_states_2<\/th>\n      <th>n_states_3<\/th>\n      <th>n_states_4<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"name":"te_id","targets":0},{"name":"n_states_1","targets":1},{"name":"n_states_2","targets":2},{"name":"n_states_3","targets":3},{"name":"n_states_4","targets":4}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>MER61E_state_counts %&gt;%
+  pivot_wider(
+    id_cols = te_id,
+    names_from = Set,
+    values_from = n_states
+  ) %&gt;% 
+  datatable(.,caption=&quot;MER61E state frequency by treatment-timepoint&quot;,
+               options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-686cfa6b0ab6d13cf646" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-686cfa6b0ab6d13cf646">{"x":{"filter":"none","vertical":false,"caption":"<caption>MER61E state frequency by treatment-timepoint<\/caption>","data":[["chr10:107585335-107585905:5","chr10:129687289-129687703:5","chr10:16360166-16360706:3","chr10:17247301-17247868:3","chr10:37917615-37917683:4","chr10:37917988-37918014:4","chr10:5163636-5163849:3","chr10:51766029-51766616:4","chr10:64867288-64867987:4","chr10:84525091-84525370:4","chr10:84531070-84531326:4","chr10:9437418-9437479:3","chr10:9437551-9437701:3","chr10:9825470-9826030:3","chr11:102687331-102687763:7","chr11:112388599-112389129:7","chr11:115587434-115587984:7","chr11:17369842-17370373:5","chr11:17378688-17379258:5","chr11:23518953-23519654:6","chr11:27635561-27636102:6","chr11:38709983-38710112:6","chr11:38710459-38710528:6","chr11:56151159-56151681:6","chr11:97963447-97964133:7","chr11:97973243-97973850:7","chr12:124142562-124143133:9","chr12:21248480-21248802:8","chr12:22899020-22899590:8","chr12:24969926-24970463:8","chr12:33179415-33180118:8","chr12:38830580-38830654:8","chr12:47556306-47556834:8","chr12:50914542-50914751:8","chr12:67759751-67759863:8","chr12:67759969-67760032:8","chr12:70090836-70091394:8","chr12:74203895-74204612:8","chr12:7647344-7647455:7","chr12:87253591-87253674:9","chr12:98345398-98345950:9","chr13:100798858-100799249:1","chr13:100799549-100799715:1","chr13:37914792-37915343:1","chr13:41150307-41150513:1","chr13:48619101-48619663:1","chr13:52067292-52067676:1","chr13:52067992-52068315:1","chr13:64274384-64275072:1","chr13:83941698-83942245:1","chr13:90591899-90592436:1","chr14:20820191-20820707:1","chr14:30811988-30812670:1","chr14:32020721-32021296:1","chr14:43001435-43001517:1","chr14:45785332-45785887:1","chr14:45793107-45793724:1","chr14:48080935-48081173:1","chr14:48081740-48082074:1","chr14:56666304-56666833:1","chr14:63565188-63565747:1","chr14:71773997-71774553:1","chr14:79040549-79041070:1","chr14:83765264-83765956:1","chr15:31150365-31150424:1","chr15:31150733-31151231:1","chr15:73165573-73166145:1","chr16:10357466-10357557:1","chr16:25553531-25554078:1","chr16:25568787-25569348:1","chr16:27993630-27994189:1","chr16:64003321-64003502:1","chr16:64003813-64004339:1","chr16:64421712-64422245:1","chr16:65768863-65769426:1","chr16:65769902-65770002:1","chr16:65770886-65771432:1","chr16:77013341-77013396:1","chr17:10205618-10206195:1","chr17:62143664-62143828:1","chr17:62144136-62144539:1","chr18:25533226-25533770:1","chr18:35862125-35862676:1","chr18:35880369-35880692:1","chr18:35880934-35881288:1","chr18:40215764-40216311:1","chr19:29712459-29712851:1","chr19:47891935-47892121:1","chr1:103398742-103398809:1","chr1:103589544-103589763:1","chr1:111214269-111214827:1","chr1:115036804-115037516:1","chr1:151352423-151352558:2","chr1:169202936-169203494:2","chr1:178277927-178278487:2","chr1:182761291-182761744:2","chr1:187408015-187408559:2","chr1:187410263-187410340:2","chr1:198079256-198079956:2","chr1:210280364-210280930:3","chr1:238809987-238810130:3","chr1:244735453-244736010:3","chr1:63032708-63032840:1","chr1:63033080-63033512:1","chr1:69055252-69055817:1","chr1:71345731-71345939:1","chr1:72000825-72001353:1","chr1:76040193-76040658:1","chr1:86461466-86461862:1","chr20:47992898-47993420:2","chr20:51978108-51978532:2","chr20:51978828-51979009:2","chr20:55103003-55103542:2","chr21:20213340-20213404:2","chr21:20213512-20213621:2","chr21:20592278-20592811:2","chr21:26440589-26440708:2","chr21:26441026-26441467:2","chr21:29514058-29514157:2","chr21:38106057-38106141:2","chr22:28315771-28316325:2","chr2:122519867-122520432:2","chr2:134590788-134591329:2","chr2:139864873-139865409:2","chr2:141814104-141814179:2","chr2:141814264-141814390:2","chr2:146696994-146697560:2","chr2:163953194-163953756:2","chr2:173291214-173291767:2","chr2:173300204-173300761:2","chr2:18252694-18252774:1","chr2:191482985-191483681:2","chr2:192808066-192808141:2","chr2:192808229-192808354:2","chr2:193199345-193199429:2","chr2:193658938-193659035:2","chr2:204763991-204764545:2","chr2:21746198-21746752:1","chr2:225602429-225602543:2","chr2:230158577-230159113:2","chr2:237939676-237940080:2","chr2:237940340-237940488:2","chr2:30498511-30498634:1","chr2:47695265-47695601:1","chr2:47695915-47696011:1","chr2:60226863-60227368:2","chr3:116618168-116618734:2","chr3:146582136-146583110:2","chr3:180132961-180133648:2","chr3:35439718-35440303:2","chr3:46027578-46027711:2","chr3:46027793-46027870:2","chr3:56162459-56162502:2","chr3:69472566-69472763:2","chr3:75048466-75049026:2","chr3:83934488-83935024:2","chr3:94829890-94830007:2","chr3:97504177-97504716:2","chr4:116866039-116866303:2","chr4:128685896-128686432:2","chr4:131061893-131061976:2","chr4:131332720-131332798:2","chr4:132284517-132284626:2","chr4:132284729-132284803:2","chr4:137463438-137464126:2","chr4:148903852-148904552:2","chr4:155978965-155979118:3","chr4:156074150-156074267:3","chr4:164720783-164721358:3","chr4:165426754-165427314:3","chr4:168029639-168030064:3","chr4:28351817-28352076:2","chr4:28352077-28352220:2","chr4:34890000-34890113:2","chr4:55386892-55387472:2","chr4:68864611-68864921:2","chr4:68864951-68864994:2","chr4:68954406-68954755:2","chr4:69178608-69179074:2","chr4:69179176-69179262:2","chr4:69239499-69240222:2","chr4:69309672-69310243:2","chr4:69343542-69344022:2","chr4:69649519-69649615:2","chr4:69649752-69650211:2","chr5:108531424-108532124:3","chr5:111920453-111921129:3","chr5:113674936-113675493:3","chr5:115032779-115033276:3","chr5:121678465-121678575:3","chr5:121681299-121681741:3","chr5:130313751-130313857:3","chr5:134022585-134022784:3","chr5:134023499-134023531:3","chr5:139231345-139231481:3","chr5:139232118-139232581:3","chr5:162982811-162983514:3","chr5:19400792-19401346:3","chr5:34544556-34545121:3","chr5:34547437-34547907:3","chr5:34547895-34548130:3","chr5:36442167-36442687:3","chr5:44479161-44479718:3","chr5:54471487-54472061:3","chr6:103226719-103226800:3","chr6:114195736-114196254:3","chr6:132876668-132876820:3","chr6:132876851-132876909:3","chr6:145377777-145377857:3","chr6:145377956-145378066:3","chr6:151523855-151524345:3","chr6:16031246-16031331:3","chr6:16031415-16031909:3","chr6:18089474-18089549:3","chr6:18090195-18090715:3","chr6:20188405-20188960:3","chr6:23300484-23301011:3","chr6:31390293-31390861:3","chr6:31487208-31487776:3","chr6:41189645-41190217:3","chr6:62643979-62644506:3","chr6:62648003-62648559:3","chr7:110734654-110734719:3","chr7:110734752-110734856:3","chr7:110735110-110735465:3","chr7:111622209-111622776:3","chr7:125661748-125662306:3","chr7:138164541-138165108:3","chr7:138223473-138224091:3","chr7:138256568-138256772:3","chr7:138257403-138257858:3","chr7:138310975-138311205:3","chr7:138431304-138431874:3","chr7:155000069-155000159:3","chr7:33287834-33288406:3","chr7:46461134-46461772:3","chr7:46470946-46471492:3","chr7:54169315-54169886:3","chr7:67344815-67345377:3","chr7:67356816-67356980:3","chr7:67357291-67357515:3","chr7:67357784-67357931:3","chr7:67709138-67709698:3","chr7:74148755-74148922:3","chr7:74149223-74149378:3","chr7:83708853-83709432:3","chr7:87322827-87323381:3","chr7:87330749-87331310:3","chr8:139179339-139179895:3","chr8:15585320-15585878:3","chr8:26090079-26090161:3","chr8:40256869-40257422:3","chr8:41818754-41819299:3","chr8:49110428-49110995:3","chr8:5164189-5164739:3","chr8:55210612-55211171:3","chr9:121518863-121519356:4","chr9:121520505-121520587:4","chr9:122537704-122538138:4","chr9:122538162-122538283:4","chr9:30154088-30154194:4","chr9:30189182-30189293:4","chr9:5598997-5599420:4","chr9:61573110-61573252:4","chr9:88368264-88368439:4","chr9:88368750-88368970:4","chr9:91458804-91459467:4"],[2,1,1,2,1,1,1,2,1,1,2,1,1,2,3,3,1,1,2,1,1,1,1,3,2,1,1,2,1,2,1,1,2,1,1,1,2,2,1,2,2,2,1,3,2,1,2,2,3,2,1,2,2,2,1,2,1,1,1,2,3,1,1,2,1,1,2,1,2,1,1,1,1,1,1,1,2,1,1,1,2,1,2,1,2,2,2,1,2,1,2,1,1,1,1,2,1,1,2,1,1,1,2,2,2,1,2,2,1,1,1,1,2,1,2,2,1,3,1,1,2,2,1,1,1,1,1,2,1,2,1,2,1,1,2,1,2,1,1,1,1,2,1,2,1,1,1,2,1,1,2,2,1,1,2,1,2,2,1,1,1,1,1,1,1,3,1,1,2,1,2,1,2,2,1,1,1,1,1,1,3,1,1,2,2,2,2,2,2,1,1,2,1,1,1,1,2,2,2,3,1,1,1,1,1,3,1,1,1,2,1,1,1,1,1,2,3,1,1,1,1,1,1,1,1,1,3,1,2,1,1,2,2,1,2,1,1,1,1,1,1,1,1,1,1,1,2,2,1,2,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,3],[3,1,3,1,1,1,1,2,1,1,1,1,1,3,1,4,1,1,2,2,3,1,1,2,2,1,2,1,1,1,1,1,2,1,1,1,1,1,1,1,3,2,1,1,2,2,2,1,3,1,2,3,1,2,1,2,1,1,1,2,2,1,2,2,1,1,2,1,2,2,1,1,1,1,1,1,3,1,1,1,1,1,2,2,1,2,1,1,1,1,2,2,1,1,1,2,1,1,3,1,1,1,1,2,2,1,2,2,2,2,1,2,2,1,1,2,1,2,1,1,2,2,2,3,1,1,2,2,1,2,1,2,1,1,1,1,3,1,1,4,1,2,2,1,1,1,2,1,1,1,2,2,1,1,3,1,1,2,1,3,1,1,1,2,2,2,1,1,2,2,1,2,2,1,1,1,1,1,1,1,3,1,1,1,2,2,3,3,2,1,1,1,1,1,1,1,1,3,1,1,1,2,2,2,1,2,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,2,1,1,2,1,3,2,1,1,1,1,1,1,2,1,1,2,2,2,1,2,1,2,2,3,1,2,2,1,3,1,1,2,1,1,1,1,3],[2,1,1,2,1,1,1,1,2,2,1,1,1,2,1,2,2,1,1,2,3,1,1,2,1,1,2,2,2,1,1,1,4,1,1,2,1,1,1,2,2,2,1,1,2,1,2,2,3,2,1,3,1,1,1,2,2,1,1,1,2,2,3,1,1,1,2,1,2,2,1,1,1,2,2,2,1,1,1,1,1,2,1,2,1,1,1,1,2,1,2,1,1,1,1,2,2,1,2,1,1,1,1,2,2,1,1,2,2,1,1,1,2,1,1,1,1,2,1,1,2,2,1,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,3,2,1,2,1,1,2,3,2,2,1,1,2,1,1,3,2,1,2,1,2,1,1,1,1,2,1,1,1,3,3,1,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,1,2,2,1,2,1,1,1,1,2,1,2,2,1,1,2,1,3,1,2,1,1,2,2,1,1,1,1,2,1,2,1,1,1,3,2,1,1,1,1,1,2,1,2,1,1,2,1,2,1,1,1,2,1,1,2,2,1,1,2,2,2,2,3,1,1,2,2,1,1,2,1,2,2,1,1,1,1,1,2,4],[1,1,2,2,1,1,1,2,1,2,1,1,1,2,2,2,2,1,2,2,2,1,1,2,2,1,2,1,1,3,3,1,2,1,1,1,2,2,1,1,2,2,1,2,2,1,1,1,2,1,1,1,1,2,1,2,2,1,1,2,2,1,1,2,1,1,2,1,2,1,1,1,1,2,2,1,2,1,1,2,1,1,2,1,1,2,2,1,1,1,1,2,1,1,2,2,2,1,2,1,1,1,1,1,2,1,2,2,1,1,1,1,1,1,2,3,1,2,1,1,2,2,1,1,1,1,2,2,1,2,1,2,1,1,1,1,2,1,1,2,3,2,1,2,1,1,2,2,1,1,1,2,1,1,3,2,1,2,2,1,1,1,2,2,1,3,1,2,1,1,1,2,2,2,1,1,1,1,1,1,2,1,1,2,2,2,2,2,2,1,2,1,1,1,1,2,2,2,2,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,2,1,1,1,1,2,1,2,2,1,1,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,1,1,1,1,2,2,2,1,1,1,1,2,2,1,1,1,2,2,1,1,1,1,1,1,1],[1,1,1,2,1,1,1,1,1,1,1,1,1,2,1,2,2,1,3,2,2,1,1,3,2,1,1,1,1,2,1,1,2,1,1,1,1,3,1,1,1,2,2,3,2,1,1,1,2,2,1,2,1,2,1,1,2,1,1,2,2,1,2,1,1,1,2,1,2,1,1,1,1,2,4,2,2,1,2,1,1,1,1,1,1,1,1,1,2,2,3,2,1,1,2,2,2,1,2,1,1,1,1,1,4,1,2,1,1,2,1,1,1,2,2,2,1,2,1,1,3,2,1,1,1,1,1,2,2,2,1,2,1,1,1,1,2,1,1,2,1,2,2,1,1,2,2,2,1,2,2,1,1,1,3,2,1,2,1,1,1,1,1,1,2,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,2,2,1,3,2,1,1,2,1,1,1,1,1,2,2,2,1,1,1,2,3,1,1,1,1,1,2,2,1,2,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,3,1,2,2,1,1,2,1,1,1,2,1,1,1,1,1,1,1,2,1,2,1,1,1,2,2,2,2,2,1,1,2,1,2,1,1,1,1,2],[1,1,1,2,1,2,1,1,1,1,1,1,1,2,1,2,1,1,1,2,2,1,1,2,3,1,1,2,1,2,2,1,1,1,1,1,1,1,1,1,1,2,1,2,2,2,2,2,2,2,2,2,1,2,1,2,2,1,1,2,2,2,2,2,1,1,2,1,3,1,1,1,1,2,4,2,2,1,1,1,2,1,1,2,1,1,2,1,1,2,1,1,1,1,2,2,2,1,2,1,1,1,2,1,2,1,2,2,1,2,1,1,2,1,1,2,1,2,1,1,2,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,2,2,1,3,1,1,1,2,2,3,1,2,1,2,1,1,1,1,2,3,1,2,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,2,2,1,1,2,2,1,2,2,1,1,1,1,2,2,1,3,1,1,2,1,1,3,2,1,1,2,1,1,1,1,1,2,3,1,1,1,2,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,1,2,1,1,2,2,2,1,3,1,1,2,1,1,1,2,1,2,2,1,2,1,1,1,2,3]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>te_id<\/th>\n      <th>DOX_144R<\/th>\n      <th>DOX_24R<\/th>\n      <th>DOX_24T<\/th>\n      <th>VEH_144R<\/th>\n      <th>VEH_24R<\/th>\n      <th>VEH_24T<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6]},{"name":"te_id","targets":0},{"name":"DOX_144R","targets":1},{"name":"DOX_24R","targets":2},{"name":"DOX_24T","targets":3},{"name":"VEH_144R","targets":4},{"name":"VEH_24R","targets":5},{"name":"VEH_24T","targets":6}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>plot_trajectory &lt;- function(dominant_df, TE, id_col=&quot;te_id&quot;,state_col=&quot;Broad_state&quot;) {
   
   state_colors &lt;- c(
@@ -7109,9 +9742,19 @@ MER61E_trajectory_broad &lt;- MER61E_dominant %&gt;%
   &quot;Repressed&quot; = &quot;#4575B4&quot;,
   &quot;Quiescent&quot; = &quot;#D9D9D9&quot;)
   
+  name_color_key &lt;- dominant_df %&gt;%
+  dplyr::distinct(Name, Broad_state) %&gt;%
+  dplyr::filter(!is.na(Name), !is.na(Broad_state)) %&gt;%
+  dplyr::mutate(color = unname(state_colors[Broad_state]))
+
+name_colors &lt;- stats::setNames(
+  name_color_key$color,
+  name_color_key$Name)
+
   trajectory &lt;- dominant_df %&gt;%
+    dplyr::mutate(Condition=factor(Condition, levels=c(&quot;VEH&quot;,&quot;DOX&quot;))) %&gt;% 
   dplyr::select(all_of(id_col),te_name, Condition, Timepoint, all_of(state_col)) %&gt;%
-  pivot_wider(
+  tidyr::pivot_wider(
     names_from = Timepoint,
     values_from = all_of(state_col))
   
@@ -7143,7 +9786,7 @@ MER61E_trajectory_broad &lt;- MER61E_dominant %&gt;%
      facet_wrap(~ Condition) +
      scale_x_discrete(limits = c(&quot;24T&quot;, &quot;24R&quot;, &quot;144R&quot;),
                       expand = c(0.1, 0.05)) +
-     scale_fill_manual(values = state_colors,
+     scale_fill_manual(values = name_colors,
                        na.value = &quot;grey80&quot;) +
      labs(title = paste0(&quot;Complete ChromHMM state trajectories for &quot;, TE,&quot; (n = &quot;,n_elements,&quot; integrants)&quot;),
           x = NULL,
@@ -7183,17 +9826,96 @@ MER61E_trajectory_broad &lt;- MER61E_dominant %&gt;%
 }</code></pre>
 <pre class="r"><code>MER61E_plot_data &lt;- plot_trajectory(MER61E_dominant,TE=&quot;MER61E&quot;,id_col=&quot;te_id&quot;,state_col=&quot;Broad_state&quot;)
 
+acute_MER61E_dominant &lt;- MER61E_dominant %&gt;% 
+  dplyr::filter(te_id %in% acute_repid)
+
+acute_MER61E_plot_data &lt;- plot_trajectory(acute_MER61E_dominant,TE=&quot;MER61E&quot;,id_col=&quot;te_id&quot;,state_col=&quot;Name&quot;)
+
 MER61E_plot_data</code></pre>
 <pre><code>$alluvial_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/MER61E_plot_data-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-MER61E_plot_data-1">
+Past versions of MER61E_plot_data-1.png
+</button>
+</p>
+<div id="fig-MER61E_plot_data-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61E_plot_data-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $qc_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/MER61E_plot_data-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-MER61E_plot_data-2">
+Past versions of MER61E_plot_data-2.png
+</button>
+</p>
+<div id="fig-MER61E_plot_data-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/MER61E_plot_data-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $trajectory
 # A tibble: 534 × 7
    te_id                       te_name Condition `144R`    `24R`    `24T` status
-   &lt;chr&gt;                       &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; 
+   &lt;chr&gt;                       &lt;chr&gt;   &lt;fct&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; 
  1 chr10:107585335-107585905:5 MER61E  DOX       Repressed Enhancer Enha… compl…
  2 chr10:107585335-107585905:5 MER61E  VEH       Repressed Repress… Repr… compl…
  3 chr10:129687289-129687703:5 MER61E  DOX       Repressed Repress… Repr… compl…
@@ -7209,7 +9931,7 @@ $trajectory
 $trajectory_complete
 # A tibble: 534 × 7
    te_id                       te_name Condition `144R`    `24R`    `24T` status
-   &lt;chr&gt;                       &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; 
+   &lt;chr&gt;                       &lt;chr&gt;   &lt;fct&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; 
  1 chr10:107585335-107585905:5 MER61E  DOX       Repressed Enhancer Enha… compl…
  2 chr10:107585335-107585905:5 MER61E  VEH       Repressed Repress… Repr… compl…
  3 chr10:129687289-129687703:5 MER61E  DOX       Repressed Repress… Repr… compl…
@@ -7225,16 +9947,68 @@ $trajectory_complete
 $QC_counts
 # A tibble: 2 × 3
   Condition status       n
-  &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;
-1 DOX       complete   267
-2 VEH       complete   267
+  &lt;fct&gt;     &lt;chr&gt;    &lt;int&gt;
+1 VEH       complete   267
+2 DOX       complete   267
 
 $QC_summary
 # A tibble: 2 × 6
   Condition n_elements complete partial missing frac_complete
-  &lt;chr&gt;          &lt;int&gt;    &lt;int&gt;   &lt;int&gt;   &lt;int&gt;         &lt;dbl&gt;
-1 DOX              267      267       0       0             1
-2 VEH              267      267       0       0             1</code></pre>
+  &lt;fct&gt;          &lt;int&gt;    &lt;int&gt;   &lt;int&gt;   &lt;int&gt;         &lt;dbl&gt;
+1 VEH              267      267       0       0             1
+2 DOX              267      267       0       0             1</code></pre>
+<pre class="r"><code>acute_MER61E_plot_data</code></pre>
+<pre><code>$alluvial_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61E_plot_data-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/MER61E_plot_data-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$trajectory
+# A tibble: 80 × 7
+   te_id                     te_name Condition `144R`         `24R` `24T` status
+   &lt;chr&gt;                     &lt;chr&gt;   &lt;fct&gt;     &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 
+ 1 chr10:17247301-17247868:3 MER61E  DOX       Repressed_ZFP… Acti… Acti… compl…
+ 2 chr10:17247301-17247868:3 MER61E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 3 chr11:17369842-17370373:5 MER61E  DOX       Repressed_ZFP… Acti… Acti… compl…
+ 4 chr11:17369842-17370373:5 MER61E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 5 chr11:27635561-27636102:6 MER61E  DOX       Repressed_ZFP… Biva… Acti… compl…
+ 6 chr11:27635561-27636102:6 MER61E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 7 chr11:97963447-97964133:7 MER61E  DOX       Heterochromat… Repr… Hete… compl…
+ 8 chr11:97963447-97964133:7 MER61E  VEH       Active_Enhanc… Acti… Acti… compl…
+ 9 chr13:37914792-37915343:1 MER61E  DOX       Repressed_Het… Acti… Acti… compl…
+10 chr13:37914792-37915343:1 MER61E  VEH       Repressed_ZFP… Repr… Repr… compl…
+# ℹ 70 more rows
+
+$trajectory_complete
+# A tibble: 80 × 7
+   te_id                     te_name Condition `144R`         `24R` `24T` status
+   &lt;chr&gt;                     &lt;chr&gt;   &lt;fct&gt;     &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 
+ 1 chr10:17247301-17247868:3 MER61E  DOX       Repressed_ZFP… Acti… Acti… compl…
+ 2 chr10:17247301-17247868:3 MER61E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 3 chr11:17369842-17370373:5 MER61E  DOX       Repressed_ZFP… Acti… Acti… compl…
+ 4 chr11:17369842-17370373:5 MER61E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 5 chr11:27635561-27636102:6 MER61E  DOX       Repressed_ZFP… Biva… Acti… compl…
+ 6 chr11:27635561-27636102:6 MER61E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 7 chr11:97963447-97964133:7 MER61E  DOX       Heterochromat… Repr… Hete… compl…
+ 8 chr11:97963447-97964133:7 MER61E  VEH       Active_Enhanc… Acti… Acti… compl…
+ 9 chr13:37914792-37915343:1 MER61E  DOX       Repressed_Het… Acti… Acti… compl…
+10 chr13:37914792-37915343:1 MER61E  VEH       Repressed_ZFP… Repr… Repr… compl…
+# ℹ 70 more rows
+
+$QC_counts
+# A tibble: 2 × 3
+  Condition status       n
+  &lt;fct&gt;     &lt;chr&gt;    &lt;int&gt;
+1 VEH       complete    40
+2 DOX       complete    40
+
+$QC_summary
+# A tibble: 2 × 6
+  Condition n_elements complete partial missing frac_complete
+  &lt;fct&gt;          &lt;int&gt;    &lt;int&gt;   &lt;int&gt;   &lt;int&gt;         &lt;dbl&gt;
+1 VEH               40       40       0       0             1
+2 DOX               40       40       0       0             1</code></pre>
 </div>
 <div id="all-ltr10e-integrants" class="section level3">
 <h3>All LTR10E integrants</h3>
@@ -7280,19 +10054,343 @@ LTR10E_trajectory_broad &lt;- LTR10E_dominant %&gt;%
   pivot_wider(
     names_from = c(Condition, Timepoint),
     values_from = Broad_state)</code></pre>
+<p>The above code created my dominant state dataframe, then a detailed
+version and a broad version of each dominant state.</p>
+<p>We wanted to investigate how many states there are within MER61E
+groups and what the breakdown is.</p>
+<pre class="r"><code>LTR10E_state_wide &lt;- LTR10E_results_df %&gt;%
+  group_by(te_id, Set, state) %&gt;%
+  summarise(
+    TE_width = dplyr::first(TE_width),
+    total_width = sum(total_width, na.rm = TRUE),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  mutate(
+    frac = total_width / TE_width
+  ) %&gt;%
+  pivot_wider(
+    id_cols = c(te_id, Set, TE_width),
+    names_from = state,
+    values_from = c(total_width, frac),
+    names_glue = &quot;{state}_{.value}&quot;,
+    values_fill = list(
+      total_width = 0,
+      frac = 0
+    )
+  ) %&gt;%
+  arrange(te_id, Set)
+ 
+ LTR10E_state_mixed &lt;- LTR10E_state_wide %&gt;%
+  filter(
+    !if_any(ends_with(&quot;_frac&quot;), ~ .x == 1)
+  )
+ 
+ 
+ LTR10E_fifty_fifty &lt;- LTR10E_state_wide %&gt;%
+  rowwise() %&gt;%
+  filter(
+    sum(
+      dplyr::near(
+        c_across(ends_with(&quot;_frac&quot;)),
+        0.5,
+        tol = 1e-6
+      )
+    ) == 2,
+    dplyr::near(
+      sum(c_across(ends_with(&quot;_frac&quot;)), na.rm = TRUE),
+      1,
+      tol = 1e-6
+    )
+  ) %&gt;%
+  ungroup()
+ 
+LTR10E_state_counts &lt;- LTR10E_state_wide %&gt;%
+  rowwise() %&gt;%
+  mutate(
+    n_states = sum(c_across(ends_with(&quot;_frac&quot;)) &gt; 0, na.rm = TRUE)
+  ) %&gt;%
+  ungroup() %&gt;%
+  select(te_id, Set, TE_width, n_states)
+  
+  
+  
+  
+LTR10E_state_counts %&gt;% 
+     group_by(n_states, Set) %&gt;% 
+     tally() %&gt;% 
+     pivot_wider(id_cols = Set, values_from = n, names_from = n_states) %&gt;% 
+  datatable(.,caption = &quot;LTR10E state  breakdowns&quot;,
+            options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-76504a9d21e95bf556c2" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-76504a9d21e95bf556c2">{"x":{"filter":"none","vertical":false,"caption":"<caption>LTR10E state  breakdowns<\/caption>","data":[["DOX_144R","DOX_24R","DOX_24T","VEH_144R","VEH_24R","VEH_24T"],[154,162,153,166,165,173],[91,87,86,82,79,74],[10,6,14,7,10,8],[null,null,2,null,1,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Set<\/th>\n      <th>1<\/th>\n      <th>2<\/th>\n      <th>3<\/th>\n      <th>4<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"name":"Set","targets":0},{"name":"1","targets":1},{"name":"2","targets":2},{"name":"3","targets":3},{"name":"4","targets":4}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<p>I also created a data frame of just the single states and the
+directly 50/50 split states.</p>
+<p>I did not find any 50/50 splits in LTR10E elements</p>
+<pre class="r"><code>state_frac_long_LTR &lt;- LTR10E_state_wide %&gt;%
+   rowwise() %&gt;%
+  mutate(
+    n_states = sum(c_across(ends_with(&quot;_frac&quot;)) &gt; 0, na.rm = TRUE)
+  ) %&gt;%
+  ungroup() %&gt;% 
+  pivot_longer(
+    cols = ends_with(&quot;_frac&quot;),
+    names_to = &quot;state&quot;,
+    values_to = &quot;frac&quot;
+  ) %&gt;%
+  mutate(
+    state = sub(&quot;_frac$&quot;, &quot;&quot;, state)
+  ) %&gt;%
+  filter(frac &gt; 0) %&gt;% 
+  left_join(States_anno[1:2], by=c(&quot;state&quot;=&quot;State&quot;))
+
+ggplot((state_frac_long_LTR %&gt;% filter(frac &gt; 0)),
+  aes(x = Name, y = frac)
+) +
+  geom_violin(trim = TRUE, scale = &quot;width&quot;) +
+  geom_boxplot(
+    width = 0.15,
+    outlier.shape = NA
+  ) +
+  labs(
+    x = &quot;ChromHMM state&quot;,
+    y = &quot;Fraction of LTR10E element covered&quot;,
+    title = &quot;Distribution of nonzero ChromHMM state fractions across all LTR10E elements&quot;
+  ) +
+  theme_classic()+
+  theme(axis.text.x=element_text(angle = 90))</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-35-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>two_state_long_LTR &lt;- state_frac_long_LTR %&gt;%
+  filter(n_states == 2)
+
+ggplot(two_state_long_LTR,
+       aes(x = frac)) +
+  geom_histogram(binwidth = 0.05) +
+  labs(
+    x = &quot;Fraction of TE covered by two states&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_classic()+
+  theme(axis.text.x=element_text(angle = 90))</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-35-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>major_minor_LTR &lt;- two_state_long_LTR %&gt;%
+  group_by(te_id, Set) %&gt;%
+  arrange(desc(frac), .by_group = TRUE) %&gt;%
+  mutate(rank = c(&quot;Major&quot;, &quot;Minor&quot;)) %&gt;%
+  ungroup()
+
+
+major_minor_2_LTR &lt;- two_state_long_LTR %&gt;%
+  group_by(te_id, Set) %&gt;%
+  arrange(desc(frac), .by_group = TRUE) %&gt;%
+  summarise(
+    major_state = dplyr::first(state),
+    major_frac  = dplyr::first(frac),
+    minor_state = dplyr::last(state),
+    minor_frac  = dplyr::last(frac),
+    .groups = &quot;drop&quot;
+  )
+
+ggplot(major_minor_LTR,
+       aes(rank, frac)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.15, alpha = 0.4) +
+  theme_classic()+
+  ggtitle(&quot;Distribution of major and minor fractions in LTR10E&quot;)</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-35-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>   major_minor_LTR %&gt;%
+  group_by(te_id, Set) %&gt;%
+  arrange(desc(frac), .by_group = TRUE) %&gt;%
+  summarise(
+    major_state = dplyr::first(state),
+    major_frac  = dplyr::first(frac),
+    minor_state = dplyr::last(state),
+    minor_frac  = dplyr::last(frac),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  count(major_state, minor_state, sort = TRUE) %&gt;% 
+     left_join(States_anno[,1:2],by=c(&quot;major_state&quot;=&quot;State&quot;)) %&gt;% 
+     left_join(States_anno[1:2], by=c(&quot;minor_state&quot;=&quot;State&quot;)) %&gt;% 
+     dplyr::rename(&quot;Minor_name&quot;=Name.y, &quot;Major_name&quot;=Name.x) %&gt;% 
+     dplyr::select(Major_name, Minor_name,n,major_state,minor_state) %&gt;% 
+   
+   datatable(.,caption=&quot;LTR10E state pairs (for 2 state fractions)&quot;,
+               options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-72118e3de6abfa29a40d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-72118e3de6abfa29a40d">{"x":{"filter":"none","vertical":false,"caption":"<caption>LTR10E state pairs (for 2 state fractions)<\/caption>","data":[["Repressed_ZFP_genes","Repressed_Heterochromatin","Repressed_ZFP_genes","Active_Enhancer","Heterochromatin_1","Active_Enhancer","Active_TSS","Heterochromatin_2","Very_Weak_Transcription","Repressed_Heterochromatin","Strong_Polycomb_Repressed","Active_Enhancer","Very_Weak_Transcription","Heterochromatin_2","Genic_Strong_Transcription","Heterochromatin_2","Heterochromatin_1","Active_Enhancer","Repressed_Heterochromatin","Heterochromatin_2","Weak_Genic_Enhancer","Weak_Genic_Enhancer","Active_TSS","Very_Weak_Transcription","Genic_Strong_Transcription","Genic_Weak_Transcription","Repressed_ZFP_genes","Heterochromatin_1","Heterochromatin_1","Heterochromatin_1","Heterochromatin_1","Strong_Genic_Enhancer","Strong_Genic_Enhancer","Strong_Genic_Enhancer","Active_TSS","Genic_Weak_Transcription","Repressed_Heterochromatin","Repressed_ZFP_genes","Strong_Polycomb_Repressed","Heterochromatin_2","Polycomb_Repressed","Polycomb_Repressed","Weak_Genic_Enhancer"],["Repressed_Heterochromatin","Repressed_ZFP_genes","Heterochromatin_1","Very_Weak_Transcription","Repressed_ZFP_genes","Active_TSS","Active_Enhancer","Strong_Polycomb_Repressed","Active_Enhancer","Heterochromatin_1","Heterochromatin_2","Heterochromatin_1","Genic_Strong_Transcription","Weak_Genic_Enhancer","Genic_Weak_Transcription","Bivalent_Poised_TSS","Repressed_Heterochromatin","Repressed_ZFP_genes","Strong_Polycomb_Repressed","Polycomb_Repressed","Heterochromatin_1","Heterochromatin_2","Strong_Genic_Enhancer","Repressed_ZFP_genes","Very_Weak_Transcription","Genic_Strong_Transcription","Active_Enhancer","Active_Enhancer","Very_Weak_Transcription","Heterochromatin_2","Weak_Genic_Enhancer","Active_TSS","Very_Weak_Transcription","Genic_Weak_Transcription","Genic_Weak_Transcription","Very_Weak_Transcription","Heterochromatin_2","Genic_Weak_Transcription","Repressed_Heterochromatin","Repressed_Heterochromatin","Bivalent_Enhancer","Heterochromatin_2","Bivalent_Poised_TSS"],[143,142,41,32,14,11,11,11,9,9,9,5,5,5,4,4,3,3,3,3,3,3,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],["E4","E3","E4","E11","E1","E11","E13","E7","E14","E3","E5","E11","E14","E7","E15","E7","E1","E11","E3","E7","E9","E9","E13","E14","E15","E16","E4","E1","E1","E1","E1","E12","E12","E12","E13","E16","E3","E4","E5","E7","E8","E8","E9"],["E3","E4","E1","E14","E4","E13","E11","E5","E11","E1","E7","E1","E15","E9","E16","E10","E3","E4","E5","E8","E1","E7","E12","E4","E14","E15","E11","E11","E14","E7","E9","E13","E14","E16","E16","E14","E7","E16","E3","E3","E6","E7","E10"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Major_name<\/th>\n      <th>Minor_name<\/th>\n      <th>n<\/th>\n      <th>major_state<\/th>\n      <th>minor_state<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":2},{"name":"Major_name","targets":0},{"name":"Minor_name","targets":1},{"name":"n","targets":2},{"name":"major_state","targets":3},{"name":"minor_state","targets":4}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<p>The above plot is showing the overall distribution of fractions of
+LTR10E elements by each state in a violin plot. All 16 states are
+showing. (unlike MER61E)</p>
+<pre class="r"><code>ggplot(two_state_long_LTR,
+       aes(Name, frac)) +
+  geom_boxplot() +
+  theme_classic() +
+  theme(axis.text.x =
+          element_text(angle = 45, hjust = 1))+
+  ggtitle(&quot;Fraction of LTR10E elements assigned to each ChromHMM state\n(all exactly two-state overlaps)&quot;)+
+  theme(axis.text.x=element_text(angle = 90))</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-36-1.png" alt="" width="672" style="display: block; margin: auto;" />
+The Fraction of LTR10E elements-twostate overlaps plot above is a
+boxplot showing the distribution of fractions of the 499 2-state
+instances. Note this plot is missing E2 aka Quiescent_Low_Coverage.</p>
+<p>Now I am interested in how these two state (pairs, major/minor) are
+occurring…</p>
+<pre class="r"><code>major_minor_2_LTR %&gt;%
+   
+  ggplot(., aes(x=major_frac))+
+  geom_histogram(binwidth = 0.05)</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/unnamed-chunk-37-1.png" alt="" width="672" style="display: block; margin: auto;" />
+This is the plot of the Major fraction amounts. A fraction that is
+labelled major occurs when grouping by te_id and Set
+(treatment-timepoint) then ordering by the fraction. The first value is
+labelled Major, the second value is labelled Minor. There were no ties
+(ie 50/50 splits across LTR10E elements)</p>
+<p>Lets look at frequency of te_id and states:</p>
+<pre class="r"><code>te_state_frequency_LTR &lt;- LTR10E_state_counts %&gt;%
+  count(te_id, n_states, name = &quot;n_sets&quot;) %&gt;%
+  arrange(te_id, n_states)
+
+te_state_frequency_wide_LTR &lt;- LTR10E_state_counts %&gt;%
+  count(te_id, n_states, name = &quot;n_sets&quot;) %&gt;%
+  mutate(
+    n_states = paste0(&quot;n_states_&quot;, n_states)
+  ) %&gt;%
+  pivot_wider(
+    names_from = n_states,
+    values_from = n_sets,
+    values_fill = 0
+  )
+te_state_frequency_wide_MER %&gt;% 
+datatable(.,caption=&quot;LTR10E state frequency&quot;,
+               options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0a58fb401ace3924c9b1" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0a58fb401ace3924c9b1">{"x":{"filter":"none","vertical":false,"caption":"<caption>LTR10E state frequency<\/caption>","data":[["chr10:107585335-107585905:5","chr10:129687289-129687703:5","chr10:16360166-16360706:3","chr10:17247301-17247868:3","chr10:37917615-37917683:4","chr10:37917988-37918014:4","chr10:5163636-5163849:3","chr10:51766029-51766616:4","chr10:64867288-64867987:4","chr10:84525091-84525370:4","chr10:84531070-84531326:4","chr10:9437418-9437479:3","chr10:9437551-9437701:3","chr10:9825470-9826030:3","chr11:102687331-102687763:7","chr11:112388599-112389129:7","chr11:115587434-115587984:7","chr11:17369842-17370373:5","chr11:17378688-17379258:5","chr11:23518953-23519654:6","chr11:27635561-27636102:6","chr11:38709983-38710112:6","chr11:38710459-38710528:6","chr11:56151159-56151681:6","chr11:97963447-97964133:7","chr11:97973243-97973850:7","chr12:124142562-124143133:9","chr12:21248480-21248802:8","chr12:22899020-22899590:8","chr12:24969926-24970463:8","chr12:33179415-33180118:8","chr12:38830580-38830654:8","chr12:47556306-47556834:8","chr12:50914542-50914751:8","chr12:67759751-67759863:8","chr12:67759969-67760032:8","chr12:70090836-70091394:8","chr12:74203895-74204612:8","chr12:7647344-7647455:7","chr12:87253591-87253674:9","chr12:98345398-98345950:9","chr13:100798858-100799249:1","chr13:100799549-100799715:1","chr13:37914792-37915343:1","chr13:41150307-41150513:1","chr13:48619101-48619663:1","chr13:52067292-52067676:1","chr13:52067992-52068315:1","chr13:64274384-64275072:1","chr13:83941698-83942245:1","chr13:90591899-90592436:1","chr14:20820191-20820707:1","chr14:30811988-30812670:1","chr14:32020721-32021296:1","chr14:43001435-43001517:1","chr14:45785332-45785887:1","chr14:45793107-45793724:1","chr14:48080935-48081173:1","chr14:48081740-48082074:1","chr14:56666304-56666833:1","chr14:63565188-63565747:1","chr14:71773997-71774553:1","chr14:79040549-79041070:1","chr14:83765264-83765956:1","chr15:31150365-31150424:1","chr15:31150733-31151231:1","chr15:73165573-73166145:1","chr16:10357466-10357557:1","chr16:25553531-25554078:1","chr16:25568787-25569348:1","chr16:27993630-27994189:1","chr16:64003321-64003502:1","chr16:64003813-64004339:1","chr16:64421712-64422245:1","chr16:65768863-65769426:1","chr16:65769902-65770002:1","chr16:65770886-65771432:1","chr16:77013341-77013396:1","chr17:10205618-10206195:1","chr17:62143664-62143828:1","chr17:62144136-62144539:1","chr18:25533226-25533770:1","chr18:35862125-35862676:1","chr18:35880369-35880692:1","chr18:35880934-35881288:1","chr18:40215764-40216311:1","chr19:29712459-29712851:1","chr19:47891935-47892121:1","chr1:103398742-103398809:1","chr1:103589544-103589763:1","chr1:111214269-111214827:1","chr1:115036804-115037516:1","chr1:151352423-151352558:2","chr1:169202936-169203494:2","chr1:178277927-178278487:2","chr1:182761291-182761744:2","chr1:187408015-187408559:2","chr1:187410263-187410340:2","chr1:198079256-198079956:2","chr1:210280364-210280930:3","chr1:238809987-238810130:3","chr1:244735453-244736010:3","chr1:63032708-63032840:1","chr1:63033080-63033512:1","chr1:69055252-69055817:1","chr1:71345731-71345939:1","chr1:72000825-72001353:1","chr1:76040193-76040658:1","chr1:86461466-86461862:1","chr20:47992898-47993420:2","chr20:51978108-51978532:2","chr20:51978828-51979009:2","chr20:55103003-55103542:2","chr21:20213340-20213404:2","chr21:20213512-20213621:2","chr21:20592278-20592811:2","chr21:26440589-26440708:2","chr21:26441026-26441467:2","chr21:29514058-29514157:2","chr21:38106057-38106141:2","chr22:28315771-28316325:2","chr2:122519867-122520432:2","chr2:134590788-134591329:2","chr2:139864873-139865409:2","chr2:141814104-141814179:2","chr2:141814264-141814390:2","chr2:146696994-146697560:2","chr2:163953194-163953756:2","chr2:173291214-173291767:2","chr2:173300204-173300761:2","chr2:18252694-18252774:1","chr2:191482985-191483681:2","chr2:192808066-192808141:2","chr2:192808229-192808354:2","chr2:193199345-193199429:2","chr2:193658938-193659035:2","chr2:204763991-204764545:2","chr2:21746198-21746752:1","chr2:225602429-225602543:2","chr2:230158577-230159113:2","chr2:237939676-237940080:2","chr2:237940340-237940488:2","chr2:30498511-30498634:1","chr2:47695265-47695601:1","chr2:47695915-47696011:1","chr2:60226863-60227368:2","chr3:116618168-116618734:2","chr3:146582136-146583110:2","chr3:180132961-180133648:2","chr3:35439718-35440303:2","chr3:46027578-46027711:2","chr3:46027793-46027870:2","chr3:56162459-56162502:2","chr3:69472566-69472763:2","chr3:75048466-75049026:2","chr3:83934488-83935024:2","chr3:94829890-94830007:2","chr3:97504177-97504716:2","chr4:116866039-116866303:2","chr4:128685896-128686432:2","chr4:131061893-131061976:2","chr4:131332720-131332798:2","chr4:132284517-132284626:2","chr4:132284729-132284803:2","chr4:137463438-137464126:2","chr4:148903852-148904552:2","chr4:155978965-155979118:3","chr4:156074150-156074267:3","chr4:164720783-164721358:3","chr4:165426754-165427314:3","chr4:168029639-168030064:3","chr4:28351817-28352076:2","chr4:28352077-28352220:2","chr4:34890000-34890113:2","chr4:55386892-55387472:2","chr4:68864611-68864921:2","chr4:68864951-68864994:2","chr4:68954406-68954755:2","chr4:69178608-69179074:2","chr4:69179176-69179262:2","chr4:69239499-69240222:2","chr4:69309672-69310243:2","chr4:69343542-69344022:2","chr4:69649519-69649615:2","chr4:69649752-69650211:2","chr5:108531424-108532124:3","chr5:111920453-111921129:3","chr5:113674936-113675493:3","chr5:115032779-115033276:3","chr5:121678465-121678575:3","chr5:121681299-121681741:3","chr5:130313751-130313857:3","chr5:134022585-134022784:3","chr5:134023499-134023531:3","chr5:139231345-139231481:3","chr5:139232118-139232581:3","chr5:162982811-162983514:3","chr5:19400792-19401346:3","chr5:34544556-34545121:3","chr5:34547437-34547907:3","chr5:34547895-34548130:3","chr5:36442167-36442687:3","chr5:44479161-44479718:3","chr5:54471487-54472061:3","chr6:103226719-103226800:3","chr6:114195736-114196254:3","chr6:132876668-132876820:3","chr6:132876851-132876909:3","chr6:145377777-145377857:3","chr6:145377956-145378066:3","chr6:151523855-151524345:3","chr6:16031246-16031331:3","chr6:16031415-16031909:3","chr6:18089474-18089549:3","chr6:18090195-18090715:3","chr6:20188405-20188960:3","chr6:23300484-23301011:3","chr6:31390293-31390861:3","chr6:31487208-31487776:3","chr6:41189645-41190217:3","chr6:62643979-62644506:3","chr6:62648003-62648559:3","chr7:110734654-110734719:3","chr7:110734752-110734856:3","chr7:110735110-110735465:3","chr7:111622209-111622776:3","chr7:125661748-125662306:3","chr7:138164541-138165108:3","chr7:138223473-138224091:3","chr7:138256568-138256772:3","chr7:138257403-138257858:3","chr7:138310975-138311205:3","chr7:138431304-138431874:3","chr7:155000069-155000159:3","chr7:33287834-33288406:3","chr7:46461134-46461772:3","chr7:46470946-46471492:3","chr7:54169315-54169886:3","chr7:67344815-67345377:3","chr7:67356816-67356980:3","chr7:67357291-67357515:3","chr7:67357784-67357931:3","chr7:67709138-67709698:3","chr7:74148755-74148922:3","chr7:74149223-74149378:3","chr7:83708853-83709432:3","chr7:87322827-87323381:3","chr7:87330749-87331310:3","chr8:139179339-139179895:3","chr8:15585320-15585878:3","chr8:26090079-26090161:3","chr8:40256869-40257422:3","chr8:41818754-41819299:3","chr8:49110428-49110995:3","chr8:5164189-5164739:3","chr8:55210612-55211171:3","chr9:121518863-121519356:4","chr9:121520505-121520587:4","chr9:122537704-122538138:4","chr9:122538162-122538283:4","chr9:30154088-30154194:4","chr9:30189182-30189293:4","chr9:5598997-5599420:4","chr9:61573110-61573252:4","chr9:88368264-88368439:4","chr9:88368750-88368970:4","chr9:91458804-91459467:4"],[3,6,4,1,6,5,6,3,5,4,5,6,6,0,4,0,3,6,2,1,1,6,6,0,1,6,3,3,5,2,4,6,1,6,6,5,4,3,6,4,2,0,5,2,0,4,2,3,0,2,4,1,5,1,6,1,2,6,6,1,0,4,2,2,6,6,0,6,0,4,6,6,6,2,2,3,1,6,5,5,4,5,3,3,5,3,3,6,3,4,2,3,6,6,3,0,2,6,0,6,6,6,4,3,0,6,1,1,4,3,6,5,2,5,3,1,6,0,6,6,0,1,5,5,6,6,4,1,5,0,6,1,6,6,5,6,1,6,6,1,4,2,3,4,6,3,1,1,5,4,3,2,6,5,0,2,5,0,5,3,6,6,5,4,2,1,6,4,3,4,5,4,2,3,6,6,6,6,6,6,0,6,6,2,1,3,2,0,1,6,2,4,6,6,6,4,2,0,2,3,6,4,2,3,6,2,5,6,5,2,5,6,4,6,4,4,1,6,6,6,3,2,6,5,5,5,5,4,4,4,4,4,3,6,1,5,6,6,2,6,5,5,3,6,6,3,0,1,3,2,6,5,1,2,4,4,2,6,2,1,6,3,6,6,6,4,1],[2,0,1,5,0,1,0,3,1,2,1,0,0,5,1,4,3,0,3,5,3,0,0,4,4,0,3,3,1,3,1,0,4,0,0,1,2,2,0,2,3,6,1,2,6,2,4,3,3,4,2,3,1,5,0,5,4,0,0,5,5,2,3,4,0,0,6,0,5,2,0,0,0,4,2,3,4,0,1,1,2,1,3,3,1,3,3,0,3,2,3,3,0,0,3,6,4,0,5,0,0,0,2,3,5,0,5,5,2,3,0,1,4,1,3,4,0,5,0,0,5,5,1,0,0,0,2,5,1,6,0,5,0,0,1,0,4,0,0,3,1,4,3,2,0,3,4,5,1,1,3,4,0,1,2,3,1,6,1,2,0,0,1,2,4,1,0,2,2,1,1,2,4,3,0,0,0,0,0,0,3,0,0,4,5,3,2,5,5,0,4,2,0,0,0,2,4,5,4,1,0,2,4,1,0,2,1,0,1,4,1,0,2,0,2,2,3,0,0,0,2,4,0,1,1,1,0,2,1,2,2,2,3,0,4,1,0,0,4,0,1,1,3,0,0,3,6,5,3,2,0,1,5,3,2,2,4,0,3,5,0,3,0,0,0,2,1],[1,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,0,2,0,0,2,1,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,1,0,0,2,0,0,0,0,3,0,0,2,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,1,0,0,0,0,4,1,0,0,0,1,0,0,0,0,0,4,0,0,1,1,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,1,0,2,0,0,0,2,0,2,0,0,0,0,0,0,0,0,0,0,2,0,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,3],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>te_id<\/th>\n      <th>n_states_1<\/th>\n      <th>n_states_2<\/th>\n      <th>n_states_3<\/th>\n      <th>n_states_4<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"name":"te_id","targets":0},{"name":"n_states_1","targets":1},{"name":"n_states_2","targets":2},{"name":"n_states_3","targets":3},{"name":"n_states_4","targets":4}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>LTR10E_state_counts %&gt;%
+  pivot_wider(
+    id_cols = te_id,
+    names_from = Set,
+    values_from = n_states
+  ) %&gt;% 
+  datatable(.,caption=&quot;LTR10E state frequency by treatment-timepoint&quot;,
+               options = list(
+    scrollY = &quot;600px&quot;,
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-2ecdfcc414070ada7f31" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-2ecdfcc414070ada7f31">{"x":{"filter":"none","vertical":false,"caption":"<caption>LTR10E state frequency by treatment-timepoint<\/caption>","data":[["chr10:119645098-119645556:5","chr10:119645877-119646059:5","chr10:120504100-120504659:5","chr10:124881246-124881496:5","chr10:124881479-124881591:5","chr10:124882229-124882590:5","chr10:13076461-13076938:3","chr10:13079022-13079201:3","chr10:13083382-13084021:3","chr10:131040585-131041177:5","chr10:132495694-132495790:5","chr10:17262200-17262815:3","chr10:26423644-26424247:4","chr10:45070222-45070767:4","chr10:45437401-45438017:4","chr10:5251384-5251947:3","chr10:65615102-65615531:4","chr10:65615555-65615634:4","chr10:77659114-77659568:4","chr10:77659592-77659671:4","chr10:81177782-81178205:4","chr10:81178229-81178309:4","chr11:20474707-20475293:6","chr11:2335043-2335124:5","chr11:2335785-2336242:5","chr11:2342022-2342573:5","chr11:3250390-3250844:5","chr11:3250868-3250949:5","chr11:3296193-3296647:5","chr11:3296659-3296752:5","chr11:61190988-61191599:6","chr11:61998954-61999544:6","chr11:62222807-62223427:6","chr11:63791140-63791220:6","chr11:63791518-63792075:6","chr11:67695593-67696211:6","chr11:71273660-71274265:6","chr11:97743205-97743280:7","chr11:97743304-97743752:7","chr12:104232738-104233343:9","chr12:119986732-119987361:9","chr12:124938490-124938971:9","chr12:127074828-127075394:9","chr12:127176964-127177084:9","chr12:131241967-131242610:9","chr12:25711086-25711516:8","chr12:25711540-25711620:8","chr12:31608083-31608624:8","chr12:32025634-32025785:8","chr12:32028015-32028539:8","chr12:50034254-50034852:8","chr12:63770467-63771077:8","chr12:93451242-93451877:9","chr13:103055635-103056275:1","chr13:114003471-114004041:1","chr13:56512352-56512882:1","chr14:104647261-104647869:1","chr14:22100572-22100652:1","chr14:68605235-68605514:1","chr14:68605510-68605554:1","chr14:68852228-68852786:1","chr14:68853081-68853122:1","chr14:68865178-68865842:1","chr14:99678328-99678941:1","chr15:62262415-62263071:1","chr15:69005545-69006107:1","chr15:79915868-79916501:1","chr15:79920194-79920814:1","chr15:92949736-92950354:1","chr16:31848236-31848873:1","chr16:31852025-31852659:1","chr16:35337276-35337893:1","chr16:35715079-35715594:1","chr16:35721970-35722072:1","chr16:35723197-35723346:1","chr16:35723314-35723457:1","chr16:71919857-71920452:1","chr16:72048787-72049402:1","chr16:77662100-77662350:1","chr16:77662333-77662772:1","chr17:19978781-19979351:1","chr17:30038700-30038843:1","chr17:30040679-30040759:1","chr17:30040783-30041175:1","chr17:39046748-39047258:1","chr17:47064454-47064524:1","chr17:47064835-47065403:1","chr17:78671485-78672020:1","chr18:59886233-59886842:1","chr18:74271965-74272527:1","chr19:14958934-14959569:1","chr19:15516104-15516196:1","chr19:15516197-15516655:1","chr19:16221231-16221785:1","chr19:21335466-21335514:1","chr19:21335807-21336413:1","chr19:27659323-27659906:1","chr19:41527978-41528572:1","chr19:49368647-49369242:1","chr19:502613-503061:1","chr19:503073-503171:1","chr19:53294919-53295545:1","chr19:5716623-5716802:1","chr19:5717094-5717153:1","chr19:58268399-58269012:1","chr19:9486374-9486457:1","chr19:9486770-9487326:1","chr1:118863197-118863748:2","chr1:120181138-120181769:2","chr1:148792573-148793204:2","chr1:149337048-149337679:2","chr1:180587859-180588405:2","chr1:21396461-21397061:3","chr1:227723393-227723742:3","chr1:227723766-227723846:3","chr1:233179620-233179700:3","chr1:233179726-233180180:3","chr1:244573858-244574501:3","chr1:244576338-244576488:3","chr1:244576456-244576607:3","chr1:246515484-246516110:3","chr1:31457949-31458568:6","chr1:31466685-31467319:6","chr1:3955922-3956539:4","chr1:42192164-42192539:8","chr1:67963480-67963613:1","chr1:84883877-84884436:1","chr1:88801664-88802225:1","chr20:18166044-18166606:2","chr20:41553244-41553781:2","chr20:61188476-61189061:2","chr20:61193576-61194159:2","chr21:42604886-42604928:2","chr21:42605232-42605751:2","chr21:44877940-44878554:2","chr21:45955184-45955717:2","chr22:28846714-28847294:2","chr22:44611985-44612612:2","chr22:46571333-46571941:2","chr22:49746852-49747408:2","chr2:105547788-105548328:2","chr2:118948085-118948644:2","chr2:118952840-118953399:2","chr2:126129826-126130388:2","chr2:128961340-128961687:2","chr2:13677484-13677597:1","chr2:13681980-13682060:1","chr2:13682084-13682534:1","chr2:161056198-161056291:2","chr2:161056318-161056732:2","chr2:190313035-190313545:2","chr2:202803923-202804501:2","chr2:36630934-36631496:1","chr2:62325463-62326018:2","chr2:76417971-76418050:2","chr2:79089457-79090025:2","chr2:99040816-99040896:2","chr2:99040920-99041367:2","chr3:129917227-129917682:2","chr3:132276967-132277298:2","chr3:132277617-132277866:2","chr3:138873649-138874232:2","chr3:142232502-142232768:2","chr3:142232770-142232876:2","chr3:48617670-48618037:2","chr3:48618346-48618637:2","chr3:58201359-58201974:2","chr4:115443882-115444436:2","chr4:139239231-139239789:2","chr4:169090343-169090954:3","chr4:169090965-169091117:3","chr4:189150891-189151450:3","chr4:24863562-24863642:2","chr4:24863663-24864107:2","chr4:26406461-26406890:2","chr4:26406914-26406995:2","chr4:55338515-55339073:2","chr4:55342592-55342916:2","chr4:55343154-55343398:2","chr4:5946385-5946942:2","chr4:6058211-6058809:2","chr4:64325250-64325384:2","chr4:98193578-98194200:2","chr5:104316690-104316770:3","chr5:104316794-104317208:3","chr5:104317517-104317570:3","chr5:110999334-110999912:3","chr5:12460855-12461462:3","chr5:1716679-1717251:3","chr5:57157805-57158333:3","chr6:10692948-10693145:3","chr6:10693146-10693393:3","chr6:10718468-10718898:3","chr6:109881952-109882519:3","chr6:110841215-110841699:3","chr6:150856970-150857593:3","chr6:158729866-158730475:3","chr6:158732994-158733323:3","chr6:158733627-158733815:3","chr6:158734120-158734232:3","chr6:31328468-31329077:3","chr6:31336985-31337597:3","chr6:35429549-35430118:3","chr6:4629878-4630509:3","chr6:75272186-75272266:3","chr6:75272290-75272718:3","chr6:80536053-80536479:3","chr6:80536503-80536583:3","chr6:99335243-99335809:3","chr7:143177816-143178446:3","chr7:149568739-149569346:3","chr7:149572697-149572962:3","chr7:149573451-149573817:3","chr7:152072352-152072976:3","chr7:152089298-152089894:3","chr7:152733373-152733982:3","chr7:152734272-152734283:3","chr7:158966765-158967289:3","chr7:37488225-37488772:3","chr7:43291076-43291686:3","chr7:52183970-52184583:3","chr7:56791342-56791804:3","chr7:56791816-56791908:3","chr7:63784527-63785093:3","chr7:76070456-76070774:3","chr7:76071071-76071394:3","chr8:124898394-124898966:3","chr8:124911347-124911915:3","chr8:125189093-125189431:3","chr8:142328083-142328640:4","chr8:144088401-144089001:4","chr8:144093078-144093210:4","chr8:144093465-144093953:4","chr8:144701657-144702303:4","chr8:20291601-20291723:3","chr8:36923545-36923975:3","chr8:36923999-36924079:3","chr8:42251120-42251662:3","chr8:49094494-49094574:3","chr8:49094596-49095041:3","chr8:49103859-49103939:3","chr8:49103962-49104406:3","chr8:52546363-52546443:3","chr8:52546467-52546895:3","chr8:8358592-8359171:3","chr8:8362617-8363270:3","chr8:94749316-94749714:3","chr9:104256052-104256132:4","chr9:104256156-104256615:4","chr9:134100665-134100932:4","chr9:134101232-134101525:4","chr9:134859506-134860091:4","chr9:18603851-18604409:4","chr9:93436016-93436623:4","chr9:95519055-95519686:4"],[1,1,2,1,1,2,2,2,2,1,1,2,1,1,1,2,1,1,2,1,3,1,2,1,2,2,1,1,1,1,1,2,2,1,2,1,2,1,2,2,1,1,2,1,3,1,2,1,1,1,1,2,1,1,1,1,1,2,2,1,2,1,2,1,2,3,2,2,1,2,1,1,2,2,2,2,1,2,2,2,2,1,1,2,3,1,1,1,1,1,2,1,2,2,1,2,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,3,1,1,2,1,1,2,2,1,1,2,2,1,2,1,1,3,2,2,1,1,1,1,1,2,1,1,2,1,2,1,2,1,1,1,1,2,2,1,1,1,1,2,1,1,1,2,2,1,1,3,2,1,1,2,2,2,1,2,1,2,2,2,3,1,1,1,1,1,2,1,1,1,2,1,2,2,1,2,1,1,2,2,1,1,1,1,1,2,1,1,1,2,2,1,2,1,1,1,1,1,1,3,1,2,1,2,2,2,2,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,3,1,2,1,2,1,2,1,2,1,1,2,1,2,1,1,1,2],[1,2,2,1,1,1,1,2,1,2,1,2,2,1,1,1,2,2,2,1,3,1,2,1,1,2,1,1,1,1,2,2,2,1,3,2,2,1,2,2,1,1,1,2,2,2,2,1,1,1,1,1,2,1,1,2,1,2,1,1,1,1,2,2,1,1,2,2,2,1,1,1,2,1,1,1,2,3,1,1,2,1,1,1,2,1,2,2,1,1,1,1,1,1,1,2,1,1,1,2,1,2,1,1,1,1,2,2,1,1,1,1,1,1,2,1,1,1,2,1,1,2,2,2,1,1,2,3,3,2,1,1,1,1,1,1,1,1,2,3,1,1,1,1,1,1,1,2,1,1,1,1,2,2,1,1,1,1,2,1,1,1,2,1,1,1,1,2,1,2,1,2,1,2,1,1,1,2,1,2,2,1,2,1,2,1,1,1,1,2,1,1,2,2,1,2,2,1,1,2,1,1,1,2,1,2,2,1,2,1,1,1,1,2,1,1,1,1,1,2,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,2,1,2,1,2,1,2,1,2,2,2,2,1,2,1,1,1,1,1,2],[2,2,4,1,1,1,2,2,2,2,1,2,2,1,1,1,1,1,2,1,3,1,2,1,3,1,1,1,1,1,1,3,2,1,1,2,1,1,2,2,1,2,1,1,2,1,1,1,1,1,1,1,1,1,2,2,1,2,2,1,2,1,3,1,2,3,1,2,1,2,1,1,3,1,1,1,2,1,1,1,2,1,1,2,2,1,1,2,2,1,1,1,1,1,1,2,2,1,1,2,1,2,1,1,3,2,2,1,1,1,1,2,1,1,2,1,2,2,2,1,1,2,2,1,1,1,2,2,2,2,1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,1,2,2,2,1,1,2,1,2,1,1,1,3,2,2,1,1,2,2,2,1,3,1,1,1,1,1,1,3,2,1,2,1,1,2,1,1,2,1,2,1,2,3,2,1,1,1,2,4,1,1,2,1,1,2,1,1,2,2,1,1,1,1,3,1,2,1,1,2,1,2,1,2,1,2,2,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,2,1,2,2,2,2,3,2,1,1,2,1,1,1,1,3],[1,2,2,1,1,1,1,2,2,1,1,1,2,2,1,3,1,2,1,1,2,1,1,1,2,1,1,1,1,1,1,2,1,1,2,2,1,1,2,1,1,1,2,1,2,1,2,1,1,1,1,1,2,2,1,1,1,2,1,1,1,1,2,2,1,1,2,2,1,2,1,1,2,1,2,1,1,3,2,2,1,2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,2,1,1,2,1,2,1,1,1,1,2,1,1,2,1,1,2,2,1,1,2,1,1,2,1,1,1,2,1,1,2,1,2,1,2,1,1,3,3,1,1,2,1,1,1,1,1,1,2,1,1,2,1,1,1,1,3,1,1,2,1,2,1,1,2,1,1,1,1,1,2,2,2,2,1,1,1,1,1,1,1,2,1,3,1,1,1,1,2,2,1,2,2,1,1,2,1,1,2,1,1,2,2,2,1,2,1,1,1,1,1,2,1,1,2,1,1,2,2,3,1,1,1,1,1,2,2,2,2,1,1,1,1,1,2,1,1,1,2,1,2,1,2,2,2,2,1,2,1,1,1,1,1,2],[2,2,1,1,1,2,1,2,2,2,1,2,3,2,1,1,1,1,1,1,3,1,2,1,3,2,1,1,1,1,1,1,1,1,1,2,2,1,2,2,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,2,2,2,3,1,2,1,2,1,1,3,1,2,1,2,4,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,2,1,3,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,2,1,2,2,2,1,1,2,1,1,2,1,1,2,1,3,1,2,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,2,1,1,2,3,1,2,1,2,2,2,1,1,1,1,2,2,2,3,3,1,1,2,2,2,2,1,2,1,1,2,2,1,1,1,2,1,1,2,1,1,2,1,1,2,1,1,2,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,1,1,2,1,1,1,2,2,2,1,1,1,1,1,2,1,2,1,1,1,1,1,1,1,1,1,1,2,1,2,1,2,2,2,2,1,2,1,2,2,1,1,1],[1,1,2,1,1,1,3,2,1,1,1,2,2,1,1,1,1,1,1,1,3,1,1,1,2,2,1,1,1,1,1,1,2,1,1,2,2,1,2,2,2,1,2,1,2,2,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,2,2,2,1,1,2,2,2,2,1,1,1,2,1,2,3,2,1,1,1,1,3,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,2,1,1,2,1,2,1,1,1,1,1,1,2,1,1,2,1,2,1,1,2,1,1,2,1,1,3,1,1,1,2,1,2,1,2,1,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,1,2,2,1,1,1,1,2,1,2,1,1,1,1,1,2,2,1,2,1,2,1,2,3,1,2,1,1,2,2,1,1,1,1,1,2,1,1,1,1,1,2,2,1,1,1,1,1,2,1,2,1,1,1,2,2,2,1,1,3,1,1,3,1,2,1,1,1,2,1,1,1,1,1,1,2,1,2,2,2,2,2,1,1,2,1,1,1,1,1,2]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>te_id<\/th>\n      <th>DOX_144R<\/th>\n      <th>DOX_24R<\/th>\n      <th>DOX_24T<\/th>\n      <th>VEH_144R<\/th>\n      <th>VEH_24R<\/th>\n      <th>VEH_24T<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"600px","scrollCollapse":true,"pageLength":20,"autoWidth":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6]},{"name":"te_id","targets":0},{"name":"DOX_144R","targets":1},{"name":"DOX_24R","targets":2},{"name":"DOX_24T","targets":3},{"name":"VEH_144R","targets":4},{"name":"VEH_24R","targets":5},{"name":"VEH_24T","targets":6}],"order":[],"orderClasses":false,"lengthMenu":[10,20,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>LTR10E_plot_data &lt;- plot_trajectory(LTR10E_dominant,TE=&quot;LTR10E&quot;,id_col=&quot;te_id&quot;,state_col=&quot;Broad_state&quot;)
+
+acute_LTR10E_dominant &lt;- LTR10E_dominant %&gt;% 
+  dplyr::filter(te_id %in% acute_LTR_repid)
+
+acute_LTR10E_plot_data &lt;- plot_trajectory(acute_LTR10E_dominant,TE=&quot;LTR10E&quot;,id_col=&quot;te_id&quot;,state_col=&quot;Name&quot;)
+
 
 LTR10E_plot_data</code></pre>
 <pre><code>$alluvial_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/LTR10E_plot_data-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-LTR10E_plot_data-1">
+Past versions of LTR10E_plot_data-1.png
+</button>
+</p>
+<div id="fig-LTR10E_plot_data-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/LTR10E_plot_data-1.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $qc_plot</code></pre>
 <p><img src="figure/chromHMM_2.Rmd/LTR10E_plot_data-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-LTR10E_plot_data-2">
+Past versions of LTR10E_plot_data-2.png
+</button>
+</p>
+<div id="fig-LTR10E_plot_data-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/41f1765996c382de389c7bc1dd1377d8d9218fbf/docs/figure/chromHMM_2.Rmd/LTR10E_plot_data-2.png" target="_blank">41f1765</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-05-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>
 $trajectory
 # A tibble: 510 × 7
    te_id                       te_name Condition `144R`    `24R`    `24T` status
-   &lt;chr&gt;                       &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; 
+   &lt;chr&gt;                       &lt;chr&gt;   &lt;fct&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; 
  1 chr10:119645098-119645556:5 LTR10E  DOX       Repressed Repress… Repr… compl…
  2 chr10:119645098-119645556:5 LTR10E  VEH       Repressed Repress… Repr… compl…
  3 chr10:119645877-119646059:5 LTR10E  DOX       Repressed Repress… Repr… compl…
@@ -7308,7 +10406,7 @@ $trajectory
 $trajectory_complete
 # A tibble: 510 × 7
    te_id                       te_name Condition `144R`    `24R`    `24T` status
-   &lt;chr&gt;                       &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; 
+   &lt;chr&gt;                       &lt;chr&gt;   &lt;fct&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; 
  1 chr10:119645098-119645556:5 LTR10E  DOX       Repressed Repress… Repr… compl…
  2 chr10:119645098-119645556:5 LTR10E  VEH       Repressed Repress… Repr… compl…
  3 chr10:119645877-119646059:5 LTR10E  DOX       Repressed Repress… Repr… compl…
@@ -7324,16 +10422,72 @@ $trajectory_complete
 $QC_counts
 # A tibble: 2 × 3
   Condition status       n
-  &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;
-1 DOX       complete   255
-2 VEH       complete   255
+  &lt;fct&gt;     &lt;chr&gt;    &lt;int&gt;
+1 VEH       complete   255
+2 DOX       complete   255
 
 $QC_summary
 # A tibble: 2 × 6
   Condition n_elements complete partial missing frac_complete
-  &lt;chr&gt;          &lt;int&gt;    &lt;int&gt;   &lt;int&gt;   &lt;int&gt;         &lt;dbl&gt;
-1 DOX              255      255       0       0             1
-2 VEH              255      255       0       0             1</code></pre>
+  &lt;fct&gt;          &lt;int&gt;    &lt;int&gt;   &lt;int&gt;   &lt;int&gt;         &lt;dbl&gt;
+1 VEH              255      255       0       0             1
+2 DOX              255      255       0       0             1</code></pre>
+<pre class="r"><code>acute_LTR10E_plot_data</code></pre>
+<pre><code>$alluvial_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/LTR10E_plot_data-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$qc_plot</code></pre>
+<p><img src="figure/chromHMM_2.Rmd/LTR10E_plot_data-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+$trajectory
+# A tibble: 56 × 7
+   te_id                     te_name Condition `144R`         `24R` `24T` status
+   &lt;chr&gt;                     &lt;chr&gt;   &lt;fct&gt;     &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 
+ 1 chr11:61998954-61999544:6 LTR10E  DOX       Repressed_ZFP… Acti… Repr… compl…
+ 2 chr11:61998954-61999544:6 LTR10E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 3 chr11:97743205-97743280:7 LTR10E  DOX       Repressed_ZFP… Acti… Acti… compl…
+ 4 chr11:97743205-97743280:7 LTR10E  VEH       Repressed_ZFP… Repr… Hete… compl…
+ 5 chr11:97743304-97743752:7 LTR10E  DOX       Repressed_ZFP… Acti… Repr… compl…
+ 6 chr11:97743304-97743752:7 LTR10E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 7 chr12:25711086-25711516:8 LTR10E  DOX       Repressed_ZFP… Acti… Acti… compl…
+ 8 chr12:25711086-25711516:8 LTR10E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 9 chr12:25711540-25711620:8 LTR10E  DOX       Repressed_ZFP… Repr… Acti… compl…
+10 chr12:25711540-25711620:8 LTR10E  VEH       Repressed_ZFP… Repr… Hete… compl…
+# ℹ 46 more rows
+
+$trajectory_complete
+# A tibble: 56 × 7
+   te_id                     te_name Condition `144R`         `24R` `24T` status
+   &lt;chr&gt;                     &lt;chr&gt;   &lt;fct&gt;     &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 
+ 1 chr11:61998954-61999544:6 LTR10E  DOX       Repressed_ZFP… Acti… Repr… compl…
+ 2 chr11:61998954-61999544:6 LTR10E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 3 chr11:97743205-97743280:7 LTR10E  DOX       Repressed_ZFP… Acti… Acti… compl…
+ 4 chr11:97743205-97743280:7 LTR10E  VEH       Repressed_ZFP… Repr… Hete… compl…
+ 5 chr11:97743304-97743752:7 LTR10E  DOX       Repressed_ZFP… Acti… Repr… compl…
+ 6 chr11:97743304-97743752:7 LTR10E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 7 chr12:25711086-25711516:8 LTR10E  DOX       Repressed_ZFP… Acti… Acti… compl…
+ 8 chr12:25711086-25711516:8 LTR10E  VEH       Repressed_ZFP… Repr… Repr… compl…
+ 9 chr12:25711540-25711620:8 LTR10E  DOX       Repressed_ZFP… Repr… Acti… compl…
+10 chr12:25711540-25711620:8 LTR10E  VEH       Repressed_ZFP… Repr… Hete… compl…
+# ℹ 46 more rows
+
+$QC_counts
+# A tibble: 2 × 3
+  Condition status       n
+  &lt;fct&gt;     &lt;chr&gt;    &lt;int&gt;
+1 VEH       complete    28
+2 DOX       complete    28
+
+$QC_summary
+# A tibble: 2 × 6
+  Condition n_elements complete partial missing frac_complete
+  &lt;fct&gt;          &lt;int&gt;    &lt;int&gt;   &lt;int&gt;   &lt;int&gt;         &lt;dbl&gt;
+1 VEH               28       28       0       0             1
+2 DOX               28       28       0       0             1</code></pre>
+<pre class="r"><code>saveRDS(LTR10E_trajectory_broad,&quot;data/RDS_files/LTR10E_trajectory_broad.RDS&quot;)
+saveRDS(LTR10E_trajectory_detailed,&quot;data/RDS_files/LTR10E_trajectory_detailed.RDS&quot;)
+saveRDS(MER61E_trajectory_broad,&quot;data/RDS_files/MER61E_trajectory_broad.RDS&quot;)
+saveRDS(MER61E_trajectory_detailed,&quot;data/RDS_files/MER61E_trajectory_detailed.RDS&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -7390,130 +10544,131 @@ loaded via a namespace (and not attached):
  [12] processx_3.9.0                         
  [13] lattice_0.22-9                         
  [14] MASS_7.3-65                            
- [15] magrittr_2.0.5                         
- [16] sass_0.4.10                            
- [17] rmarkdown_2.31                         
- [18] jquerylib_0.1.4                        
- [19] yaml_2.3.12                            
- [20] plotrix_3.8-14                         
- [21] httpuv_1.6.17                          
- [22] otel_0.2.0                             
- [23] ggtangle_0.1.2                         
- [24] DBI_1.3.0                              
- [25] RColorBrewer_1.1-3                     
- [26] abind_1.4-8                            
- [27] zlibbioc_1.52.0                        
- [28] R.utils_2.13.0                         
- [29] RCurl_1.98-1.18                        
- [30] yulab.utils_0.2.4                      
- [31] tweenr_2.0.3                           
- [32] rappdirs_0.3.4                         
- [33] git2r_0.36.2                           
- [34] GenomeInfoDbData_1.2.13                
- [35] enrichplot_1.26.6                      
- [36] tidytree_0.4.7                         
- [37] codetools_0.2-20                       
- [38] DelayedArray_0.32.0                    
- [39] DOSE_4.0.1                             
- [40] tidyselect_1.2.1                       
- [41] aplot_0.2.9                            
- [42] UCSC.utils_1.2.0                       
- [43] farver_2.1.2                           
- [44] matrixStats_1.5.0                      
- [45] GenomicAlignments_1.42.0               
- [46] jsonlite_2.0.0                         
- [47] tools_4.4.2                            
- [48] treeio_1.30.0                          
- [49] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
- [50] Rcpp_1.1.1-1.1                         
- [51] glue_1.8.1                             
- [52] SparseArray_1.6.2                      
- [53] xfun_0.57                              
- [54] qvalue_2.38.0                          
- [55] MatrixGenerics_1.18.1                  
- [56] withr_3.0.2                            
- [57] fastmap_1.2.0                          
- [58] boot_1.3-32                            
- [59] callr_3.7.6                            
- [60] caTools_1.18.3                         
- [61] digest_0.6.39                          
- [62] timechange_0.4.0                       
- [63] R6_2.6.1                               
- [64] gridGraphics_0.5-1                     
- [65] seqPattern_1.38.0                      
- [66] colorspace_2.1-2                       
- [67] GO.db_3.20.0                           
- [68] gtools_3.9.5                           
- [69] dichromat_2.0-0.1                      
- [70] RSQLite_3.52.0                         
- [71] R.methodsS3_1.8.2                      
- [72] utf8_1.2.6                             
- [73] generics_0.1.4                         
- [74] data.table_1.18.4                      
- [75] httr_1.4.8                             
- [76] htmlwidgets_1.6.4                      
- [77] S4Arrays_1.6.0                         
- [78] whisker_0.4.1                          
- [79] pkgconfig_2.0.3                        
- [80] gtable_0.3.6                           
- [81] blob_1.3.0                             
- [82] S7_0.2.2                               
- [83] impute_1.80.0                          
- [84] XVector_0.46.0                         
- [85] htmltools_0.5.9                        
- [86] fgsea_1.32.4                           
- [87] scales_1.4.0                           
- [88] Biobase_2.66.0                         
- [89] png_0.1-9                              
- [90] ggfun_0.2.0                            
- [91] knitr_1.51                             
- [92] rstudioapi_0.18.0                      
- [93] tzdb_0.5.0                             
- [94] reshape2_1.4.5                         
- [95] rjson_0.2.23                           
- [96] nlme_3.1-169                           
- [97] curl_7.1.0                             
- [98] cachem_1.1.0                           
- [99] KernSmooth_2.23-26                     
-[100] parallel_4.4.2                         
-[101] AnnotationDbi_1.68.0                   
-[102] restfulr_0.0.16                        
-[103] pillar_1.11.1                          
-[104] vctrs_0.7.3                            
-[105] gplots_3.3.0                           
-[106] promises_1.5.0                         
-[107] evaluate_1.0.5                         
-[108] GenomicFeatures_1.58.0                 
-[109] cli_3.6.6                              
-[110] compiler_4.4.2                         
-[111] Rsamtools_2.22.0                       
-[112] rlang_1.2.0                            
-[113] crayon_1.5.3                           
-[114] labeling_0.4.3                         
-[115] getPass_0.2-4                          
-[116] plyr_1.8.9                             
-[117] fs_2.1.0                               
-[118] stringi_1.8.7                          
-[119] viridisLite_0.4.3                      
-[120] gridBase_0.4-7                         
-[121] BiocParallel_1.40.2                    
-[122] Biostrings_2.74.1                      
-[123] lazyeval_0.2.3                         
-[124] GOSemSim_2.32.0                        
-[125] Matrix_1.7-5                           
-[126] BSgenome_1.74.0                        
-[127] hms_1.1.4                              
-[128] patchwork_1.3.2                        
-[129] bit64_4.8.0                            
-[130] KEGGREST_1.46.0                        
-[131] SummarizedExperiment_1.36.0            
-[132] igraph_2.3.1                           
-[133] memoise_2.0.1                          
-[134] bslib_0.10.0                           
-[135] ggtree_3.14.0                          
-[136] fastmatch_1.1-8                        
-[137] bit_4.6.0                              
-[138] ape_5.8-1                              </code></pre>
+ [15] crosstalk_1.2.2                        
+ [16] magrittr_2.0.5                         
+ [17] sass_0.4.10                            
+ [18] rmarkdown_2.31                         
+ [19] jquerylib_0.1.4                        
+ [20] yaml_2.3.12                            
+ [21] plotrix_3.8-14                         
+ [22] httpuv_1.6.17                          
+ [23] otel_0.2.0                             
+ [24] ggtangle_0.1.2                         
+ [25] DBI_1.3.0                              
+ [26] RColorBrewer_1.1-3                     
+ [27] abind_1.4-8                            
+ [28] zlibbioc_1.52.0                        
+ [29] R.utils_2.13.0                         
+ [30] RCurl_1.98-1.18                        
+ [31] yulab.utils_0.2.4                      
+ [32] tweenr_2.0.3                           
+ [33] rappdirs_0.3.4                         
+ [34] git2r_0.36.2                           
+ [35] GenomeInfoDbData_1.2.13                
+ [36] enrichplot_1.26.6                      
+ [37] tidytree_0.4.7                         
+ [38] codetools_0.2-20                       
+ [39] DelayedArray_0.32.0                    
+ [40] DOSE_4.0.1                             
+ [41] tidyselect_1.2.1                       
+ [42] aplot_0.2.9                            
+ [43] UCSC.utils_1.2.0                       
+ [44] farver_2.1.2                           
+ [45] matrixStats_1.5.0                      
+ [46] GenomicAlignments_1.42.0               
+ [47] jsonlite_2.0.0                         
+ [48] tools_4.4.2                            
+ [49] treeio_1.30.0                          
+ [50] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+ [51] Rcpp_1.1.1-1.1                         
+ [52] glue_1.8.1                             
+ [53] SparseArray_1.6.2                      
+ [54] xfun_0.57                              
+ [55] qvalue_2.38.0                          
+ [56] MatrixGenerics_1.18.1                  
+ [57] withr_3.0.2                            
+ [58] fastmap_1.2.0                          
+ [59] boot_1.3-32                            
+ [60] callr_3.7.6                            
+ [61] caTools_1.18.3                         
+ [62] digest_0.6.39                          
+ [63] timechange_0.4.0                       
+ [64] R6_2.6.1                               
+ [65] gridGraphics_0.5-1                     
+ [66] seqPattern_1.38.0                      
+ [67] colorspace_2.1-2                       
+ [68] GO.db_3.20.0                           
+ [69] gtools_3.9.5                           
+ [70] dichromat_2.0-0.1                      
+ [71] RSQLite_3.52.0                         
+ [72] R.methodsS3_1.8.2                      
+ [73] utf8_1.2.6                             
+ [74] generics_0.1.4                         
+ [75] data.table_1.18.4                      
+ [76] httr_1.4.8                             
+ [77] htmlwidgets_1.6.4                      
+ [78] S4Arrays_1.6.0                         
+ [79] whisker_0.4.1                          
+ [80] pkgconfig_2.0.3                        
+ [81] gtable_0.3.6                           
+ [82] blob_1.3.0                             
+ [83] S7_0.2.2                               
+ [84] impute_1.80.0                          
+ [85] XVector_0.46.0                         
+ [86] htmltools_0.5.9                        
+ [87] fgsea_1.32.4                           
+ [88] scales_1.4.0                           
+ [89] Biobase_2.66.0                         
+ [90] png_0.1-9                              
+ [91] ggfun_0.2.0                            
+ [92] knitr_1.51                             
+ [93] rstudioapi_0.18.0                      
+ [94] tzdb_0.5.0                             
+ [95] reshape2_1.4.5                         
+ [96] rjson_0.2.23                           
+ [97] nlme_3.1-169                           
+ [98] curl_7.1.0                             
+ [99] cachem_1.1.0                           
+[100] KernSmooth_2.23-26                     
+[101] parallel_4.4.2                         
+[102] AnnotationDbi_1.68.0                   
+[103] restfulr_0.0.16                        
+[104] pillar_1.11.1                          
+[105] vctrs_0.7.3                            
+[106] gplots_3.3.0                           
+[107] promises_1.5.0                         
+[108] evaluate_1.0.5                         
+[109] GenomicFeatures_1.58.0                 
+[110] cli_3.6.6                              
+[111] compiler_4.4.2                         
+[112] Rsamtools_2.22.0                       
+[113] rlang_1.2.0                            
+[114] crayon_1.5.3                           
+[115] labeling_0.4.3                         
+[116] getPass_0.2-4                          
+[117] plyr_1.8.9                             
+[118] fs_2.1.0                               
+[119] stringi_1.8.7                          
+[120] viridisLite_0.4.3                      
+[121] gridBase_0.4-7                         
+[122] BiocParallel_1.40.2                    
+[123] Biostrings_2.74.1                      
+[124] lazyeval_0.2.3                         
+[125] GOSemSim_2.32.0                        
+[126] Matrix_1.7-5                           
+[127] BSgenome_1.74.0                        
+[128] hms_1.1.4                              
+[129] patchwork_1.3.2                        
+[130] bit64_4.8.0                            
+[131] KEGGREST_1.46.0                        
+[132] SummarizedExperiment_1.36.0            
+[133] igraph_2.3.1                           
+[134] memoise_2.0.1                          
+[135] bslib_0.10.0                           
+[136] ggtree_3.14.0                          
+[137] fastmatch_1.1-8                        
+[138] bit_4.6.0                              
+[139] ape_5.8-1                              </code></pre>
 </div>
 </div>
 </div>
