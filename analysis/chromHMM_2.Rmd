@@ -107,6 +107,7 @@ state_colors <- c(
 name_order <- States_anno %>%
   arrange(recode) %>%
   pull(Name)
+
 ```
 ### Loading interested regions for overlap
 
@@ -124,7 +125,23 @@ cluster_lookup <- annotated_H3K27ac_ext200 %>%
 # annotated_H3K27ac_ext200 %>% 
 #   dplyr::filter(str_detect(repName,"^HERVIP"))
 KZFP_tss_gr <- import("data/Bed_exports/KZFP_tss_ensembl.bed")
+acute_repid <- annotated_H3K27ac_ext200 %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+   tidyr::separate_longer_delim(
+    cols = c(repClass, repFamily, repName, repID),
+    delim = ";"
+  ) %>% 
+  dplyr::filter(repName=="MER61E") %>% 
+  pull(repID)
 
+acute_LTR_repid <- annotated_H3K27ac_ext200 %>% 
+  dplyr::filter(cluster=="Set_3") %>% 
+   tidyr::separate_longer_delim(
+    cols = c(repClass, repFamily, repName, repID),
+    delim = ";"
+  ) %>% 
+  dplyr::filter(repName=="LTR10E") %>% 
+  pull(repID)
 ```
 
 
@@ -474,7 +491,7 @@ peak_states %>% group_by(Peak_name) %>% count(
 ```
 
 
-Cases are incomplete.  Time to filter out. note there are 68 MER61E overlapping regions in my data.  For quantification purposes, 16 are not assigned a cluster, 40 are assigned Acute cluster (set 3) and 12 are assigned non response cluster (set 1)
+Cases NOT incomplete anymore.  Time to filter out. note there are 68 MER61E overlapping regions in my data.  For quantification purposes, 16 are not assigned a cluster, 40 are assigned Acute cluster (set 3) and 12 are assigned non response cluster (set 1)
 
 Why are they incomplete:  maybe there is reduced chromatin state confidence?  I have tested to make sure that there is
 ```{r, clean}
@@ -1138,7 +1155,7 @@ state_transitions <- data.frame(
   VEH_24R  = assign_state(all_segments, chrom_24R_VEH),
   VEH_144R = assign_state(all_segments, chrom_144R_VEH))
 
-### summarizing state transitions becuase of number
+### summarizing state transitions because of number
 # transition_counts <- state_transitions %>%
 #   count(DOX_24T, DOX_24R, DOX_144R, VEH_24T,VEH_24R,VEH_144R)
 
@@ -1225,7 +1242,6 @@ process_chromhmm_TE_raw <- function(chrom_gr, te_gr, te_name) {
 
 
 ```{r MER61E processing}
-
 MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
 
 MER61E_results_df <- purrr::imap_dfr(chrom_list, function(chrom_gr, set_name) {
@@ -1268,7 +1284,257 @@ MER61E_trajectory_broad <- MER61E_dominant %>%
   pivot_wider(
     names_from = c(Condition, Timepoint),
     values_from = Broad_state)
+  all_results
+```
+
+The above code created my dominant state dataframe, then a detailed version and a broad version of each dominant state.
+
+We wanted to investigate how many states there are within MER61E groups and what the breakdown is. 
+
+```{r MER61E processing states}
+MER61E_state_wide <- MER61E_results_df %>%
+  group_by(te_id, Set, state) %>%
+  summarise(
+    TE_width = dplyr::first(TE_width),
+    total_width = sum(total_width, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    frac = total_width / TE_width
+  ) %>%
+  pivot_wider(
+    id_cols = c(te_id, Set, TE_width),
+    names_from = state,
+    values_from = c(total_width, frac),
+    names_glue = "{state}_{.value}",
+    values_fill = list(
+      total_width = 0,
+      frac = 0
+    )
+  ) %>%
+  arrange(te_id, Set)
+ 
+ MER61E_state_mixed <- MER61E_state_wide %>%
+  filter(
+    !if_any(ends_with("_frac"), ~ .x == 1)
+  )
+ 
+ 
+ MER61E_fifty_fifty <- MER61E_state_wide %>%
+  rowwise() %>%
+  filter(
+    sum(
+      dplyr::near(
+        c_across(ends_with("_frac")),
+        0.5,
+        tol = 1e-6
+      )
+    ) == 2,
+    dplyr::near(
+      sum(c_across(ends_with("_frac")), na.rm = TRUE),
+      1,
+      tol = 1e-6
+    )
+  ) %>%
+  ungroup()
+ 
+MER61E_state_counts <- MER61E_state_wide %>%
+  rowwise() %>%
+  mutate(
+    n_states = sum(c_across(ends_with("_frac")) > 0, na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  select(te_id, Set, TE_width, n_states)
   
+  
+  
+  
+MER61E_state_counts %>% 
+     group_by(n_states, Set) %>% 
+     tally() %>% 
+     pivot_wider(id_cols = Set, values_from = n, names_from = n_states) %>% 
+  datatable(.,caption = "MER61E state  breakdowns",
+            options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)
+   
+
+
+```
+I also created a data frame of just the single states and the directly 50/50 split states.
+
+```{r}
+state_frac_long <- MER61E_state_wide %>%
+   rowwise() %>%
+  mutate(
+    n_states = sum(c_across(ends_with("_frac")) > 0, na.rm = TRUE)
+  ) %>%
+  ungroup() %>% 
+  pivot_longer(
+    cols = ends_with("_frac"),
+    names_to = "state",
+    values_to = "frac"
+  ) %>%
+  mutate(
+    state = sub("_frac$", "", state)
+  ) %>%
+  filter(frac > 0) %>% 
+  left_join(States_anno[1:2], by=c("state"="State"))
+
+ggplot(
+  state_frac_long %>% filter(frac > 0),
+  aes(x = Name, y = frac)
+) +
+  geom_violin(trim = TRUE, scale = "width") +
+  geom_boxplot(
+    width = 0.15,
+    outlier.shape = NA
+  ) +
+  labs(
+    x = "ChromHMM state",
+    y = "Fraction of MER61E element covered",
+    title = "Distribution of nonzero ChromHMM state fractions across all MER61E elements"
+  ) +
+  theme_classic()+
+  theme(axis.text.x=element_text(angle = 90))
+
+two_state_long <- state_frac_long %>%
+  filter(n_states == 2)
+ggplot(two_state_long,
+       aes(x = frac)) +
+  geom_histogram(binwidth = 0.05) +
+  labs(
+    x = "Fraction of TE covered by two states",
+    y = "Count"
+  ) +
+  theme_classic()+
+  theme(axis.text.x=element_text(angle = 90))
+
+major_minor <- two_state_long %>%
+  group_by(te_id, Set) %>%
+  arrange(desc(frac), .by_group = TRUE) %>%
+  mutate(rank = c("Major", "Minor")) %>%
+  ungroup()
+
+
+major_minor_MER <- two_state_long %>%
+  group_by(te_id, Set) %>%
+  arrange(desc(frac), .by_group = TRUE) %>%
+  summarise(
+    major_state = dplyr::first(state),
+    major_frac  = dplyr::first(frac),
+    minor_state = dplyr::last(state),
+    minor_frac  = dplyr::last(frac),
+    .groups = "drop"
+  )
+
+ggplot(major_minor,
+       aes(rank, frac)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.15, alpha = 0.4) +
+  theme_classic()+
+  ggtitle("Distribution of major and minor fractions")
+   
+   major_minor %>%
+  group_by(te_id, Set) %>%
+  arrange(desc(frac), .by_group = TRUE) %>%
+  summarise(
+    major_state = dplyr::first(state),
+    major_frac  = dplyr::first(frac),
+    minor_state = dplyr::last(state),
+    minor_frac  = dplyr::last(frac),
+    .groups = "drop"
+  ) %>%
+  count(major_state, minor_state, sort = TRUE) %>% 
+     left_join(States_anno[,1:2],by=c("major_state"="State")) %>% 
+     left_join(States_anno[1:2], by=c("minor_state"="State")) %>% 
+     dplyr::rename("Minor_name"=Name.y, "Major_name"=Name.x) %>% 
+     dplyr::select(Major_name, Minor_name,n,major_state,minor_state) %>% 
+   
+   datatable(.,caption="MER61E state pairs (for 2 state fractions)",
+               options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)
+   
+```
+The above plot is showing the overall distribution of fractions of MER61E elements by each state in a violin plot.  Note only 15 of 16 states are showing.  The absent state is E6 aka Bivalent_Enhancer.
+
+```{r}
+ggplot(two_state_long,
+       aes(Name, frac)) +
+  geom_boxplot() +
+  theme_classic() +
+  theme(axis.text.x =
+          element_text(angle = 45, hjust = 1))+
+  ggtitle("Fraction of MER61E elements assigned to each ChromHMM state\n(all exactly two-state overlaps)")+
+  theme(axis.text.x=element_text(angle = 90))
+
+
+
+
+```
+The Fraction of MER61E elements-twostate overlaps plot above is a boxplot showing the distribution of fractions of the 526 2-state instances.  Note this plot is also missing E6 Bivalent_Enhancer marks; E2 aka Quiescent_Low_Coverage,and E16 Genic_Weak_Transcription.
+
+
+Now I am interested in how these two state (pairs, major/minor) are occuring...
+
+
+```{r}
+major_minor_MER %>%
+   
+  ggplot(., aes(x=major_frac))+
+  geom_histogram(binwidth = 0.05)
+```
+This is the plot of the Major fraction amounts.  A fraction that is labelled major occurs when grouping by te_id and Set (treatment-timepoint) then ordering by the fraction.  The first value is labelled Major, the second value is labelled Minor.  In the case of ties (3 instances) the state that came first from left to right on the TE is considered the Major state. (note, in R the default order of states is (E1, E10, E11,...,  E16, E2, E3,......,E9)) (how r orders character strings)
+
+```{r}
+te_state_frequency_MER <- MER61E_state_counts %>%
+  count(te_id, n_states, name = "n_sets") %>%
+  arrange(te_id, n_states)
+
+te_state_frequency_wide_MER <- MER61E_state_counts %>%
+  count(te_id, n_states, name = "n_sets") %>%
+  mutate(
+    n_states = paste0("n_states_", n_states)
+  ) %>%
+  pivot_wider(
+    names_from = n_states,
+    values_from = n_sets,
+    values_fill = 0
+  )
+te_state_frequency_wide_MER %>% 
+datatable(.,caption="MER61E state frequency",
+               options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)
+
+
+MER61E_state_counts %>%
+  pivot_wider(
+    id_cols = te_id,
+    names_from = Set,
+    values_from = n_states
+  ) %>% 
+  datatable(.,caption="MER61E state frequency by treatment-timepoint",
+               options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)
 
 ```
 
@@ -1283,9 +1549,19 @@ plot_trajectory <- function(dominant_df, TE, id_col="te_id",state_col="Broad_sta
   "Repressed" = "#4575B4",
   "Quiescent" = "#D9D9D9")
   
+  name_color_key <- dominant_df %>%
+  dplyr::distinct(Name, Broad_state) %>%
+  dplyr::filter(!is.na(Name), !is.na(Broad_state)) %>%
+  dplyr::mutate(color = unname(state_colors[Broad_state]))
+
+name_colors <- stats::setNames(
+  name_color_key$color,
+  name_color_key$Name)
+
   trajectory <- dominant_df %>%
+    dplyr::mutate(Condition=factor(Condition, levels=c("VEH","DOX"))) %>% 
   dplyr::select(all_of(id_col),te_name, Condition, Timepoint, all_of(state_col)) %>%
-  pivot_wider(
+  tidyr::pivot_wider(
     names_from = Timepoint,
     values_from = all_of(state_col))
   
@@ -1317,7 +1593,7 @@ plot_trajectory <- function(dominant_df, TE, id_col="te_id",state_col="Broad_sta
      facet_wrap(~ Condition) +
      scale_x_discrete(limits = c("24T", "24R", "144R"),
                       expand = c(0.1, 0.05)) +
-     scale_fill_manual(values = state_colors,
+     scale_fill_manual(values = name_colors,
                        na.value = "grey80") +
      labs(title = paste0("Complete ChromHMM state trajectories for ", TE," (n = ",n_elements," integrants)"),
           x = NULL,
@@ -1361,14 +1637,20 @@ plot_trajectory <- function(dominant_df, TE, id_col="te_id",state_col="Broad_sta
 ```{r MER61E_plot_data}
 MER61E_plot_data <- plot_trajectory(MER61E_dominant,TE="MER61E",id_col="te_id",state_col="Broad_state")
 
+acute_MER61E_dominant <- MER61E_dominant %>% 
+  dplyr::filter(te_id %in% acute_repid)
+
+acute_MER61E_plot_data <- plot_trajectory(acute_MER61E_dominant,TE="MER61E",id_col="te_id",state_col="Name")
+
 MER61E_plot_data
+
+acute_MER61E_plot_data
 ```
 
 ### All LTR10E integrants  
 
 
 ```{r LTR10E processing}
-
 LTR10E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/LTR10E_ERV1_LTR.bed")
 
 LTR10E_results_df <- purrr::imap_dfr(chrom_list, function(chrom_gr, set_name) {
@@ -1411,13 +1693,276 @@ LTR10E_trajectory_broad <- LTR10E_dominant %>%
   pivot_wider(
     names_from = c(Condition, Timepoint),
     values_from = Broad_state)
-  
-
 ```
 
+The above code created my dominant state dataframe, then a detailed version and a broad version of each dominant state.
+
+We wanted to investigate how many states there are within MER61E groups and what the breakdown is. 
+
+```{r LTR10E processing states}
+LTR10E_state_wide <- LTR10E_results_df %>%
+  group_by(te_id, Set, state) %>%
+  summarise(
+    TE_width = dplyr::first(TE_width),
+    total_width = sum(total_width, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    frac = total_width / TE_width
+  ) %>%
+  pivot_wider(
+    id_cols = c(te_id, Set, TE_width),
+    names_from = state,
+    values_from = c(total_width, frac),
+    names_glue = "{state}_{.value}",
+    values_fill = list(
+      total_width = 0,
+      frac = 0
+    )
+  ) %>%
+  arrange(te_id, Set)
+ 
+ LTR10E_state_mixed <- LTR10E_state_wide %>%
+  filter(
+    !if_any(ends_with("_frac"), ~ .x == 1)
+  )
+ 
+ 
+ LTR10E_fifty_fifty <- LTR10E_state_wide %>%
+  rowwise() %>%
+  filter(
+    sum(
+      dplyr::near(
+        c_across(ends_with("_frac")),
+        0.5,
+        tol = 1e-6
+      )
+    ) == 2,
+    dplyr::near(
+      sum(c_across(ends_with("_frac")), na.rm = TRUE),
+      1,
+      tol = 1e-6
+    )
+  ) %>%
+  ungroup()
+ 
+LTR10E_state_counts <- LTR10E_state_wide %>%
+  rowwise() %>%
+  mutate(
+    n_states = sum(c_across(ends_with("_frac")) > 0, na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  select(te_id, Set, TE_width, n_states)
+  
+  
+  
+  
+LTR10E_state_counts %>% 
+     group_by(n_states, Set) %>% 
+     tally() %>% 
+     pivot_wider(id_cols = Set, values_from = n, names_from = n_states) %>% 
+  datatable(.,caption = "LTR10E state  breakdowns",
+            options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)
+   
+
+```
+I also created a data frame of just the single states and the directly 50/50 split states.
+
+I did not find any 50/50 splits in LTR10E elements
+
+```{r}
+state_frac_long_LTR <- LTR10E_state_wide %>%
+   rowwise() %>%
+  mutate(
+    n_states = sum(c_across(ends_with("_frac")) > 0, na.rm = TRUE)
+  ) %>%
+  ungroup() %>% 
+  pivot_longer(
+    cols = ends_with("_frac"),
+    names_to = "state",
+    values_to = "frac"
+  ) %>%
+  mutate(
+    state = sub("_frac$", "", state)
+  ) %>%
+  filter(frac > 0) %>% 
+  left_join(States_anno[1:2], by=c("state"="State"))
+
+ggplot((state_frac_long_LTR %>% filter(frac > 0)),
+  aes(x = Name, y = frac)
+) +
+  geom_violin(trim = TRUE, scale = "width") +
+  geom_boxplot(
+    width = 0.15,
+    outlier.shape = NA
+  ) +
+  labs(
+    x = "ChromHMM state",
+    y = "Fraction of LTR10E element covered",
+    title = "Distribution of nonzero ChromHMM state fractions across all LTR10E elements"
+  ) +
+  theme_classic()+
+  theme(axis.text.x=element_text(angle = 90))
+
+two_state_long_LTR <- state_frac_long_LTR %>%
+  filter(n_states == 2)
+
+ggplot(two_state_long_LTR,
+       aes(x = frac)) +
+  geom_histogram(binwidth = 0.05) +
+  labs(
+    x = "Fraction of TE covered by two states",
+    y = "Count"
+  ) +
+  theme_classic()+
+  theme(axis.text.x=element_text(angle = 90))
+
+major_minor_LTR <- two_state_long_LTR %>%
+  group_by(te_id, Set) %>%
+  arrange(desc(frac), .by_group = TRUE) %>%
+  mutate(rank = c("Major", "Minor")) %>%
+  ungroup()
+
+
+major_minor_2_LTR <- two_state_long_LTR %>%
+  group_by(te_id, Set) %>%
+  arrange(desc(frac), .by_group = TRUE) %>%
+  summarise(
+    major_state = dplyr::first(state),
+    major_frac  = dplyr::first(frac),
+    minor_state = dplyr::last(state),
+    minor_frac  = dplyr::last(frac),
+    .groups = "drop"
+  )
+
+ggplot(major_minor_LTR,
+       aes(rank, frac)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.15, alpha = 0.4) +
+  theme_classic()+
+  ggtitle("Distribution of major and minor fractions in LTR10E")
+   
+   major_minor_LTR %>%
+  group_by(te_id, Set) %>%
+  arrange(desc(frac), .by_group = TRUE) %>%
+  summarise(
+    major_state = dplyr::first(state),
+    major_frac  = dplyr::first(frac),
+    minor_state = dplyr::last(state),
+    minor_frac  = dplyr::last(frac),
+    .groups = "drop"
+  ) %>%
+  count(major_state, minor_state, sort = TRUE) %>% 
+     left_join(States_anno[,1:2],by=c("major_state"="State")) %>% 
+     left_join(States_anno[1:2], by=c("minor_state"="State")) %>% 
+     dplyr::rename("Minor_name"=Name.y, "Major_name"=Name.x) %>% 
+     dplyr::select(Major_name, Minor_name,n,major_state,minor_state) %>% 
+   
+   datatable(.,caption="LTR10E state pairs (for 2 state fractions)",
+               options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)
+   
+
+```
+The above plot is showing the overall distribution of fractions of LTR10E elements by each state in a violin plot.  All 16 states are showing. (unlike MER61E) 
+
+```{r}
+ggplot(two_state_long_LTR,
+       aes(Name, frac)) +
+  geom_boxplot() +
+  theme_classic() +
+  theme(axis.text.x =
+          element_text(angle = 45, hjust = 1))+
+  ggtitle("Fraction of LTR10E elements assigned to each ChromHMM state\n(all exactly two-state overlaps)")+
+  theme(axis.text.x=element_text(angle = 90))
+
+
+```
+The Fraction of LTR10E elements-twostate overlaps plot above is a boxplot showing the distribution of fractions of the 499 2-state instances.  Note this plot is missing E2 aka Quiescent_Low_Coverage.
+
+
+Now I am interested in how these two state (pairs, major/minor) are occurring...
+
+
+```{r}
+major_minor_2_LTR %>%
+   
+  ggplot(., aes(x=major_frac))+
+  geom_histogram(binwidth = 0.05)
+```
+This is the plot of the Major fraction amounts.  A fraction that is labelled major occurs when grouping by te_id and Set (treatment-timepoint) then ordering by the fraction.  The first value is labelled Major, the second value is labelled Minor.  There were no ties (ie 50/50 splits across LTR10E elements)
+
+Lets look at frequency of te_id and states:
+```{r}
+te_state_frequency_LTR <- LTR10E_state_counts %>%
+  count(te_id, n_states, name = "n_sets") %>%
+  arrange(te_id, n_states)
+
+te_state_frequency_wide_LTR <- LTR10E_state_counts %>%
+  count(te_id, n_states, name = "n_sets") %>%
+  mutate(
+    n_states = paste0("n_states_", n_states)
+  ) %>%
+  pivot_wider(
+    names_from = n_states,
+    values_from = n_sets,
+    values_fill = 0
+  )
+te_state_frequency_wide_MER %>% 
+datatable(.,caption="LTR10E state frequency",
+               options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)
+
+
+LTR10E_state_counts %>%
+  pivot_wider(
+    id_cols = te_id,
+    names_from = Set,
+    values_from = n_states
+  ) %>% 
+  datatable(.,caption="LTR10E state frequency by treatment-timepoint",
+               options = list(
+    scrollY = "600px",
+    scrollCollapse = TRUE,
+    pageLength = 20,
+    autoWidth = TRUE
+  ),
+  rownames = FALSE)
+
+```
 
 ```{r LTR10E_plot_data}
 LTR10E_plot_data <- plot_trajectory(LTR10E_dominant,TE="LTR10E",id_col="te_id",state_col="Broad_state")
 
+acute_LTR10E_dominant <- LTR10E_dominant %>% 
+  dplyr::filter(te_id %in% acute_LTR_repid)
+
+acute_LTR10E_plot_data <- plot_trajectory(acute_LTR10E_dominant,TE="LTR10E",id_col="te_id",state_col="Name")
+
+
 LTR10E_plot_data
+acute_LTR10E_plot_data
 ```
+```{r file saving, eval=FALSE}
+saveRDS(LTR10E_trajectory_broad,"data/RDS_files/LTR10E_trajectory_broad.RDS")
+saveRDS(LTR10E_trajectory_detailed,"data/RDS_files/LTR10E_trajectory_detailed.RDS")
+saveRDS(MER61E_trajectory_broad,"data/RDS_files/MER61E_trajectory_broad.RDS")
+saveRDS(MER61E_trajectory_detailed,"data/RDS_files/MER61E_trajectory_detailed.RDS")
+```
+
