@@ -189,6 +189,8 @@ RAD21_sp_ChIP <-  rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CH
 
 TOP2B_sp_ChIP <-  rtracklayer::import("data/Other_paper_data/ChIP3_TOP2B_CM_87-1.bed")
 
+
+
 ```
 
 
@@ -722,7 +724,7 @@ mintermediate_data %>%
   facet_wrap(~p53_halfsite)+
   ggtitle("MER61E with and without p53 halfsites")
 
-# saveRDS(intermediate_data,"data/H3K27ac_MER61E_integrant_anno.RDS")
+# saveRDS(mintermediate_data,"data/H3K27ac_MER61E_integrant_anno.RDS")
 
 
 mintermediate_data %>% 
@@ -2045,7 +2047,7 @@ add_on_mintermediate_data %>%
 
 Set3_mer61e <- mintermediate_data %>% 
   dplyr::filter(my_MER=="yes" & cluster == "Set_3") %>%
-  dplyr::filter(alt_case=="D") %>% 
+  # dplyr::filter(alt_case=="D") %>% 
   distinct(repID)
 
 
@@ -2602,7 +2604,7 @@ what_mer%>%
 
 ```
 ```{r}
-c
+
 ```
 Summary so far, there appears to be a p53 relationship with width and MER61E, however that appearance is not seen in my data because the MER61E integrants in my H3K27ac data because all but one has a p53 halfsite.
 
@@ -2662,6 +2664,62 @@ what_mer_width %>%
     title = "Across all MER61E, does p53 half-site count increases with available sequence length?"
   )
 ```
+```{r}
+mer_test_df <- what_mer_width %>%
+  dplyr::filter(
+    my_MER == "yes",
+    !is.na(width),
+    width > 0,
+    !is.na(p53_halfsite_count))
+
+
+
+ test_mer <- glm(p53_halfsite_count ~ width + offset(log(width)),
+    family = poisson(), data = mer_test_df 
+)
+
+summary(test_mer)
+plot(test_mer, which = 1)
+plot(test_mer, which = 2)
+```
+
+```{r eval=FALSE}
+
+###between ltr and mer
+combined_df <- dplyr::bind_rows(
+  ltr_test_df %>% dplyr::mutate(element_family = "LTR10E"),
+  mer_test_df %>% dplyr::mutate(element_family = "MER61E")
+) %>%
+  dplyr::mutate(element_family = factor(element_family))
+
+interaction_model <- glm(
+  p53_halfsite_count ~ width * element_family +
+    offset(log(width)),
+  family = poisson(),
+  data = combined_df
+)
+
+summary(interaction_model)
+
+combined_df %>%
+  mutate(
+    p53_density_100bp = 100 * p53_halfsite_count / width
+  ) %>%
+  ggplot(aes(width, p53_density_100bp,
+             color = element_family)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "loess", se = TRUE) +
+  theme_classic() +
+  labs(
+    x = "Element width (bp)",
+    y = "p53 half-sites per 100 bp",
+    color = "TE family"
+  )
+```
+
+
+
+
 Wait, does the active_DOX_only MERs (those not including the active_VEH MERs) have more half_sites or whole sites?
 
 ```{r}
@@ -3501,6 +3559,8 @@ Heatmap(
 ### Persistantly activated TEs TF enrichment
 
 ```{r , fig.width=8}
+
+
 PA_MER61 <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/SEA_MER61E_active_output/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
 
 PA_MER61 %>% 
@@ -3585,27 +3645,159 @@ SCREEN_hg38_cCREs <- import(
     DHS_ID = "character",
     cCRE_ID = "character",
     cCRE_class = "character"))
+
+TP53_A549_regions<- import("data/Other_paper_data/ENCFF229ULU_A549_exp_ENCSR112XUO_TP53.bigBed", format="BigBED")
+
+TP53_HEPG2_regions<- import("data/Other_paper_data/ENCFF687JDU_HepG2_exp_ENCSR980EGJ.bigBed", format="BigBED")
+
+
+
 ```
 
 ```{r}
 MER61E_tad <- mergeByOverlaps(MER61E_regions,Left_ventricle_TAD)
 
-MER61E_tad %>%as.data.frame() %>% 
-  group_by(TAD_id) %>%tally() 
+MER61E_tad_df <- MER61E_tad %>%as.data.frame() %>% 
+  group_by(MER61E_regions.name) %>%tally() 
   
-  
+
+MER61E_p53_pub <- mergeByOverlaps(MER61E_regions,TP53_A549_regions)
+
+MER61E_tp53_df <- MER61E_p53_pub %>% as.data.frame() %>% 
+  group_by(MER61E_regions.name) %>% tally()
+
+MER61E_p53_hepg2 <- mergeByOverlaps(MER61E_regions,TP53_HEPG2_regions)
+
+MER61E_tp53_hepg2_df <- MER61E_p53_hepg2 %>% as.data.frame() %>% 
+  group_by(MER61E_regions.name) %>% tally()
+
+
 ```
+
+
+
 ```{r}
 MER61E_cre <- mergeByOverlaps(MER61E_regions,SCREEN_heart_hg38_cCREs)
 
-MER61E_cre %>% 
+MER61E_cre_df <- MER61E_cre %>% 
   as.data.frame() %>% 
   group_by(MER61E_regions.name) %>% 
-  dplyr::filter(MER61E_regions.name %in%MER61E_mydata) %>% 
+  # dplyr::filter(MER61E_regions.name %in%MER61E_mydata) %>% 
   left_join((SCREEN_hg38_cCREs %>% as.data.frame()), by=c("SCREEN_heart_hg38_cCREs.name" = "cCRE_ID")) %>% 
   dplyr::select(name,name.1,cCRE_class.y) %>% 
   group_by(name,cCRE_class.y) %>% tally() %>% 
   left_join(mintermediate_data,by=c("name"="repID"))
 
+
+```
+
+
+```{r}
+mint_anno <- readRDS("data/RDS_files/MER61E_intermediate_dataframe.RDS")
+
+
+mint_anno %>% dplyr::filter(my_MER=="yes") %>% 
+  dplyr::filter(cluster=="Set_3")
+  
+
+mint_anno %>% 
+  group_by(my_MER,alt_case, cluster ) %>%  tally()
+
+
+mint_anno <- mint_anno %>% 
+  mutate(heart_cRE=if_else(repID %in% MER61E_cre_df$name,"yes","no"),
+          LV_TAD_overlap=if_else(repID %in% MER61E_tad_df$MER61E_regions.name,"yes","no"),
+         TP53_A549_overlap=if_else(repID %in% MER61E_tp53_df$MER61E_regions.name,"yes","no"),
+         TP53_HEPG2_overlap=if_else(repID %in% MER61E_tp53_hepg2_df$MER61E_regions.name,"yes","no"))
+```
+```{r, eval=FALSE}
+
+Set3_mer61e <- mint_anno %>% 
+  dplyr::filter(my_MER=="yes" & cluster == "Set_3") %>%
+  distinct(repID)
+
+Set1_mer61e <- mint_anno %>% 
+  dplyr::filter(my_MER=="yes" & cluster == "Set_1") %>%
+  distinct(repID)
+
+
+test <- MER61E_regions[mcols(MER61E_regions)$name %in% Set3_mer61e$repID]
+
+export(test,"data/Bed_exports/MER61E_Set3_acute.bed")
+
+test1 <- MER61E_regions[mcols(MER61E_regions)$name %in% Set1_mer61e$repID]
+
+export(test1,"data/Bed_exports/MER61E_Set1_NR.bed")
+
+```
+### Additional analysis
+
+```{r}
+prop_plot <- function(data, group_col, yes_no_col) {
+  
+  data %>%
+    mutate(cluster=factor(cluster, levels=c("Set_3","Set_1","Set_2","not_assigned",NA))) %>% 
+    count({{ group_col }}, {{ yes_no_col }}) %>%
+    group_by({{ group_col }}) %>%
+    mutate(prop = n / sum(n)) %>%
+    ggplot(aes(x = {{ group_col }},
+               y = prop,
+               fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = 
+                    paste0(scales::percent(
+                      prop,accuracy = 1),
+                      "\n(n=", n, ")")),
+      position = position_stack(vjust = 0.5)
+    ) +
+    scale_y_continuous(labels = scales::percent) +
+    scale_fill_brewer(palette = "Paired") +
+    labs(x = NULL,
+         y = "Proportion") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}
+```
+
+```{r}
+
+prop_plot(mint_anno, cluster,p53_halfsite)+
+  ggtitle("p53 halfsite proportion across MER61E")
+
+
+prop_plot(mint_anno, cluster,p53_fullsite)+
+  ggtitle("p53 fullsite proportion across MER61E")
+
+
+prop_plot(mint_anno, cluster,ZNF780A_binding)+
+  ggtitle("ZNF780A binding proportion across MER61E")
+
+
+prop_plot(mint_anno, cluster,ZNF680_binding)+
+  ggtitle("ZNF680 binding proportion across MER61E")
+
+
+prop_plot(mint_anno, cluster,sp_p53_binding)+
+  ggtitle("DOX_ChIP p53_binding proportion across MER61E")
+
+
+prop_plot(mint_anno, cluster,overlap_DAR)+
+  ggtitle("DAR overlap proportion across MER61E")
+```
+
+```{r}
+prop_plot(mint_anno,cluster, LV_TAD_overlap)+
+  ggtitle("LV TAD overlap of MER61Es")
+
+prop_plot(mint_anno,cluster, heart_cRE)+
+  ggtitle("Heart cRE overlap of MER61Es")
+
+# prop_plot(mint_anno,cluster, TP53_A549_overlap)+
+#   ggtitle("Published TP53 regions from A549 cells and MER61E overlaps")
+
+
+prop_plot(mint_anno,cluster, TP53_HEPG2_overlap)+
+  ggtitle("Published TP53 regions from HepG2 cells and MER61E overlaps")
 ```
 
