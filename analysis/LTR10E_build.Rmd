@@ -2011,6 +2011,22 @@ what_ltr_width %>%
     title = "p53 half-site density across LTR10E width (Spearman)"
   )
 ```
+```{r}
+ltr_test_df <- what_ltr_width %>%
+  dplyr::filter(
+    my_LTR == "yes",
+    !is.na(width),
+    width > 0,
+    !is.na(p53_halfsite_count))
+
+
+
+ test_ltr <- glm(p53_halfsite_count ~ width + offset(log(width)),
+    family = poisson(), data = ltr_test_df 
+)
+
+summary(test_ltr)
+```
 
 
 
@@ -2598,6 +2614,7 @@ Left_ventricle_TAD <- import(
   format = "bed",
   genome = "hg38"
 )
+
 mcols(Left_ventricle_TAD)$TAD_id <- paste0("TAD_", seq_along(Left_ventricle_TAD))
 
 SCREEN_heart_hg38_cCREs <- import(
@@ -2615,6 +2632,13 @@ SCREEN_hg38_cCREs <- import(
     DHS_ID = "character",
     cCRE_ID = "character",
     cCRE_class = "character"))
+
+TP53_A549_regions<- import("data/Other_paper_data/ENCFF229ULU_A549_exp_ENCSR112XUO_TP53.bigBed", format="BigBED")
+
+TP53_HEPG2_regions<- import("data/Other_paper_data/ENCFF687JDU_HepG2_exp_ENCSR980EGJ.bigBed", format="BigBED")
+
+
+
 ```
 
 ```{r}
@@ -2626,12 +2650,102 @@ LTR10E_tad <- mergeByOverlaps(LTR10E_regions,Left_ventricle_TAD)
 
 LTR10E_cre <- mergeByOverlaps(LTR10E_regions,SCREEN_heart_hg38_cCREs)
 
-LTR10E_cre %>% 
+LTR10E_cre_df <- LTR10E_cre %>% 
   as.data.frame() %>% 
   group_by(LTR10E_regions.name) %>% 
-  dplyr::filter(LTR10E_regions.name %in% LTR10E_mydata) %>%
+  # dplyr::filter(LTR10E_regions.name %in% LTR10E_mydata) %>%
   left_join((SCREEN_hg38_cCREs %>% as.data.frame()), by=c("SCREEN_heart_hg38_cCREs.name" = "cCRE_ID")) %>% 
   dplyr::select(name,name.1,cCRE_class.y) %>% 
-  group_by(name,cCRE_class.y) %>% tally()
+  group_by(name,cCRE_class.y) %>% tally() #%>% 
+  # left_join(LTR10E_intermediate_data,by=c("name"="repID"))
+
+
+LTR10E_tad <- mergeByOverlaps(LTR10E_regions,Left_ventricle_TAD)
+
+LTR10E_tad_df <- LTR10E_tad %>%as.data.frame() %>% 
+  group_by(LTR10E_regions.name) %>%tally() 
+  
+
+LTR10E_p53_pub <- mergeByOverlaps(LTR10E_regions,TP53_A549_regions)
+
+LTR10E_tp53_df <- LTR10E_p53_pub %>% as.data.frame() %>% 
+  group_by(LTR10E_regions.name) %>% tally()
+
+LTR10E_p53_hepg2 <- mergeByOverlaps(LTR10E_regions,TP53_HEPG2_regions)
+
+LTR10E_tp53_hepg2_df <- LTR10E_p53_hepg2 %>% as.data.frame() %>% 
+  group_by(LTR10E_regions.name) %>% tally()
 ```
+
+```{r}
+lint_anno <- readRDS("data/RDS_files/LTR10E_intermediate_dataframe.RDS")
+
+
+lint_anno <- lint_anno %>% 
+  mutate(heart_cRE=if_else(repID %in% LTR10E_cre_df$name,"yes","no"),
+          LV_TAD_overlap=if_else(repID %in% LTR10E_tad_df$LTR10E_regions.name,"yes","no"),
+         TP53_A549_overlap=if_else(repID %in% LTR10E_tp53_df$LTR10E_regions.name,"yes","no"),
+         TP53_HEPG2_overlap=if_else(repID %in% LTR10E_tp53_hepg2_df$LTR10E_regions.name,"yes","no"))
+```
+
+### Additional analysis
+
+
+```{r}
+prop_plot_LTR <- function(data, group_col, yes_no_col) {
+  
+  data %>%
+    mutate(cluster=factor(cluster, levels=c("Set_3","Set_1","Set_2","not_assigned",NA))) %>% 
+    count({{ group_col }}, {{ yes_no_col }}) %>%
+    group_by({{ group_col }}) %>%
+    mutate(prop = n / sum(n)) %>%
+    ggplot(aes(x = {{ group_col }},
+               y = prop,
+               fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(
+      scales::percent(prop, accuracy = 1),
+      "\n(n=", n, ")")),
+      position = position_stack(vjust = 0.5)) +
+    scale_y_continuous(labels = scales::percent) +
+    scale_fill_manual(
+  values = RColorBrewer::brewer.pal(12, "Paired")[3:4])+
+    labs(x = NULL,
+         y = "Proportion") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}
+```
+
+
+```{r}
+prop_plot_LTR(lint_anno, cluster,p53_halfsite)+
+  ggtitle("p53 halfsite proportion across LTR10E")
+
+
+prop_plot_LTR(lint_anno, cluster,p53_fullsite)+
+  ggtitle("p53 fullsite proportion across LTR10E")
+
+
+prop_plot_LTR(lint_anno, cluster,sp_p53_binding)+
+  ggtitle("DOX_ChIP p53_binding proportion across LTR10E")
+
+
+prop_plot_LTR(lint_anno, cluster,overlap_DAR)+
+  ggtitle("DAR overlap proportion across LTR10E")
+
+prop_plot_LTR(lint_anno,cluster, LV_TAD_overlap)+
+  ggtitle("LV TAD overlap of LTR10Es")
+
+prop_plot_LTR(lint_anno,cluster, heart_cRE)+
+  ggtitle("Heart cRE overlap of LTR10Es")
+
+# prop_plot_LTR(lint_anno,cluster, TP53_A549_overlap)+
+#   ggtitle("Published TP53 regions from A549 cells and LTR10E overlaps")
+
+prop_plot_LTR(lint_anno,cluster, TP53_HEPG2_overlap)+
+  ggtitle("Published TP53 regions from HepG2 cells and LTR10E overlaps")
+```
+
 
