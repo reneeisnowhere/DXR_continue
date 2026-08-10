@@ -41,6 +41,9 @@ library(AnnotationDbi)
 library(org.Hs.eg.db)
 library(janitor)
 library(MASS)
+library(readxl)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(GenomicFeatures)
 ```
 
 The purpose of this page is to build a large dataframe for MER61E annotations.
@@ -52,11 +55,13 @@ ZNF680_regions <- import("data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed",for
 ZNF780A_regions <- import("data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed")
 MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
 
+  MER61E_p53_best_site_score <- import("C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61E_ERV1_LTR_fimo/best_site.narrowPeak")
+
 H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
  H3K27ac_summit_gr_ext <- GenomicRanges::resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
 # export(H3K27ac_summit_gr_ext,"data/Bed_exports/H3K27ac_summit_gr_ext.bed")
 peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
-
+peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
 H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
   tibble(Peakid = .x@anno$Peakid, cluster = .y))
 
@@ -631,6 +636,7 @@ mintermediate_data %>%
 
 
 ```
+
 ```{r}
 mintermediate_data %>% 
   mutate(
@@ -847,7 +853,7 @@ mintermediate_data %>%
 Yes, for those integrants with a p53 halfsite and in my data, there is a difference in phyloP mean than those integrants with a p53 halfsite but not in my data.
 
 
-what about the milliDiv?
+### what about the milliDiv?
 
 ```{r}
 mintermediate_data %>% 
@@ -1022,6 +1028,7 @@ mintermediate_data %>%
   facet_wrap(~p53_halfsite)+
   ggtitle("MER61E mean phyloP of integrants overlapping p53 halfsites\nnot overlapping and overlapping my a CAR")
 ```
+
 ```{r}
 mintermediate_data %>% 
   mutate(
@@ -1282,6 +1289,7 @@ plot_trajectory_flow(mfilteredfull_trajectory_test,"MER61E with p53 fullsite")
 ```{r}
 plot_trajectory_flow(MER61E_trajectory_broad,"all MER61E elements")
 ```
+
 ```{r}
 
 rep_ID_set3_MER61E <- mintermediate_data %>% 
@@ -1302,6 +1310,7 @@ filtered_trajectory_780A <- MER61E_trajectory_broad %>%
 
 plot_trajectory_flow(filtered_trajectory_780A,"any MER61E with ZNF780A binding")
 ```
+
 ```{r}
 filtered_trajectory_680 <- MER61E_trajectory_broad %>% 
   # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
@@ -1409,7 +1418,11 @@ ZNF680_data <- matrix(c(25,42, 37, 163), nrow = 2, byrow = FALSE)
 ZNF680_data
 fisher.test(ZNF680_data)
 ```
+
+
 Integrants in my data are more likely to be enriched in ZNF680 binding sites (ChIP) than those not in my data.
+
+
 ```{r}
 mintermediate_data %>% 
   group_by(cluster,my_MER,ZNF680_binding) %>% 
@@ -1568,7 +1581,7 @@ mintermediate_data %>%
 ```
 ### looking at other data dimensions
 
-```{r}
+```{r looking at data dimensions}
 
 plotAnnoBar(MER61E_anno_chipseeker,title = "Feature Distribution of all MER61E integrants")
 
@@ -3650,9 +3663,40 @@ TP53_A549_regions<- import("data/Other_paper_data/ENCFF229ULU_A549_exp_ENCSR112X
 
 TP53_HEPG2_regions<- import("data/Other_paper_data/ENCFF687JDU_HepG2_exp_ENCSR980EGJ.bigBed", format="BigBED")
 
+H3K9me3_toplist <- readRDS( "data/DER_data/H3K9me3_toplist.RDS")
+K9me3_24T <- H3K9me3_toplist$H3K9me3_24T 
+K9me3_24T <- K9me3_24T %>% 
+  mutate(LFC_split=case_when(logFC>0&adj.P.Val<0.05~"K9_DER_up",
+                             logFC<0&adj.P.Val<0.05~"K9_DER_down",
+                             TRUE~"not_DER"))  
+
+
+MER61E_site <- mergeByOverlaps(MER61E_regions,MER61E_p53_best_site_score)
+
+MER61E_best_site_signal <- MER61E_site %>% 
+  as.data.frame() %>% 
+  dplyr::select(MER61E_regions.name,MER61E_p53_best_site_score.signalValue,MER61E_p53_best_site_score.qValue) %>% 
+  dplyr::rename("repID"=1,"MER61E.signal"=2,"MER61E.qvalue"=3)
+```
+
+```{r}
+K9me3_gr <- peakAnnoList_H3K9me3$all_H3K9me3_regions %>% as.GRanges()
+
+
+mcols(K9me3_gr) <-
+mcols(K9me3_gr) %>%
+  as.data.frame() %>%
+  left_join(
+    K9me3_24T %>% dplyr::select(genes, LFC_split),
+    by = c("Peakid"="genes"))
+
+
+K9me3_split_gr <- split(K9me3_gr, K9me3_gr$LFC_split)
 
 
 ```
+
+
 
 ```{r}
 MER61E_tad <- mergeByOverlaps(MER61E_regions,Left_ventricle_TAD)
@@ -3671,6 +3715,11 @@ MER61E_p53_hepg2 <- mergeByOverlaps(MER61E_regions,TP53_HEPG2_regions)
 MER61E_tp53_hepg2_df <- MER61E_p53_hepg2 %>% as.data.frame() %>% 
   group_by(MER61E_regions.name) %>% tally()
 
+MER61E_k9upder <- mergeByOverlaps(MER61E_regions,K9me3_split_gr$K9_DER_up)
+
+MER61E_k9downder <- mergeByOverlaps(MER61E_regions,K9me3_split_gr$K9_DER_down)
+
+MER61E_k9notder <- mergeByOverlaps(MER61E_regions,K9me3_split_gr$not_DER)
 
 ```
 
@@ -3708,7 +3757,13 @@ mint_anno <- mint_anno %>%
   mutate(heart_cRE=if_else(repID %in% MER61E_cre_df$name,"yes","no"),
           LV_TAD_overlap=if_else(repID %in% MER61E_tad_df$MER61E_regions.name,"yes","no"),
          TP53_A549_overlap=if_else(repID %in% MER61E_tp53_df$MER61E_regions.name,"yes","no"),
-         TP53_HEPG2_overlap=if_else(repID %in% MER61E_tp53_hepg2_df$MER61E_regions.name,"yes","no"))
+         TP53_HEPG2_overlap=if_else(repID %in% MER61E_tp53_hepg2_df$MER61E_regions.name,"yes","no"),
+         MER61E_k9notder=if_else( repID %in% MER61E_k9notder[["name"]],"yes","no"),
+         MER61E_k9downder=if_else( repID %in% MER61E_k9downder[["name"]],"yes","no"),
+         MER61E_k9upder=if_else( repID %in% MER61E_k9upder[["name"]],"yes","no"))  
+
+
+  
 ```
 ```{r, eval=FALSE}
 
@@ -3733,31 +3788,104 @@ export(test1,"data/Bed_exports/MER61E_Set1_NR.bed")
 ### Additional analysis
 
 ```{r}
+# prop_plot <- function(data, group_col, yes_no_col) {
+#   
+#   data %>%
+#     mutate(cluster=factor(cluster, levels=c("Set_3","Set_1","Set_2","not_assigned",NA))) %>% 
+#     count({{ group_col }}, {{ yes_no_col }}) %>%
+#     group_by({{ group_col }}) %>%
+#     mutate(prop = n / sum(n)) %>%
+#     ggplot(aes(x = {{ group_col }},
+#                y = prop,
+#                fill = {{ yes_no_col }})) +
+#     geom_col() +
+#     geom_text(aes(label = 
+#                     paste0(scales::percent(
+#                       prop,accuracy = 1),
+#                       "\n(n=", n, ")")),
+#       position = position_stack(vjust = 0.5)
+#     ) +
+#     scale_y_continuous(labels = scales::percent) +
+#     scale_fill_brewer(palette = "Paired") +
+#     labs(x = NULL,
+#          y = "Proportion") +
+#     theme_bw() +
+#     theme(axis.text.x = element_text(angle = 90,
+#                                      hjust = 1))
+# }
 prop_plot <- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data <- data %>%
+    mutate(cluster = tidyr::replace_na(cluster, "NA"),
+      cluster = factor(cluster,
+        levels = c("Set_3", "Set_1", "not_assigned", "NA"))) %>%
+    filter(cluster %in% c("Set_3", "Set_1", "not_assigned", "NA"))
+
   
-  data %>%
-    mutate(cluster=factor(cluster, levels=c("Set_3","Set_1","Set_2","not_assigned",NA))) %>% 
+  # Pairwise comparisons against Set_3
+  comparison_groups <- c("Set_1", "not_assigned", "NA")
+
+  test_results <- lapply(comparison_groups, function(g) {
+
+    test_df <- plot_data %>%
+      filter(cluster %in% c("Set_3", g))
+
+    tab <- table(test_df$cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi <- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected < 5)) {
+      test <- fisher.test(tab)
+      method <- "Fisher"
+    } else {
+      test <- chi
+      method <- "Chi-square"
+    }
+
+    data.frame(comparison = paste("Set_3 vs", g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %>%
+    bind_rows() %>%
+    mutate(p_adj = p.adjust(p, method = "BH"),
+           label = paste0("p=", format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = c(1.10, 1.18, 1.26))
+
+
+  # Proportions
+  count_data <- plot_data %>%
     count({{ group_col }}, {{ yes_no_col }}) %>%
     group_by({{ group_col }}) %>%
     mutate(prop = n / sum(n)) %>%
-    ggplot(aes(x = {{ group_col }},
-               y = prop,
-               fill = {{ yes_no_col }})) +
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
     geom_col() +
-    geom_text(aes(label = 
-                    paste0(scales::percent(
-                      prop,accuracy = 1),
-                      "\n(n=", n, ")")),
-      position = position_stack(vjust = 0.5)
-    ) +
-    scale_y_continuous(labels = scales::percent) +
-    scale_fill_brewer(palette = "Paired") +
-    labs(x = NULL,
-         y = "Proportion") +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), "\n(n=", n, ")")),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, "Paired")[1:2]) +
+
+    labs(x = NULL,y = "Proportion") +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 90,
                                      hjust = 1))
 }
+
+
 ```
 
 ```{r}
@@ -3799,5 +3927,112 @@ prop_plot(mint_anno,cluster, heart_cRE)+
 
 prop_plot(mint_anno,cluster, TP53_HEPG2_overlap)+
   ggtitle("Published TP53 regions from HepG2 cells and MER61E overlaps")
+```
+
+```{r}
+
+prop_plot(mint_anno,cluster, MER61E_k9upder)+
+  ggtitle("K9me3 overlapped MER61Es by cluster up DER ")
+
+  prop_plot(mint_anno,cluster, MER61E_k9downder)+
+  ggtitle("K9me3 overlapped MER61Es by cluster down DER ")
+
+prop_plot(mint_anno,cluster,MER61E_k9notder)+
+  ggtitle("K9me3 overlapped MER61Es by cluster not DER ")
+
+```
+
+```{r RNA}
+RNA_acute_cluster <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S6", skip = 1)
+
+RNA_chronic_cluster <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S7", skip = 2)
+
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+all_gene_gr <- genes(txdb)
+
+acute_gr <-  all_gene_gr[
+  names(all_gene_gr) %in% RNA_acute_cluster$Entrez_ID]
+chronic_gr <-  all_gene_gr[
+  names(all_gene_gr) %in% RNA_chronic_cluster$Entrez_ID]
+
+acute_overlap <- mergeByOverlaps(acute_gr,Left_ventricle_TAD)
+
+chronic_overlap <- mergeByOverlaps(chronic_gr,Left_ventricle_TAD)
+
+
+acute_chron_TADS <-c(acute_overlap[["TAD_id"]],chronic_overlap[["TAD_id"]]) %>% 
+  unique()
+
+
+MER61E_acute_chron_TAD <- MER61E_tad %>% as.data.frame() %>% 
+  mutate(acuteChron= if_else(Left_ventricle_TAD.TAD_id %in% acute_chron_TADS,"yes","no")) %>% 
+  dplyr::filter(acuteChron=="yes") %>% 
+  pull(name)
+
+mint_anno <- mint_anno %>% 
+  mutate(AC_TADs=if_else(repID %in% MER61E_acute_chron_TAD, "yes","no"))
+
+prop_plot(mint_anno,cluster,AC_TADs)+
+  ggtitle("MER61E that overlap a TAD with a chronic/acute gene")
+
+
+```
+#### Correlation of data
+
+```{r}
+mint_md_df <- mint_anno %>% 
+  dplyr::select(repID,width,milliDiv,CS_distanceToTSS,p53_halfsite,ZNF780A_binding,ZNF680_binding,overlap_DAR,cluster) %>% 
+  mutate(MYA_bourque=milliDiv/2.2,
+         cluster=case_when(cluster=="Set_3"~1,
+                           TRUE~0)) %>% 
+  mutate(across(!repID, ~case_when( . == "yes"~1,
+                                          . == "no"~0,
+                                          TRUE ~suppressWarnings(as.numeric(.))))) %>% 
+   left_join(MER61E_best_site_signal) %>%
+  mutate(MER61E.signal = if_else(is.na(MER61E.signal), 0, MER61E.signal),
+  MER61E.qvalue = if_else(is.na(MER61E.qvalue), 1, MER61E.qvalue)) %>% 
+  dplyr::select(!MER61E.qvalue) %>% 
+  column_to_rownames("repID") %>% 
+  dplyr::select(where(~ {
+      s <- sd(.x, na.rm = TRUE)
+      is.finite(s) && s > 0
+    }))
+
+
+mint_md_cor <- cor(mint_md_df,
+  use = "pairwise.complete.obs")
+
+
+
+
+Heatmap(mint_md_cor,
+        column_title = "MER61E correlation of factors",
+  name = "correlation",)
+
+
+```
+
+```{r, fig.height=16, fig.width=16}
+mint_t_cor <- cor(t(mint_md_df),
+  use = "pairwise.complete.obs")
+
+
+Heatmap(mint_t_cor,
+        column_title = "MER61E correlation of Integrants",
+  name = "correlation",
+  row_names_gp = gpar(fontsize = 4),
+  column_names_gp = gpar(fontsize = 4))
+```
+```{r, fig.width=20}
+cor_dist_mer <- as.dist(1 - mint_t_cor)
+
+cor_hclust_mer <- hclust(cor_dist_mer)
+
+cor_dend_mer <- as.dendrogram(cor_hclust_mer)
+
+plot(cor_dend_mer)
 ```
 
