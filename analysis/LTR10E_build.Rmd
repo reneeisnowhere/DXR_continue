@@ -39,21 +39,29 @@ library(circlize)
 library(ggalluvial)
 library(AnnotationDbi)
 library(org.Hs.eg.db)
+library(janitor)
+library(MASS)
+library(readxl)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(GenomicFeatures)
 ```
 
 The purpose of this page is to build a large dataframe for LTR10E annotations.
 
 ```{r annotated data frames}
 # ZNF680 narrowpeak binding Hek293 ENCFF935XZI
-# ZNF680_regions <- import("data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed",format = "narrowPeak")
-# 
-# ZNF780A_regions <- import("data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed")
+ZNF680_regions <- import("data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed",format = "narrowPeak")
+
+ZNF780A_regions <- import("data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed")
 LTR10E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/LTR10E_ERV1_LTR.bed")
+
+LTR10E_p53_best_site_score <- import("C:/Users/renee/Other_projects_data/DXR_data/fimo_results/LTR10E_ERV1_LTR_fimo/best_site.narrowPeak")
 
 H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
  H3K27ac_summit_gr_ext <- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
 
 peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
 
 H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
   tibble(Peakid = .x@anno$Peakid, cluster = .y))
@@ -429,6 +437,23 @@ Peakid_lookup_repID <-
 
 ```
 
+
+
+```{r determining which repIDs have binding}
+ZNF780A_overlaps_LTR10E <- subsetByOverlaps(LTR10E_regions,ZNF780A_regions) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+ZNF680_overlaps_LTR10E <- subsetByOverlaps(LTR10E_regions,ZNF680_regions) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+```
+No overlaps with ZNF780A and
+ only 6 overlaps with ZNF680
+ 
+ 
 ```{r}
 p53_overlaps_LTR10E <- subsetByOverlaps(LTR10E_regions,p53_sp_ChIP) %>% 
   as.data.frame() %>% 
@@ -490,7 +515,9 @@ LTR10E_intermediate_data <-
   left_join(LTR_df, by=c("repID"="RM_id")) %>% 
   mutate(my_LTR=if_else(repID %in% LTR10E_mydata, "yes","no"),
          p53_halfsite =if_else(repID %in% p53halfsite_TE_ids$Peakid, "yes","no"),
-         p53_fullsite=if_else(repID %in% full_p53_canonical$TE_id,"yes","no")) %>% 
+         p53_fullsite=if_else(repID %in% full_p53_canonical$TE_id,"yes","no"),
+         ZNF780A_binding=if_else(repID %in%ZNF780A_overlaps_LTR10E,"yes","no"),
+         ZNF680_binding=if_else(repID %in% ZNF680_overlaps_LTR10E, "yes","no")) %>% 
   left_join(set_case_list_H3K27ac,by=c("H3K27ac_region"="genes", "cluster"="cluster")) %>% 
   left_join(LTR10E_trajectory_broad,by=c("repID"="te_id", "repName"="te_name")) %>%
   mutate( sp_p53_binding=if_else(repID %in% p53_overlaps_LTR10E, "yes","no"),
@@ -615,7 +642,7 @@ anova(distance_model_ltr)
 summary(distance_model_ltr)
 ```
 
-This is really telling me the association of distance with my_LTR yes (in otherwords, the nearest gene distance to an integrant without a p53halfsite that overlap my data vs and the nearest gene distance to an integrant without a p53halfsite, that does not overlap my data ) may be a weak effect, but could likely not be real.  We do not have the power to really test the interaction.
+This is really telling me the association of distance with my_LTR yes (in other words, the nearest gene distance to an integrant without a p53halfsite that overlap my data vs and the nearest gene distance to an integrant without a p53halfsite, that does not overlap my data ) may be a weak effect, but could likely not be real.  We do not have the power to really test the interaction.
 
 ### looking at milliDiv etc...  
 
@@ -757,7 +784,7 @@ LTR10E_intermediate_data %>%
 
 ### Looking at p53 new data
 
-Look at relationships between TOP2B and MER61E; RAD21 and MER61E, p53 and MER61E ; CTCF and MER61E;
+Look at relationships between TOP2B and LTR10E; RAD21 and LTR10E, p53 and LTR10E ; CTCF and LTR10E;
 
 NOTE, no overlaps were observed using TOP2B regions, RAD21 regions and CTCF regions.   P53: 5 p53 regions overlap a LTR10E.
 
@@ -1239,6 +1266,21 @@ acute_cluster_only_broad <- LTR10E_trajectory_broad %>%
   dplyr::filter(te_id %in% rep_ID_set3_LTR10E$repID)
 plot_trajectory_flow(acute_cluster_only_broad,"Acute_cluster only LTR10E elements")
 ```
+```{r 780a plot}
+
+filtered_trajectory_780A <- LTR10E_trajectory_broad %>% 
+  # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
+  dplyr::filter(te_id %in% ZNF780A_overlaps_LTR10E)
+
+plot_trajectory_flow(filtered_trajectory_780A,"any LTR10E with ZNF780A binding")
+```
+```{r}
+filtered_trajectory_680 <- LTR10E_trajectory_broad %>% 
+  # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %>% 
+  dplyr::filter(te_id %in% ZNF680_overlaps_LTR10E)
+
+plot_trajectory_flow(filtered_trajectory_680,"any LTR10E with ZNF680 binding")
+```
 
 
 
@@ -1529,7 +1571,7 @@ slice_min(EVALUE, with_ties = FALSE) %>%
 # saveRDS(known_ltr_set3, "data/RDS_files/LTR10E_set3active_enr.RDS")
 ```
 
-### Persistantly Activated MER61E
+### Persistantly Activated LTR10E
 
 ```{r}
 
@@ -2637,6 +2679,34 @@ TP53_A549_regions<- import("data/Other_paper_data/ENCFF229ULU_A549_exp_ENCSR112X
 
 TP53_HEPG2_regions<- import("data/Other_paper_data/ENCFF687JDU_HepG2_exp_ENCSR980EGJ.bigBed", format="BigBED")
 
+H3K9me3_toplist <- readRDS( "data/DER_data/H3K9me3_toplist.RDS")
+K9me3_24T <- H3K9me3_toplist$H3K9me3_24T 
+K9me3_24T <- K9me3_24T %>% 
+  mutate(LFC_split=case_when(logFC>0&adj.P.Val<0.05~"K9_DER_up",
+                             logFC<0&adj.P.Val<0.05~"K9_DER_down",
+                             TRUE~"not_DER"))  
+
+LTR10E_site <- mergeByOverlaps(LTR10E_regions,LTR10E_p53_best_site_score)
+
+LTR10E_best_site_signal <- LTR10E_site %>% 
+  as.data.frame() %>% 
+  dplyr::select(LTR10E_regions.name,LTR10E_p53_best_site_score.signalValue,LTR10E_p53_best_site_score.qValue) %>% 
+  dplyr::rename("repID"=1,"LTR10E.signal"=2,"LTR10E.qvalue"=3)
+```
+
+```{r}
+K9me3_gr <- peakAnnoList_H3K9me3$all_H3K9me3_regions %>% as.GRanges()
+K9me3_24T
+
+mcols(K9me3_gr) <-
+mcols(K9me3_gr) %>%
+  as.data.frame() %>%
+  left_join(
+    K9me3_24T %>% dplyr::select(genes, LFC_split),
+    by = c("Peakid"="genes"))
+
+
+K9me3_split_gr <- split(K9me3_gr, K9me3_gr$LFC_split)
 
 
 ```
@@ -2675,6 +2745,12 @@ LTR10E_p53_hepg2 <- mergeByOverlaps(LTR10E_regions,TP53_HEPG2_regions)
 
 LTR10E_tp53_hepg2_df <- LTR10E_p53_hepg2 %>% as.data.frame() %>% 
   group_by(LTR10E_regions.name) %>% tally()
+
+LTR10E_k9upder <- mergeByOverlaps(LTR10E_regions,K9me3_split_gr$K9_DER_up)
+
+LTR10E_k9downder <- mergeByOverlaps(LTR10E_regions,K9me3_split_gr$K9_DER_down)
+
+LTR10E_k9notder <- mergeByOverlaps(LTR10E_regions,K9me3_split_gr$not_DER)
 ```
 
 ```{r}
@@ -2685,37 +2761,115 @@ lint_anno <- lint_anno %>%
   mutate(heart_cRE=if_else(repID %in% LTR10E_cre_df$name,"yes","no"),
           LV_TAD_overlap=if_else(repID %in% LTR10E_tad_df$LTR10E_regions.name,"yes","no"),
          TP53_A549_overlap=if_else(repID %in% LTR10E_tp53_df$LTR10E_regions.name,"yes","no"),
-         TP53_HEPG2_overlap=if_else(repID %in% LTR10E_tp53_hepg2_df$LTR10E_regions.name,"yes","no"))
+         TP53_HEPG2_overlap=if_else(repID %in% LTR10E_tp53_hepg2_df$LTR10E_regions.name,"yes","no"),
+          LTR10E_k9notder=if_else( repID %in% LTR10E_k9notder[["name"]],"yes","no"),
+         LTR10E_k9downder=if_else( repID %in% LTR10E_k9downder[["name"]],"yes","no"),
+         LTR10E_k9upder=if_else( repID %in% LTR10E_k9upder[["name"]],"yes","no"))   
+  
 ```
+
 
 ### Additional analysis
 
 
 ```{r}
+# prop_plot_LTR <- function(data, group_col, yes_no_col) {
+#   
+#   data %>%
+#     mutate(cluster=factor(cluster, levels=c("Set_3","Set_1","Set_2","not_assigned",NA))) %>% 
+#     count({{ group_col }}, {{ yes_no_col }}) %>%
+#     group_by({{ group_col }}) %>%
+#     mutate(prop = n / sum(n)) %>%
+#     ggplot(aes(x = {{ group_col }},
+#                y = prop,
+#                fill = {{ yes_no_col }})) +
+#     geom_col() +
+#     geom_text(aes(label = paste0(
+#       scales::percent(prop, accuracy = 1),
+#       "\n(n=", n, ")")),
+#       position = position_stack(vjust = 0.5)) +
+#     scale_y_continuous(labels = scales::percent) +
+#     scale_fill_manual(
+#   values = RColorBrewer::brewer.pal(12, "Paired")[3:4])+
+#     labs(x = NULL,
+#          y = "Proportion") +
+#     theme_bw() +
+#     theme(axis.text.x = element_text(angle = 90,
+#                                      hjust = 1))
+# }
 prop_plot_LTR <- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data <- data %>%
+    mutate(cluster = tidyr::replace_na(cluster, "NA"),
+      cluster = factor(cluster,
+        levels = c("Set_3", "Set_1", "not_assigned", "NA"))) %>%
+    filter(cluster %in% c("Set_3", "Set_1", "not_assigned", "NA"))
+
   
-  data %>%
-    mutate(cluster=factor(cluster, levels=c("Set_3","Set_1","Set_2","not_assigned",NA))) %>% 
+  # Pairwise comparisons against Set_3
+  comparison_groups <- c("Set_1", "not_assigned", "NA")
+
+  test_results <- lapply(comparison_groups, function(g) {
+
+    test_df <- plot_data %>%
+      filter(cluster %in% c("Set_3", g))
+
+    tab <- table(test_df$cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi <- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected < 5)) {
+      test <- fisher.test(tab)
+      method <- "Fisher"
+    } else {
+      test <- chi
+      method <- "Chi-square"
+    }
+
+    data.frame(comparison = paste("Set_3 vs", g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %>%
+    bind_rows() %>%
+    mutate(p_adj = p.adjust(p, method = "BH"),
+           label = paste0("p=", format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = c(1.10, 1.18, 1.26))
+
+
+  # Proportions
+  count_data <- plot_data %>%
     count({{ group_col }}, {{ yes_no_col }}) %>%
     group_by({{ group_col }}) %>%
     mutate(prop = n / sum(n)) %>%
-    ggplot(aes(x = {{ group_col }},
-               y = prop,
-               fill = {{ yes_no_col }})) +
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
     geom_col() +
-    geom_text(aes(label = paste0(
-      scales::percent(prop, accuracy = 1),
-      "\n(n=", n, ")")),
-      position = position_stack(vjust = 0.5)) +
-    scale_y_continuous(labels = scales::percent) +
-    scale_fill_manual(
-  values = RColorBrewer::brewer.pal(12, "Paired")[3:4])+
-    labs(x = NULL,
-         y = "Proportion") +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), "\n(n=", n, ")")),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, "Paired")[3:4]) +
+
+    labs(x = NULL,y = "Proportion") +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 90,
                                      hjust = 1))
 }
+
+
 ```
 
 
@@ -2746,6 +2900,114 @@ prop_plot_LTR(lint_anno,cluster, heart_cRE)+
 
 prop_plot_LTR(lint_anno,cluster, TP53_HEPG2_overlap)+
   ggtitle("Published TP53 regions from HepG2 cells and LTR10E overlaps")
+
+prop_plot_LTR(lint_anno, cluster,ZNF780A_binding)+
+  ggtitle("ZNF780A binding proportion across LTR10E")
+
+
+prop_plot_LTR(lint_anno, cluster,ZNF680_binding)+
+  ggtitle("ZNF680 binding proportion across LTR10E")
 ```
 
+
+
+
+```{r}
+
+prop_plot_LTR(lint_anno,cluster, LTR10E_k9upder)+
+  ggtitle("K9me3 overlapped LTRs by cluster up DER ")
+
+  prop_plot_LTR(lint_anno,cluster, LTR10E_k9downder)+
+  ggtitle("K9me3 overlapped LTRs by cluster down DER ")
+
+prop_plot_LTR(lint_anno,cluster,LTR10E_k9notder)+
+  ggtitle("K9me3 overlapped LTRs by cluster not DER ")
+
+```
+#### Looking at chronic/acute RNA repsonse enrichment in TAD
+
+
+```{r RNA}
+RNA_acute_cluster <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S6", skip = 1)
+
+RNA_chronic_cluster <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S7", skip = 2)
+
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+all_gene_gr <- genes(txdb)
+
+acute_gr <-  all_gene_gr[
+  names(all_gene_gr) %in% RNA_acute_cluster$Entrez_ID]
+chronic_gr <-  all_gene_gr[
+  names(all_gene_gr) %in% RNA_chronic_cluster$Entrez_ID]
+
+acute_overlap <- mergeByOverlaps(acute_gr,Left_ventricle_TAD)
+
+chronic_overlap <- mergeByOverlaps(chronic_gr,Left_ventricle_TAD)
+
+
+acute_chron_TADS <-c(acute_overlap[["TAD_id"]],chronic_overlap[["TAD_id"]]) %>% 
+  unique()
+
+
+LTR10E_acute_chron_TAD <- LTR10E_tad %>% as.data.frame() %>% 
+  mutate(acuteChron= if_else(Left_ventricle_TAD.TAD_id %in% acute_chron_TADS,"yes","no")) %>% 
+  dplyr::filter(acuteChron=="yes") %>% 
+  pull(name)
+
+lint_anno <- lint_anno %>% 
+  mutate(AC_TADs=if_else(repID %in% LTR10E_acute_chron_TAD, "yes","no"))
+
+prop_plot_LTR(lint_anno,cluster,AC_TADs)+
+  ggtitle("LTR10E that overlap a TAD with a chronic/acute gene")
+
+
+```
+
+
+
+#### Correlation of data
+```{r}
+lint_md_df <- lint_anno %>% 
+  dplyr::select(repID,width,milliDiv,CS_distanceToTSS,p53_halfsite,ZNF780A_binding,ZNF680_binding,overlap_DAR,cluster) %>% 
+  mutate(MYA_bourque=milliDiv/2.2,
+         cluster=case_when(cluster=="Set_3"~1,
+                           TRUE~0)) %>% 
+  mutate(across(!repID, ~case_when( . == "yes"~1,
+                                          . == "no"~0,
+                                          TRUE ~suppressWarnings(as.numeric(.))))) %>% 
+  left_join(LTR10E_best_site_signal) %>%
+  mutate(LTR10E.signal = if_else(is.na(LTR10E.signal), 0, LTR10E.signal),
+  LTR10E.qvalue = if_else(is.na(LTR10E.qvalue), 1, LTR10E.qvalue)) %>% 
+  dplyr::select(!LTR10E.qvalue) %>% 
+  column_to_rownames("repID") %>% 
+  dplyr::select(where(~ {
+      s <- sd(.x, na.rm = TRUE)
+      is.finite(s) && s > 0
+    }))
+
+
+lint_md_cor <- cor(lint_md_df,
+  use = "pairwise.complete.obs")
+
+
+Heatmap(lint_md_cor,
+        column_title = "LTR10E correlation of factors",
+  name = "correlation",)
+```
+
+
+```{r, fig.height=16, fig.width=16}
+lint_t_cor <- cor(t(lint_md_df),
+  use = "pairwise.complete.obs")
+
+
+Heatmap(lint_t_cor,
+        column_title = "LTR10E correlation of Integrants",
+  name = "correlation",
+  row_names_gp = gpar(fontsize = 4),
+  column_names_gp = gpar(fontsize = 4))
+```
 
