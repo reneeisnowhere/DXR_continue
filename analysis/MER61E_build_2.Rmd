@@ -1,0 +1,997 @@
+---
+title: "MER61_building dataframe"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+library(ggalluvial)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(janitor)
+library(MASS)
+library(readxl)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(GenomicFeatures)
+```
+
+The purpose of this page is to build a large dataframe for MER61E annotations.
+
+```{r annotation data frames}
+# ZNF680 narrowpeak binding Hek293 ENCFF935XZI
+ZNF680_regions <- import("data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed",format = "narrowPeak")
+
+ZNF780A_regions <- import("data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed")
+MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
+
+  MER61E_p53_best_site_score <- import("C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61E_ERV1_LTR_fimo/best_site.narrowPeak")
+
+H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+ H3K27ac_summit_gr_ext <- GenomicRanges::resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
+# export(H3K27ac_summit_gr_ext,"data/Bed_exports/H3K27ac_summit_gr_ext.bed")
+peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
+H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+  tibble(Peakid = .x@anno$Peakid, cluster = .y))
+
+##assigning Peakid as name of ext summit region
+ mcols(H3K27ac_summit_gr_ext)$name <- mcols(H3K27ac_summit_gr_ext)$Peakid
+ 
+ H3K27ac_ext200_anno <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+ 
+ MER61E_anno_genes <- readRDS("data/RDS_files/MER61E_anno_genes.RDS")
+ MER61E_anno_chipseeker <- readRDS("data/RDS_files/MER61E_anno_chipseeker.RDS")
+ 
+chipseeker_anno_MER61E <-  MER61E_anno_chipseeker %>% 
+  as.data.frame() %>% 
+  dplyr::select(name,annotation,geneId,distanceToTSS) %>% 
+  dplyr::rename("repID"=name,"CS_MER61E_gene"=geneId,"CS_distanceToTSS"=distanceToTSS)
+ MER61E_intermediat_protein <- readRDS("data/MER61intermediatemarking_protein.RDS")
+ 
+ full_p53_canonical  <- readRDS("data/full_p53_canonical.RDS")
+  p53halfsite_TE_ids <- readRDS("data/p53halfsite_TE_ids.RDS")
+
+  LTR_df <- readRDS("data/RDS_files/LTR_DF_hg38.RDS")
+
+  H3K27ac_toplist <- readRDS("data/DER_data/H3K27ac_toplist.RDS")
+
+  H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
+
+
+set_case_list_H3K27ac <-  H3K27ac_toptable_list %>% 
+  dplyr::select(group,genes, logFC) %>% 
+  pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %>% 
+  dplyr::left_join(H3K27ac_lookup,by =c("genes"="Peakid")) %>% 
+  mutate(cluster= case_when (is.na(cluster)~"not_assigned",
+                           TRUE ~ cluster),
+         case= case_when(H3K27ac_24T > 0 & H3K27ac_24R >0 & H3K27ac_144R>0~"A",
+                              H3K27ac_24T < 0 & H3K27ac_24R <0 & H3K27ac_144R<0~"B",
+                              TRUE ~ "C"),
+         alt_case= case_when(H3K27ac_24T > 0~"D",
+                              H3K27ac_24T < 0~"E",
+                              TRUE ~ "F")) %>% 
+  mutate(set_case=paste0(cluster,"_",case),
+         set_alt_case=paste0(cluster,"_",alt_case)) %>% 
+  dplyr::select(genes, cluster,case,set_case,alt_case,set_alt_case)
+
+LTR10E_trajectory_broad <- readRDS("data/RDS_files/LTR10E_trajectory_broad.RDS")
+# LTR10E_trajectory_detailed <- readRDS("data/RDS_files/LTR10E_trajectory_detailed.RDS")
+MER61E_trajectory_broad <- readRDS("data/RDS_files/MER61E_trajectory_broad.RDS")
+# MER61E_trajectory_detailed <- readRDS("data/RDS_files/MER61E_trajectory_detailed.RDS")
+
+HALLMARK_DNA_REPAIR <- read_csv("data/Other_paper_data/HALLMARK_DNA_REPAIR.v2026.1.Hs.tsv", 
+    skip = 16) %>% 
+  pivot_longer(everything()) %>% 
+ dplyr::filter(name !="SOURCE_MEMBERS\tAAAS") %>% 
+  pull(value)
+ 
+ DNA_repair <- 
+ AnnotationDbi::select(org.Hs.eg.db,
+  keys = HALLMARK_DNA_REPAIR,   # your UniProt IDs
+  keytype = "SYMBOL",
+  columns = c("SYMBOL", "ENTREZID"))
+ 
+ DOX_24_ATAC <- readRDS("data/Other_paper_data/Matthews_2025_DOX_24h_ATAC.RDS")
+ DOX_24_DAR_gr <- DOX_24_ATAC %>% 
+  dplyr::filter(adj.P.Val<0.05) %>% 
+  dplyr::select(peak) %>% 
+  separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %>% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand="*")
+DOX_24_CAR_gr <- DOX_24_ATAC %>% 
+  dplyr::filter(adj.P.Val>0.05) %>% 
+  dplyr::select(peak) %>% 
+  separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+  mutate(start=as.numeric(start),
+         stop=as.numeric(stop)) %>% 
+  as_granges(seqnames = seqnames,
+             start=start,
+             end=stop,
+             strand="*")
+mcols(DOX_24_CAR_gr)$name <- mcols(DOX_24_CAR_gr)$peak
+mcols(DOX_24_DAR_gr)$name <- mcols(DOX_24_DAR_gr)$peak
+
+H3K27ac_summit_gr_ext <- keepStandardChromosomes(
+  H3K27ac_summit_gr_ext,
+  pruning.mode = "coarse"
+)
+phyloP_df <- read.delim(
+  "C:/Users/renee/Other_projects_data/genome_files/H3K27ac_summit_phyloP.tsv",
+  na.strings = "",
+  stringsAsFactors = FALSE)
+
+phyloP_MER61E_df <- read.delim(
+  "C:/Users/renee/Other_projects_data/genome_files/H3K27ac_MER61E_phyloP.tsv",
+  na.strings = "",
+  stringsAsFactors = FALSE)
+### because some (6,691) regions have more than one summit ext region:
+
+phyloP_df$Peakid <- H3K27ac_summit_gr_ext$Peakid
+phyloP_df$width <- width(H3K27ac_summit_gr_ext)
+
+phyloP_MER61E_df$repID <- MER61E_regions$name
+phyloP_MER61E_df <- phyloP_MER61E_df %>% 
+  dplyr::select(repID,phyloP_mean) %>% 
+  dplyr::rename("MER61E_phyloP_mean"=phyloP_mean)
+peak_phyloP_by_id <- phyloP_df %>%
+  group_by(Peakid) %>%
+  summarise(
+    n_summit_regions = n(),
+    total_summit_width = sum(width, na.rm = TRUE),
+    peak_phyloP_mean = weighted.mean(phyloP_mean, w = width, na.rm = TRUE),
+    peak_phyloP_max = ifelse(all(is.na(phyloP_max)),NA_real_,
+      max(phyloP_max, na.rm = TRUE)),  .groups = "drop")
+idx <-match(H3K27ac_summit_gr_ext$Peakid,peak_phyloP_by_id$Peakid)
+
+
+mcols(H3K27ac_summit_gr_ext)$phyloP_mean <- phyloP_df$phyloP_mean
+mcols(H3K27ac_summit_gr_ext)$phyloP_max  <- phyloP_df$phyloP_max
+mcols(H3K27ac_summit_gr_ext)$peak_phyloP_mean <- peak_phyloP_by_id$peak_phyloP_mean[idx]
+mcols(H3K27ac_summit_gr_ext)$peak_phyloP_max <- peak_phyloP_by_id$peak_phyloP_max[idx]
+mcols(H3K27ac_summit_gr_ext)$n_summit_regions <- peak_phyloP_by_id$n_summit_regions[idx]
+
+
+p53_sp_ChIP <- rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP57_VEH_p53_Ind6/MCW_SP_ChIP57_VEH_p53_Ind6_q0.05_peaks.narrowPeak",format = "narrowPeak")
+
+CTCF_sp_ChIP <-  rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP63_VEH_CTCF_Ind1/MCW_SP_ChIP63_VEH_CTCF_Ind1_q0.05_peaks.narrowPeak",format = "narrowPeak")
+
+RAD21_sp_ChIP <-  rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP69_VEH_RAD21_Ind1/MCW_SP_ChIP69_VEH_RAD21_Ind1_q0.05_peaks.narrowPeak",format = "narrowPeak")
+
+TOP2B_sp_ChIP <-  rtracklayer::import("data/Other_paper_data/ChIP3_TOP2B_CM_87-1.bed")
+
+
+
+```
+
+
+canonical assignments
+```{r function p53 canonical motifs}
+p53_canonical_motifs <- function(fimo_root_dir, te_bed_base_dir) {
+ 
+  
+  # Initialize results list
+  results_list <- list()
+  hit_list <- list()
+  
+  # Find all directories ending with "_fimo"
+  fimo_dirs <- list.dirs(fimo_root_dir, recursive = FALSE)
+  fimo_dirs <- fimo_dirs[grepl("_sea_jaspar$", basename(fimo_dirs))]
+  
+  for (fimo_dir in fimo_dirs) {
+    base_name <- sub("_sea_jaspar$", "", basename(fimo_dir))
+    
+    # Find FIMO file
+    sites_file <- file.path(fimo_dir, "sites.tsv")
+    if (!file.exists(sites_file)) {
+      message("Skipping ", fimo_dir, ": sites.tsv not found")
+      next
+    }
+  
+  
+  te_file <- file.path(te_bed_base_dir, paste0(base_name, ".bed"))
+    if (!file.exists(te_file)) {
+      message("Skipping ", base_name, ": TE BED file not found")
+      next
+    }
+  
+    
+    # ------------------------------
+    # Load TE BED file
+    # ------------------------------
+    te_df <- read.table(te_file, header = FALSE, stringsAsFactors = FALSE)
+    colnames(te_df) <- c("chr","start","end","name","score","strand")
+    te_df <- te_df[!is.na(te_df$start) & !is.na(te_df$end) & (te_df$start <= te_df$end), ]
+    te_gr <- GRanges(
+    seqnames = te_df$chr,
+    ranges = IRanges(start = te_df$start, end = te_df$end),
+    strand = te_df$strand,
+    TE_id = te_df$name,
+    TE_score = te_df$score
+    )
+    # ------------------------------
+    # Load TP53 sites
+    # ------------------------------
+    cano_sites <- read.delim(sites_file, stringsAsFactors = FALSE)
+    
+    # Filter TP53 motifs
+    if (!"motif_ALT_ID" %in% colnames(cano_sites)) {
+      message("No motif_ALT_ID column in ", sites_file)
+      next
+    }
+    cano_sites <- cano_sites[
+      grepl("TP53", cano_sites$motif_ALT_ID, ignore.case = TRUE),
+    ]
+    # Skip if no motifs found
+    if (nrow(cano_sites) == 0) {
+      message("No TP53 motifs in ", base_name)
+      results_list[[paste0(base_name, "_no_hits")]] <- data.frame(
+        TE_name = base_name,
+        motif_name = "TP53",
+        total_TEs = length(te_gr),
+        TEs_with_TP53 = 0,
+        total_TP53_hits = 0,
+        occupancy = 0
+      )
+      next
+    }
+    
+    # Clean FIMO entries
+    cano_sites <- cano_sites[!is.na(cano_sites$site_Start) & !is.na(cano_sites$site_End) & (cano_sites$site_Start <= cano_sites$site_End), ]
+    
+    motif_name <- unique(cano_sites$motif_ALT_ID)
+    
+    # Loop over each motif separately (in case multiple motifs exist)
+    for (mn in motif_name) {
+      fimo_motif <- cano_sites[cano_sites$motif_ALT_ID == mn, ]
+      
+      fimo_gr <- GRanges(
+        seqnames = fimo_motif$seq_ID,
+        ranges = IRanges(start = fimo_motif$site_Start, end = fimo_motif$site_End),
+        strand = fimo_motif$site_Strand,
+        score = fimo_motif$site_Score
+      )
+      
+      # ------------------------------
+      # Overlaps
+      # ------------------------------
+      hits <- findOverlaps(fimo_gr, te_gr)
+      n_te_total <- length(te_gr)
+      
+      if (length(hits) == 0) {
+        message("No overlaps for motif ", mn, " in ", base_name)
+        results_list[[paste0(base_name, "_", mn)]] <- data.frame(
+          TE_name = base_name,
+          motif_name = mn,
+          total_TEs = n_te_total,
+          TEs_with_TP53 = 0,
+          total_TP53_hits = 0,
+          occupancy = 0
+        )
+        next
+      }
+      
+      n_te_with_hits <- length(unique(subjectHits(hits)))
+      n_total_hits <- length(hits)
+      occupancy <- ifelse(n_te_total > 0, n_te_with_hits / n_te_total, NA)
+      
+    
+    # ------------------------------
+      # Compute relative positions
+      # ------------------------------
+      rel_pos <- (start(fimo_gr)[queryHits(hits)] - start(te_gr)[subjectHits(hits)]) /
+                 width(te_gr)[subjectHits(hits)]
+      rel_pos <- pmin(pmax(rel_pos, 0), 1)
+      df <- data.frame(rel_pos = rel_pos)
+      hit_df <- data.frame(
+        TE_name = base_name,
+       motif_name = mn,
+
+    # which FIMO motif hit
+       motif_chr = as.character(seqnames(fimo_gr)[queryHits(hits)]),
+        motif_start = start(fimo_gr)[queryHits(hits)],
+        motif_end = end(fimo_gr)[queryHits(hits)],
+        motif_strand = as.character(strand(fimo_gr)[queryHits(hits)]),
+        motif_score = mcols(fimo_gr)$score[queryHits(hits)],
+
+    # which TE it overlaps
+        TE_id = mcols(te_gr)$TE_id[subjectHits(hits)],
+        TE_chr = as.character(seqnames(te_gr)[subjectHits(hits)]),
+        TE_start = start(te_gr)[subjectHits(hits)],
+        TE_end = end(te_gr)[subjectHits(hits)],
+        TE_strand = as.character(strand(te_gr)[subjectHits(hits)]),
+
+          rel_pos = rel_pos
+        )
+
+hit_list[[paste0(base_name, "_", mn)]] <- hit_df
+      
+      # ------------------------------
+      # Store results
+      # ------------------------------
+      results_list[[paste0(base_name, "_", mn)]] <- data.frame(
+        TE_name = base_name,
+        motif_name = mn,
+        total_TEs = n_te_total,
+        TEs_with_TP53 = n_te_with_hits,
+        total_TP53_hits = n_total_hits,
+        occupancy = occupancy
+      )
+      
+      # ------------------------------
+      # Plot density
+      # ------------------------------
+      cat(paste0("### ", base_name, " ", mn, "\n"))
+      cat(base_name, "| total TEs:", n_te_total, "| with cTP53:", n_te_with_hits, 
+          "| hits:", n_total_hits, "\n")
+      cat("Sequences with full TP53 motif: ", round(occupancy * 100, 2), "%\n\n")
+      
+      p <- ggplot(df, aes(x = rel_pos)) +
+        geom_density(fill = "steelblue", alpha = 0.5) +
+        labs(x = "Relative position in TE", y = "Motif density") +
+        theme_classic() +
+        ggtitle(paste0("canonical TP53 motif distribution: ", base_name,
+                       "\nSequences with motif: ", round(occupancy * 100, 1), "%"))
+      print(p)
+      cat("\n\n")
+    }
+  } # end fimo_dirs loop
+  
+  # Combine all results into one data frame
+  results_df <- do.call(rbind, results_list)
+  
+  # print(results_df)
+  hits_df <- do.call(rbind, hit_list)
+
+return(list(
+  summary = results_df,
+  hits = hits_df
+))
+}
+    
+
+```
+
+```{r}
+full_p53 <- p53_canonical_motifs("C:/Users/renee/Other_projects_data/DXR_data/TE_sea_jaspar_results","data/Bed_exports/repeatmasker_sets/ERV1")
+
+p53_canonical <- full_p53$hits
+```
+
+```{r pulling if TE is in my data}
+MER61E_mydata <- 
+H3K27ac_ext200_anno %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = ";") %>% 
+  dplyr::filter(repName=="MER61E")%>% 
+  pull(repID) %>% 
+  unique()
+protein_info <- MER61E_intermediat_protein %>% 
+  dplyr::select(X1,my_MER,is_DAP,DOX_cor)
+Peakid_lookup_repID <-
+  H3K27ac_ext200_anno %>% 
+  separate_longer_delim(.,cols=c(repName,repID),delim=";") %>% 
+    dplyr::filter(repName=="MER61E") %>% 
+    dplyr::select(repID,Peakid,geneId,distanceToTSS)
+```
+
+```{r determining which repIDs have binding}
+ZNF780A_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,ZNF780A_regions) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+ZNF680_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,ZNF680_regions) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+p53_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,p53_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+CTCF_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,CTCF_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+RAD21_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,RAD21_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+TOP2B_overlaps_MER61E <- subsetByOverlaps(MER61E_regions,TOP2B_sp_ChIP) %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+```
+
+```{r overlappig DARs and CARs}
+
+DAR_set <- subsetByOverlaps(MER61E_regions,DOX_24_DAR_gr)
+DAR_MER61E_set <- DAR_set %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+CAR_set <- subsetByOverlaps(MER61E_regions,DOX_24_CAR_gr)
+CAR_MER61E_set <- CAR_set %>% 
+  as.data.frame() %>% 
+  pull(name) %>% 
+  unique()
+
+```
+
+getting phyloP added per region:
+```{r}
+phyloP_calc_df <- H3K27ac_summit_gr_ext %>% 
+  as.data.frame() %>% 
+  dplyr::select(Peakid,cluster, name,peak_phyloP_max,peak_phyloP_mean) %>% distinct()
+    
+```
+
+
+### MER61E making of data frame  
+
+```{r}
+mintermediate_data <-
+  MER61E_anno_genes %>% 
+  mutate(cluster= case_when(is.na(cluster)~"NA",
+                            TRUE~ cluster)) %>% 
+  left_join(protein_info,by=c("repID"="X1")) %>% 
+  left_join(Peakid_lookup_repID) %>% 
+  dplyr::rename("GREAT_gene_assign"=2,
+                "H3K27ac_region"=Peakid,
+                "H3K27ac_region_geneId"=geneId,
+                "H3K27ac_region_distanceToTSS"=distanceToTSS) %>% 
+  left_join(LTR_df, by=c("repID"="RM_id")) %>% 
+  mutate(my_MER=if_else(repID %in% MER61E_mydata, "yes","no"),
+         p53_halfsite =if_else(repID %in% p53halfsite_TE_ids$Peakid, "yes","no"),
+         p53_fullsite=if_else(repID %in% full_p53_canonical$TE_id,"yes","no")) %>% 
+  left_join(set_case_list_H3K27ac,by=c("H3K27ac_region"="genes", "cluster"="cluster")) %>% 
+  left_join(MER61E_trajectory_broad,by=c("repID"="te_id", "repName"="te_name")) %>% 
+  mutate(ZNF780A_binding=if_else(repID %in%ZNF780A_overlaps_MER61E,"yes","no"),
+         ZNF680_binding=if_else(repID %in% ZNF680_overlaps_MER61E, "yes","no"),
+         sp_p53_binding=if_else(repID %in% p53_overlaps_MER61E, "yes","no"),
+              sp_CTCF_binding=if_else(repID %in% CTCF_overlaps_MER61E, "yes","no"),
+         sp_RAD21_binding=if_else(repID %in% RAD21_overlaps_MER61E, "yes","no"),
+         sp_TOP2B_binding=if_else(repID %in% TOP2B_overlaps_MER61E, "yes","no"),) %>% 
+  dplyr::mutate(
+    state_24T_compare = dplyr::if_else(DOX_24T == VEH_24T, "same", "different"),
+    state_24R_compare = dplyr::if_else(DOX_24R == VEH_24R, "same", "different"),
+    state_144R_compare = dplyr::if_else(DOX_144R == VEH_144R, "same", "different")) %>% 
+  dplyr::mutate(overall_compare = dplyr::case_when(DOX_24T == VEH_24T & 
+                                                     DOX_24R == VEH_24R &
+                                                     DOX_144R == VEH_144R ~"same_all_timepoints",
+                                                   TRUE ~ "different_at_one_or_more_timepoints")) %>% 
+  mutate(is_DNA_repair=ENTREZID%in% DNA_repair$ENTREZID,
+         overlap_DAR=if_else(repID %in% DAR_MER61E_set,"yes","no"),
+         overlap_CAR=if_else(repID %in% CAR_MER61E_set,"yes","no")) %>% 
+  left_join(phyloP_calc_df, by=c("H3K27ac_region"="Peakid","cluster"="cluster")) %>% 
+  left_join(chipseeker_anno_MER61E) %>% 
+  left_join(phyloP_MER61E_df,by="repID")
+  
+
+DT::datatable(mintermediate_data,
+              options=list(scrollX = TRUE,
+                           scrollY="500px",
+                           paging=TRUE,
+                           autoWidth=TRUE))
+
+# saveRDS(mintermediate_data, "data/RDS_files/MER61E_intermediate_dataframe.RDS")
+```
+## Start of data
+
+```{r}
+mintermediate_data <- readRDS("data/RDS_files/MER61E_intermediate_dataframe.RDS")
+
+mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation)) %>% 
+  
+  p53_label <- c(yes="p53 overlap",no="no p53 overlap")
+
+facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  
+  add_on_mintermediate_data <- mintermediate_data %>% 
+  dplyr::select(repID,cluster, my_MER, H3K27ac_region,milliDiv:p53_fullsite,overlap_DAR, overlap_CAR, MER61E_phyloP_mean,CS_distanceToTSS) %>% 
+  mutate(DER_24T=if_else(H3K27ac_region %in% regions_24T$genes, "DER_24T","not_DER_24T"),
+         DER_24R=if_else(H3K27ac_region%in% regions_24R$genes,"DER_24R","not_DER_24R"),
+         DER_144R=if_else(H3K27ac_region%in% regions_144R$genes,"DER_144R","not_DER_144R"))
+
+
+separate_rows(GREAT_gene_assign, sep = ",\\s*") %>%
+  mutate(
+    gene = str_extract(GREAT_gene_assign, "^[A-Za-z0-9_.-]+"),
+    distance = str_extract(GREAT_gene_assign,"(?<=\\()[+-]?\\d+(?=\\))") %>% as.numeric(),
+    direction = case_when(
+      distance < 0 ~ "upstream",
+      distance > 0 ~ "downstream",
+      distance == 0 ~ "overlapping",
+      TRUE ~ NA_character_)) %>% 
+```
+
+### Investigating DAR/CAR
+
+
+Filtering for expressed TFs
+```{r}
+RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
+
+RNA_expressed <- RNA_full_toptable %>% 
+  dplyr::select(Entrez_ID, SYMBOL)
+
+### had to add in a special filter to account for the :: in the names of the motifs
+symbols <- str_to_upper(RNA_expressed$SYMBOL)
+
+filtered_known_mer_set3 <- known_mer_set3 %>%
+  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
+  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
+  dplyr::select(-motif_tokens)
+
+RNA_H3K27ac_LFC_dataframe <- active_DOX_df %>% 
+  left_join(RNA_lfc_SYMBOL, by=c("gene"="SYMBOL")) %>% 
+  left_join(H3K27ac_lfc_table, by=c("H3K27ac_region"="genes"))
+```
+
+### Persistantly Activated MER61E
+
+```{r}
+
+what_mer <-
+mintermediate_data %>% 
+  mutate(active_DOX= case_when(
+    DOX_144R %in% c("Enhancer","Transcription")&
+      DOX_24R %in% c("Enhancer","Transcription") &
+      DOX_24T %in% c("Enhancer","Transcription")~"Active_DOX",
+    DOX_144R %in% c("Repressed" ,  "Quiescent")&
+      DOX_24T %in% c("Enhancer","Transcription")~"Transition_DOX",
+    TRUE~"neither"),
+    active_VEH= case_when(
+    VEH_144R %in% c("Enhancer","Transcription")&
+      VEH_24R %in% c("Enhancer","Transcription") &
+      VEH_24T %in% c("Enhancer","Transcription")~"Active_VEH",
+    VEH_144R %in% c("Repressed" ,  "Quiescent")&
+      VEH_24T %in% c("Enhancer","Transcription")~"Transition_VEH",
+    TRUE~"neither")) %>% 
+  mutate(trt_specific= case_when(active_DOX=="Active_DOX" & active_VEH !="Active_VEH"~"active_DOX_only",
+         active_DOX=="Active_DOX" & active_VEH =="Active_VEH"~"both_active",
+active_DOX=="Transition_DOX" & active_VEH !="Transition_VEH"~"transition_DOX_only",
+active_DOX=="Transition_DOX" & active_VEH =="Transition_VEH"~"both_transition",
+TRUE ~active_DOX))
+group_by(my_MER,trt_specific) %>% 
+  mutate( sum_total = sum(total),
+          prop = total / sum_total) %>% 
+  ungroup() %>% 
+  ggplot(., aes(x=trt_specific, y=prop,fill=p53_halfsite))+
+   geom_col(position = "fill") +
+  geom_text(
+    aes(label =total),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  facet_wrap(~ my_MER) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title ="MER61E p53 halfsite enrichment, in my MER vs not my MER",
+    x = "Treatment specificity",
+    y = "Proportion",
+    fill = "p53 half-site"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+RNA_lfc_SYMBOL <-RNA_full_toptable %>% 
+   dplyr::filter(SYMBOL != "NA")%>%
+  dplyr::select(SYMBOL,logFC,timepoint, adj.P.Val) %>% 
+  pivot_wider(., names_from = timepoint,
+    values_from = c(logFC, adj.P.Val),
+    names_glue = "RNA_{.value}_{timepoint}")
+
+```
+
+
+
+### TAD info
+
+```{r}
+Left_ventricle_TAD <- import(
+  con = "C://Users/renee/Downloads/hg38.TADs/hg38/VentricleLeft_STL003_Leung_2015-raw_TADs.txt",
+  format = "bed",
+  genome = "hg38"
+)
+
+mcols(Left_ventricle_TAD)$TAD_id <- paste0("TAD_", seq_along(Left_ventricle_TAD))
+
+SCREEN_heart_hg38_cCREs <- import(
+  "data/Other_paper_data/SCREEN_LVHEART_F_53_ENCFF417JSF_ENCFF651XRK_ENCFF320IPT_ENCFF440RUS.bed",
+  format = "BED",
+  extraCols = c(
+    DHS_ID = "character",
+    cCRE_ID = "character",
+    cCRE_class = "character"))
+
+SCREEN_hg38_cCREs <- import(
+  "data/Bed_exports/cisRE/GRCh38-cCREs.bed",
+  format = "BED",
+  extraCols = c(
+    DHS_ID = "character",
+    cCRE_ID = "character",
+    cCRE_class = "character"))
+
+TP53_A549_regions<- import("data/Other_paper_data/ENCFF229ULU_A549_exp_ENCSR112XUO_TP53.bigBed", format="BigBED")
+
+TP53_HEPG2_regions<- import("data/Other_paper_data/ENCFF687JDU_HepG2_exp_ENCSR980EGJ.bigBed", format="BigBED")
+
+H3K9me3_toplist <- readRDS( "data/DER_data/H3K9me3_toplist.RDS")
+K9me3_24T <- H3K9me3_toplist$H3K9me3_24T 
+K9me3_24T <- K9me3_24T %>% 
+  mutate(LFC_split=case_when(logFC>0&adj.P.Val<0.05~"K9_DER_up",
+                             logFC<0&adj.P.Val<0.05~"K9_DER_down",
+                             TRUE~"not_DER"))  
+
+
+MER61E_site <- mergeByOverlaps(MER61E_regions,MER61E_p53_best_site_score)
+
+MER61E_best_site_signal <- MER61E_site %>% 
+  as.data.frame() %>% 
+  dplyr::select(MER61E_regions.name,MER61E_p53_best_site_score.signalValue,MER61E_p53_best_site_score.qValue) %>% 
+  dplyr::rename("repID"=1,"MER61E.signal"=2,"MER61E.qvalue"=3)
+```
+
+```{r}
+K9me3_gr <- peakAnnoList_H3K9me3$all_H3K9me3_regions %>% as.GRanges()
+
+
+mcols(K9me3_gr) <-
+mcols(K9me3_gr) %>%
+  as.data.frame() %>%
+  left_join(
+    K9me3_24T %>% dplyr::select(genes, LFC_split),
+    by = c("Peakid"="genes"))
+
+
+K9me3_split_gr <- split(K9me3_gr, K9me3_gr$LFC_split)
+
+
+```
+
+
+
+```{r}
+MER61E_tad <- mergeByOverlaps(MER61E_regions,Left_ventricle_TAD)
+
+MER61E_tad_df <- MER61E_tad %>%as.data.frame() %>% 
+  group_by(MER61E_regions.name) %>%tally() 
+  
+
+MER61E_p53_pub <- mergeByOverlaps(MER61E_regions,TP53_A549_regions)
+
+MER61E_tp53_df <- MER61E_p53_pub %>% as.data.frame() %>% 
+  group_by(MER61E_regions.name) %>% tally()
+
+MER61E_p53_hepg2 <- mergeByOverlaps(MER61E_regions,TP53_HEPG2_regions)
+
+MER61E_tp53_hepg2_df <- MER61E_p53_hepg2 %>% as.data.frame() %>% 
+  group_by(MER61E_regions.name) %>% tally()
+
+MER61E_k9upder <- mergeByOverlaps(MER61E_regions,K9me3_split_gr$K9_DER_up)
+
+MER61E_k9downder <- mergeByOverlaps(MER61E_regions,K9me3_split_gr$K9_DER_down)
+
+MER61E_k9notder <- mergeByOverlaps(MER61E_regions,K9me3_split_gr$not_DER)
+
+```
+
+
+
+```{r}
+MER61E_cre <- mergeByOverlaps(MER61E_regions,SCREEN_heart_hg38_cCREs)
+
+MER61E_cre_df <- MER61E_cre %>% 
+  as.data.frame() %>% 
+  group_by(MER61E_regions.name) %>% 
+  # dplyr::filter(MER61E_regions.name %in%MER61E_mydata) %>% 
+  left_join((SCREEN_hg38_cCREs %>% as.data.frame()), by=c("SCREEN_heart_hg38_cCREs.name" = "cCRE_ID")) %>% 
+  dplyr::select(name,name.1,cCRE_class.y) %>% 
+  group_by(name,cCRE_class.y) %>% tally() %>% 
+  left_join(mintermediate_data,by=c("name"="repID"))
+
+
+```
+
+
+```{r}
+mint_anno <- readRDS("data/RDS_files/MER61E_intermediate_dataframe.RDS")
+
+
+mint_anno %>% dplyr::filter(my_MER=="yes") %>% 
+  dplyr::filter(cluster=="Set_3")
+  
+
+mint_anno %>% 
+  group_by(my_MER,alt_case, cluster ) %>%  tally()
+
+
+mint_anno <- mint_anno %>% 
+  mutate(heart_cRE=if_else(repID %in% MER61E_cre_df$name,"yes","no"),
+          LV_TAD_overlap=if_else(repID %in% MER61E_tad_df$MER61E_regions.name,"yes","no"),
+         TP53_A549_overlap=if_else(repID %in% MER61E_tp53_df$MER61E_regions.name,"yes","no"),
+         TP53_HEPG2_overlap=if_else(repID %in% MER61E_tp53_hepg2_df$MER61E_regions.name,"yes","no"),
+         MER61E_k9notder=if_else( repID %in% MER61E_k9notder[["name"]],"yes","no"),
+         MER61E_k9downder=if_else( repID %in% MER61E_k9downder[["name"]],"yes","no"),
+         MER61E_k9upder=if_else( repID %in% MER61E_k9upder[["name"]],"yes","no"))  
+
+
+  
+```
+```{r, eval=FALSE}
+
+Set3_mer61e <- mint_anno %>% 
+  dplyr::filter(my_MER=="yes" & cluster == "Set_3") %>%
+  distinct(repID)
+
+Set1_mer61e <- mint_anno %>% 
+  dplyr::filter(my_MER=="yes" & cluster == "Set_1") %>%
+  distinct(repID)
+
+
+test <- MER61E_regions[mcols(MER61E_regions)$name %in% Set3_mer61e$repID]
+
+export(test,"data/Bed_exports/MER61E_Set3_acute.bed")
+
+test1 <- MER61E_regions[mcols(MER61E_regions)$name %in% Set1_mer61e$repID]
+
+export(test1,"data/Bed_exports/MER61E_Set1_NR.bed")
+
+```
+### Additional analysis
+
+```{r}
+prop_plot <- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data <- data %>%
+    mutate(cluster = tidyr::replace_na(cluster, "NA"),
+      cluster = factor(cluster,
+        levels = c("Set_3", "Set_1", "not_assigned", "NA"))) %>%
+    filter(cluster %in% c("Set_3", "Set_1", "not_assigned", "NA"))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups <- c("Set_1", "not_assigned", "NA")
+
+  test_results <- lapply(comparison_groups, function(g) {
+
+    test_df <- plot_data %>%
+      filter(cluster %in% c("Set_3", g))
+
+    tab <- table(test_df$cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi <- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected < 5)) {
+      test <- fisher.test(tab)
+      method <- "Fisher"
+    } else {
+      test <- chi
+      method <- "Chi-square"
+    }
+
+    data.frame(comparison = paste("Set_3 vs", g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %>%
+    bind_rows() %>%
+    mutate(p_adj = p.adjust(p, method = "BH"),
+           label = paste0("p=", format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = c(1.10, 1.18, 1.26))
+
+
+  # Proportions
+  count_data <- plot_data %>%
+    count({{ group_col }}, {{ yes_no_col }}) %>%
+    group_by({{ group_col }}) %>%
+    mutate(prop = n / sum(n)) %>%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), "\n(n=", n, ")")),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, "Paired")[1:2]) +
+
+    labs(x = NULL,y = "Proportion") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}
+
+
+```
+
+```{r}
+
+prop_plot(mint_anno, cluster,p53_halfsite)+
+  ggtitle("p53 halfsite proportion across MER61E")
+
+
+prop_plot(mint_anno, cluster,p53_fullsite)+
+  ggtitle("p53 fullsite proportion across MER61E")
+
+
+prop_plot(mint_anno, cluster,ZNF780A_binding)+
+  ggtitle("ZNF780A binding proportion across MER61E")
+
+
+prop_plot(mint_anno, cluster,ZNF680_binding)+
+  ggtitle("ZNF680 binding proportion across MER61E")
+
+
+prop_plot(mint_anno, cluster,sp_p53_binding)+
+  ggtitle("DOX_ChIP p53_binding proportion across MER61E")
+
+
+prop_plot(mint_anno, cluster,overlap_DAR)+
+  ggtitle("DAR overlap proportion across MER61E")
+```
+
+```{r}
+prop_plot(mint_anno,cluster, LV_TAD_overlap)+
+  ggtitle("LV TAD overlap of MER61Es")
+
+prop_plot(mint_anno,cluster, heart_cRE)+
+  ggtitle("Heart cRE overlap of MER61Es")
+
+# prop_plot(mint_anno,cluster, TP53_A549_overlap)+
+#   ggtitle("Published TP53 regions from A549 cells and MER61E overlaps")
+
+
+prop_plot(mint_anno,cluster, TP53_HEPG2_overlap)+
+  ggtitle("Published TP53 regions from HepG2 cells and MER61E overlaps")
+```
+
+```{r}
+
+prop_plot(mint_anno,cluster, MER61E_k9upder)+
+  ggtitle("K9me3 overlapped MER61Es by cluster up DER ")
+
+  prop_plot(mint_anno,cluster, MER61E_k9downder)+
+  ggtitle("K9me3 overlapped MER61Es by cluster down DER ")
+
+prop_plot(mint_anno,cluster,MER61E_k9notder)+
+  ggtitle("K9me3 overlapped MER61Es by cluster not DER ")
+
+```
+
+```{r RNA}
+RNA_acute_cluster <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S6", skip = 1)
+
+RNA_chronic_cluster <- read_excel("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx", 
+    sheet = "Table_S7", skip = 2)
+
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+all_gene_gr <- genes(txdb)
+
+acute_gr <-  all_gene_gr[
+  names(all_gene_gr) %in% RNA_acute_cluster$Entrez_ID]
+chronic_gr <-  all_gene_gr[
+  names(all_gene_gr) %in% RNA_chronic_cluster$Entrez_ID]
+
+acute_overlap <- mergeByOverlaps(acute_gr,Left_ventricle_TAD)
+
+chronic_overlap <- mergeByOverlaps(chronic_gr,Left_ventricle_TAD)
+
+
+acute_chron_TADS <-c(acute_overlap[["TAD_id"]],chronic_overlap[["TAD_id"]]) %>% 
+  unique()
+
+
+MER61E_acute_chron_TAD <- MER61E_tad %>% as.data.frame() %>% 
+  mutate(acuteChron= if_else(Left_ventricle_TAD.TAD_id %in% acute_chron_TADS,"yes","no")) %>% 
+  dplyr::filter(acuteChron=="yes") %>% 
+  pull(name)
+
+mint_anno <- mint_anno %>% 
+  mutate(AC_TADs=if_else(repID %in% MER61E_acute_chron_TAD, "yes","no"))
+
+prop_plot(mint_anno,cluster,AC_TADs)+
+  ggtitle("MER61E that overlap a TAD with a chronic/acute gene")
+
+
+```
+#### Correlation of data
+
+```{r}
+mint_md_df <- mint_anno %>% 
+  dplyr::select(repID,width,milliDiv,CS_distanceToTSS,p53_halfsite,ZNF780A_binding,ZNF680_binding,overlap_DAR,cluster) %>% 
+  mutate(MYA_bourque=milliDiv/2.2,
+         cluster=case_when(cluster=="Set_3"~1,
+                           TRUE~0)) %>% 
+  mutate(across(!repID, ~case_when( . == "yes"~1,
+                                          . == "no"~0,
+                                          TRUE ~suppressWarnings(as.numeric(.))))) %>% 
+   left_join(MER61E_best_site_signal) %>%
+  mutate(MER61E.signal = if_else(is.na(MER61E.signal), 0, MER61E.signal),
+  MER61E.qvalue = if_else(is.na(MER61E.qvalue), 1, MER61E.qvalue)) %>% 
+  dplyr::select(!MER61E.qvalue) %>% 
+  column_to_rownames("repID") %>% 
+  dplyr::select(where(~ {
+      s <- sd(.x, na.rm = TRUE)
+      is.finite(s) && s > 0
+    }))
+
+
+mint_md_cor <- cor(mint_md_df,
+  use = "pairwise.complete.obs")
+
+
+
+
+Heatmap(mint_md_cor,
+        column_title = "MER61E correlation of factors",
+  name = "correlation",)
+
+
+```
+
