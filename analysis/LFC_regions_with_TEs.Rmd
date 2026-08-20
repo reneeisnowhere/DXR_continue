@@ -59,6 +59,18 @@ res_K9me3 <- H3K9me3_repName_results %>%
   distinct(repName)%>% 
   pull(repName)
 
+res_k27ac_acute <-  H3K27ac_repName_results %>% 
+  dplyr::filter(FDR<0.01) %>% 
+  dplyr::filter(cluster2=="Set_3") %>% 
+  distinct(repName)%>% 
+  pull(repName)
+
+res_k27ac_chronic <- H3K27ac_repName_results %>% 
+  dplyr::filter(FDR<0.01) %>% 
+  dplyr::filter(cluster2=="Set_2") %>% 
+  distinct(repName)%>% 
+  pull(repName)
+
 target_repnames <- union(res_K27ac,res_K9me3)
 target_repnames <- target_repnames[!target_repnames %in% c("G-rich", "GA-rich")]
 
@@ -72,11 +84,15 @@ H3K9me3_toptable_list <- bind_rows(H3K9me3_toplist, .id = "group")
 
 ```{r H3K27ac peakids}
 ##filtering out Peakids that cross enriched TEs, also contains annotations repClass, repFamily, repName and cluster
+
+cluster_levels <- c("Set_1", "Set_2", "Set_3", "not_assigned")
 just_H3K27ac_repName <- annotated_H3K27ac_ext200 %>% 
   separate_longer_delim(cols=c(repClass,repFamily,repName),delim = ";") %>% 
-  dplyr::filter(repName %in% res_K27ac) %>% 
+  dplyr::filter(repName %in% res_k27ac_acute) %>% 
   dplyr::select(Peakid,repClass,repFamily,repName,cluster) %>% 
   dplyr::filter(repClass !="Low_complexity") %>%
+  #####changing by removing clusters 1 and not assigned
+  dplyr::filter(cluster %in% c("Set_3")) %>% 
   group_by(Peakid) %>% 
   slice_head(n=1)
 
@@ -94,6 +110,13 @@ idx <- match(rownames(H3K27ac_only_mat), H3K27ac_only_anno_df$Peakid)
 
 H3K27ac_only_force_df <- H3K27ac_only_anno_df[idx, , drop = FALSE]
 
+H3K27ac_only_force_df <- H3K27ac_only_force_df %>%
+  mutate(
+    cluster = factor(cluster, levels = cluster_levels),
+    repName = factor(repName, levels = sort(unique(repName)))
+  )
+
+
 ###sanity check, should be 0 and TRUE
 sum(is.na(idx)) 
 all(rownames(H3K27ac_only_mat) == H3K27ac_only_force_df$Peakid)  # should be TRUE
@@ -101,46 +124,68 @@ all(rownames(H3K27ac_only_mat) == H3K27ac_only_force_df$Peakid)  # should be TRU
 range(H3K27ac_only_mat, na.rm = TRUE)
 ```
 
-
+### acute
 ```{r H3K27ac only LFC heatmap, fig.height=6, fig.width=6}
+repName_levels <- sort(unique(H3K27ac_only_force_df$repName))
 
+n_repNames <- length(repName_levels)
+
+repName_colors <- setNames(
+  colorRampPalette(
+    RColorBrewer::brewer.pal(8, "Set3")
+  )(n_repNames),
+  repName_levels
+)
+
+# repName_colors
 col_fun <- colorRamp2(c(-5,0,5),
                       c("blue","white","red"))
 
+row_order <- order(
+  H3K27ac_only_force_df$cluster,
+  H3K27ac_only_force_df$repClass,
+  H3K27ac_only_force_df$repName,
+  H3K27ac_only_force_df$Peakid)
+
 split_levels <- unique(H3K27ac_only_force_df$repClass)
 
-row_order <- unlist(
-  lapply(split_levels, function(cl){
-
-    idx <- which(H3K27ac_only_force_df$repClass == cl)
-
-    mat_sub <- H3K27ac_only_mat[idx, , drop = FALSE]
-
-    d <- as.dist(
-      1 - cor(
-        t(mat_sub),
-        method = "pearson",
-        use = "pairwise.complete.obs"
-      )
-    )
-
-    hc <- hclust(d, method = "ward.D2")
-
-    idx[hc$order]
-  })
+# row_order <- unlist(
+#   lapply(split_levels, function(cl){
+# 
+#     idx <- which(H3K27ac_only_force_df$repClass == cl)
+# 
+#     mat_sub <- H3K27ac_only_mat[idx, , drop = FALSE]
+# 
+#     d <- as.dist(
+#       1 - cor(
+#         t(mat_sub),
+#         method = "pearson",
+#         use = "pairwise.complete.obs"
+#       )
+#     )
+# 
+#     hc <- hclust(d, method = "ward.D2")
+# 
+#     idx[hc$order]
+#   })
+# )
+row_split_df <- data.frame(
+  cluster = H3K27ac_only_force_df$cluster,
+  repName = H3K27ac_only_force_df$repName
 )
-
 row_ha <- rowAnnotation(
   cluster = H3K27ac_only_force_df$cluster,
   repClass=H3K27ac_only_force_df$repClass,
-  repName= H3K27ac_only_force_df$repName)
+  repName= H3K27ac_only_force_df$repName, col = list(
+    repName = repName_colors))
 
 Heatmap(
   H3K27ac_only_mat,
   name = "LFC",
   col = col_fun,
   left_annotation = row_ha,
-  row_split = H3K27ac_only_force_df$repClass,
+   row_split = H3K27ac_only_force_df$repClass,
+
   row_order = row_order,
   row_title_rot = 0,
   show_row_names = FALSE,
@@ -150,6 +195,130 @@ Heatmap(
 
 
 ```
+
+```{r H3K27ac peakids chronic}
+##filtering out Peakids that cross enriched TEs, also contains annotations repClass, repFamily, repName and cluster
+
+cluster_levels <- c("Set_1", "Set_2", "Set_3", "not_assigned")
+
+just_H3K27ac_repName_chronic <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName),delim = ";") %>% 
+  dplyr::filter(repName %in% res_k27ac_chronic) %>% 
+  dplyr::select(Peakid,repClass,repFamily,repName,cluster) %>% 
+  dplyr::filter(repClass !="Low_complexity") %>%
+  #####changing by removing clusters 1 and not assigned
+  dplyr::filter(cluster %in% c("Set_2")) %>% 
+  group_by(Peakid) %>% 
+  slice_head(n=1)
+
+
+H3K27ac_chronic_mat <- H3K27ac_toptable_list %>% dplyr::select(genes, logFC,group) %>% 
+  pivot_wider(id_cols = genes,names_from = group,values_from = logFC) %>% 
+  dplyr::filter(genes %in% just_H3K27ac_repName_chronic$Peakid) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix()
+
+H3K27ac_chronic_anno_df <- just_H3K27ac_repName_chronic[match(rownames(H3K27ac_chronic_mat),just_H3K27ac_repName_chronic$Peakid),]
+
+### enforcing order
+idx_chronic <- match(rownames(H3K27ac_chronic_mat), H3K27ac_chronic_anno_df$Peakid)
+
+H3K27ac_chronic_force_df <- H3K27ac_chronic_anno_df[idx_chronic, , drop = FALSE]
+
+H3K27ac_chronic_force_df <- H3K27ac_chronic_force_df %>%
+  mutate(
+    cluster = factor(cluster, levels = cluster_levels),
+    repName = factor(repName, levels = sort(unique(repName)))
+  )
+
+
+###sanity check, should be 0 and TRUE
+sum(is.na(idx)) 
+all(rownames(H3K27ac_chronic_mat) == H3K27ac_chronic_force_df$Peakid)  # should be TRUE
+
+range(H3K27ac_chronic_mat, na.rm = TRUE)
+### chronic
+```
+
+
+```{r H3K27ac_chronic LFC heatmap, fig.height=4, fig.width=6}
+repName_levels_chronic <- sort(unique(H3K27ac_chronic_force_df$repName))
+
+n_repNames_chronic <- length(repName_levels_chronic)
+
+repName_colors_chronic <- setNames(
+  colorRampPalette(
+    RColorBrewer::brewer.pal(8, "Set3")
+  )(n_repNames_chronic),
+  repName_levels_chronic
+)
+
+# repName_colors
+col_fun_chronic <- colorRamp2(c(-5,0,5),
+                      c("blue","white","red"))
+
+row_order_chronic <- order(
+  H3K27ac_chronic_force_df$cluster,
+  H3K27ac_chronic_force_df$repClass,
+  H3K27ac_chronic_force_df$repName,
+  H3K27ac_chronic_force_df$Peakid)
+
+split_levels_chronic <- unique(H3K27ac_chronic_force_df$repClass)
+
+# row_order <- unlist(
+#   lapply(split_levels, function(cl){
+# 
+#     idx <- which(H3K27ac_only_force_df$repClass == cl)
+# 
+#     mat_sub <- H3K27ac_only_mat[idx, , drop = FALSE]
+# 
+#     d <- as.dist(
+#       1 - cor(
+#         t(mat_sub),
+#         method = "pearson",
+#         use = "pairwise.complete.obs"
+#       )
+#     )
+# 
+#     hc <- hclust(d, method = "ward.D2")
+# 
+#     idx[hc$order]
+#   })
+# )
+row_split_df_chronic <- data.frame(
+  cluster = H3K27ac_chronic_force_df$cluster,
+  repName = H3K27ac_chronic_force_df$repName
+)
+row_ha_chronic <- rowAnnotation(
+  cluster = H3K27ac_chronic_force_df$cluster,
+  repClass=H3K27ac_chronic_force_df$repClass,
+  repName= H3K27ac_chronic_force_df$repName, col = list(
+    repName = repName_colors_chronic))
+
+Heatmap(
+  H3K27ac_chronic_mat,
+  name = "LFC chronic",
+  col = col_fun_chronic,
+  left_annotation = row_ha_chronic,
+   row_split = H3K27ac_chronic_force_df$repClass,
+
+  row_order = row_order_chronic,
+  row_title_rot = 0,
+  show_row_names = FALSE,
+  ## use precomputed clustering
+  cluster_rows = FALSE,
+  cluster_columns = FALSE)
+
+
+```
+
+
+
+
+
+
+
+
 ```{r}
 ##filtering out Peakids that cross enriched TEs, also contains annotations repClass, repFamily, repName and cluster
 just_H3K9me3_repName <- annotated_H3K9me3_ext200 %>% 
