@@ -1,0 +1,414 @@
+---
+title: "Main_fig2"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+
+```{r library entries}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+library(ggalluvial)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(edgeR)
+library(RColorBrewer)
+library(ggVennDiagram)
+library(ChIPseeker)
+```
+
+
+```{r data loading}
+H3K27ac_repeat_results <- readRDS("data/RDS_files/H3K27ac_repName_results.RDS")
+
+annotated_H3K27ac_ext200 <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+
+res_K27ac <- H3K27ac_repeat_results %>% 
+  dplyr::filter(FDR<0.01) %>% 
+  distinct(repName) %>% 
+  pull(repName)
+
+res_k27ac_acute <-  H3K27ac_repeat_results %>% 
+  dplyr::filter(FDR<0.01) %>% 
+  dplyr::filter(cluster2=="Set_3") %>% 
+  distinct(repName)%>% 
+  pull(repName)
+
+res_k27ac_chronic <- H3K27ac_repeat_results %>% 
+  dplyr::filter(FDR<0.01) %>% 
+  dplyr::filter(cluster2=="Set_2") %>% 
+  distinct(repName)%>% 
+  pull(repName)
+
+H3K27ac_toplist <- readRDS( "data/DER_data/H3K27ac_toplist.RDS")
+
+H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
+
+
+```
+
+
+```{r functions}
+
+```
+
+
+### Figure 2A
+```{r Fig2a}
+ggplot(H3K27ac_repeat_results, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+   geom_text_repel(data = subset(H3K27ac_repeat_results, FDR < 0.01),
+    size = 3,
+    force = 3,
+    box.padding = 0.6,
+    point.padding = 0.4,
+    max.overlaps = Inf,
+    segment.color = "grey50",
+    segment.size = 0.3
+  ) +
+  #geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  geom_hline(yintercept = -log10(0.01), linetype = "dotted") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "all repName enrichment at H3K27ac extended ROI summits"
+  ) +
+  theme_classic() +
+  facet_wrap(~comparison)
+
+```
+Complete code used in analysis will be found on [this webpage.](https://reneeisnowhere.github.io/DXR_continue/H3K27_TE_overlap_extend.html#calculating_all_subfamilies)
+
+
+### Figure 2B
+
+```{r Fig2B-DNA}
+cluster_levels <- c("Set_1", "Set_2", "Set_3", "not_assigned")
+
+just_H3K27ac_repName_chronic <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName),delim = ";") %>% 
+  dplyr::filter(repName %in% res_k27ac_chronic) %>% 
+  dplyr::select(Peakid,repClass,repFamily,repName,cluster) %>% 
+  dplyr::filter(repClass !="Low_complexity") %>%
+  #####changing by removing clusters 1 and not assigned
+  dplyr::filter(cluster %in% c("Set_2")) %>% 
+  group_by(Peakid) %>% 
+  slice_head(n=1)
+
+
+H3K27ac_chronic_mat <- H3K27ac_toptable_list %>% dplyr::select(genes, logFC,group) %>% 
+  pivot_wider(id_cols = genes,names_from = group,values_from = logFC) %>% 
+  dplyr::filter(genes %in% just_H3K27ac_repName_chronic$Peakid) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix()
+
+H3K27ac_chronic_anno_df <- just_H3K27ac_repName_chronic[match(rownames(H3K27ac_chronic_mat),just_H3K27ac_repName_chronic$Peakid),]
+
+### enforcing order
+idx_chronic <- match(rownames(H3K27ac_chronic_mat), H3K27ac_chronic_anno_df$Peakid)
+
+H3K27ac_chronic_force_df <- H3K27ac_chronic_anno_df[idx_chronic, , drop = FALSE]
+
+H3K27ac_chronic_force_df <- H3K27ac_chronic_force_df %>%
+  mutate(
+    cluster = factor(cluster, levels = cluster_levels),
+    repName = factor(repName, levels = sort(unique(repName)))
+  )
+
+repName_levels_chronic <- sort(unique(H3K27ac_chronic_force_df$repName))
+
+n_repNames_chronic <- length(repName_levels_chronic)
+
+repName_colors_chronic <- setNames(
+  colorRampPalette(
+    RColorBrewer::brewer.pal(8, "Set3")
+  )(n_repNames_chronic),
+  repName_levels_chronic
+)
+
+# repName_colors
+col_fun_chronic <- colorRamp2(c(-5,0,5),
+                      c("blue","white","red"))
+
+row_order_chronic <- order(
+  H3K27ac_chronic_force_df$cluster,
+  H3K27ac_chronic_force_df$repClass,
+  H3K27ac_chronic_force_df$repName,
+  H3K27ac_chronic_force_df$Peakid)
+
+split_levels_chronic <- unique(H3K27ac_chronic_force_df$repClass)
+
+row_split_df_chronic <- data.frame(
+  cluster = H3K27ac_chronic_force_df$cluster,
+  repName = H3K27ac_chronic_force_df$repName
+)
+row_ha_chronic <- rowAnnotation(
+  cluster = H3K27ac_chronic_force_df$cluster,
+  repClass=H3K27ac_chronic_force_df$repClass,
+  repName= H3K27ac_chronic_force_df$repName, col = list(
+    repName = repName_colors_chronic))
+
+Heatmap(
+  H3K27ac_chronic_mat,
+  name = "LFC chronic",
+  col = col_fun_chronic,
+  left_annotation = row_ha_chronic,
+   row_split = H3K27ac_chronic_force_df$repClass,
+
+  row_order = row_order_chronic,
+  row_title_rot = 0,
+  show_row_names = FALSE,
+  ## use precomputed clustering
+  cluster_rows = FALSE,
+  cluster_columns = FALSE)
+```
+
+```{r Fig2B-LTR}
+just_H3K27ac_repName_acute <- annotated_H3K27ac_ext200 %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName),delim = ";") %>% 
+  dplyr::filter(repName %in% res_k27ac_acute) %>% 
+  dplyr::select(Peakid,repClass,repFamily,repName,cluster) %>% 
+  dplyr::filter(repClass !="Low_complexity") %>%
+  #####changing by removing clusters 1 and not assigned
+  dplyr::filter(cluster %in% c("Set_3")) %>% 
+  group_by(Peakid) %>% 
+  slice_head(n=1)
+
+
+H3K27ac_acute_mat <- H3K27ac_toptable_list %>% dplyr::select(genes, logFC,group) %>% 
+  pivot_wider(id_cols = genes,names_from = group,values_from = logFC) %>% 
+  dplyr::filter(genes %in% just_H3K27ac_repName_acute$Peakid) %>% 
+  column_to_rownames("genes") %>% 
+  as.matrix()
+
+H3K27ac_acute_anno_df <- just_H3K27ac_repName_acute[match(rownames(H3K27ac_acute_mat),just_H3K27ac_repName_acute$Peakid),]
+
+### enforcing order
+idx_acute <- match(rownames(H3K27ac_acute_mat), H3K27ac_acute_anno_df$Peakid)
+
+H3K27ac_acute_force_df <- H3K27ac_acute_anno_df[idx_acute, , drop = FALSE]
+
+H3K27ac_acute_force_df <- H3K27ac_acute_force_df %>%
+  mutate(
+    cluster = factor(cluster, levels = cluster_levels),
+    repName = factor(repName, levels = sort(unique(repName)))
+  )
+
+repName_levels_acute <- sort(unique(H3K27ac_acute_force_df$repName))
+
+n_repNames_acute <- length(repName_levels_acute)
+
+repName_colors_acute <- setNames(
+  colorRampPalette(
+    RColorBrewer::brewer.pal(8, "Set3")
+  )(n_repNames_acute),
+  repName_levels_acute
+)
+
+# repName_colors
+col_fun_acute <- colorRamp2(c(-5,0,5),
+                      c("blue","white","red"))
+
+row_order_acute <- order(
+  H3K27ac_acute_force_df$cluster,
+  H3K27ac_acute_force_df$repClass,
+  H3K27ac_acute_force_df$repName,
+  H3K27ac_acute_force_df$Peakid)
+
+split_levels_acute <- unique(H3K27ac_acute_force_df$repClass)
+
+row_split_df_acute <- data.frame(
+  cluster = H3K27ac_acute_force_df$cluster,
+  repName = H3K27ac_acute_force_df$repName
+)
+row_ha_acute <- rowAnnotation(
+  cluster = H3K27ac_acute_force_df$cluster,
+  repClass=H3K27ac_acute_force_df$repClass,
+  repName= H3K27ac_acute_force_df$repName, col = list(
+    repName = repName_colors_acute))
+
+Heatmap(
+  H3K27ac_acute_mat,
+  name = "LFC acute",
+  col = col_fun_acute,
+  left_annotation = row_ha_acute,
+   row_split = H3K27ac_acute_force_df$repClass,
+
+  row_order = row_order_acute,
+  row_title_rot = 0,
+  show_row_names = FALSE,
+  ## use precomputed clustering
+  cluster_rows = FALSE,
+  cluster_columns = FALSE)
+```
+
+### Figure 2C
+
+
+```{r}
+
+plot_2hist_deeptools_matrix <- function(matrix_file, bins = 400){
+
+  library(data.table)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+  library(stringr)
+
+  message("Processing: ", matrix_file)
+
+  cm <- fread(cmd = paste("gzip -dc", matrix_file), skip = 1)
+
+  sample_names <- c(
+  "H3K27ac_DOX_144R_merged","H3K27ac_DOX_24R_merged","H3K27ac_DOX_24T_merged",
+  "H3K27ac_VEH_144R_merged","H3K27ac_VEH_24R_merged","H3K27ac_VEH_24T_merged",
+  "H3K9me3_DOX_144R_merged","H3K9me3_DOX_24R_merged","H3K9me3_DOX_24T_merged",
+  "H3K9me3_VEH_144R_merged","H3K9me3_VEH_24R_merged","H3K9me3_VEH_24T_merged"
+  )
+
+  signal_list <- lapply(seq_along(sample_names), function(i){
+
+    start <- 6 + (i-1)*bins + 1
+    end <- 6 + i*bins
+
+    as.matrix(cm[,start:end])
+  })
+
+  names(signal_list) <- sample_names
+
+  profiles <- lapply(signal_list, colMeans)
+
+  profiles_df <- do.call(cbind, profiles) |> as.data.frame()
+ profiles_df$pos_kb <- seq(-2, 2, length.out = nrow(profiles_df))
+ 
+ 
+  long <- profiles_df |>
+    pivot_longer(-pos_kb, names_to="sample", values_to="signal") |>
+    separate(sample, into=c("mark","condition","time","extra"), sep="_") |>
+    mutate(sample = paste(mark,condition,time,sep="_"))
+
+  title <- tools::file_path_sans_ext(basename(matrix_file))
+
+  p <- ggplot(long, aes(pos_kb, signal, color=time)) +
+    geom_line(linewidth=1) +
+    facet_grid(mark ~ condition) +
+    geom_vline(xintercept = 0, linetype="dashed")+
+    # geom_smooth(se=FALSE, method = "loess")+
+    theme_bw() +
+    ggtitle(title)
+
+  return(p)
+}
+
+matrix_dir_cent <- "C:/Users/renee/Other_projects_data/DXR_data/computeMatrix_output_centered2histone/"
+
+matrix_files_cent <- list.files(
+  matrix_dir_cent,
+  pattern="matcenter_.*gz$",
+  full.names=TRUE
+)
+patterns <- c("LTR10E", "MER61E")
+map_set <- matrix_files_cent[str_detect(matrix_files_cent, paste(patterns, collapse = "|"))]
+
+plots_cent <- lapply(map_set, plot_2hist_deeptools_matrix)
+for (p in plots_cent) {
+  print(p)
+}
+
+```
+
+### Figure 2D
+
+```{r}
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+### Figure 2E
+
+
+```{r}
+
+
+
+```
+
+
+
+
+### Figure 2F
+
+```{r}
+
+mint_anno <- readRDS("data/RDS_files/MER61E_intermediate_dataframe.RDS")
+lint_anno <- readRDS("data/RDS_files/LTR10E_intermediate_dataframe.RDS")
+
+grouped_cluster_info <- bind_rows((mint_anno %>% 
+  dplyr::select(repID, cluster) %>% 
+    mutate(element="MER61E")),(lint_anno %>% dplyr::select(repID,cluster) %>% mutate(element="LTR10E")))
+
+grouped_cluster_info %>% 
+ tidyr::replace_na(list(cluster = "NA")) %>% 
+  mutate(cluster=factor(cluster, levels=c("Set_1","Set_2","Set_3","not_assigned","NA")),
+         element=factor(element, levels =c("MER61E","LTR10E"))) %>% 
+   count(element, cluster, name = "n") %>%
+  group_by(element) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup() %>%
+  ggplot(., aes(y=element,x=prop,fill=cluster))+
+  geom_col()+
+  geom_text(aes(label = paste0(scales::percent(prop, accuracy = 0.1), "\n(n=", n, ")")),position = position_stack(vjust = 0.5))+
+  scale_x_continuous(labels = scales::percent_format(),
+    limits = c(0, 1), expand = expansion(mult = c(0, 0.02))) +
+  ggtitle("Proportions of each sub-family")+
+  labs(
+    title = "TE sub-family",
+    x = "Proportion",
+    y = NULL,
+    fill = "Cluster"
+  ) +
+  theme_classic()
+
+```
+
