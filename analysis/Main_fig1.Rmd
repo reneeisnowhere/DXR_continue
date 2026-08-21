@@ -168,7 +168,7 @@ all_H3K27ac_regions %>%
 
 ```{r LFC}
  H3K27ac_toptable_list %>%
-  dplyr::filter(genes %in% H3K27ac_lookup$Peakid) %>% 
+  # dplyr::filter(genes %in% H3K27ac_lookup$Peakid) %>% 
   dplyr::select(group,genes,logFC) %>%
   left_join(H3K27ac_lookup,by=c("genes"="Peakid")) %>% 
   mutate(group=factor(group, levels = c("H3K27ac_24T","H3K27ac_24R","H3K27ac_144R")),
