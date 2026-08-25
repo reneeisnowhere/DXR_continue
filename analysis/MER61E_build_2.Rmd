@@ -44,6 +44,7 @@ library(MASS)
 library(readxl)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(GenomicFeatures)
+library(edgeR)
 ```
 
 The purpose of this page is to build a large dataframe for MER61E annotations.
@@ -55,8 +56,12 @@ ZNF680_regions <- import("data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed",for
 ZNF780A_regions <- import("data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed")
 MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
 
+LTR10E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/LTR10E_ERV1_LTR.bed")
+
 
 MER61E_p53_best_site_score <- import("C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61E_ERV1_LTR_fimo/best_site.narrowPeak")
+
+LTR10E_p53_best_site_score <- import("C:/Users/renee/Other_projects_data/DXR_data/fimo_results/LTR10E_ERV1_LTR_fimo/best_site.narrowPeak")
 
 H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
 
@@ -77,7 +82,15 @@ H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
  MER61E_anno_genes <- readRDS("data/RDS_files/MER61E_anno_genes.RDS")
  MER61E_anno_chipseeker <- readRDS("data/RDS_files/MER61E_anno_chipseeker.RDS")
  
+ LTR10E_anno_genes <- readRDS("data/RDS_files/LTR10E_anno_genes.RDS")
+ LTR10E_anno_chipseeker <- readRDS("data/RDS_files/LTR10E_anno_chipseeker.RDS")
+ 
 chipseeker_anno_MER61E <-  MER61E_anno_chipseeker %>% 
+  as.data.frame() %>% 
+  dplyr::select(name,annotation,geneId,distanceToTSS) %>% 
+  dplyr::rename("repID"=name,"CS_MER61E_gene"=geneId,"CS_distanceToTSS"=distanceToTSS)
+
+chipseeker_anno_LTR10E <-  LTR10E_anno_chipseeker %>% 
   as.data.frame() %>% 
   dplyr::select(name,annotation,geneId,distanceToTSS) %>% 
   dplyr::rename("repID"=name,"CS_MER61E_gene"=geneId,"CS_distanceToTSS"=distanceToTSS)
@@ -172,7 +185,7 @@ TOP2B_sp_ChIP <-  rtracklayer::import("data/Other_paper_data/ChIP3_TOP2B_CM_87-1
 ATAC_regions_Ind2 <- rtracklayer::import("C:/Users/renee/Other_projects_data/DXR_data/ATAC_peak_files/trimmed_Ind2_87V24h_S12_peaks.narrowPeak",format = "narrowPeak")
 
 mint_anno <- readRDS("data/RDS_files/MER61E_intermediate_dataframe.RDS")
-
+lint_anno <- readRDS("data/RDS_files/LTR10E_intermediate_dataframe.RDS")
 
 
 K27ac_VEH_Ind4 <- rtracklayer::import("data/peaks/H3K27ac/MCW_CT_ROA_106_FINAL_peaks.narrowPeak",format = "narrowPeak")
@@ -184,6 +197,14 @@ MER61E_best_site_signal <- MER61E_site %>%
   as.data.frame() %>% 
   dplyr::select(MER61E_regions.name,MER61E_p53_best_site_score.signalValue,MER61E_p53_best_site_score.qValue) %>% 
   dplyr::rename("repID"=1,"MER61E.signal"=2,"MER61E.qvalue"=3)
+
+
+LTR10E_site <- mergeByOverlaps(LTR10E_regions,LTR10E_p53_best_site_score)
+
+LTR10E_best_site_signal <- LTR10E_site %>% 
+  as.data.frame() %>% 
+  dplyr::select(LTR10E_regions.name,LTR10E_p53_best_site_score.signalValue,LTR10E_p53_best_site_score.qValue) %>% 
+  dplyr::rename("repID"=1,"LTR10E.signal"=2,"LTR10E.qvalue"=3)
 
 ```
 
@@ -453,7 +474,7 @@ test_pair_TE_repName <- function(df_long, rep_name, cluster1, cluster2) {
 
 ```
 
-Evaluate DAR and CAR overlap of TEs
+Evaluate DAR and CAR overlap of TEs in ATAC data
 ```{r enrichment plot}
 repeatmasker_clean <- readRDS("data/RDS_files/repeatmasker_clean.RDS")
 
@@ -585,6 +606,7 @@ ggplot(repName_results_final, aes(x = (odds_ratio), y = -log10(FDR),label = repN
 
 
 ### LFC ATAC v LFC H3K27ac
+#### MER61E
 
 ```{r LFC ATAC v K27ac}
 H3K27ac_MER61E_LFC <-H3K27ac_ext200_anno %>% 
@@ -639,8 +661,6 @@ p <- summary(fit_lm)$coefficients["H3K27ac_LFC", "Pr(>|t|)"]
     ggtitle("Scatterplot with linear model fit \n(not correlation) of regions overlapping the same MER61Es")+
     labs(x="H3K27ac tx+0 log fold change",
          y="ATAC 24 hour log fold change")
-Joined_df %>% 
-  dplyr::filter(!is.na(ATAC_24_LFC))
 
 ```
 with correlation 
@@ -661,22 +681,50 @@ ggplot(Joined_df,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
     ggtitle("Scatterplot with Spearmann correlation\nof regions overlapping the same MER61Es")+
     labs(x="H3K27ac tx+0 log fold change",
          y="ATAC 24 hour log fold change")
-Joined_df %>% 
-  dplyr::filter(!is.na(ATAC_24_LFC))
+
 ```
 
+#### LTR10E   
 
 
-```{r acute LFC atac v K27ac}
-acute_joined_df <- H3K27ac_acuteMER61E_LFC %>% 
-  left_join(ATAC_MER61E_LFC) 
+```{r LFC ATAC v K27ac LTR10e}
+H3K27ac_LTR10E_LFC <-H3K27ac_ext200_anno %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = ";") %>% 
+  dplyr::filter(repName=="LTR10E") %>% 
+  dplyr::select(Peakid,repID) %>% 
+  dplyr::rename("H3K27ac_peakid"=Peakid) %>% 
+  left_join((H3K27ac_toplist$H3K27ac_24T %>% dplyr::select(genes,logFC)), by=c("H3K27ac_peakid"="genes")) %>% 
+  dplyr::rename("H3K27ac_LFC"=logFC)
 
-fit_lm_acute <- lm(ATAC_24_LFC~H3K27ac_LFC, data=acute_joined_df)
+H3K27ac_acuteLTR10E_LFC <-H3K27ac_ext200_anno %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = ";") %>% 
+  dplyr::filter(repName=="LTR10E"&cluster=="Set_3") %>% 
+  dplyr::select(Peakid,repID) %>% 
+  dplyr::rename("H3K27ac_peakid"=Peakid) %>% 
+  left_join((H3K27ac_toplist$H3K27ac_24T %>% dplyr::select(genes,logFC)), by=c("H3K27ac_peakid"="genes")) %>% 
+  dplyr::rename("H3K27ac_LFC"=logFC)
 
-r2_acute <- summary(fit_lm_acute)$r.squared
-p_acute <- summary(fit_lm_acute)$coefficients["H3K27ac_LFC", "Pr(>|t|)"]
 
-  ggplot(acute_joined_df,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
+
+ATAC_LTR10E_LFC <- ATAC_range_ols %>% 
+  dplyr::filter(repName=="LTR10E") %>% 
+  group_by(ID) %>% 
+  dplyr::select(Peakid,ID) %>% 
+  dplyr::rename("ATAC_peakid"=Peakid,"repID"=ID) %>% 
+  left_join((DOX_24_ATAC %>% dplyr::select(peak,logFC)), by=c("ATAC_peakid"="peak")) %>% 
+  dplyr::rename("ATAC_24_LFC"=logFC)
+
+### Joining by repID
+
+Joined_df_ltr10e <- H3K27ac_LTR10E_LFC %>% 
+  left_join(ATAC_LTR10E_LFC) 
+
+fit_lm_ltr10e <- lm(ATAC_24_LFC~H3K27ac_LFC, data=Joined_df_ltr10e)
+
+r2_ltr10e <- summary(fit_lm_ltr10e)$r.squared
+p_ltr10e <- summary(fit_lm_ltr10e)$coefficients["H3K27ac_LFC", "Pr(>|t|)"]
+
+  ggplot(Joined_df_ltr10e,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
   geom_point()+
   geom_smooth(method="lm")+
   #  ggpubr::stat_cor(
@@ -686,16 +734,67 @@ p_acute <- summary(fit_lm_acute)$coefficients["H3K27ac_LFC", "Pr(>|t|)"]
     annotate("text",x = Inf, y = Inf,
              hjust = 1.1, 
              vjust = 1.2,
-             label = paste0("R² = ", round(r2_acute, 3),
-      "\np = ", signif(p_acute, 3)))+
+             label = paste0("R² = ", round(r2_ltr10e, 3),
+      "\np = ", signif(p_ltr10e, 3)))+
+    theme_bw()+
+    ggtitle("Scatterplot with linear model fit \n(not correlation) of regions overlapping the same LTR10Es")+
+    labs(x="H3K27ac tx+0 log fold change",
+         y="ATAC 24 hour log fold change")
+
+```
+
+with correlation 
+```{r}
+ggplot(Joined_df_ltr10e,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
+  geom_point()+
+  geom_smooth(method="lm", se=FALSE)+
+   ggpubr::stat_cor(
+    method = "spearman",
+    aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))
+  )+
+    # annotate("text",x = Inf, y = Inf,
+    #          hjust = 1.1, 
+    #          vjust = 1.2,
+    #          label = paste0("R² = ", round(r2, 3),
+    #   "\np = ", signif(p, 3)))+
+    theme_bw()+
+    ggtitle("Scatterplot with Spearmann correlation\nof regions overlapping the same LTR10Es")+
+    labs(x="H3K27ac tx+0 log fold change",
+         y="ATAC 24 hour log fold change")
+
+```
+
+#### Acute-only MER61Es
+```{r acute LFC atac v K27ac}
+acute_joined_df_MER61E <- H3K27ac_acuteMER61E_LFC %>% 
+  left_join(ATAC_MER61E_LFC) 
+
+fit_lm_acute_MER61E <- lm(ATAC_24_LFC~H3K27ac_LFC, data=acute_joined_df_MER61E)
+
+r2_acute_MER61E <- summary(fit_lm_acute_MER61E)$r.squared
+p_acute_MER61E <- summary(fit_lm_acute_MER61E)$coefficients["H3K27ac_LFC", "Pr(>|t|)"]
+
+  ggplot(acute_joined_df_MER61E,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  #  ggpubr::stat_cor(
+  #   method = "spearman",
+  #   aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))
+  # )
+    annotate("text",x = Inf, y = Inf,
+             hjust = 1.1, 
+             vjust = 1.2,
+             label = paste0("R² = ", round(r2_acute_MER61E, 3),
+      "\np = ", signif(p_acute_MER61E, 3)))+
     theme_bw()+
     ggtitle("Scatterplot with linear model fit \n(not correlation) of regions overlapping Acute MER61Es")+
     labs(x="H3K27ac tx+0 log fold change",
          y="ATAC 24 hour log fold change")
 
 ```
+
 ```{r}
-ggplot(acute_joined_df,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
+ggplot(acute_joined_df_MER61E,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
   geom_point()+
   geom_smooth(method="lm", se=FALSE)+
    ggpubr::stat_cor(
@@ -714,7 +813,58 @@ ggplot(acute_joined_df,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
 
 ```
 
+#### Acute-only LTR10Es
+
+```{r acute LFC atac v K27ac ltr10e}
+acute_joined_df_ltr10e <- H3K27ac_acuteLTR10E_LFC %>% 
+  left_join(ATAC_LTR10E_LFC) 
+
+fit_lm_acute_ltr10e <- lm(ATAC_24_LFC~H3K27ac_LFC, data=acute_joined_df_ltr10e)
+
+r2_acute_ltr10e <- summary(fit_lm_acute_ltr10e)$r.squared
+p_acute_ltr10e <- summary(fit_lm_acute_ltr10e)$coefficients["H3K27ac_LFC", "Pr(>|t|)"]
+
+  ggplot(acute_joined_df_ltr10e,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  #  ggpubr::stat_cor(
+  #   method = "spearman",
+  #   aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))
+  # )
+    annotate("text",x = Inf, y = Inf,
+             hjust = 1.1, 
+             vjust = 1.2,
+             label = paste0("R² = ", round(r2_acute_ltr10e, 3),
+      "\np = ", signif(p_acute_ltr10e, 3)))+
+    theme_bw()+
+    ggtitle("Scatterplot with linear model fit \n(not correlation) of regions overlapping Acute LTR10Es")+
+    labs(x="H3K27ac tx+0 log fold change",
+         y="ATAC 24 hour log fold change")
+
+```
+```{r}
+ggplot(acute_joined_df_ltr10e,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
+  geom_point()+
+  geom_smooth(method="lm", se=FALSE)+
+   ggpubr::stat_cor(
+    method = "spearman",
+    aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~"))
+  )+
+    # annotate("text",x = Inf, y = Inf,
+    #          hjust = 1.1, 
+    #          vjust = 1.2,
+    #          label = paste0("R² = ", round(r2_acute, 3),
+    #   "\np = ", signif(p_acute, 3)))+
+    theme_bw()+
+    ggtitle("Scatterplot correlation (Spearmann) of regions overlapping \nAcute LTR10Es")+
+    labs(x="H3K27ac tx+0 log fold change",
+         y="ATAC 24 hour log fold change")
+
+```
+
 ### Age and LFC
+#### MER61E  
+
 
 ```{r age and LFC}
 MER61E_K27acLFC_age <-H3K27ac_ext200_anno %>% 
@@ -744,15 +894,43 @@ ggplot(acute_MER61E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
   ggtitle("H3K27ac logFC at 0R which overlap an acute MER61E \nand the milliDiv of the MER61E, n=40")+
   theme_bw()
 ```
-```{r LFC and motifscore}
-# full_p53_canonical %>% 
-#   dplyr::filter(TE_name=="MER61E_ERV1_LTR") %>% 
-#   dplyr::select(TE_id, motif_score) %>% 
-#   left_join((mint_anno %>%
-#                dplyr::select(repID,cluster)),
-#             by=c("TE_id"="repID")) %>% 
-#   mutate(cluster=factor(cluster, levels=c("Set_3","Set_2","Set_1","not_assigned","NA"))) 
 
+
+#### LTR10E
+
+```{r age and LFC LTR10E}
+LTR10E_K27acLFC_age <-H3K27ac_ext200_anno %>% 
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = ";") %>% 
+  dplyr::filter(repName=="LTR10E") %>% 
+  dplyr::select(Peakid,repID, cluster) %>%
+  left_join(repeatmasker_clean, by=c("repID"="RM_id")) %>% 
+  dplyr::rename("H3K27ac_peakid"=Peakid) %>% 
+  left_join((H3K27ac_toplist$H3K27ac_24T %>% dplyr::select(genes, logFC)), by=c("H3K27ac_peakid"="genes")) %>% 
+  left_join((lint_anno %>% dplyr::select(repID, p53_halfsite)), by="repID")
+
+
+ggplot(LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
+  geom_point(aes(color=p53_halfsite))+
+  ggtitle("H3K27ac logFC at 0R which overlap a LTR10E \nand the milliDiv of the LTR10E, n=35")+
+  theme_bw()
+```
+
+
+```{r acute set age and LFC LTR10E}
+
+acute_LTR10E_K27acLFC_age <- LTR10E_K27acLFC_age %>% 
+  dplyr::filter(cluster=="Set_3")
+
+ggplot(acute_LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
+  geom_point(aes(color=p53_halfsite))+
+  ggtitle("H3K27ac logFC at 0R which overlap an acute LTR10E \nand the milliDiv of the LTR10E, n=28")+
+  theme_bw()+
+  coord_cartesian(xlim=c(-2,5))
+```
+
+mer61e
+
+```{r LFC and motifscore mer61e}
 
 MER61E_K27acLFC_age %>% 
   left_join(MER61E_best_site_signal,by="repID") %>% 
@@ -776,7 +954,30 @@ MER61E_K27acLFC_age %>%
   theme_bw()
 ```
 
+ltr10e
+```{r LFC and motifscore ltr10e}
 
+LTR10E_K27acLFC_age %>% 
+  left_join(LTR10E_best_site_signal,by="repID") %>% 
+  left_join((lint_anno %>% dplyr::select(repID,cluster)), by=c("repID","cluster")) %>% 
+   mutate(cluster=factor(cluster, levels=c("Set_3","Set_2","Set_1","not_assigned","NA"))) %>% 
+  ggplot(., aes(x=logFC, y=LTR10E.signal))+
+# geom_point(aes(color=cluster))+
+  geom_point()+
+  ggtitle("H3K27ac logFC at 0R against p53half motif score ")+
+  theme_bw()
+
+
+LTR10E_K27acLFC_age %>% 
+  left_join(LTR10E_best_site_signal,by="repID") %>% 
+  left_join((lint_anno %>% dplyr::select(repID,cluster)), by=c("repID","cluster")) %>% 
+   mutate(cluster=factor(cluster, levels=c("Set_3","Set_2","Set_1","not_assigned","NA"))) %>% 
+  ggplot(., aes(y=milliDiv, x=LTR10E.signal))+
+# geom_point(aes(color=cluster))+
+  geom_point()+
+  ggtitle("MilliDiv against p53half motif score ")+
+  theme_bw()
+```
 ### More data and proportion plots
 ```{r TE peak id info}
 MER61E_mydata <- H3K27ac_ext200_anno %>% 
@@ -839,76 +1040,6 @@ CAR_MER61E_set <- CAR_set %>%
 
 ```
 
-```{r misc code, eval=FALSE}
-
-mutate(
-    cluster = as.character(cluster),
-    cluster = if_else(is.na(cluster), "NA", cluster),
-    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
-  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
-         str_detect(annotation, "Exon") ~ "Exon",
-      str_detect(annotation, "Promoter") ~ "Promoter",
-      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
-      str_detect(annotation, "Downstream") ~ "Downstream",
-      TRUE ~ annotation)) %>% 
-  
-  p53_label <- c(yes="p53 overlap",no="no p53 overlap")
-
-facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
-  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
-         MYA_bourque=milliDiv/2.2) %>% 
-  
-  add_on_mintermediate_data <- mintermediate_data %>% 
-  dplyr::select(repID,cluster, my_MER, H3K27ac_region,milliDiv:p53_fullsite,overlap_DAR, overlap_CAR, MER61E_phyloP_mean,CS_distanceToTSS) %>% 
-  mutate(DER_24T=if_else(H3K27ac_region %in% regions_24T$genes, "DER_24T","not_DER_24T"),
-         DER_24R=if_else(H3K27ac_region%in% regions_24R$genes,"DER_24R","not_DER_24R"),
-         DER_144R=if_else(H3K27ac_region%in% regions_144R$genes,"DER_144R","not_DER_144R"))
-
-
-separate_rows(GREAT_gene_assign, sep = ",\\s*") %>%
-  mutate(
-    gene = str_extract(GREAT_gene_assign, "^[A-Za-z0-9_.-]+"),
-    distance = str_extract(GREAT_gene_assign,"(?<=\\()[+-]?\\d+(?=\\))") %>% as.numeric(),
-    direction = case_when(
-      distance < 0 ~ "upstream",
-      distance > 0 ~ "downstream",
-      distance == 0 ~ "overlapping",
-      TRUE ~ NA_character_)) %>% 
-```
-
-
-```{r Filtering for expressed TFs, eval=FALSE}
-RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
-
-RNA_expressed <- RNA_full_toptable %>% 
-  dplyr::select(Entrez_ID, SYMBOL)
-
-### had to add in a special filter to account for the :: in the names of the motifs
-symbols <- str_to_upper(RNA_expressed$SYMBOL)
-
-filtered_known_mer_set3 <- known_mer_set3 %>%
-  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
-  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
-  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
-  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
-  dplyr::select(-motif_tokens)
-
-RNA_H3K27ac_LFC_dataframe <- active_DOX_df %>% 
-  left_join(RNA_lfc_SYMBOL, by=c("gene"="SYMBOL")) %>% 
-  left_join(H3K27ac_lfc_table, by=c("H3K27ac_region"="genes"))
-```
-
-
-```{r RNA_lfc_SYMBOL, eval=FALSE}
-
-RNA_lfc_SYMBOL <-RNA_full_toptable %>% 
-   dplyr::filter(SYMBOL != "NA")%>%
-  dplyr::select(SYMBOL,logFC,timepoint, adj.P.Val) %>% 
-  pivot_wider(., names_from = timepoint,
-    values_from = c(logFC, adj.P.Val),
-    names_glue = "RNA_{.value}_{timepoint}")
-
-```
 
 
 ```{r addingin other data}
@@ -1194,7 +1325,7 @@ mint_anno <- mint_anno %>%
 prop_plot(mint_anno,cluster,AC_TADs)+
   ggtitle("MER61E that overlap a TAD with a chronic/acute gene")
 
-
+H3K27ac_ext200_anno %>% group_by(cluster) %>% tally()
 ```
 
 ### Boxplot alley
@@ -1326,6 +1457,146 @@ prop_plot(mint_anno_new, cluster,SETDB1_HEPG2_overlap)+
 
 ```
 
+### SOX11 RNA expression
+
+```{r SOX11 expression}
+##6664 NCBI number for SOX11 uni-prot P35716
+
+RNA_count_table <- read_csv("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/filcpm_final_matrix.csv") %>% dplyr::rename(ENTREZID=1)%>% column_to_rownames("ENTREZID")
+
+# H3K27ac_filt_raw_counts <- read_delim("data/DER_data/H3K27ac_filtered_raw_counts.txt",delim = "\t") %>% column_to_rownames("Peakid")
+
+protein_data <- read.delim("data/Other_paper_data/protein_LFC_Johnson_2025.tsv")
+
+protein_counts <- read_xlsx("data/Other_paper_data/Johnson25_S3_Appendix_GR_protein_counts.xlsx")
+
+map <- readRDS( "data/RDS_files/uniprot_map.rds")
+map_clean <- map %>%
+  group_by(Entry) %>%
+  summarise(
+    gene = sub(" .*", "", Gene.Names),
+    .groups = "drop"
+  )
+protein_counts_mat <- protein_counts %>% 
+    dplyr::rename("UNIPROT"=1)
+  # column_to_rownames("...1")
+# rownames(protein_counts) <- protein_counts$`...1`
+# protein_counts_mat <- protein_counts[, -1]
+# dim(protein_counts_mat)  # should now be 7628 x 92
+
+# 2. Check for the two contaminant proteins the original pipeline drops
+# c("P02769", "P00711") %in% rownames(protein_counts_mat)
+# protein_counts_clean <- protein_counts_mat[!rownames(protein_counts_mat) %in% c("P02769", "P00711"), ]
 
 
 
+
+
+
+protein_counts_mat %>% 
+  # grep("P35716",  value = TRUE)
+  filter(stringr::str_detect(UNIPROT, "P35716"))
+
+# protein_data %>% 
+#   filter(stringr::str_detect(Protein, "P35*"))
+
+# map %>% 
+#   dplyr::filter(Entry=="P35716")
+```
+
+
+
+
+
+
+
+```{r}
+RNA_count_table %>% dplyr::filter(row.names(.)=="6664") %>% 
+  pivot_longer(everything(), names_to = "Samples",values_to = "lcpm") %>% 
+  separate_wider_delim(cols=Samples,names=c("trt","time","ind"),delim="_",cols_remove = FALSE) %>% 
+  mutate(time=factor(time,levels=c("24T","24R","144R")),
+         trt=factor(trt,levels=c("DMSO","DOX"))) %>% 
+  ggplot(., aes(x=interaction(trt,time),y=lcpm))+
+  geom_boxplot(aes(fill=trt))+
+  geom_point(aes(color=ind))+
+  ggtitle("SOX11 RNA expression over time")+
+  theme_bw()
+```
+
+
+
+
+
+
+
+### Extra code bits
+```{r misc code, eval=FALSE}
+
+mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1", "Set_3", "not_assigned", "NA"))) %>% 
+  mutate(anno_alt=case_when(str_detect(annotation,"Intron")~"Intron",
+         str_detect(annotation, "Exon") ~ "Exon",
+      str_detect(annotation, "Promoter") ~ "Promoter",
+      str_detect(annotation, "Distal Intergenic") ~ "Distal Intergenic",
+      str_detect(annotation, "Downstream") ~ "Downstream",
+      TRUE ~ annotation)) %>% 
+  
+  p53_label <- c(yes="p53 overlap",no="no p53 overlap")
+
+facet_wrap(~p53_halfsite, labeller=as_labeller(p53_label))+
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2) %>% 
+  
+  add_on_mintermediate_data <- mintermediate_data %>% 
+  dplyr::select(repID,cluster, my_MER, H3K27ac_region,milliDiv:p53_fullsite,overlap_DAR, overlap_CAR, MER61E_phyloP_mean,CS_distanceToTSS) %>% 
+  mutate(DER_24T=if_else(H3K27ac_region %in% regions_24T$genes, "DER_24T","not_DER_24T"),
+         DER_24R=if_else(H3K27ac_region%in% regions_24R$genes,"DER_24R","not_DER_24R"),
+         DER_144R=if_else(H3K27ac_region%in% regions_144R$genes,"DER_144R","not_DER_144R"))
+
+
+separate_rows(GREAT_gene_assign, sep = ",\\s*") %>%
+  mutate(
+    gene = str_extract(GREAT_gene_assign, "^[A-Za-z0-9_.-]+"),
+    distance = str_extract(GREAT_gene_assign,"(?<=\\()[+-]?\\d+(?=\\))") %>% as.numeric(),
+    direction = case_when(
+      distance < 0 ~ "upstream",
+      distance > 0 ~ "downstream",
+      distance == 0 ~ "overlapping",
+      TRUE ~ NA_character_)) %>% 
+```
+
+
+```{r Filtering for expressed TFs, eval=FALSE}
+RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
+
+RNA_expressed <- RNA_full_toptable %>% 
+  dplyr::select(Entrez_ID, SYMBOL)
+
+### had to add in a special filter to account for the :: in the names of the motifs
+symbols <- str_to_upper(RNA_expressed$SYMBOL)
+
+filtered_known_mer_set3 <- known_mer_set3 %>%
+  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
+  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
+  dplyr::select(-motif_tokens)
+
+RNA_H3K27ac_LFC_dataframe <- active_DOX_df %>% 
+  left_join(RNA_lfc_SYMBOL, by=c("gene"="SYMBOL")) %>% 
+  left_join(H3K27ac_lfc_table, by=c("H3K27ac_region"="genes"))
+```
+
+
+```{r RNA_lfc_SYMBOL, eval=FALSE}
+
+RNA_lfc_SYMBOL <-RNA_full_toptable %>% 
+   dplyr::filter(SYMBOL != "NA")%>%
+  dplyr::select(SYMBOL,logFC,timepoint, adj.P.Val) %>% 
+  pivot_wider(., names_from = timepoint,
+    values_from = c(logFC, adj.P.Val),
+    names_glue = "RNA_{.value}_{timepoint}")
+
+```
