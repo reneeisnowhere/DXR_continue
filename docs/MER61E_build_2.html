@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-08-24" />
+<meta name="date" content="2026-08-27" />
 
 <title>Additional Analysis</title>
 
@@ -361,7 +361,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Additional Analysis</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-08-24</h4>
+<h4 class="date">2026-08-27</h4>
 
 </div>
 
@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-08-24
+<strong>Last updated:</strong> 2026-08-27
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree85f98a6d5c7e00feffccb06055c352e92f652516targetblank85f98a6a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee8302ab58e5712fee06a2e0cae4c8d0734ecd2e4targetblanke8302aba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/85f98a6d5c7e00feffccb06055c352e92f652516" target="_blank">85f98a6</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e8302ab58e5712fee06a2e0cae4c8d0734ecd2e4" target="_blank">e8302ab</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree85f98a6d5c7e00feffccb06055c352e92f652516targetblank85f98a6a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee8302ab58e5712fee06a2e0cae4c8d0734ecd2e4targetblanke8302aba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/85f98a6d5c7e00feffccb06055c352e92f652516" target="_blank">85f98a6</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e8302ab58e5712fee06a2e0cae4c8d0734ecd2e4" target="_blank">e8302ab</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -580,6 +580,7 @@ Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
     Untracked:  H3K27ac_consensus_clusters_test.bed
     Untracked:  MER61C_ERV1_LTR.fa
+    Untracked:  MER61E_notSet3.bed
     Untracked:  analysis/GREAT_H3K27ac.Rmd
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
     Untracked:  analysis/H3K27ac_KZFP_motifs.Rmd
@@ -593,6 +594,7 @@ Untracked files:
     Untracked:  analysis/proteomics.Rmd
     Untracked:  code/For_john.R
     Untracked:  code/RNA_gene_locations.R
+    Untracked:  code/SOX11_excel_to_granges_coversion.R
     Untracked:  code/State_color_code_igv.R
     Untracked:  code/score_phylop.py
     Untracked:  hg38_TSS_1bp.bed
@@ -651,6 +653,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/e8302ab58e5712fee06a2e0cae4c8d0734ecd2e4/analysis/MER61E_build_2.Rmd" target="_blank">e8302ab</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+<td>
+wflow_publish("analysis/MER61E_build_2.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/MER61E_build_2.html" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -912,7 +948,9 @@ LTR10E_site &lt;- mergeByOverlaps(LTR10E_regions,LTR10E_p53_best_site_score)
 LTR10E_best_site_signal &lt;- LTR10E_site %&gt;% 
   as.data.frame() %&gt;% 
   dplyr::select(LTR10E_regions.name,LTR10E_p53_best_site_score.signalValue,LTR10E_p53_best_site_score.qValue) %&gt;% 
-  dplyr::rename(&quot;repID&quot;=1,&quot;LTR10E.signal&quot;=2,&quot;LTR10E.qvalue&quot;=3)</code></pre>
+  dplyr::rename(&quot;repID&quot;=1,&quot;LTR10E.signal&quot;=2,&quot;LTR10E.qvalue&quot;=3)
+
+SOX11_hg38_gr &lt;- readRDS(&quot;data/Other_paper_data/SOX11_hg38_NIHMS686659_gr.RDS&quot;)</code></pre>
 <pre class="r"><code>sampleinfo &lt;- read_delim(&quot;data/sample_info.tsv&quot;, delim = &quot;\t&quot;)
 
 sampleinfo %&gt;% 
@@ -1541,6 +1579,43 @@ p_ltr10e &lt;- summary(fit_lm_ltr10e)$coefficients[&quot;H3K27ac_LFC&quot;, &quo
     labs(x=&quot;H3K27ac tx+0 log fold change&quot;,
          y=&quot;ATAC 24 hour log fold change&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/LFC%20ATAC%20v%20K27ac%20LTR10e-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LFC-ATAC-v-K27ac-LTR10e-1">
+Past versions of "LFC ATAC v K27ac LTR10e-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-LFC-ATAC-v-K27ac-LTR10e-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/LFC ATAC v K27ac LTR10e-1.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>with correlation</p>
 <pre class="r"><code>ggplot(Joined_df_ltr10e,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
   geom_point()+
@@ -1581,6 +1656,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-4-1.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-4-1.png" target="_blank">ef5aecb</a>
@@ -1702,6 +1788,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-5-1.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-5-1.png" target="_blank">ef5aecb</a>
 </td>
 <td>
@@ -1743,6 +1840,44 @@ p_acute_ltr10e &lt;- summary(fit_lm_acute_ltr10e)$coefficients[&quot;H3K27ac_LFC
     labs(x=&quot;H3K27ac tx+0 log fold change&quot;,
          y=&quot;ATAC 24 hour log fold change&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/acute%20LFC%20atac%20v%20K27ac%20ltr10e-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-acute-LFC-atac-v-K27ac-ltr10e-1">
+Past versions of "acute LFC atac v K27ac ltr10e-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-acute-LFC-atac-v-K27ac-ltr10e-1"
+class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/acute LFC atac v K27ac ltr10e-1.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(acute_joined_df_ltr10e,aes(x=H3K27ac_LFC,y=ATAC_24_LFC))+
   geom_point()+
   geom_smooth(method=&quot;lm&quot;, se=FALSE)+
@@ -1782,6 +1917,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-6-1.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-6-1.png" target="_blank">ef5aecb</a>
@@ -1918,6 +2064,43 @@ ggplot(LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
   ggtitle(&quot;H3K27ac logFC at 0R which overlap a LTR10E \nand the milliDiv of the LTR10E, n=35&quot;)+
   theme_bw()</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/age%20and%20LFC%20LTR10E-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-age-and-LFC-LTR10E-1">
+Past versions of "age and LFC LTR10E-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-age-and-LFC-LTR10E-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/age and LFC LTR10E-1.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>acute_LTR10E_K27acLFC_age &lt;- LTR10E_K27acLFC_age %&gt;% 
   dplyr::filter(cluster==&quot;Set_3&quot;)
 
@@ -1927,6 +2110,43 @@ ggplot(acute_LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
   theme_bw()+
   coord_cartesian(xlim=c(-2,5))</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/acute%20set%20age%20and%20LFC%20LTR10E-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-acute-set-age-and-LFC-LTR10E-1">
+Past versions of "acute set age and LFC LTR10E-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-acute-set-age-and-LFC-LTR10E-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/acute set age and LFC LTR10E-1.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>mer61e</p>
 <pre class="r"><code>MER61E_K27acLFC_age %&gt;% 
   left_join(MER61E_best_site_signal,by=&quot;repID&quot;) %&gt;% 
@@ -1938,6 +2158,43 @@ ggplot(acute_LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
   ggtitle(&quot;H3K27ac logFC at 0R against p53half motif score &quot;)+
   theme_bw()</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/LFC%20and%20motifscore%20mer61e-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LFC-and-motifscore-mer61e-1">
+Past versions of "LFC and motifscore mer61e-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-LFC-and-motifscore-mer61e-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/LFC and motifscore mer61e-1.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>MER61E_K27acLFC_age %&gt;% 
   left_join(MER61E_best_site_signal,by=&quot;repID&quot;) %&gt;% 
   left_join((mint_anno %&gt;% dplyr::select(repID,cluster)), by=c(&quot;repID&quot;,&quot;cluster&quot;)) %&gt;% 
@@ -1948,6 +2205,43 @@ ggplot(acute_LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
   ggtitle(&quot;MilliDiv against p53half motif score &quot;)+
   theme_bw()</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/LFC%20and%20motifscore%20mer61e-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LFC-and-motifscore-mer61e-2">
+Past versions of "LFC and motifscore mer61e-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-LFC-and-motifscore-mer61e-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/LFC and motifscore mer61e-2.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>ltr10e</p>
 <pre class="r"><code>LTR10E_K27acLFC_age %&gt;% 
   left_join(LTR10E_best_site_signal,by=&quot;repID&quot;) %&gt;% 
@@ -1959,6 +2253,43 @@ ggplot(acute_LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
   ggtitle(&quot;H3K27ac logFC at 0R against p53half motif score &quot;)+
   theme_bw()</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/LFC%20and%20motifscore%20ltr10e-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LFC-and-motifscore-ltr10e-1">
+Past versions of "LFC and motifscore ltr10e-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-LFC-and-motifscore-ltr10e-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/LFC and motifscore ltr10e-1.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>LTR10E_K27acLFC_age %&gt;% 
   left_join(LTR10E_best_site_signal,by=&quot;repID&quot;) %&gt;% 
   left_join((lint_anno %&gt;% dplyr::select(repID,cluster)), by=c(&quot;repID&quot;,&quot;cluster&quot;)) %&gt;% 
@@ -1968,8 +2299,48 @@ ggplot(acute_LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
   geom_point()+
   ggtitle(&quot;MilliDiv against p53half motif score &quot;)+
   theme_bw()</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/LFC%20and%20motifscore%20ltr10e-2.png" alt="" width="672" style="display: block; margin: auto;" />
-### More data and proportion plots</p>
+<p><img src="figure/MER61E_build_2.Rmd/LFC%20and%20motifscore%20ltr10e-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LFC-and-motifscore-ltr10e-2">
+Past versions of "LFC and motifscore ltr10e-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-LFC-and-motifscore-ltr10e-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/LFC and motifscore ltr10e-2.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="more-data-and-proportion-plots" class="section level3">
+<h3>More data and proportion plots</h3>
 <pre class="r"><code>MER61E_mydata &lt;- H3K27ac_ext200_anno %&gt;% 
   separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = &quot;;&quot;) %&gt;% 
   dplyr::filter(repName==&quot;MER61E&quot;)%&gt;% 
@@ -2178,266 +2549,44 @@ MER61E_cre_df &lt;- MER61E_cre %&gt;%
 }</code></pre>
 <pre class="r"><code>prop_plot(mint_anno, cluster,p53_halfsite)+
   ggtitle(&quot;p53 halfsite proportion across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-7-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
-Past versions of unnamed-chunk-7-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-7-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-7-1.png" target="_blank">ef5aecb</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-08-20
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno, cluster,p53_fullsite)+
   ggtitle(&quot;p53 fullsite proportion across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-7-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
-Past versions of unnamed-chunk-7-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-7-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-7-2.png" target="_blank">ef5aecb</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-08-20
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno, cluster,ZNF780A_binding)+
   ggtitle(&quot;ZNF780A binding proportion across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-7-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-3">
-Past versions of unnamed-chunk-7-3.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-7-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-7-3.png" target="_blank">ef5aecb</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-08-20
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno, cluster,ZNF680_binding)+
   ggtitle(&quot;ZNF680 binding proportion across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-7-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno, cluster,sp_p53_binding)+
   ggtitle(&quot;DOX_ChIP p53_binding proportion across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-7-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno, cluster,overlap_DAR)+
   ggtitle(&quot;DAR overlap proportion across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-7-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno,cluster, LV_TAD_overlap)+
   ggtitle(&quot;LV TAD overlap of MER61Es&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-8-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%202-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno,cluster, heart_cRE)+
   ggtitle(&quot;Heart cRE overlap of MER61Es&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-8-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%202-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># prop_plot(mint_anno,cluster, TP53_A549_overlap)+
 #   ggtitle(&quot;Published TP53 regions from A549 cells and MER61E overlaps&quot;)
 
 
 prop_plot(mint_anno,cluster, TP53_HEPG2_overlap)+
   ggtitle(&quot;Published TP53 regions from HepG2 cells and MER61E overlaps&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-8-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%202-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno,cluster, MER61E_k9upder)+
   ggtitle(&quot;K9me3 overlapped MER61Es by cluster up DER &quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-9-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
-Past versions of unnamed-chunk-9-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-9-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-9-1.png" target="_blank">ef5aecb</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-08-20
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%203-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>  prop_plot(mint_anno,cluster, MER61E_k9downder)+
   ggtitle(&quot;K9me3 overlapped MER61Es by cluster down DER &quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-9-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-2">
-Past versions of unnamed-chunk-9-2.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-9-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-9-2.png" target="_blank">ef5aecb</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-08-20
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%203-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno,cluster,MER61E_k9notder)+
   ggtitle(&quot;K9me3 overlapped MER61Es by cluster not DER &quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-9-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-3">
-Past versions of unnamed-chunk-9-3.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-9-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-9-3.png" target="_blank">ef5aecb</a>
-</td>
-<td>
-reneeisnowhere
-</td>
-<td>
-2026-08-20
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set%203-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>RNA_acute_cluster &lt;- read_excel(&quot;C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx&quot;, 
     sheet = &quot;Table_S6&quot;, skip = 1)
 
@@ -2519,7 +2668,6 @@ reneeisnowhere
 3 Set_3          6623
 4 not_assigned  31979</code></pre>
 </div>
-</div>
 <div id="boxplot-alley" class="section level3">
 <h3>Boxplot alley</h3>
 <pre class="r"><code>full_p53_canonical %&gt;% 
@@ -2580,6 +2728,27 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>full_p53_canonical %&gt;% 
+  dplyr::filter(TE_name==&quot;LTR10E_ERV1_LTR&quot;) %&gt;% 
+  dplyr::select(TE_id, motif_score) %&gt;% 
+  left_join((lint_anno %&gt;%
+               dplyr::select(repID,cluster)),
+            by=c(&quot;TE_id&quot;=&quot;repID&quot;)) %&gt;% 
+  mutate(cluster=factor(cluster, levels=c(&quot;Set_3&quot;,&quot;Set_2&quot;,&quot;Set_1&quot;,&quot;not_assigned&quot;,&quot;NA&quot;))) %&gt;%
+  # group_by(cluster) %&gt;% tally()
+  ggplot(., aes(x=cluster,y=motif_score))+
+  geom_boxplot()+
+  geom_point(position=&quot;jitter&quot;)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+      c(&quot;Set_3&quot;, &quot;Set_1&quot;),
+      c(&quot;Set_3&quot;, &quot;NA&quot;)
+    ),
+    method = &quot;wilcox.test&quot;
+  )+
+  theme_bw()+
+  ggtitle(&quot;n=54 LTR10Es and motif scores for canonical p53 motif&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/canonical%20p53%20boxplot-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>mint_anno %&gt;% 
   dplyr::select(repID,cluster,p53_halfsite,p53_fullsite) %&gt;% 
   left_join(MER61E_best_site_signal) %&gt;% 
@@ -2637,6 +2806,26 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>lint_anno %&gt;% 
+  dplyr::select(repID,cluster,p53_halfsite,p53_fullsite) %&gt;% 
+  left_join(LTR10E_best_site_signal) %&gt;% 
+  mutate(cluster=factor(cluster, levels=c(&quot;Set_3&quot;,&quot;Set_2&quot;,&quot;Set_1&quot;,&quot;not_assigned&quot;,&quot;NA&quot;))) %&gt;%
+  dplyr::filter(!is.na(LTR10E.signal)) %&gt;% 
+  # group_by(cluster) %&gt;% tally()
+  ggplot(., aes(x=cluster,y=LTR10E.signal))+
+  geom_boxplot()+
+  geom_point(position=&quot;jitter&quot;)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+      # c(&quot;Set_3&quot;, &quot;Set_1&quot;),
+      # c(&quot;Set_3&quot;,&quot;not_assigned&quot;),
+      c(&quot;Set_3&quot;, &quot;NA&quot;)
+    ),
+    method = &quot;wilcox.test&quot;
+  )+
+  theme_bw()+
+  ggtitle(&quot;n=152 LTR10Es and motif scores for halfsite p53 motif&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/p53halfsite%20boxplot-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>MER61E_rep_cluster &lt;- mint_anno %&gt;% 
   dplyr::select(repID,cluster,p53_halfsite)
 
@@ -2699,6 +2888,27 @@ reneeisnowhere
 repID and cluster association from the K27ac data. Then I used the ATAC
 LFC, and filtered the peakid by the ATAC regions that overlap a MER61E/
 and joined by cluster.</p>
+<pre class="r"><code>LTR10E_rep_cluster &lt;- lint_anno %&gt;% 
+  dplyr::select(repID,cluster,p53_halfsite)
+
+ATAC_LTR10E_LFC %&gt;% 
+  left_join(LTR10E_rep_cluster) %&gt;% 
+  mutate(cluster=factor(cluster, levels=c(&quot;Set_3&quot;,&quot;Set_2&quot;,&quot;Set_1&quot;,&quot;not_assigned&quot;,&quot;NA&quot;))) %&gt;%
+   # group_by(cluster) %&gt;% tally()
+  ggplot(., aes(x=cluster,y=ATAC_24_LFC))+
+  geom_boxplot()+
+  geom_point(aes(color=p53_halfsite),position=&quot;jitter&quot;)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+      c(&quot;Set_3&quot;, &quot;Set_1&quot;),
+      c(&quot;Set_3&quot;,&quot;not_assigned&quot;),
+      c(&quot;Set_3&quot;, &quot;NA&quot;)
+    ),
+    method = &quot;wilcox.test&quot;
+  )+
+  theme_bw()+
+  ggtitle(&quot;n=21 LTR10Es which overlap an ATAC 24hour region&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/LTR10e%20version-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="more-proportion-plots" class="section level3">
 <h3>More proportion plots</h3>
@@ -2709,6 +2919,8 @@ p53_sp_ChIP_ols &lt;- mergeByOverlaps(MER61E_regions,p53_sp_ChIP)
 VEH_ATAC_ols &lt;- mergeByOverlaps(MER61E_regions, ATAC_regions_Ind2)
 
 K27ac_VEH_Ind4_ols &lt;- mergeByOverlaps(MER61E_regions, K27ac_VEH_Ind4)
+
+SOX11_peak_ols &lt;- mergeByOverlaps(MER61E_regions,SOX11_hg38_gr)
 
 #### ENCODE TRIM28 ChIP data (K562 cells):experiment: ENCSR474CVP, accession file processed data:ENCFF770JQM
 TRIM28_K562 &lt;- rtracklayer::import(&quot;data/Other_paper_data/ENCFF770JQMTRIM28_ENCSR474CVP.bed&quot;,format = &quot;narrowPeak&quot;)
@@ -2727,33 +2939,101 @@ mint_anno_new &lt;- mint_anno %&gt;%
          K27_VEH_overlap=if_else( repID %in% K27ac_VEH_Ind4_ols[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
          TRIM28_K562_overlap=if_else( repID %in% TRIM28_K562_ols[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
          SETDB1_HEPG2_overlap=if_else( repID %in% SETDB1_HEPG2_ols[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
-         SETDB1_K562_overlap=if_else( repID %in% SETDB1_K562_ols[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;))  
+         SETDB1_K562_overlap=if_else( repID %in% SETDB1_K562_ols[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
+         SOX11_peak_overlap=if_else(repID %in% SOX11_peak_ols[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;))
 
 mint_anno_new %&gt;% 
-  group_by(SETDB1_K562_overlap) %&gt;% 
+  group_by(SOX11_peak_overlap) %&gt;% 
   tally()</code></pre>
 <pre><code># A tibble: 1 × 2
-  SETDB1_K562_overlap     n
-  &lt;chr&gt;               &lt;int&gt;
-1 no                    267</code></pre>
+  SOX11_peak_overlap     n
+  &lt;chr&gt;              &lt;int&gt;
+1 no                   267</code></pre>
+<pre class="r"><code>upDAR_ols_ltr &lt;- mergeByOverlaps(LTR10E_regions,upDOX_24_DAR_gr)
+
+p53_sp_ChIP_ols_ltr &lt;- mergeByOverlaps(LTR10E_regions,p53_sp_ChIP)
+
+VEH_ATAC_ols_ltr &lt;- mergeByOverlaps(LTR10E_regions, ATAC_regions_Ind2)
+
+K27ac_VEH_Ind4_ols_ltr &lt;- mergeByOverlaps(LTR10E_regions, K27ac_VEH_Ind4)
+
+SOX11_peak_ols_ltr &lt;- mergeByOverlaps(LTR10E_regions,SOX11_hg38_gr)
+#### ENCODE TRIM28 ChIP data (K562 cells):experiment: ENCSR474CVP, accession file processed data:ENCFF770JQM
+# TRIM28_K562 &lt;- rtracklayer::import(&quot;data/Other_paper_data/ENCFF770JQMTRIM28_ENCSR474CVP.bed&quot;,format = &quot;narrowPeak&quot;)
+TRIM28_K562_ols_ltr &lt;- mergeByOverlaps(LTR10E_regions, TRIM28_K562)
+#### Encode tried two, one from HEPG2 ENCSR193ADW:ENCFF615OJH and one from K562 ENCSR000AUT:ENCFF267QRI&quot;,
+# SETDB1_HEPG2 &lt;- rtracklayer::import(&quot;data/Other_paper_data/ENCFF615OJH_SET1_ENCSR193ADW.bed&quot;,format = &quot;narrowPeak&quot;)
+SETDB1_HEPG2_ols_ltr &lt;- mergeByOverlaps(LTR10E_regions, SETDB1_HEPG2)
+# SETDB1_K562 &lt;- rtracklayer::import(&quot;data/Other_paper_data/ENCFF267QRI_SETDB1_K562_ENCSR000AUT.bed&quot;,format = &quot;narrowPeak&quot;)
+SETDB1_K562_ols_ltr &lt;- mergeByOverlaps(LTR10E_regions, SETDB1_K562)
+
+lint_anno_new &lt;- lint_anno %&gt;%
+  dplyr::select(repID,cluster) %&gt;% 
+  mutate(upDAR_overlap=if_else(repID %in% upDAR_ols_ltr[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
+         p53_sp_ChIP_overlap=if_else(repID %in% p53_sp_ChIP_ols[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
+         VEH_ATAC_overlap=if_else(repID %in% VEH_ATAC_ols_ltr[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
+         K27_VEH_overlap=if_else( repID %in% K27ac_VEH_Ind4_ols_ltr[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
+         TRIM28_K562_overlap=if_else( repID %in% TRIM28_K562_ols_ltr[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
+         SETDB1_HEPG2_overlap=if_else( repID %in% SETDB1_HEPG2_ols_ltr[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
+         SETDB1_K562_overlap=if_else( repID %in% SETDB1_K562_ols_ltr[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
+         SOX11_peak_overlap=if_else(repID %in% SOX11_peak_ols_ltr[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;))
+
+lint_anno_new %&gt;% 
+  group_by(SOX11_peak_overlap) %&gt;% 
+  tally()</code></pre>
+<pre><code># A tibble: 2 × 2
+  SOX11_peak_overlap     n
+  &lt;chr&gt;              &lt;int&gt;
+1 no                   254
+2 yes                    1</code></pre>
+</div>
+<div id="mer61e-prop-plots" class="section level3">
+<h3>MER61E prop plots</h3>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,upDAR_overlap)+
   ggtitle(&quot;upDAR overlaps proportion across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-11-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,p53_sp_ChIP_overlap)+
   ggtitle(&quot;sp_VEH p53 overlap proportions across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-11-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,VEH_ATAC_overlap)+
   ggtitle(&quot;ATAC 24hr VEH proportions across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-11-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,K27_VEH_overlap)+
   ggtitle(&quot;H3K27ac VEH tx+0 proportion across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-11-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,TRIM28_K562_overlap)+
   ggtitle(&quot;TRIM28 in K562 cells overlap proportion across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-11-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,SETDB1_HEPG2_overlap)+
   ggtitle(&quot;SETDB1 in HepG2 cells overlap proportion across MER61E&quot;)</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-11-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot(mint_anno_new, cluster,SOX11_peak_overlap)+
+  ggtitle(&quot;SOX11 peaks in Granta-519 MCL cells overlap proportion across MER61E&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ltr10e-prop-plots" class="section level3">
+<h3>LTR10E prop plots</h3>
+<pre class="r"><code>prop_plot(lint_anno_new, cluster,upDAR_overlap)+
+  ggtitle(&quot;upDAR overlaps proportion across LTR10E&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot(lint_anno_new, cluster,p53_sp_ChIP_overlap)+
+  ggtitle(&quot;sp_VEH p53 overlap proportions across LTR10E&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot(lint_anno_new, cluster,VEH_ATAC_overlap)+
+  ggtitle(&quot;ATAC 24hr VEH proportions across LTR10E&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot(lint_anno_new, cluster,K27_VEH_overlap)+
+  ggtitle(&quot;H3K27ac VEH tx+0 proportion across LTR10E&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot(lint_anno_new, cluster,TRIM28_K562_overlap)+
+  ggtitle(&quot;TRIM28 in K562 cells overlap proportion across LTR10E&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot(lint_anno_new, cluster,SETDB1_HEPG2_overlap)+
+  ggtitle(&quot;SETDB1 in HepG2 cells overlap proportion across LTR10E&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot(lint_anno_new, cluster,SOX11_peak_overlap)+
+  ggtitle(&quot;SOX11 peaks in Granta-519 MCL cells overlap proportion across LTR10E&quot;)</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="sox11-rna-expression" class="section level3">
 <h3>SOX11 RNA expression</h3>
@@ -2816,7 +3096,55 @@ protein_counts_mat %&gt;%
   geom_point(aes(color=ind))+
   ggtitle(&quot;SOX11 RNA expression over time&quot;)+
   theme_bw()</code></pre>
-<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-12-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-7-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-7-1.png" target="_blank">ccf5bb3</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-24
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-7-1.png" target="_blank">ef5aecb</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="extra-code-bits" class="section level3">
 <h3>Extra code bits</h3>
@@ -2877,6 +3205,162 @@ RNA_H3K27ac_LFC_dataframe &lt;- active_DOX_df %&gt;%
   pivot_wider(., names_from = timepoint,
     values_from = c(logFC, adj.P.Val),
     names_glue = &quot;RNA_{.value}_{timepoint}&quot;)</code></pre>
+<pre class="r"><code>head(mcols(MER61E_regions)$name)
+
+head(mint_anno)
+
+set3_names &lt;- mint_anno$repID[mint_anno$cluster==&quot;Set_3&quot;]
+
+mset3_gr &lt;- MER61E_regions[mcols(MER61E_regions)$name %in% set3_names]
+length(mset3_gr)
+mnotset3_gr &lt;- MER61E_regions[!mcols(MER61E_regions)$name %in% set3_names]
+length(mnotset3_gr)
+
+
+export.bed(mset3_gr, con = &quot;data/Bed_exports/MER61E_Set3.bed&quot;)
+export.bed(mnotset3_gr, con = &quot;data/Bed_exports/MER61E_notSet3.bed&quot;)
+
+
+lset3_names &lt;- lint_anno$repID[lint_anno$cluster %in% &quot;Set_3&quot;]
+
+lset3_gr &lt;- LTR10E_regions[mcols(LTR10E_regions)$name %in% lset3_names]
+length(lset3_gr)
+lnotset3_gr &lt;- LTR10E_regions[!mcols(LTR10E_regions)$name %in% lset3_names]
+length(lnotset3_gr)
+
+
+export.bed(lset3_gr, con = &quot;data/Bed_exports/LTR10E_Set3.bed&quot;)
+export.bed(lnotset3_gr, con = &quot;data/Bed_exports/LTR10E_notSet3.bed&quot;)
+# lint_anno %&gt;% group_by(cluster) %&gt;% tally
+
+both_set3_gr&lt;- c(lset3_gr,mset3_gr)
+
+both_notset3_gr &lt;- c(lnotset3_gr,mnotset3_gr)
+
+export.bed(both_set3_gr, con = &quot;data/Bed_exports/twoTE_Set3.bed&quot;)</code></pre>
+</div>
+<div id="motif-enrichment" class="section level3">
+<h3>Motif enrichment</h3>
+<p>This is utilizing xstreme to look for enrichment of Set3 TEs in
+MER61E vs the rest of MER61E TEs</p>
+<div id="mer61e-2" class="section level4">
+<h4>MER61E</h4>
+<pre class="r"><code>MER61E_Set3_sea_disc_out &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/MER61E_Set3_xstreme/sea_disc_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;disc&quot;) %&gt;% slice_head(n = length(.$ID)-3)
+
+MER61E_Set3_sea_known &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/MER61E_Set3_xstreme/sea_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;known&quot;) %&gt;% slice_head(n = length(.$ID)-3)
+
+MER61E_Set3_xstreme &lt;- read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/MER61E_Set3_xstreme/xstreme.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;all&quot;) %&gt;% slice_head(n = length(.$ID)-3)
+
+
+MER61E_bind &lt;- bind_rows(MER61E_Set3_sea_disc_out, MER61E_Set3_sea_known) %&gt;%
+  dplyr::select(DB:ENR_RATIO) %&gt;% 
+  group_by(ID,ALT_ID) %&gt;% 
+  distinct()</code></pre>
+<pre class="r"><code>MER61E_Set3_data &lt;- MER61E_Set3_xstreme %&gt;% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %&gt;% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,&quot;https://jaspar2024.elixir.no/matrix/&quot;,&quot;&quot;)) %&gt;% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, &quot;\\(&quot;) ~ str_extract(SIM_MOTIF, &quot;(?&lt;=\\().+?(?=\\))&quot;),
+    str_detect(SIM_MOTIF, &quot;^MA\\d+\\.\\d+&quot;) ~ ALT_ID,
+    str_detect(SIM_MOTIF, &quot;^\\d+-&quot;) ~ str_replace(SIM_MOTIF, &quot;^\\d+-&quot;, &quot;&quot;),
+  TRUE ~ SIM_MOTIF)) %&gt;% 
+  left_join(MER61E_bind, by=c(&quot;ID&quot;=&quot;ID&quot;,&quot;ALT_ID&quot;=&quot;ALT_ID&quot;, &quot;CONSENSUS&quot;=&quot;CONSENSUS&quot;)) %&gt;% 
+  mutate(diff_per=`TP%` -`FP%`)</code></pre>
+<pre class="r"><code>MER61E_Set3_data %&gt;% 
+  dplyr::filter(!is.na(MOTIF_URL)) %&gt;% 
+  group_by(CLUSTER) %&gt;% 
+  slice_min(EVALUE, with_ties = FALSE) %&gt;% 
+  mutate(order= row_number()) %&gt;% 
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*1.5), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1.5,name=&quot;Percent of peaks with motif&quot;))+
+  theme_classic()+
+  ylab(&quot;Enriched TF motif&quot;)+
+  ggtitle(paste(&quot;SET3 enrichment of MER61E vs all other MER61E&quot;))</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-10-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ltr10e-2" class="section level4">
+<h4>LTR10E</h4>
+<pre class="r"><code>LTR10E_Set3_sea_disc_out &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/LTR10E_Set3_xstreme/sea_disc_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;disc&quot;) %&gt;% slice_head(n = length(.$ID)-3)
+
+LTR10E_Set3_sea_known &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/LTR10E_Set3_xstreme/sea_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;known&quot;) %&gt;% slice_head(n = length(.$ID)-3)
+
+LTR10E_Set3_xstreme &lt;- read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/LTR10E_Set3_xstreme/xstreme.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;all&quot;) %&gt;% slice_head(n = length(.$ID)-3)
+
+
+LTR10E_bind &lt;- bind_rows(LTR10E_Set3_sea_disc_out, LTR10E_Set3_sea_known) %&gt;%
+  dplyr::select(DB:ENR_RATIO) %&gt;% 
+  group_by(ID,ALT_ID) %&gt;% 
+  distinct()</code></pre>
+<pre class="r"><code>LTR10E_Set3_data &lt;- LTR10E_Set3_xstreme %&gt;% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %&gt;% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,&quot;https://jaspar2024.elixir.no/matrix/&quot;,&quot;&quot;)) %&gt;% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, &quot;\\(&quot;) ~ str_extract(SIM_MOTIF, &quot;(?&lt;=\\().+?(?=\\))&quot;),
+    str_detect(SIM_MOTIF, &quot;^MA\\d+\\.\\d+&quot;) ~ ALT_ID,
+    str_detect(SIM_MOTIF, &quot;^\\d+-&quot;) ~ str_replace(SIM_MOTIF, &quot;^\\d+-&quot;, &quot;&quot;),
+  TRUE ~ SIM_MOTIF)) %&gt;% 
+  left_join(LTR10E_bind, by=c(&quot;ID&quot;=&quot;ID&quot;,&quot;ALT_ID&quot;=&quot;ALT_ID&quot;, &quot;CONSENSUS&quot;=&quot;CONSENSUS&quot;)) %&gt;% 
+  mutate(diff_per=`TP%` -`FP%`)</code></pre>
+<pre class="r"><code>LTR10E_Set3_data %&gt;% 
+  dplyr::filter(!is.na(MOTIF_URL)) %&gt;% 
+  group_by(CLUSTER) %&gt;% 
+  slice_min(EVALUE, with_ties = FALSE) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(order= row_number()) %&gt;%
+  mutate(motif_name=if_else(motif_name%in% c(&quot;SOX10&quot;,&quot;Sox11&quot;,&quot;IKZF2&quot;),paste0(motif_name,&quot;_&quot;,order),motif_name)) %&gt;% 
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*1), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1,name=&quot;Percent of peaks with motif&quot;))+
+  theme_classic()+
+  ylab(&quot;Enriched TF motif&quot;)+
+  ggtitle(paste(&quot;SET3 enrichment of LTR10E vs all other LTR10E&quot;))</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-13-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>MER61E</p>
+</div>
+<div id="ltr10e-3" class="section level4">
+<h4>LTR10E</h4>
+<pre class="r"><code>twoTE_Set3_sea_disc_out &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/twoTE_Set3_xstreme/sea_disc_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;disc&quot;) %&gt;% slice_head(n = length(.$ID)-3)
+
+twoTE_Set3_sea_known &lt;-read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/twoTE_Set3_xstreme/sea_out/sea.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;known&quot;) %&gt;% slice_head(n = length(.$ID)-3)
+
+twoTE_Set3_xstreme &lt;- read_delim(&quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/twoTE_Set3_xstreme/xstreme.tsv&quot;, delim = &quot;\t&quot;, escape_double = FALSE,     trim_ws = TRUE) %&gt;% mutate(source=&quot;all&quot;) %&gt;% slice_head(n = length(.$ID)-3)
+
+
+twoTE_bind &lt;- bind_rows(twoTE_Set3_sea_disc_out, twoTE_Set3_sea_known) %&gt;%
+  dplyr::select(DB:ENR_RATIO) %&gt;% 
+  group_by(ID,ALT_ID) %&gt;% 
+  distinct()</code></pre>
+<pre class="r"><code>twoTE_Set3_data &lt;- twoTE_Set3_xstreme %&gt;% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %&gt;% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,&quot;https://jaspar2024.elixir.no/matrix/&quot;,&quot;&quot;)) %&gt;% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, &quot;\\(&quot;) ~ str_extract(SIM_MOTIF, &quot;(?&lt;=\\().+?(?=\\))&quot;),
+    str_detect(SIM_MOTIF, &quot;^MA\\d+\\.\\d+&quot;) ~ ALT_ID,
+    str_detect(SIM_MOTIF, &quot;^\\d+-&quot;) ~ str_replace(SIM_MOTIF, &quot;^\\d+-&quot;, &quot;&quot;),
+  TRUE ~ SIM_MOTIF)) %&gt;% 
+  left_join(twoTE_bind, by=c(&quot;ID&quot;=&quot;ID&quot;,&quot;ALT_ID&quot;=&quot;ALT_ID&quot;, &quot;CONSENSUS&quot;=&quot;CONSENSUS&quot;)) %&gt;% 
+  mutate(diff_per=`TP%` -`FP%`)</code></pre>
+<pre class="r"><code>twoTE_Set3_data %&gt;% 
+  dplyr::filter(!is.na(MOTIF_URL)) %&gt;% 
+  group_by(CLUSTER) %&gt;% 
+  slice_min(EVALUE, with_ties = FALSE) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(order= row_number()) %&gt;%
+  mutate(motif_name=if_else(motif_name%in% c(&quot;SOX10&quot;,&quot;Sox11&quot;,&quot;IKZF2&quot;),paste0(motif_name,&quot;_&quot;,order),motif_name)) %&gt;% 
+    mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %&gt;% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*1.5), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1.5,name=&quot;Percent of peaks with motif&quot;))+
+  theme_classic()+
+  ylab(&quot;Enriched TF motif&quot;)+
+  ggtitle(paste(&quot;SET3 enrichment of twoTE vs all other twoTE&quot;))</code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-16-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -3099,6 +3583,7 @@ loaded via a namespace (and not attached):
 [147] fastmatch_1.1-8                        
 [148] bit_4.6.0                              
 [149] ape_5.8-1                              </code></pre>
+</div>
 </div>
 </div>
 </div>
