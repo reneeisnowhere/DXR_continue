@@ -206,6 +206,7 @@ LTR10E_best_site_signal <- LTR10E_site %>%
   dplyr::select(LTR10E_regions.name,LTR10E_p53_best_site_score.signalValue,LTR10E_p53_best_site_score.qValue) %>% 
   dplyr::rename("repID"=1,"LTR10E.signal"=2,"LTR10E.qvalue"=3)
 
+SOX11_hg38_gr <- readRDS("data/Other_paper_data/SOX11_hg38_NIHMS686659_gr.RDS")
 ```
 
 ```{r}
@@ -1235,7 +1236,7 @@ prop_plot <- function(data, group_col, yes_no_col) {
 
 ```
 
-```{r}
+```{r prop set 1}
 
 prop_plot(mint_anno, cluster,p53_halfsite)+
   ggtitle("p53 halfsite proportion across MER61E")
@@ -1261,7 +1262,7 @@ prop_plot(mint_anno, cluster,overlap_DAR)+
   ggtitle("DAR overlap proportion across MER61E")
 ```
 
-```{r}
+```{r prop set 2}
 prop_plot(mint_anno,cluster, LV_TAD_overlap)+
   ggtitle("LV TAD overlap of MER61Es")
 
@@ -1276,7 +1277,7 @@ prop_plot(mint_anno,cluster, TP53_HEPG2_overlap)+
   ggtitle("Published TP53 regions from HepG2 cells and MER61E overlaps")
 ```
 
-```{r}
+```{r prop set 3}
 
 prop_plot(mint_anno,cluster, MER61E_k9upder)+
   ggtitle("K9me3 overlapped MER61Es by cluster up DER ")
@@ -1352,6 +1353,27 @@ full_p53_canonical %>%
   )+
   theme_bw()+
   ggtitle("n=22 MER61Es and motif scores for canonical p53 motif")
+
+full_p53_canonical %>% 
+  dplyr::filter(TE_name=="LTR10E_ERV1_LTR") %>% 
+  dplyr::select(TE_id, motif_score) %>% 
+  left_join((lint_anno %>%
+               dplyr::select(repID,cluster)),
+            by=c("TE_id"="repID")) %>% 
+  mutate(cluster=factor(cluster, levels=c("Set_3","Set_2","Set_1","not_assigned","NA"))) %>%
+  # group_by(cluster) %>% tally()
+  ggplot(., aes(x=cluster,y=motif_score))+
+  geom_boxplot()+
+  geom_point(position="jitter")+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+      c("Set_3", "Set_1"),
+      c("Set_3", "NA")
+    ),
+    method = "wilcox.test"
+  )+
+  theme_bw()+
+  ggtitle("n=54 LTR10Es and motif scores for canonical p53 motif")
 ```
 
 ```{r p53halfsite boxplot}
@@ -1374,6 +1396,27 @@ mint_anno %>%
   )+
   theme_bw()+
   ggtitle("n=156 MER61Es and motif scores for halfsite p53 motif")
+
+
+lint_anno %>% 
+  dplyr::select(repID,cluster,p53_halfsite,p53_fullsite) %>% 
+  left_join(LTR10E_best_site_signal) %>% 
+  mutate(cluster=factor(cluster, levels=c("Set_3","Set_2","Set_1","not_assigned","NA"))) %>%
+  dplyr::filter(!is.na(LTR10E.signal)) %>% 
+  # group_by(cluster) %>% tally()
+  ggplot(., aes(x=cluster,y=LTR10E.signal))+
+  geom_boxplot()+
+  geom_point(position="jitter")+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+      # c("Set_3", "Set_1"),
+      # c("Set_3","not_assigned"),
+      c("Set_3", "NA")
+    ),
+    method = "wilcox.test"
+  )+
+  theme_bw()+
+  ggtitle("n=152 LTR10Es and motif scores for halfsite p53 motif")
 ```
 
 ```{r ATAC LFC Boxplot}
@@ -1400,9 +1443,34 @@ ATAC_MER61E_LFC %>%
 ```
 This is a weird plot to gather data for.  What I did:  I pulled the repID and cluster association from the K27ac data.  Then I used the ATAC LFC, and filtered the peakid by the ATAC regions that overlap a MER61E/ and joined by cluster.  
 
+```{r LTR10e version}
+LTR10E_rep_cluster <- lint_anno %>% 
+  dplyr::select(repID,cluster,p53_halfsite)
+
+ATAC_LTR10E_LFC %>% 
+  left_join(LTR10E_rep_cluster) %>% 
+  mutate(cluster=factor(cluster, levels=c("Set_3","Set_2","Set_1","not_assigned","NA"))) %>%
+   # group_by(cluster) %>% tally()
+  ggplot(., aes(x=cluster,y=ATAC_24_LFC))+
+  geom_boxplot()+
+  geom_point(aes(color=p53_halfsite),position="jitter")+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+      c("Set_3", "Set_1"),
+      c("Set_3","not_assigned"),
+      c("Set_3", "NA")
+    ),
+    method = "wilcox.test"
+  )+
+  theme_bw()+
+  ggtitle("n=21 LTR10Es which overlap an ATAC 24hour region")
+
+```
+
+
 ### More proportion plots
 
-```{r}
+```{r overlapping sets 2 mer61e}
 
 upDAR_ols <- mergeByOverlaps(MER61E_regions,upDOX_24_DAR_gr)
 
@@ -1411,6 +1479,8 @@ p53_sp_ChIP_ols <- mergeByOverlaps(MER61E_regions,p53_sp_ChIP)
 VEH_ATAC_ols <- mergeByOverlaps(MER61E_regions, ATAC_regions_Ind2)
 
 K27ac_VEH_Ind4_ols <- mergeByOverlaps(MER61E_regions, K27ac_VEH_Ind4)
+
+SOX11_peak_ols <- mergeByOverlaps(MER61E_regions,SOX11_hg38_gr)
 
 #### ENCODE TRIM28 ChIP data (K562 cells):experiment: ENCSR474CVP, accession file processed data:ENCFF770JQM
 TRIM28_K562 <- rtracklayer::import("data/Other_paper_data/ENCFF770JQMTRIM28_ENCSR474CVP.bed",format = "narrowPeak")
@@ -1429,14 +1499,52 @@ mint_anno_new <- mint_anno %>%
          K27_VEH_overlap=if_else( repID %in% K27ac_VEH_Ind4_ols[["name"]],"yes","no"),
          TRIM28_K562_overlap=if_else( repID %in% TRIM28_K562_ols[["name"]],"yes","no"),
          SETDB1_HEPG2_overlap=if_else( repID %in% SETDB1_HEPG2_ols[["name"]],"yes","no"),
-         SETDB1_K562_overlap=if_else( repID %in% SETDB1_K562_ols[["name"]],"yes","no"))  
+         SETDB1_K562_overlap=if_else( repID %in% SETDB1_K562_ols[["name"]],"yes","no"),
+         SOX11_peak_overlap=if_else(repID %in% SOX11_peak_ols[["name"]],"yes","no"))
 
 mint_anno_new %>% 
-  group_by(SETDB1_K562_overlap) %>% 
+  group_by(SOX11_peak_overlap) %>% 
   tally()
 ```
 
-```{r}
+
+```{r overlapping sets 2 LTR10E}
+
+upDAR_ols_ltr <- mergeByOverlaps(LTR10E_regions,upDOX_24_DAR_gr)
+
+p53_sp_ChIP_ols_ltr <- mergeByOverlaps(LTR10E_regions,p53_sp_ChIP)
+
+VEH_ATAC_ols_ltr <- mergeByOverlaps(LTR10E_regions, ATAC_regions_Ind2)
+
+K27ac_VEH_Ind4_ols_ltr <- mergeByOverlaps(LTR10E_regions, K27ac_VEH_Ind4)
+
+SOX11_peak_ols_ltr <- mergeByOverlaps(LTR10E_regions,SOX11_hg38_gr)
+#### ENCODE TRIM28 ChIP data (K562 cells):experiment: ENCSR474CVP, accession file processed data:ENCFF770JQM
+# TRIM28_K562 <- rtracklayer::import("data/Other_paper_data/ENCFF770JQMTRIM28_ENCSR474CVP.bed",format = "narrowPeak")
+TRIM28_K562_ols_ltr <- mergeByOverlaps(LTR10E_regions, TRIM28_K562)
+#### Encode tried two, one from HEPG2 ENCSR193ADW:ENCFF615OJH and one from K562 ENCSR000AUT:ENCFF267QRI",
+# SETDB1_HEPG2 <- rtracklayer::import("data/Other_paper_data/ENCFF615OJH_SET1_ENCSR193ADW.bed",format = "narrowPeak")
+SETDB1_HEPG2_ols_ltr <- mergeByOverlaps(LTR10E_regions, SETDB1_HEPG2)
+# SETDB1_K562 <- rtracklayer::import("data/Other_paper_data/ENCFF267QRI_SETDB1_K562_ENCSR000AUT.bed",format = "narrowPeak")
+SETDB1_K562_ols_ltr <- mergeByOverlaps(LTR10E_regions, SETDB1_K562)
+
+lint_anno_new <- lint_anno %>%
+  dplyr::select(repID,cluster) %>% 
+  mutate(upDAR_overlap=if_else(repID %in% upDAR_ols_ltr[["name"]],"yes","no"),
+         p53_sp_ChIP_overlap=if_else(repID %in% p53_sp_ChIP_ols[["name"]],"yes","no"),
+         VEH_ATAC_overlap=if_else(repID %in% VEH_ATAC_ols_ltr[["name"]],"yes","no"),
+         K27_VEH_overlap=if_else( repID %in% K27ac_VEH_Ind4_ols_ltr[["name"]],"yes","no"),
+         TRIM28_K562_overlap=if_else( repID %in% TRIM28_K562_ols_ltr[["name"]],"yes","no"),
+         SETDB1_HEPG2_overlap=if_else( repID %in% SETDB1_HEPG2_ols_ltr[["name"]],"yes","no"),
+         SETDB1_K562_overlap=if_else( repID %in% SETDB1_K562_ols_ltr[["name"]],"yes","no"),
+         SOX11_peak_overlap=if_else(repID %in% SOX11_peak_ols_ltr[["name"]],"yes","no"))
+
+lint_anno_new %>% 
+  group_by(SOX11_peak_overlap) %>% 
+  tally()
+```
+### MER61E prop plots
+```{r prop set4 MER61E}
 prop_plot(mint_anno_new, cluster,upDAR_overlap)+
   ggtitle("upDAR overlaps proportion across MER61E")
 
@@ -1454,8 +1562,39 @@ prop_plot(mint_anno_new, cluster,TRIM28_K562_overlap)+
 
 prop_plot(mint_anno_new, cluster,SETDB1_HEPG2_overlap)+
   ggtitle("SETDB1 in HepG2 cells overlap proportion across MER61E")
+prop_plot(mint_anno_new, cluster,SOX11_peak_overlap)+
+  ggtitle("SOX11 peaks in Granta-519 MCL cells overlap proportion across MER61E")
 
 ```
+
+
+### LTR10E prop plots
+
+```{r prop set5 LTR10E}
+prop_plot(lint_anno_new, cluster,upDAR_overlap)+
+  ggtitle("upDAR overlaps proportion across LTR10E")
+
+prop_plot(lint_anno_new, cluster,p53_sp_ChIP_overlap)+
+  ggtitle("sp_VEH p53 overlap proportions across LTR10E")
+
+prop_plot(lint_anno_new, cluster,VEH_ATAC_overlap)+
+  ggtitle("ATAC 24hr VEH proportions across LTR10E")
+
+prop_plot(lint_anno_new, cluster,K27_VEH_overlap)+
+  ggtitle("H3K27ac VEH tx+0 proportion across LTR10E")
+
+prop_plot(lint_anno_new, cluster,TRIM28_K562_overlap)+
+  ggtitle("TRIM28 in K562 cells overlap proportion across LTR10E")
+
+prop_plot(lint_anno_new, cluster,SETDB1_HEPG2_overlap)+
+  ggtitle("SETDB1 in HepG2 cells overlap proportion across LTR10E")
+prop_plot(lint_anno_new, cluster,SOX11_peak_overlap)+
+  ggtitle("SOX11 peaks in Granta-519 MCL cells overlap proportion across LTR10E")
+
+```
+
+
+
 
 ### SOX11 RNA expression
 
@@ -1600,3 +1739,206 @@ RNA_lfc_SYMBOL <-RNA_full_toptable %>%
     names_glue = "RNA_{.value}_{timepoint}")
 
 ```
+
+
+```{r bed files, eval=FALSE}
+head(mcols(MER61E_regions)$name)
+
+head(mint_anno)
+
+set3_names <- mint_anno$repID[mint_anno$cluster=="Set_3"]
+
+mset3_gr <- MER61E_regions[mcols(MER61E_regions)$name %in% set3_names]
+length(mset3_gr)
+mnotset3_gr <- MER61E_regions[!mcols(MER61E_regions)$name %in% set3_names]
+length(mnotset3_gr)
+
+
+export.bed(mset3_gr, con = "data/Bed_exports/MER61E_Set3.bed")
+export.bed(mnotset3_gr, con = "data/Bed_exports/MER61E_notSet3.bed")
+
+
+lset3_names <- lint_anno$repID[lint_anno$cluster %in% "Set_3"]
+
+lset3_gr <- LTR10E_regions[mcols(LTR10E_regions)$name %in% lset3_names]
+length(lset3_gr)
+lnotset3_gr <- LTR10E_regions[!mcols(LTR10E_regions)$name %in% lset3_names]
+length(lnotset3_gr)
+
+
+export.bed(lset3_gr, con = "data/Bed_exports/LTR10E_Set3.bed")
+export.bed(lnotset3_gr, con = "data/Bed_exports/LTR10E_notSet3.bed")
+# lint_anno %>% group_by(cluster) %>% tally
+
+both_set3_gr<- c(lset3_gr,mset3_gr)
+
+both_notset3_gr <- c(lnotset3_gr,mnotset3_gr)
+
+export.bed(both_set3_gr, con = "data/Bed_exports/twoTE_Set3.bed")
+```
+
+### Motif enrichment
+
+
+This is utilizing xstreme to look for enrichment of Set3 TEs in MER61E vs the rest of MER61E TEs
+
+
+#### MER61E  
+
+
+```{r}
+MER61E_Set3_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/MER61E_Set3_xstreme/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+MER61E_Set3_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/MER61E_Set3_xstreme/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+
+MER61E_Set3_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/MER61E_Set3_xstreme/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+
+
+MER61E_bind <- bind_rows(MER61E_Set3_sea_disc_out, MER61E_Set3_sea_known) %>%
+  dplyr::select(DB:ENR_RATIO) %>% 
+  group_by(ID,ALT_ID) %>% 
+  distinct()
+
+```
+
+```{r}
+MER61E_Set3_data <- MER61E_Set3_xstreme %>% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(MER61E_bind, by=c("ID"="ID","ALT_ID"="ALT_ID", "CONSENSUS"="CONSENSUS")) %>% 
+  mutate(diff_per=`TP%` -`FP%`)
+```
+
+
+```{r}
+MER61E_Set3_data %>% 
+  dplyr::filter(!is.na(MOTIF_URL)) %>% 
+  group_by(CLUSTER) %>% 
+  slice_min(EVALUE, with_ties = FALSE) %>% 
+  mutate(order= row_number()) %>% 
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*1.5), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1.5,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET3 enrichment of MER61E vs all other MER61E"))
+
+```
+
+
+#### LTR10E  
+
+
+```{r}
+LTR10E_Set3_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/LTR10E_Set3_xstreme/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+LTR10E_Set3_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/LTR10E_Set3_xstreme/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+
+LTR10E_Set3_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/LTR10E_Set3_xstreme/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+
+
+LTR10E_bind <- bind_rows(LTR10E_Set3_sea_disc_out, LTR10E_Set3_sea_known) %>%
+  dplyr::select(DB:ENR_RATIO) %>% 
+  group_by(ID,ALT_ID) %>% 
+  distinct()
+
+```
+
+```{r}
+LTR10E_Set3_data <- LTR10E_Set3_xstreme %>% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(LTR10E_bind, by=c("ID"="ID","ALT_ID"="ALT_ID", "CONSENSUS"="CONSENSUS")) %>% 
+  mutate(diff_per=`TP%` -`FP%`)
+```
+
+
+```{r}
+LTR10E_Set3_data %>% 
+  dplyr::filter(!is.na(MOTIF_URL)) %>% 
+  group_by(CLUSTER) %>% 
+  slice_min(EVALUE, with_ties = FALSE) %>% 
+  ungroup() %>% 
+  mutate(order= row_number()) %>%
+  mutate(motif_name=if_else(motif_name%in% c("SOX10","Sox11","IKZF2"),paste0(motif_name,"_",order),motif_name)) %>% 
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*1), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET3 enrichment of LTR10E vs all other LTR10E"))
+
+```
+
+
+MER61E
+
+
+
+#### LTR10E  
+
+
+```{r}
+twoTE_Set3_sea_disc_out <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/twoTE_Set3_xstreme/sea_disc_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="disc") %>% slice_head(n = length(.$ID)-3)
+
+twoTE_Set3_sea_known <-read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/twoTE_Set3_xstreme/sea_out/sea.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="known") %>% slice_head(n = length(.$ID)-3)
+
+twoTE_Set3_xstreme <- read_delim("C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/twoTE_Set3_xstreme/xstreme.tsv", delim = "\t", escape_double = FALSE,     trim_ws = TRUE) %>% mutate(source="all") %>% slice_head(n = length(.$ID)-3)
+
+
+twoTE_bind <- bind_rows(twoTE_Set3_sea_disc_out, twoTE_Set3_sea_known) %>%
+  dplyr::select(DB:ENR_RATIO) %>% 
+  group_by(ID,ALT_ID) %>% 
+  distinct()
+
+```
+
+```{r}
+twoTE_Set3_data <- twoTE_Set3_xstreme %>% 
+  dplyr::select(RANK:CLUSTER,ID:CONSENSUS,EVALUE,SIM_MOTIF,MOTIF_URL) %>% 
+  mutate(MOTIF_URL=str_replace(MOTIF_URL,"https://jaspar2024.elixir.no/matrix/","")) %>% 
+  mutate(motif_name=case_when(
+    str_detect(SIM_MOTIF, "\\(") ~ str_extract(SIM_MOTIF, "(?<=\\().+?(?=\\))"),
+    str_detect(SIM_MOTIF, "^MA\\d+\\.\\d+") ~ ALT_ID,
+    str_detect(SIM_MOTIF, "^\\d+-") ~ str_replace(SIM_MOTIF, "^\\d+-", ""),
+  TRUE ~ SIM_MOTIF)) %>% 
+  left_join(twoTE_bind, by=c("ID"="ID","ALT_ID"="ALT_ID", "CONSENSUS"="CONSENSUS")) %>% 
+  mutate(diff_per=`TP%` -`FP%`)
+```
+
+
+```{r}
+twoTE_Set3_data %>% 
+  dplyr::filter(!is.na(MOTIF_URL)) %>% 
+  group_by(CLUSTER) %>% 
+  slice_min(EVALUE, with_ties = FALSE) %>% 
+  ungroup() %>% 
+  mutate(order= row_number()) %>%
+  mutate(motif_name=if_else(motif_name%in% c("SOX10","Sox11","IKZF2"),paste0(motif_name,"_",order),motif_name)) %>% 
+    mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*1.5), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1.5,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET3 enrichment of twoTE vs all other twoTE"))
+
+```
+
+
+
