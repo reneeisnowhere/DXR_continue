@@ -11,7 +11,7 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-08-27" />
+<meta name="date" content="2026-09-04" />
 
 <title>Additional Analysis</title>
 
@@ -361,7 +361,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Additional Analysis</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-08-27</h4>
+<h4 class="date">2026-09-04</h4>
 
 </div>
 
@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-08-27
+<strong>Last updated:</strong> 2026-09-04
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee8302ab58e5712fee06a2e0cae4c8d0734ecd2e4targetblanke8302aba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree8bde01b6c96e0042f19f391104e673ea62baad17targetblank8bde01ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e8302ab58e5712fee06a2e0cae4c8d0734ecd2e4" target="_blank">e8302ab</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/8bde01b6c96e0042f19f391104e673ea62baad17" target="_blank">8bde01b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee8302ab58e5712fee06a2e0cae4c8d0734ecd2e4targetblanke8302aba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree8bde01b6c96e0042f19f391104e673ea62baad17targetblank8bde01ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e8302ab58e5712fee06a2e0cae4c8d0734ecd2e4" target="_blank">e8302ab</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/8bde01b6c96e0042f19f391104e673ea62baad17" target="_blank">8bde01b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -653,6 +653,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/8bde01b6c96e0042f19f391104e673ea62baad17/analysis/MER61E_build_2.Rmd" target="_blank">8bde01b</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-09-04
+</td>
+<td>
+wflow_publish("analysis/MER61E_build_2.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/340539a6c566a463fc39776330cd6b617cab0c1f/docs/MER61E_build_2.html" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1317,7 +1351,7 @@ repName_results_final &lt;- repName_results %&gt;%
 
 ggplot(repName_results_final, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
   geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
-  geom_text_repel(data = subset(repName_results, FDR &lt; 0.01),
+  geom_text_repel(data = subset(repName_results, FDR &lt; 0.01 &amp; odds_ratio &gt;1),
     size = 3,
     force = 3,
     box.padding = 0.6,
@@ -1373,6 +1407,29 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>repName_results_final %&gt;% 
+  dplyr::filter(odds_ratio&gt;1) %&gt;% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio &gt; 1), size = 3) +
+  geom_text_repel(data = subset(repName_results, FDR &lt; 0.01 &amp; odds_ratio &gt;1),
+    size = 3,
+    force = 3,
+    box.padding = 0.6,
+    point.padding = 0.4,
+    max.overlaps = Inf,
+    segment.color = &quot;grey50&quot;,
+    segment.size = 0.3
+  ) +
+  # geom_text_repel(size=3, max.overlaps = Inf)+
+  # geom_hline(yintercept = -log10(0.05), linetype = &quot;dashed&quot;) +
+  geom_hline(yintercept = -log10(0.01), linetype = &quot;dotted&quot;) +
+  labs(
+    x = &quot;(Odds Ratio)&quot;,
+    y = &quot;-log10(FDR)&quot;,
+    title = &quot;all onlye enriched repName in DAR v CAR ATAC regions&quot;
+  ) +
+  theme_bw() </code></pre>
+<p><img src="figure/MER61E_build_2.Rmd/just%20enriched-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="lfc-atac-v-lfc-h3k27ac" class="section level3">
 <h3>LFC ATAC v LFC H3K27ac</h3>
@@ -1427,7 +1484,7 @@ p &lt;- summary(fit_lm)$coefficients[&quot;H3K27ac_LFC&quot;, &quot;Pr(&gt;|t|)&
              label = paste0(&quot;R² = &quot;, round(r2, 3),
       &quot;\np = &quot;, signif(p, 3)))+
     theme_bw()+
-    ggtitle(&quot;Scatterplot with linear model fit \n(not correlation) of regions overlapping the same MER61Es&quot;)+
+    ggtitle(&quot;Scatterplot with linear model fit \n of regions overlapping the same MER61Es&quot;)+
     labs(x=&quot;H3K27ac tx+0 log fold change&quot;,
          y=&quot;ATAC 24 hour log fold change&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/LFC%20ATAC%20v%20K27ac-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
@@ -1575,7 +1632,7 @@ p_ltr10e &lt;- summary(fit_lm_ltr10e)$coefficients[&quot;H3K27ac_LFC&quot;, &quo
              label = paste0(&quot;R² = &quot;, round(r2_ltr10e, 3),
       &quot;\np = &quot;, signif(p_ltr10e, 3)))+
     theme_bw()+
-    ggtitle(&quot;Scatterplot with linear model fit \n(not correlation) of regions overlapping the same LTR10Es&quot;)+
+    ggtitle(&quot;Scatterplot with linear model fit \nof regions overlapping the same LTR10Es&quot;)+
     labs(x=&quot;H3K27ac tx+0 log fold change&quot;,
          y=&quot;ATAC 24 hour log fold change&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/LFC%20ATAC%20v%20K27ac%20LTR10e-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
@@ -2550,27 +2607,323 @@ MER61E_cre_df &lt;- MER61E_cre %&gt;%
 <pre class="r"><code>prop_plot(mint_anno, cluster,p53_halfsite)+
   ggtitle(&quot;p53 halfsite proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-1-1">
+Past versions of "prop set 1-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 1-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno, cluster,p53_fullsite)+
   ggtitle(&quot;p53 fullsite proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-1-2">
+Past versions of "prop set 1-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-1-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 1-2.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno, cluster,ZNF780A_binding)+
   ggtitle(&quot;ZNF780A binding proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-1-3">
+Past versions of "prop set 1-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-1-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 1-3.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno, cluster,ZNF680_binding)+
   ggtitle(&quot;ZNF680 binding proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-1-4">
+Past versions of "prop set 1-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-1-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 1-4.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno, cluster,sp_p53_binding)+
   ggtitle(&quot;DOX_ChIP p53_binding proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-1-5">
+Past versions of "prop set 1-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-1-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 1-5.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno, cluster,overlap_DAR)+
   ggtitle(&quot;DAR overlap proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%201-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-1-6">
+Past versions of "prop set 1-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-1-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 1-6.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno,cluster, LV_TAD_overlap)+
   ggtitle(&quot;LV TAD overlap of MER61Es&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%202-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-2-1">
+Past versions of "prop set 2-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 2-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno,cluster, heart_cRE)+
   ggtitle(&quot;Heart cRE overlap of MER61Es&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%202-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-2-2">
+Past versions of "prop set 2-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 2-2.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># prop_plot(mint_anno,cluster, TP53_A549_overlap)+
 #   ggtitle(&quot;Published TP53 regions from A549 cells and MER61E overlaps&quot;)
 
@@ -2578,15 +2931,163 @@ MER61E_cre_df &lt;- MER61E_cre %&gt;%
 prop_plot(mint_anno,cluster, TP53_HEPG2_overlap)+
   ggtitle(&quot;Published TP53 regions from HepG2 cells and MER61E overlaps&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%202-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-2-3">
+Past versions of "prop set 2-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-2-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 2-3.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno,cluster, MER61E_k9upder)+
   ggtitle(&quot;K9me3 overlapped MER61Es by cluster up DER &quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%203-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-3-1">
+Past versions of "prop set 3-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 3-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>  prop_plot(mint_anno,cluster, MER61E_k9downder)+
   ggtitle(&quot;K9me3 overlapped MER61Es by cluster down DER &quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%203-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-3-2">
+Past versions of "prop set 3-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 3-2.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno,cluster,MER61E_k9notder)+
   ggtitle(&quot;K9me3 overlapped MER61Es by cluster not DER &quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set%203-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set-3-3">
+Past versions of "prop set 3-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set-3-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set 3-3.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>RNA_acute_cluster &lt;- read_excel(&quot;C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx&quot;, 
     sheet = &quot;Table_S6&quot;, skip = 1)
 
@@ -2749,6 +3250,43 @@ reneeisnowhere
   theme_bw()+
   ggtitle(&quot;n=54 LTR10Es and motif scores for canonical p53 motif&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/canonical%20p53%20boxplot-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-canonical-p53-boxplot-2">
+Past versions of "canonical p53 boxplot-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-canonical-p53-boxplot-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/canonical p53 boxplot-2.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>mint_anno %&gt;% 
   dplyr::select(repID,cluster,p53_halfsite,p53_fullsite) %&gt;% 
   left_join(MER61E_best_site_signal) %&gt;% 
@@ -2793,6 +3331,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/p53halfsite boxplot-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/p53halfsite boxplot-1.png" target="_blank">ef5aecb</a>
 </td>
 <td>
@@ -2826,6 +3375,43 @@ reneeisnowhere
   theme_bw()+
   ggtitle(&quot;n=152 LTR10Es and motif scores for halfsite p53 motif&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/p53halfsite%20boxplot-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-p53halfsite-boxplot-2">
+Past versions of "p53halfsite boxplot-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-p53halfsite-boxplot-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/p53halfsite boxplot-2.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>MER61E_rep_cluster &lt;- mint_anno %&gt;% 
   dplyr::select(repID,cluster,p53_halfsite)
 
@@ -2871,6 +3457,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/ATAC LFC Boxplot-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ef5aecbd87f34859986d95ef3197d2262f2f63d4/docs/figure/MER61E_build_2.Rmd/ATAC LFC Boxplot-1.png" target="_blank">ef5aecb</a>
 </td>
 <td>
@@ -2909,6 +3506,43 @@ ATAC_LTR10E_LFC %&gt;%
   theme_bw()+
   ggtitle(&quot;n=21 LTR10Es which overlap an ATAC 24hour region&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/LTR10e%20version-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-LTR10e-version-1">
+Past versions of "LTR10e version-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-LTR10e-version-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/LTR10e version-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="more-proportion-plots" class="section level3">
 <h3>More proportion plots</h3>
@@ -2992,48 +3626,566 @@ lint_anno_new %&gt;%
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,upDAR_overlap)+
   ggtitle(&quot;upDAR overlaps proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set4-MER61E-1">
+Past versions of "prop set4 MER61E-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set4-MER61E-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set4 MER61E-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,p53_sp_ChIP_overlap)+
   ggtitle(&quot;sp_VEH p53 overlap proportions across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set4-MER61E-2">
+Past versions of "prop set4 MER61E-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set4-MER61E-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set4 MER61E-2.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,VEH_ATAC_overlap)+
   ggtitle(&quot;ATAC 24hr VEH proportions across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set4-MER61E-3">
+Past versions of "prop set4 MER61E-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set4-MER61E-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set4 MER61E-3.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,K27_VEH_overlap)+
   ggtitle(&quot;H3K27ac VEH tx+0 proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set4-MER61E-4">
+Past versions of "prop set4 MER61E-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set4-MER61E-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set4 MER61E-4.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,TRIM28_K562_overlap)+
   ggtitle(&quot;TRIM28 in K562 cells overlap proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set4-MER61E-5">
+Past versions of "prop set4 MER61E-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set4-MER61E-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set4 MER61E-5.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,SETDB1_HEPG2_overlap)+
   ggtitle(&quot;SETDB1 in HepG2 cells overlap proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set4-MER61E-6">
+Past versions of "prop set4 MER61E-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set4-MER61E-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set4 MER61E-6.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(mint_anno_new, cluster,SOX11_peak_overlap)+
   ggtitle(&quot;SOX11 peaks in Granta-519 MCL cells overlap proportion across MER61E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set4%20MER61E-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set4-MER61E-7">
+Past versions of "prop set4 MER61E-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set4-MER61E-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set4 MER61E-7.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="ltr10e-prop-plots" class="section level3">
 <h3>LTR10E prop plots</h3>
 <pre class="r"><code>prop_plot(lint_anno_new, cluster,upDAR_overlap)+
   ggtitle(&quot;upDAR overlaps proportion across LTR10E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set5-LTR10E-1">
+Past versions of "prop set5 LTR10E-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set5-LTR10E-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set5 LTR10E-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(lint_anno_new, cluster,p53_sp_ChIP_overlap)+
   ggtitle(&quot;sp_VEH p53 overlap proportions across LTR10E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set5-LTR10E-2">
+Past versions of "prop set5 LTR10E-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set5-LTR10E-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set5 LTR10E-2.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(lint_anno_new, cluster,VEH_ATAC_overlap)+
   ggtitle(&quot;ATAC 24hr VEH proportions across LTR10E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set5-LTR10E-3">
+Past versions of "prop set5 LTR10E-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set5-LTR10E-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set5 LTR10E-3.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(lint_anno_new, cluster,K27_VEH_overlap)+
   ggtitle(&quot;H3K27ac VEH tx+0 proportion across LTR10E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set5-LTR10E-4">
+Past versions of "prop set5 LTR10E-4.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set5-LTR10E-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set5 LTR10E-4.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(lint_anno_new, cluster,TRIM28_K562_overlap)+
   ggtitle(&quot;TRIM28 in K562 cells overlap proportion across LTR10E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set5-LTR10E-5">
+Past versions of "prop set5 LTR10E-5.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set5-LTR10E-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set5 LTR10E-5.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(lint_anno_new, cluster,SETDB1_HEPG2_overlap)+
   ggtitle(&quot;SETDB1 in HepG2 cells overlap proportion across LTR10E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set5-LTR10E-6">
+Past versions of "prop set5 LTR10E-6.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set5-LTR10E-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set5 LTR10E-6.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot(lint_anno_new, cluster,SOX11_peak_overlap)+
   ggtitle(&quot;SOX11 peaks in Granta-519 MCL cells overlap proportion across LTR10E&quot;)</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/prop%20set5%20LTR10E-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-prop-set5-LTR10E-7">
+Past versions of "prop set5 LTR10E-7.png"
+</button>
+</p>
+<div id="fig-no-spaces-prop-set5-LTR10E-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/prop set5 LTR10E-7.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="sox11-rna-expression" class="section level3">
 <h3>SOX11 RNA expression</h3>
@@ -3119,6 +4271,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-7-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/ccf5bb391f650d996ec27907ab5c3359e12264c3/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-7-1.png" target="_blank">ccf5bb3</a>
@@ -3280,6 +4443,43 @@ MER61E_bind &lt;- bind_rows(MER61E_Set3_sea_disc_out, MER61E_Set3_sea_known) %&g
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET3 enrichment of MER61E vs all other MER61E&quot;))</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-10-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-10-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="ltr10e-2" class="section level4">
 <h4>LTR10E</h4>
@@ -3320,6 +4520,43 @@ LTR10E_bind &lt;- bind_rows(LTR10E_Set3_sea_disc_out, LTR10E_Set3_sea_known) %&g
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET3 enrichment of LTR10E vs all other LTR10E&quot;))</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-13-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-13-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>MER61E</p>
 </div>
 <div id="ltr10e-3" class="section level4">
@@ -3361,6 +4598,43 @@ twoTE_bind &lt;- bind_rows(twoTE_Set3_sea_disc_out, twoTE_Set3_sea_known) %&gt;%
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;SET3 enrichment of twoTE vs all other twoTE&quot;))</code></pre>
 <p><img src="figure/MER61E_build_2.Rmd/unnamed-chunk-16-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/340539a6c566a463fc39776330cd6b617cab0c1f/docs/figure/MER61E_build_2.Rmd/unnamed-chunk-16-1.png" target="_blank">340539a</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
