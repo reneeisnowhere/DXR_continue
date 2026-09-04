@@ -1626,45 +1626,8 @@ prop_plot(lint_anno_new, cluster,SOX11_peak_overlap)+
 ##6664 NCBI number for SOX11 uni-prot P35716
 
 RNA_count_table <- read_csv("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/filcpm_final_matrix.csv") %>% dplyr::rename(ENTREZID=1)%>% column_to_rownames("ENTREZID")
+tab <- read_csv("C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx")
 
-# H3K27ac_filt_raw_counts <- read_delim("data/DER_data/H3K27ac_filtered_raw_counts.txt",delim = "\t") %>% column_to_rownames("Peakid")
-
-protein_data <- read.delim("data/Other_paper_data/protein_LFC_Johnson_2025.tsv")
-
-protein_counts <- read_xlsx("data/Other_paper_data/Johnson25_S3_Appendix_GR_protein_counts.xlsx")
-
-map <- readRDS( "data/RDS_files/uniprot_map.rds")
-map_clean <- map %>%
-  group_by(Entry) %>%
-  summarise(
-    gene = sub(" .*", "", Gene.Names),
-    .groups = "drop"
-  )
-protein_counts_mat <- protein_counts %>% 
-    dplyr::rename("UNIPROT"=1)
-  # column_to_rownames("...1")
-# rownames(protein_counts) <- protein_counts$`...1`
-# protein_counts_mat <- protein_counts[, -1]
-# dim(protein_counts_mat)  # should now be 7628 x 92
-
-# 2. Check for the two contaminant proteins the original pipeline drops
-# c("P02769", "P00711") %in% rownames(protein_counts_mat)
-# protein_counts_clean <- protein_counts_mat[!rownames(protein_counts_mat) %in% c("P02769", "P00711"), ]
-
-
-
-
-
-
-protein_counts_mat %>% 
-  # grep("P35716",  value = TRUE)
-  filter(stringr::str_detect(UNIPROT, "P35716"))
-
-# protein_data %>% 
-#   filter(stringr::str_detect(Protein, "P35*"))
-
-# map %>% 
-#   dplyr::filter(Entry=="P35716")
 ```
 
 
@@ -1673,9 +1636,9 @@ protein_counts_mat %>%
 
 
 
-```{r}
+```{r SOX11 expression RNA}
 RNA_count_table %>% dplyr::filter(row.names(.)=="6664") %>% 
-  pivot_longer(everything(), names_to = "Samples",values_to = "lcpm") %>% 
+  pivot_longer(cols = colnames(.), names_to = "Samples",values_to = "lcpm") %>% 
   separate_wider_delim(cols=Samples,names=c("trt","time","ind"),delim="_",cols_remove = FALSE) %>% 
   mutate(time=factor(time,levels=c("24T","24R","144R")),
          trt=factor(trt,levels=c("DMSO","DOX"))) %>% 
@@ -1686,6 +1649,18 @@ RNA_count_table %>% dplyr::filter(row.names(.)=="6664") %>%
   theme_bw()
 ```
 
+```{r SOX10 expression}
+RNA_count_table %>% dplyr::filter(row.names(.)=="6663") %>%
+  pivot_longer(cols = colnames(.), names_to = "Samples",values_to = "lcpm") %>% 
+  separate_wider_delim(cols=Samples,names=c("trt","time","ind"),delim="_",cols_remove = FALSE) %>% 
+  mutate(time=factor(time,levels=c("24T","24R","144R")),
+         trt=factor(trt,levels=c("DMSO","DOX"))) %>% 
+  ggplot(., aes(x=interaction(trt,time),y=lcpm))+
+  geom_boxplot(aes(fill=trt))+
+  geom_point(aes(color=ind))+
+  ggtitle("SOX10 RNA expression over time")+
+  theme_bw()
+```
 
 
 
@@ -1731,26 +1706,7 @@ separate_rows(GREAT_gene_assign, sep = ",\\s*") %>%
 ```
 
 
-```{r Filtering for expressed TFs, eval=FALSE}
-RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
 
-RNA_expressed <- RNA_full_toptable %>% 
-  dplyr::select(Entrez_ID, SYMBOL)
-
-### had to add in a special filter to account for the :: in the names of the motifs
-symbols <- str_to_upper(RNA_expressed$SYMBOL)
-
-filtered_known_mer_set3 <- known_mer_set3 %>%
-  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
-  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
-  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
-  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
-  dplyr::select(-motif_tokens)
-
-RNA_H3K27ac_LFC_dataframe <- active_DOX_df %>% 
-  left_join(RNA_lfc_SYMBOL, by=c("gene"="SYMBOL")) %>% 
-  left_join(H3K27ac_lfc_table, by=c("H3K27ac_region"="genes"))
-```
 
 
 ```{r RNA_lfc_SYMBOL, eval=FALSE}
@@ -1855,7 +1811,36 @@ MER61E_Set3_data %>%
   ggtitle(paste("SET3 enrichment of MER61E vs all other MER61E"))
 
 ```
+```{r Filtering for expressed TFs, eval=TRUE}
+RNA_full_toptable <-  readRDS("data/Other_paper_data/RNA_full_toptable.RDS")
 
+RNA_expressed <- RNA_full_toptable %>% 
+  dplyr::select(Entrez_ID, SYMBOL)
+
+### had to add in a special filter to account for the :: in the names of the motifs
+symbols <- str_to_upper(RNA_expressed$SYMBOL)
+
+filtered_MER61E_set3_data <- MER61E_Set3_data %>%
+  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
+  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
+  dplyr::select(-motif_tokens)
+
+filtered_MER61E_set3_data %>% 
+  dplyr::filter(!is.na(MOTIF_URL)) %>% 
+  group_by(CLUSTER) %>% 
+  slice_min(EVALUE, with_ties = FALSE) %>% 
+  mutate(order= row_number()) %>% 
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*1.5), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1.5,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET3 filtered motif enrichment of MER61E vs all other MER61E"))
+```
 
 #### LTR10E  
 
@@ -1907,7 +1892,31 @@ LTR10E_Set3_data %>%
   ggtitle(paste("SET3 enrichment of LTR10E vs all other LTR10E"))
 
 ```
+```{r Filtering for expressed TFs LTR10E, eval=TRUE}
 
+filtered_LTR10E_set3_data <- LTR10E_Set3_data %>%
+  ##create the motif-tokens column so I can keep names where there is a partial match in the RNA Symbols
+  mutate(motif_tokens = str_split(str_to_upper(motif_name), "::")) %>%
+  ##Because this is a list, now I need to filter using sapply, but then remove the motif token column
+  filter(sapply(motif_tokens, function(x) any(x %in% symbols))) %>%
+  dplyr::select(-motif_tokens)
+
+filtered_LTR10E_set3_data %>% 
+  dplyr::filter(!is.na(MOTIF_URL)) %>% 
+  group_by(CLUSTER) %>% 
+  slice_min(EVALUE, with_ties = FALSE) %>% 
+  ungroup() %>% 
+  mutate(order= row_number()) %>% 
+  mutate(motif_name=if_else(motif_name%in% c("SOX10","Sox11","IKZF2"),paste0(motif_name,"_",order),motif_name)) %>%
+  mutate(log10Evalue= log(EVALUE, base = 10)*(-1)) %>% 
+  ggplot(., aes (y= reorder(motif_name,log10Evalue))) +
+  geom_col(aes(x=log10Evalue))+
+  geom_point(aes(x=`TP%`*1), size =4)+
+  scale_x_continuous(expand=c (0,.125),sec.axis = sec_axis(transform= ~./1,name="Percent of peaks with motif"))+
+  theme_classic()+
+  ylab("Enriched TF motif")+
+  ggtitle(paste("SET3 filtered motif enrichment of LTR10E vs all other LTR10E"))
+```
 
 MER61E
 
@@ -1965,4 +1974,9 @@ twoTE_Set3_data %>%
 ```
 
 
-
+```{r}
+packageVersion("dplyr")
+packageVersion("tidyr")
+packageVersion("tidyselect")
+.libPaths()
+```
