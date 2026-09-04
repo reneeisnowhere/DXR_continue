@@ -584,7 +584,7 @@ repName_results_final <- repName_results %>%
 
 ggplot(repName_results_final, aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
   geom_point(aes(color = odds_ratio > 1), size = 3) +
-  geom_text_repel(data = subset(repName_results, FDR < 0.01),
+  geom_text_repel(data = subset(repName_results, FDR < 0.01 & odds_ratio >1),
     size = 3,
     force = 3,
     box.padding = 0.6,
@@ -604,6 +604,30 @@ ggplot(repName_results_final, aes(x = (odds_ratio), y = -log10(FDR),label = repN
   theme_classic() 
 ```
 
+```{r just enriched}
+repName_results_final %>% 
+  dplyr::filter(odds_ratio>1) %>% 
+  ggplot(., aes(x = (odds_ratio), y = -log10(FDR),label = repName)) +
+  geom_point(aes(color = odds_ratio > 1), size = 3) +
+  geom_text_repel(data = subset(repName_results, FDR < 0.01 & odds_ratio >1),
+    size = 3,
+    force = 3,
+    box.padding = 0.6,
+    point.padding = 0.4,
+    max.overlaps = Inf,
+    segment.color = "grey50",
+    segment.size = 0.3
+  ) +
+  # geom_text_repel(size=3, max.overlaps = Inf)+
+  # geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  geom_hline(yintercept = -log10(0.01), linetype = "dotted") +
+  labs(
+    x = "(Odds Ratio)",
+    y = "-log10(FDR)",
+    title = "all onlye enriched repName in DAR v CAR ATAC regions"
+  ) +
+  theme_bw() 
+```
 
 
 ### LFC ATAC v LFC H3K27ac
@@ -659,7 +683,7 @@ p <- summary(fit_lm)$coefficients["H3K27ac_LFC", "Pr(>|t|)"]
              label = paste0("R² = ", round(r2, 3),
       "\np = ", signif(p, 3)))+
     theme_bw()+
-    ggtitle("Scatterplot with linear model fit \n(not correlation) of regions overlapping the same MER61Es")+
+    ggtitle("Scatterplot with linear model fit \n of regions overlapping the same MER61Es")+
     labs(x="H3K27ac tx+0 log fold change",
          y="ATAC 24 hour log fold change")
 
@@ -738,7 +762,7 @@ p_ltr10e <- summary(fit_lm_ltr10e)$coefficients["H3K27ac_LFC", "Pr(>|t|)"]
              label = paste0("R² = ", round(r2_ltr10e, 3),
       "\np = ", signif(p_ltr10e, 3)))+
     theme_bw()+
-    ggtitle("Scatterplot with linear model fit \n(not correlation) of regions overlapping the same LTR10Es")+
+    ggtitle("Scatterplot with linear model fit \nof regions overlapping the same LTR10Es")+
     labs(x="H3K27ac tx+0 log fold change",
          y="ATAC 24 hour log fold change")
 
