@@ -1649,8 +1649,10 @@ RNA_count_table %>% dplyr::filter(row.names(.)=="6664") %>%
   theme_bw()
 ```
 
-```{r SOX10 expression}
-RNA_count_table %>% dplyr::filter(row.names(.)=="6663") %>%
+### TP53 RNA expression
+
+```{r TP53 expression}
+RNA_count_table %>% dplyr::filter(row.names(.)=="7157") %>%
   pivot_longer(cols = colnames(.), names_to = "Samples",values_to = "lcpm") %>% 
   separate_wider_delim(cols=Samples,names=c("trt","time","ind"),delim="_",cols_remove = FALSE) %>% 
   mutate(time=factor(time,levels=c("24T","24R","144R")),
@@ -1658,7 +1660,7 @@ RNA_count_table %>% dplyr::filter(row.names(.)=="6663") %>%
   ggplot(., aes(x=interaction(trt,time),y=lcpm))+
   geom_boxplot(aes(fill=trt))+
   geom_point(aes(color=ind))+
-  ggtitle("SOX10 RNA expression over time")+
+  ggtitle("TP53 RNA expression over time")+
   theme_bw()
 ```
 
@@ -1979,4 +1981,239 @@ packageVersion("dplyr")
 packageVersion("tidyr")
 packageVersion("tidyselect")
 .libPaths()
+```
+### SOX11 
+
+
+
+
+```{r function sox11 canonical motifs}
+sox11_canonical_motifs <- function(fimo_root_dir, te_bed_base_dir) {
+ 
+  
+  # Initialize results list
+  results_list <- list()
+  hit_list <- list()
+  
+  # Find all directories ending with "_fimo"
+  fimo_dirs <- list.dirs(fimo_root_dir, recursive = FALSE)
+  fimo_dirs <- fimo_dirs[grepl("_sea_jaspar$", basename(fimo_dirs))]
+  
+  for (fimo_dir in fimo_dirs) {
+    base_name <- sub("_sea_jaspar$", "", basename(fimo_dir))
+    
+    # Find FIMO file
+    sites_file <- file.path(fimo_dir, "sites.tsv")
+    if (!file.exists(sites_file)) {
+      message("Skipping ", fimo_dir, ": sites.tsv not found")
+      next
+    }
+  
+  
+  te_file <- file.path(te_bed_base_dir, paste0(base_name, ".bed"))
+    if (!file.exists(te_file)) {
+      message("Skipping ", base_name, ": TE BED file not found")
+      next
+    }
+  
+    
+    # ------------------------------
+    # Load TE BED file
+    # ------------------------------
+    te_df <- read.table(te_file, header = FALSE, stringsAsFactors = FALSE)
+    colnames(te_df) <- c("chr","start","end","name","score","strand")
+    te_df <- te_df[!is.na(te_df$start) & !is.na(te_df$end) & (te_df$start <= te_df$end), ]
+    te_gr <- GRanges(
+    seqnames = te_df$chr,
+    ranges = IRanges(start = te_df$start, end = te_df$end),
+    strand = te_df$strand,
+    TE_id = te_df$name,
+    TE_score = te_df$score
+    )
+    # ------------------------------
+    # Load sox11 sites
+    # ------------------------------
+    cano_sites <- read.delim(sites_file, stringsAsFactors = FALSE)
+    
+    # Filter sox11 motifs
+    if (!"motif_ALT_ID" %in% colnames(cano_sites)) {
+      message("No motif_ALT_ID column in ", sites_file)
+      next
+    }
+    cano_sites <- cano_sites[
+      grepl("Sox11", cano_sites$motif_ALT_ID, ignore.case = TRUE),
+    ]
+    # Skip if no motifs found
+    if (nrow(cano_sites) == 0) {
+      message("No Sox11 motifs in ", base_name)
+      results_list[[paste0(base_name, "_no_hits")]] <- data.frame(
+        TE_name = base_name,
+        motif_name = "Sox11",
+        total_TEs = length(te_gr),
+        TEs_with_Sox11 = 0,
+        total_Sox11_hits = 0,
+        occupancy = 0
+      )
+      next
+    }
+    
+    # Clean FIMO entries
+    cano_sites <- cano_sites[!is.na(cano_sites$site_Start) & !is.na(cano_sites$site_End) & (cano_sites$site_Start <= cano_sites$site_End), ]
+    
+    motif_name <- unique(cano_sites$motif_ALT_ID)
+    
+    # Loop over each motif separately (in case multiple motifs exist)
+    for (mn in motif_name) {
+      fimo_motif <- cano_sites[cano_sites$motif_ALT_ID == mn, ]
+      
+      fimo_gr <- GRanges(
+        seqnames = fimo_motif$seq_ID,
+        ranges = IRanges(start = fimo_motif$site_Start, end = fimo_motif$site_End),
+        strand = fimo_motif$site_Strand,
+        score = fimo_motif$site_Score
+      )
+      
+      # ------------------------------
+      # Overlaps
+      # ------------------------------
+      hits <- findOverlaps(fimo_gr, te_gr)
+      n_te_total <- length(te_gr)
+      
+      if (length(hits) == 0) {
+        message("No overlaps for motif ", mn, " in ", base_name)
+        results_list[[paste0(base_name, "_", mn)]] <- data.frame(
+          TE_name = base_name,
+          motif_name = mn,
+          total_TEs = n_te_total,
+          TEs_with_Sox11 = 0,
+          total_Sox11_hits = 0,
+          occupancy = 0
+        )
+        next
+      }
+      
+      n_te_with_hits <- length(unique(subjectHits(hits)))
+      n_total_hits <- length(hits)
+      occupancy <- ifelse(n_te_total > 0, n_te_with_hits / n_te_total, NA)
+      
+    
+    # ------------------------------
+      # Compute relative positions
+      # ------------------------------
+      rel_pos <- (start(fimo_gr)[queryHits(hits)] - start(te_gr)[subjectHits(hits)]) /
+                 width(te_gr)[subjectHits(hits)]
+      rel_pos <- pmin(pmax(rel_pos, 0), 1)
+      df <- data.frame(rel_pos = rel_pos)
+      hit_df <- data.frame(
+        TE_name = base_name,
+       motif_name = mn,
+
+    # which FIMO motif hit
+       motif_chr = as.character(seqnames(fimo_gr)[queryHits(hits)]),
+        motif_start = start(fimo_gr)[queryHits(hits)],
+        motif_end = end(fimo_gr)[queryHits(hits)],
+        motif_strand = as.character(strand(fimo_gr)[queryHits(hits)]),
+        motif_score = mcols(fimo_gr)$score[queryHits(hits)],
+
+    # which TE it overlaps
+        TE_id = mcols(te_gr)$TE_id[subjectHits(hits)],
+        TE_chr = as.character(seqnames(te_gr)[subjectHits(hits)]),
+        TE_start = start(te_gr)[subjectHits(hits)],
+        TE_end = end(te_gr)[subjectHits(hits)],
+        TE_strand = as.character(strand(te_gr)[subjectHits(hits)]),
+
+          rel_pos = rel_pos
+        )
+
+hit_list[[paste0(base_name, "_", mn)]] <- hit_df
+      
+      # ------------------------------
+      # Store results
+      # ------------------------------
+      results_list[[paste0(base_name, "_", mn)]] <- data.frame(
+        TE_name = base_name,
+        motif_name = mn,
+        total_TEs = n_te_total,
+        TEs_with_Sox11 = n_te_with_hits,
+        total_Sox11_hits = n_total_hits,
+        occupancy = occupancy
+      )
+      
+      # ------------------------------
+      # Plot density
+      # ------------------------------
+      cat(paste0("### ", base_name, " ", mn, "\n"))
+      cat(base_name, "| total TEs:", n_te_total, "| with Sox11:", n_te_with_hits, 
+          "| hits:", n_total_hits, "\n")
+      cat("Sequences with full Sox11 motif: ", round(occupancy * 100, 2), "%\n\n")
+      
+      p <- ggplot(df, aes(x = rel_pos)) +
+        geom_density(fill = "steelblue", alpha = 0.5) +
+        labs(x = "Relative position in TE", y = "Motif density") +
+        theme_classic() +
+        ggtitle(paste0("canonical Sox11 motif distribution: ", base_name,
+                       "\nSequences with motif: ", round(occupancy * 100, 1), "%"))
+      print(p)
+      cat("\n\n")
+    }
+  } # end fimo_dirs loop
+  
+  # Combine all results into one data frame
+  results_df <- do.call(rbind, results_list)
+  
+  # print(results_df)
+  hits_df <- do.call(rbind, hit_list)
+
+return(list(
+  summary = results_df,
+  hits = hits_df
+))
+}
+    
+
+```
+
+```{r}
+SOX11_results <- sox11_canonical_motifs("C:/Users/renee/Other_projects_data/DXR_data/TE_sea_jaspar_results","data/Bed_exports/repeatmasker_sets/ERV1")
+
+repTEs_sox11 <- SOX11_results$hits
+
+
+MER61E_K27acLFC_age_sox11 <-H3K27ac_ext200_anno %>%
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = ";") %>% 
+  dplyr::filter(repName=="MER61E") %>% 
+  dplyr::select(Peakid,repID, cluster) %>%
+  left_join(repeatmasker_clean, by=c("repID"="RM_id")) %>% 
+  dplyr::rename("H3K27ac_peakid"=Peakid) %>% 
+  left_join((H3K27ac_toplist$H3K27ac_24T %>% dplyr::select(genes, logFC)), by=c("H3K27ac_peakid"="genes")) %>% 
+  mutate(SOX11=if_else(repID %in% repTEs_sox11$TE_id,"yes","no"))
+
+
+LTR10E_K27acLFC_age_sox11 <-H3K27ac_ext200_anno %>%
+  separate_longer_delim(cols=c(repClass,repFamily,repName,repID), delim = ";") %>% 
+  dplyr::filter(repName=="LTR10E") %>% 
+  dplyr::select(Peakid,repID, cluster) %>%
+  left_join(repeatmasker_clean, by=c("repID"="RM_id")) %>% 
+  dplyr::rename("H3K27ac_peakid"=Peakid) %>% 
+  left_join((H3K27ac_toplist$H3K27ac_24T %>% dplyr::select(genes, logFC)), by=c("H3K27ac_peakid"="genes")) %>% 
+  mutate(SOX11=if_else(repID %in% repTEs_sox11$TE_id,"yes","no"))
+```
+
+
+
+
+
+```{r MER61E Sox11}
+ggplot(MER61E_K27acLFC_age_sox11, aes(x=logFC,y=milliDiv))+
+  geom_point(aes(color=SOX11))+
+  ggtitle("H3K27ac logFC at 0R which overlap a MER61E \nand the milliDiv of the MER61E, n=67 colored for SOX11")+
+  theme_bw()
+```
+
+
+```{r LTR10E Sox11}
+ggplot(LTR10E_K27acLFC_age_sox11, aes(x=logFC,y=milliDiv))+
+  geom_point(aes(color=SOX11))+
+  ggtitle("H3K27ac logFC at 0R which overlap a LTR10E \nand the milliDiv of the LTR10E, n=35 colored for SOX11")+
+  theme_bw()
 ```
