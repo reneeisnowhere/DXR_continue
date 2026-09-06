@@ -1194,7 +1194,7 @@ state_props <- state_transitions %>%
   mutate(prop= n/sum(n))
 
 state_props %>% 
-  dplyr::mutate(TX_timepoint=factor(TX_timepoint,levels=c("DOX_24T_anno","DOX_24R_anno","DOX_144R_anno","VEH_24T_anno","VEH_24R_anno","VEH_144R_anno"),labels=c("DOX_24T","DOX_24R","DOX_144R","VEH_24T","VEH_24R","VEH_144R"))) %>% 
+  dplyr::mutate(TX_timepoint=factor(TX_timepoint,levels=c("VEH_24T_anno","VEH_24R_anno","VEH_144R_anno","DOX_24T_anno","DOX_24R_anno","DOX_144R_anno"),labels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T","DOX_24R","DOX_144R"))) %>% 
 ggplot( aes(x = TX_timepoint, y = prop, fill = State)) +
   geom_col(position = "fill") +
   scale_y_continuous(labels = scales::percent) +
@@ -1558,6 +1558,12 @@ name_colors <- stats::setNames(
   name_color_key$color,
   name_color_key$Name)
 
+if (state_col == "Broad_state") {
+  plot_colors <- state_colors
+} else if (state_col == "Name") {
+  plot_colors <- name_colors
+}
+
   trajectory <- dominant_df %>%
     dplyr::mutate(Condition=factor(Condition, levels=c("VEH","DOX"))) %>% 
   dplyr::select(all_of(id_col),te_name, Condition, Timepoint, all_of(state_col)) %>%
@@ -1593,7 +1599,7 @@ name_colors <- stats::setNames(
      facet_wrap(~ Condition) +
      scale_x_discrete(limits = c("24T", "24R", "144R"),
                       expand = c(0.1, 0.05)) +
-     scale_fill_manual(values = name_colors,
+     scale_fill_manual(values = plot_colors,
                        na.value = "grey80") +
      labs(title = paste0("Complete ChromHMM state trajectories for ", TE," (n = ",n_elements," integrants)"),
           x = NULL,
@@ -1645,6 +1651,9 @@ acute_MER61E_plot_data <- plot_trajectory(acute_MER61E_dominant,TE="MER61E",id_c
 MER61E_plot_data
 
 acute_MER61E_plot_data
+```
+```{r acutemer61e}
+plot_trajectory(acute_MER61E_dominant,TE="MER61E",id_col="te_id",state_col="Broad_state")
 ```
 
 ### All LTR10E integrants  
@@ -1959,6 +1968,12 @@ acute_LTR10E_plot_data <- plot_trajectory(acute_LTR10E_dominant,TE="LTR10E",id_c
 LTR10E_plot_data
 acute_LTR10E_plot_data
 ```
+
+```{r acuteltr10e}
+plot_trajectory(acute_LTR10E_dominant,TE="LTR10E",id_col="te_id",state_col="Broad_state")
+```
+
+
 ```{r file saving, eval=FALSE}
 saveRDS(LTR10E_trajectory_broad,"data/RDS_files/LTR10E_trajectory_broad.RDS")
 saveRDS(LTR10E_trajectory_detailed,"data/RDS_files/LTR10E_trajectory_detailed.RDS")
