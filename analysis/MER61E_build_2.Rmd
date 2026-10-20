@@ -2323,6 +2323,7 @@ return(list(
 SOX11_results <- sox11_canonical_motifs("C:/Users/renee/Other_projects_data/DXR_data/TE_sea_jaspar_results","data/Bed_exports/repeatmasker_sets/ERV1")
 
 repTEs_sox11 <- SOX11_results$hits
+filt_repTEs_sox11 <- repTEs_sox11 %>% dplyr::filter(motif_score>12&TE_name=="LTR10E_ERV1_LTR")
 
 
 MER61E_K27acLFC_age_sox11 <-H3K27ac_ext200_anno %>%
@@ -2342,7 +2343,8 @@ LTR10E_K27acLFC_age_sox11 <-H3K27ac_ext200_anno %>%
   left_join(repeatmasker_clean, by=c("repID"="RM_id")) %>% 
   dplyr::rename("H3K27ac_peakid"=Peakid) %>% 
   left_join((H3K27ac_toplist$H3K27ac_24T %>% dplyr::select(genes, logFC)), by=c("H3K27ac_peakid"="genes")) %>% 
-  mutate(SOX11=if_else(repID %in% repTEs_sox11$TE_id,"yes","no"))
+  mutate(SOX11=if_else(repID %in% repTEs_sox11$TE_id,"yes","no")) %>% 
+  mutate(SOX11_filt=if_else(repID %in% filt_repTEs_sox11$TE_id,"yes","no"))
 ```
 
 
@@ -2362,6 +2364,12 @@ ggplot(LTR10E_K27acLFC_age_sox11, aes(x=logFC,y=milliDiv))+
   geom_point(aes(color=SOX11))+
   ggtitle("H3K27ac logFC at 0R which overlap a LTR10E \nand the milliDiv of the LTR10E, n=35 colored for SOX11")+
   theme_bw()
+
+# ggplot(LTR10E_K27acLFC_age_sox11, aes(x=logFC,y=milliDiv))+
+#   geom_point(aes(color=SOX11_filt))+
+#   ggtitle("H3K27ac logFC at 0R which overlap a LTR10E \nand the milliDiv of the LTR10E, n=35 colored for filtered SOX11")+
+#   theme_bw()
+
 ```
 
 #### Additional SOX11 plots/bar plots
@@ -2444,19 +2452,36 @@ prop_plot_mod_ltr <- function(data, group_col, yes_no_col) {
 
 
 ```{r SOX11 site plots}
+
+
 sox11_lint <- lint_anno %>% 
-  mutate(SOX11_site=if_else(repID %in% repTEs_sox11$TE_id,"yes","no")) 
+  mutate(SOX11_site=if_else(repID %in% repTEs_sox11$TE_id,"yes","no"), 
+         SOX11_site_filtered=if_else(repID %in% filt_repTEs_sox11$TE_id,"yes","no"))
 
 prop_plot_mod_ltr(sox11_lint, alt_cluster, SOX11_site)+
   ggtitle("Acute LTR10E proportion with SOX11 sites")
 
 sox11_mint <- mint_anno %>% 
-  mutate(SOX11_site=if_else(repID %in% repTEs_sox11$TE_id,"yes","no"))
+    mutate(SOX11_site=if_else(repID %in% repTEs_sox11$TE_id,"yes","no"),
+         VEH_ATAC_overlap=if_else(repID %in% VEH_ATAC_ols[["name"]],"yes","no"))
 
 prop_plot_mod(sox11_mint, alt_cluster, SOX11_site)+
   ggtitle("Acute MER61E proportion with SOX11 sites")
 
 prop_plot_mod_ltr(lint_anno,alt_cluster, TP53_HEPG2_overlap)+
   ggtitle("Published TP53 regions from HepG2 cells and LTR10E overlaps")
+
+prop_plot_mod(mint_anno,alt_cluster, ZNF780A_binding)+
+  ggtitle("ZNF780A and MER61E overlap enrichment")
+
+prop_plot_mod(mint_anno,alt_cluster, ZNF680_binding)+
+  ggtitle("ZNF680 and MER61E overlap enrichment")
+
+prop_plot_mod(sox11_mint,alt_cluster, VEH_ATAC_overlap)+
+  ggtitle("ATAC VEH and MER61E overlap enrichment")
+```
+
+```{r}
+
 ```
 
