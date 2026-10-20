@@ -1,0 +1,186 @@
+---
+title: "Distance_examination"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+library(ggalluvial)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(janitor)
+library(MASS)
+library(readxl)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(GenomicFeatures)
+library(edgeR)
+```
+
+
+
+```{r data loading}
+
+MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
+
+LTR10E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/LTR10E_ERV1_LTR.bed")
+
+sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
+
+H3K27ac_ext200_anno <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+
+# KZFP_motif_info <- readRDS("data/RDS_files/KZFP_motif_info.RDS")
+
+H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+
+H3K27ac_summit_gr_ext <- resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
+
+human_protein_coding_KZFPs <- read_excel("data/Other_paper_data/human_protein_coding_KZFPs_Davis_natgen_2026.xlsx")
+
+
+MER61E_set_3 <- H3K27ac_ext200_anno %>% 
+  separate_longer_delim(., cols=c(repClass:repID),delim=";") %>% 
+  dplyr::filter(repName=="MER61E",
+                cluster=="Set_3") %>% 
+  pull(repID)
+KZFP_gr <- GRanges(seqnames = human_protein_coding_KZFPs$chrom,
+                   ranges= IRanges(start=human_protein_coding_KZFPs$start+1,
+                                   end= human_protein_coding_KZFPs$end),
+                   gene_name = human_protein_coding_KZFPs$Label)
+
+
+mcols(MER61E_regions)$Response <- ifelse(
+  MER61E_regions$name %in% MER61E_set_3,"Acute","Non-acute")
+seqlevelsStyle(KZFP_gr) <- "UCSC"
+
+```
+
+```{r DIST list}
+
+nearest_hits <- distanceToNearest(MER61E_regions,KZFP_gr, ignore.strand=TRUE)
+
+distance_df <- data.frame(
+  Peak_name = MER61E_regions$name[queryHits(nearest_hits)],
+  Response = MER61E_regions$Response[queryHits(nearest_hits)],
+  KZFP_gene = KZFP_gr$gene_name[subjectHits(nearest_hits)],
+  Distance_bp = mcols(nearest_hits)$distance
+) %>%
+  mutate(
+    Distance_kb = Distance_bp / 1000,
+    Response = factor(Response, levels = c("Acute", "Non-acute"))
+  )
+
+ggplot(distance_df,
+       aes(x = Response, y = Distance_kb, fill = Response)) +
+  geom_violin(trim = FALSE, alpha = 0.5) +
+  geom_boxplot(width = 0.18, outlier.shape = NA, alpha = 0.8) +
+  scale_y_continuous(
+    trans = "log1p",
+    labels = scales::label_comma()
+  ) +
+  labs(
+    title = "Distance of MER61E elements to nearest KZFP gene",
+    x = NULL,
+    y = "Distance to nearest KZFP gene (kb)"
+  ) +
+  theme_classic() +
+  theme(legend.position = "none")
+
+wilcox.test(
+  Distance_bp ~ Response,
+  data = distance_df,
+  exact = FALSE
+)
+
+distance_df %>%
+  group_by(Response) %>%
+  summarise(
+    n = dplyr::n(),
+    median_kb = median(Distance_kb),
+    mean_kb = mean(Distance_kb),
+    .groups = "drop"
+  )
+
+summary(distance_df$Distance_kb)
+
+distance_df %>%
+  arrange(Distance_bp) %>%
+  dplyr::select(Peak_name, KZFP_gene, Distance_kb) %>%
+  head()
+```
+```{r}
+excluded <- MER61E_regions[-unique(queryHits(nearest_hits))]
+
+data.frame(
+  MER61E = excluded$name,
+  Response = excluded$Response,
+  Chromosome = as.character(seqnames(excluded))
+)
+
+table(
+  Chromosome = as.character(seqnames(excluded)),
+  Response = excluded$Response
+)
+
+setdiff(
+  unique(as.character(seqnames(MER61E_regions))),
+  unique(as.character(seqnames(KZFP_gr)))
+)
+
+distance_df %>%
+  group_by(Response) %>%
+  summarise(
+    n = dplyr::n(),
+    within_100kb = sum(Distance_kb <= 100),
+    within_500kb = sum(Distance_kb <= 500),
+    within_1Mb = sum(Distance_kb <= 1000),
+    within_5Mb = sum(Distance_kb <= 5000),
+    .groups = "drop"
+  )
+
+distance_df %>%
+  mutate(
+    Within_1Mb = Distance_kb <= 1000
+  ) %>%
+  count(Response, Within_1Mb) %>%
+  group_by(Response) %>%
+  mutate(Percent = 100 * n / sum(n))
+
+fisher.test(
+  table(
+    distance_df$Response,
+    distance_df$Distance_kb <= 1000
+  )
+)
+```
+
