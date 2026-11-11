@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Renee Matthews" />
+
+<meta name="date" content="2026-11-11" />
+
+<title>MER61E_build_4</title>
+
+<script src="site_libs/header-attrs-2.32/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DXR_project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/reneeisnowhere/DXR_continue">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">MER61E_build_4</h1>
+<h4 class="author">Renee Matthews</h4>
+<h4 class="date">2026-11-11</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-11-11
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>DXR_continue/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250701code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250701)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250701code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250701)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree44f1ba1cc6c3804971940ccbfc37857b05a6e105targetblank44f1ba1a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/44f1ba1cc6c3804971940ccbfc37857b05a6e105" target="_blank">44f1ba1</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree44f1ba1cc6c3804971940ccbfc37857b05a6e105targetblank44f1ba1a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/44f1ba1cc6c3804971940ccbfc37857b05a6e105" target="_blank">44f1ba1</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/Bed_exports/
+    Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
+    Ignored:    data/Cormotif_data/
+    Ignored:    data/DER_data/
+    Ignored:    data/H3K27ac_LTR10E_integrant_anno.RDS
+    Ignored:    data/H3K27ac_MER61E_integrant_anno.RDS
+    Ignored:    data/MER61E_alignments.RDS
+    Ignored:    data/MER61intermediatemarking_protein.RDS
+    Ignored:    data/Other_paper_data/
+    Ignored:    data/RDS_files/
+    Ignored:    data/TE_annotation/
+    Ignored:    data/alignment_summary.txt
+    Ignored:    data/all_peak_final_dataframe.txt
+    Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_p53_canonical.RDS
+    Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/hg19ToHg38.over.chain
+    Ignored:    data/hg19ToHg38.over.chain.gz
+    Ignored:    data/hg38_expressed_RNA_genes.bed
+    Ignored:    data/lookup_table_andstuff.txt
+    Ignored:    data/motif_lists/
+    Ignored:    data/number_frag_peaks_summary.txt
+    Ignored:    data/p53halfsite_TE_ids.RDS
+
+Untracked files:
+    Untracked:  H3K27ac_all_regions_test.bed
+    Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  MER61C_ERV1_LTR.fa
+    Untracked:  MER61E_notSet3.bed
+    Untracked:  analysis/GREAT_H3K27ac.Rmd
+    Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_KZFP_motifs.Rmd
+    Untracked:  analysis/H3K27ac_TE_investigation_200bp.Rmd
+    Untracked:  analysis/H3K27me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K36me3_TE_investigation.Rmd
+    Untracked:  analysis/HIstone_supp_profiles.Rmd
+    Untracked:  analysis/Top2a_Top2b_expression.Rmd
+    Untracked:  analysis/drill_down_KZFPs.Rmd
+    Untracked:  analysis/maps_and_plots.Rmd
+    Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/For_john.R
+    Untracked:  code/RNA_gene_locations.R
+    Untracked:  code/SOX11_excel_to_granges_coversion.R
+    Untracked:  code/State_color_code_igv.R
+    Untracked:  code/score_phylop.py
+    Untracked:  hg19ToHg38.over.chain.gz
+    Untracked:  hg38_TSS_1bp.bed
+    Untracked:  other_analysis/
+
+Unstaged changes:
+    Modified:   analysis/Goanalysis_TFs.Rmd
+    Modified:   analysis/H3K27_TE_overlap_extend.Rmd
+    Modified:   analysis/H3K27ac_TEtype.Rmd
+    Modified:   analysis/H3K27ac_cisRE.Rmd
+    Modified:   analysis/LTR10E_build.Rmd
+    Modified:   analysis/MER61E_build.Rmd
+    Modified:   analysis/Main_fig2.Rmd
+    Modified:   analysis/computeMatrixplots.Rmd
+    Modified:   analysis/distance_exam.Rmd
+    Modified:   analysis/repeatmasker_data.Rmd
+    Modified:   analysis/supp_fig.Rmd
+    Modified:   code/corMotifcustom.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/MER61E_build_4.Rmd</code>) and
+HTML (<code>docs/MER61E_build_4.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/44f1ba1cc6c3804971940ccbfc37857b05a6e105/analysis/MER61E_build_4.Rmd" target="_blank">44f1ba1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-11-11
+</td>
+<td>
+wflow_publish("analysis/MER61E_build_4.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+</style>
+<pre class="r"><code>library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+# library(ggalluvial)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(janitor)
+library(MASS)
+library(readxl)
+# library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(GenomicFeatures)
+library(edgeR)
+library(Biostrings)
+library(pwalign)
+library(BSgenome.Hsapiens.UCSC.hg38)</code></pre>
+<p>The purpose of this page is to build a large dataframe for MER61E
+annotations.</p>
+<pre class="r"><code># ZNF680 narrowpeak binding Hek293 ENCFF935XZI
+ZNF680_regions &lt;- import(&quot;data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed&quot;,format = &quot;narrowPeak&quot;)
+
+ZNF780A_regions &lt;- import(&quot;data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed&quot;)
+MER61E_regions &lt;- import(&quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;)
+
+LTR10E_regions &lt;- import(&quot;data/Bed_exports/repeatmasker_sets/ERV1/LTR10E_ERV1_LTR.bed&quot;)
+
+
+MER61E_p53_best_site_score &lt;- import(&quot;C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61E_ERV1_LTR_fimo/best_site.narrowPeak&quot;)
+
+LTR10E_p53_best_site_score &lt;- import(&quot;C:/Users/renee/Other_projects_data/DXR_data/fimo_results/LTR10E_ERV1_LTR_fimo/best_site.narrowPeak&quot;)
+
+H3K27ac_summit_gr &lt;- readRDS(&quot;data/RDS_files/H3K27ac_complete_summit_gr.RDS&quot;)
+
+H3K27ac_summit_gr_ext &lt;- GenomicRanges::resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = &quot;center&quot;)
+# export(H3K27ac_summit_gr_ext,&quot;data/Bed_exports/H3K27ac_summit_gr_ext.bed&quot;)
+# peakAnnoList_H3K27ac &lt;- readRDS(&quot;data/motif_lists/H3K27ac_annotated_peaks.RDS&quot;)
+# 
+# peakAnnoList_H3K9me3 &lt;- readRDS(&quot;data/motif_lists/H3K9me3_annotated_peaks.RDS&quot;)
+
+# H3K27ac_lookup &lt;- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+#   tibble(Peakid = .x@anno$Peakid, cluster = .y))
+
+##assigning Peakid as name of ext summit region
+ mcols(H3K27ac_summit_gr_ext)$name &lt;- mcols(H3K27ac_summit_gr_ext)$Peakid
+ 
+ H3K27ac_ext200_anno &lt;- readRDS(&quot;data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS&quot;)
+ 
+ # MER61E_anno_genes &lt;- readRDS(&quot;data/RDS_files/MER61E_anno_genes.RDS&quot;)
+ # MER61E_anno_chipseeker &lt;- readRDS(&quot;data/RDS_files/MER61E_anno_chipseeker.RDS&quot;)
+ 
+ # LTR10E_anno_genes &lt;- readRDS(&quot;data/RDS_files/LTR10E_anno_genes.RDS&quot;)
+ # LTR10E_anno_chipseeker &lt;- readRDS(&quot;data/RDS_files/LTR10E_anno_chipseeker.RDS&quot;)
+ 
+# chipseeker_anno_MER61E &lt;-  MER61E_anno_chipseeker %&gt;% 
+#   as.data.frame() %&gt;% 
+#   dplyr::select(name,annotation,geneId,distanceToTSS) %&gt;% 
+#   dplyr::rename(&quot;repID&quot;=name,&quot;CS_MER61E_gene&quot;=geneId,&quot;CS_distanceToTSS&quot;=distanceToTSS)
+# 
+# chipseeker_anno_LTR10E &lt;-  LTR10E_anno_chipseeker %&gt;% 
+#   as.data.frame() %&gt;% 
+#   dplyr::select(name,annotation,geneId,distanceToTSS) %&gt;% 
+#   dplyr::rename(&quot;repID&quot;=name,&quot;CS_MER61E_gene&quot;=geneId,&quot;CS_distanceToTSS&quot;=distanceToTSS)
+
+ # MER61E_intermediat_protein &lt;- readRDS(&quot;data/MER61intermediatemarking_protein.RDS&quot;)
+ 
+full_p53_canonical  &lt;- readRDS(&quot;data/full_p53_canonical.RDS&quot;)
+
+p53halfsite_TE_ids &lt;- readRDS(&quot;data/p53halfsite_TE_ids.RDS&quot;)
+
+# LTR_df &lt;- readRDS(&quot;data/RDS_files/LTR_DF_hg38.RDS&quot;)
+
+# H3K27ac_toplist &lt;- readRDS(&quot;data/DER_data/H3K27ac_toplist.RDS&quot;)
+
+# H3K27ac_toptable_list &lt;- bind_rows(H3K27ac_toplist, .id = &quot;group&quot;)
+
+# set_case_list_H3K27ac &lt;-  H3K27ac_toptable_list %&gt;% 
+#   dplyr::select(group,genes, logFC) %&gt;% 
+#   pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %&gt;% 
+#   dplyr::left_join(H3K27ac_lookup,by =c(&quot;genes&quot;=&quot;Peakid&quot;)) %&gt;% 
+#   mutate(cluster= case_when (is.na(cluster)~&quot;not_assigned&quot;,
+#                            TRUE ~ cluster),
+#          case= case_when(H3K27ac_24T &gt; 0 &amp; H3K27ac_24R &gt;0 &amp; H3K27ac_144R&gt;0~&quot;A&quot;,
+#                               H3K27ac_24T &lt; 0 &amp; H3K27ac_24R &lt;0 &amp; H3K27ac_144R&lt;0~&quot;B&quot;,
+#                               TRUE ~ &quot;C&quot;),
+#          alt_case= case_when(H3K27ac_24T &gt; 0~&quot;D&quot;,
+#                               H3K27ac_24T &lt; 0~&quot;E&quot;,
+#                               TRUE ~ &quot;F&quot;)) %&gt;% 
+#   mutate(set_case=paste0(cluster,&quot;_&quot;,case),
+#          set_alt_case=paste0(cluster,&quot;_&quot;,alt_case)) %&gt;% 
+#   dplyr::select(genes, cluster,case,set_case,alt_case,set_alt_case)
+
+# LTR10E_trajectory_broad &lt;- readRDS(&quot;data/RDS_files/LTR10E_trajectory_broad.RDS&quot;)
+
+# MER61E_trajectory_broad &lt;- readRDS(&quot;data/RDS_files/MER61E_trajectory_broad.RDS&quot;)
+
+
+
+# DOX_24_ATAC &lt;- readRDS(&quot;data/Other_paper_data/Matthews_2025_DOX_24h_ATAC.RDS&quot;)
+
+# DOX_24_DAR_gr &lt;- DOX_24_ATAC %&gt;% 
+#   dplyr::filter(adj.P.Val&lt;0.05) %&gt;% 
+#   dplyr::select(peak) %&gt;%
+#   separate(peak, into = c(&quot;seqnames&quot;,&quot;start&quot;,&quot;stop&quot;),remove = FALSE) %&gt;% 
+#   mutate(start=as.numeric(start),
+#          stop=as.numeric(stop)) %&gt;% 
+#   as_granges(seqnames = seqnames,
+#              start=start,
+#              end=stop,
+#              strand=&quot;*&quot;)
+
+
+# upDOX_24_DAR_gr &lt;- DOX_24_ATAC %&gt;% 
+#   dplyr::filter(adj.P.Val&lt;0.05) %&gt;% 
+#   dplyr::filter(logFC&gt;0) %&gt;% 
+#   dplyr::select(peak) %&gt;%
+#   separate(peak, into = c(&quot;seqnames&quot;,&quot;start&quot;,&quot;stop&quot;),remove = FALSE) %&gt;% 
+#   mutate(start=as.numeric(start),
+#          stop=as.numeric(stop)) %&gt;% 
+#   as_granges(seqnames = seqnames,
+#              start=start,
+#              end=stop,
+#              strand=&quot;*&quot;)
+# 
+# DOX_24_CAR_gr &lt;- DOX_24_ATAC %&gt;% 
+#   dplyr::filter(adj.P.Val&gt;0.05) %&gt;% 
+#   dplyr::select(peak) %&gt;% 
+#   separate(peak, into = c(&quot;seqnames&quot;,&quot;start&quot;,&quot;stop&quot;),remove = FALSE) %&gt;% 
+#   mutate(start=as.numeric(start),
+#          stop=as.numeric(stop)) %&gt;% 
+#   as_granges(seqnames = seqnames,
+#              start=start,
+#              end=stop,
+#              strand=&quot;*&quot;)
+
+# mcols(DOX_24_CAR_gr)$name &lt;- mcols(DOX_24_CAR_gr)$peak
+# 
+# mcols(DOX_24_DAR_gr)$name &lt;- mcols(DOX_24_DAR_gr)$peak
+
+H3K27ac_summit_gr_ext &lt;- keepStandardChromosomes(
+  H3K27ac_summit_gr_ext,
+  pruning.mode = &quot;coarse&quot;)
+
+# p53_sp_ChIP &lt;- rtracklayer::import(&quot;C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP57_VEH_p53_Ind6/MCW_SP_ChIP57_VEH_p53_Ind6_q0.05_peaks.narrowPeak&quot;,format = &quot;narrowPeak&quot;)
+# 
+# CTCF_sp_ChIP &lt;- rtracklayer::import(&quot;C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP63_VEH_CTCF_Ind1/MCW_SP_ChIP63_VEH_CTCF_Ind1_q0.05_peaks.narrowPeak&quot;,format = &quot;narrowPeak&quot;)
+# 
+# RAD21_sp_ChIP &lt;-  rtracklayer::import(&quot;C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP69_VEH_RAD21_Ind1/MCW_SP_ChIP69_VEH_RAD21_Ind1_q0.05_peaks.narrowPeak&quot;,format = &quot;narrowPeak&quot;)
+# 
+# TOP2B_sp_ChIP &lt;-  rtracklayer::import(&quot;data/Other_paper_data/ChIP3_TOP2B_CM_87-1.bed&quot;)
+# 
+# ATAC_regions_Ind2 &lt;- rtracklayer::import(&quot;C:/Users/renee/Other_projects_data/DXR_data/ATAC_peak_files/trimmed_Ind2_87V24h_S12_peaks.narrowPeak&quot;,format = &quot;narrowPeak&quot;)
+
+mint_anno &lt;- readRDS(&quot;data/RDS_files/MER61E_intermediate_dataframe.RDS&quot;)
+lint_anno &lt;- readRDS(&quot;data/RDS_files/LTR10E_intermediate_dataframe.RDS&quot;)
+
+# 
+# K27ac_VEH_Ind4 &lt;- rtracklayer::import(&quot;data/peaks/H3K27ac/MCW_CT_ROA_106_FINAL_peaks.narrowPeak&quot;,format = &quot;narrowPeak&quot;)
+DBR_p53_results &lt;- readRDS(&quot;C:/Users/renee/R_STUFF/DOX_ChIP_project/data/Omar_Revision/DE_results/efit2.RDS&quot;)
+
+DBR_p53_gr &lt;- readRDS(&quot;C:/Users/renee/R_STUFF/DOX_ChIP_project/data/Omar_Revision/DE_results/peakID_gr_p53DBR.RDS&quot;)
+
+MER61E_site &lt;- mergeByOverlaps(MER61E_regions,MER61E_p53_best_site_score)
+
+MER61E_best_site_signal &lt;- MER61E_site %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::select(MER61E_regions.name,MER61E_p53_best_site_score.signalValue,MER61E_p53_best_site_score.qValue) %&gt;% 
+  dplyr::rename(&quot;repID&quot;=1,&quot;MER61E.signal&quot;=2,&quot;MER61E.qvalue&quot;=3)
+
+
+LTR10E_site &lt;- mergeByOverlaps(LTR10E_regions,LTR10E_p53_best_site_score)
+
+LTR10E_best_site_signal &lt;- LTR10E_site %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::select(LTR10E_regions.name,LTR10E_p53_best_site_score.signalValue,LTR10E_p53_best_site_score.qValue) %&gt;% 
+  dplyr::rename(&quot;repID&quot;=1,&quot;LTR10E.signal&quot;=2,&quot;LTR10E.qvalue&quot;=3)
+
+# SOX11_hg38_gr &lt;- readRDS(&quot;data/Other_paper_data/SOX11_hg38_NIHMS686659_gr.RDS&quot;)
+
+p53_RE &lt;- readr::read_tsv(&quot;C:/Users/renee/Downloads/12864_2015_1643_MOESM2_ESM/p53_response_element_File_Supplementary File 2.txt&quot;,
+  # &quot;Tebaldi_Inga_SupplementaryFile2.txt&quot;,
+  show_col_types = FALSE)</code></pre>
+<pre class="r"><code>sampleinfo &lt;- read_delim(&quot;data/sample_info.tsv&quot;, delim = &quot;\t&quot;)
+
+# sampleinfo %&gt;% 
+  # dplyr::filter(Histone_Mark==&quot;H3K27ac&quot; &amp; Treatment==&quot;VEH&quot; &amp; Timepoint==&quot;24T&quot;)</code></pre>
+<pre class="r"><code>repeatmasker &lt;- read_delim(&quot;data/Other_paper_data/repeatmasker_20250911.txt&quot;, 
+    delim = &quot;\t&quot;, escape_double = FALSE, 
+    trim_ws = TRUE)</code></pre>
+<pre class="r"><code>autosomes &lt;- paste0(&quot;chr&quot;, 1:22)
+repeatmasker_clean &lt;- repeatmasker %&gt;%
+  mutate(
+    start = genoStart + 1,
+    end = genoEnd,
+    repFamily = stringr::str_remove(repFamily, &quot;\\?$&quot;)
+  ) %&gt;%
+  dplyr::filter(genoName %in% autosomes)%&gt;% 
+  mutate(RM_id=paste0(genoName,&quot;:&quot;,start,&quot;-&quot;,end,&quot;:&quot;,id))</code></pre>
+<div id="looking-into-p53-response-elements" class="section level3">
+<h3>Looking into p53 response elements</h3>
+<pre class="r"><code>p53_RE_coords &lt;- p53_RE %&gt;%
+  mutate(
+    RE_id = row_number(),
+
+    pos1 = if_else(
+      strand == &quot;+&quot;,
+      hg19.TSS.coord + TSS.rel.start,
+      hg19.TSS.coord - TSS.rel.start
+    ),
+
+    pos2 = if_else(
+      strand == &quot;+&quot;,
+      hg19.TSS.coord + TSS.rel.stop,
+      hg19.TSS.coord - TSS.rel.stop
+    ),
+
+    genomic_start = pmin(pos1, pos2),
+    genomic_end   = pmax(pos1, pos2),
+
+    RE_width = genomic_end - genomic_start + 1,
+    sequence_width = nchar(sequence)
+  )</code></pre>
+<p>Confirm the locations match the width</p>
+<pre class="r"><code>p53_RE_coords %&gt;%
+  count(RE_width == sequence_width)</code></pre>
+<pre><code># A tibble: 1 × 2
+  `RE_width == sequence_width`      n
+  &lt;lgl&gt;                         &lt;int&gt;
+1 TRUE                         264311</code></pre>
+<p>Now in import to granges and liftover</p>
+<pre class="r"><code>p53_RE_hg19 &lt;- makeGRangesFromDataFrame(
+  p53_RE_coords,
+  seqnames.field = &quot;chr&quot;,
+  start.field = &quot;genomic_start&quot;,
+  end.field = &quot;genomic_end&quot;,
+  strand.field = &quot;strand&quot;,
+  keep.extra.columns = TRUE
+)</code></pre>
+<pre class="r"><code>download.file(
+  &quot;https://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz&quot;,
+  destfile = &quot;data/hg19ToHg38.over.chain.gz&quot;,
+  mode = &quot;wb&quot;
+)
+# library(R.utils)
+# 
+# gunzip(
+#   &quot;data/hg19ToHg38.over.chain.gz&quot;,
+#   destname = &quot;data/hg19ToHg38.over.chain&quot;,
+#   remove = FALSE,
+#   overwrite = TRUE
+# )
+chain &lt;- import.chain(&quot;data/hg19ToHg38.over.chain&quot;)
+
+p53_RE_lifted &lt;- liftOver(
+  p53_RE_hg19,
+  chain
+)</code></pre>
+<pre class="r"><code>mapping_counts &lt;- elementNROWS(p53_RE_lifted)
+
+table(mapping_counts)</code></pre>
+<pre><code>mapping_counts
+     0      1      2      3 
+    47 264201     61      2 </code></pre>
+<pre class="r"><code>unique_idx &lt;- which(mapping_counts == 1L)
+
+p53_RE_hg38 &lt;- unlist(
+  p53_RE_lifted[unique_idx],
+  use.names = FALSE
+)
+
+length(p53_RE_hg38)</code></pre>
+<pre><code>[1] 264201</code></pre>
+<pre class="r"><code>original_width &lt;- width(p53_RE_hg19)[unique_idx]
+lifted_width &lt;- width(p53_RE_hg38)
+
+table(original_width == lifted_width)</code></pre>
+<pre><code>
+ FALSE   TRUE 
+    15 264186 </code></pre>
+<pre class="r"><code>### excluding changed locations widths
+width_match &lt;- original_width == lifted_width
+
+p53_RE_hg38 &lt;- p53_RE_hg38[width_match]</code></pre>
+<p>Now to overlap with MER61E elements</p>
+<pre class="r"><code>hits &lt;- findOverlaps(
+  MER61E_regions,
+  p53_RE_hg38,
+  ignore.strand = TRUE
+)
+
+cat(
+  &quot;Total overlaps:&quot;,
+  length(hits), &quot;\n&quot;
+)</code></pre>
+<pre><code>Total overlaps: 17 </code></pre>
+<pre class="r"><code>cat(
+  &quot;MER61E copies with p53 response elements:&quot;,
+  length(unique(queryHits(hits))), &quot;\n&quot;
+)</code></pre>
+<pre><code>MER61E copies with p53 response elements: 9 </code></pre>
+<pre class="r"><code>cat(
+  &quot;Unique p53 response elements overlapping MER61E:&quot;,
+  length(unique(subjectHits(hits))), &quot;\n&quot;
+)</code></pre>
+<pre><code>Unique p53 response elements overlapping MER61E: 17 </code></pre>
+<pre class="r"><code>MER61E_p53_overlaps &lt;- tibble(
+  MER61E_index = queryHits(hits),
+  p53_RE_index = subjectHits(hits),
+
+  MER61E_chr = as.character(
+      seqnames(MER61E_regions)[queryHits(hits)]
+  ),
+
+  MER61E_start = start(MER61E_regions)[queryHits(hits)],
+  MER61E_end = end(MER61E_regions)[queryHits(hits)],
+
+  p53_start = start(p53_RE_hg38)[subjectHits(hits)],
+  p53_end = end(p53_RE_hg38)[subjectHits(hits)],
+
+  p53_sequence = mcols(p53_RE_hg38)$sequence[subjectHits(hits)],
+  p53_grade = mcols(p53_RE_hg38)$grade[subjectHits(hits)]
+)
+
+head(MER61E_p53_overlaps)</code></pre>
+<pre><code># A tibble: 6 × 9
+  MER61E_index p53_RE_index MER61E_chr MER61E_start MER61E_end p53_start p53_end
+         &lt;int&gt;        &lt;int&gt; &lt;chr&gt;             &lt;int&gt;      &lt;int&gt;     &lt;int&gt;   &lt;int&gt;
+1            7         6025 chr1           86461466   86461862  86461681  8.65e7
+2            7         6026 chr1           86461466   86461862  86461732  8.65e7
+3           11         7521 chr1          115036804  115037516 115037244  1.15e8
+4           65       165485 chr4           68954406   68954755  68954406  6.90e7
+5           72       165534 chr4           69649752   69650211  69650019  6.97e7
+6           72       165535 chr4           69649752   69650211  69649829  6.96e7
+# ℹ 2 more variables: p53_sequence &lt;chr&gt;, p53_grade &lt;dbl&gt;</code></pre>
+<pre class="r"><code>MER61E_p53_overlaps %&gt;%
+  count(p53_grade, sort = TRUE)</code></pre>
+<pre><code># A tibble: 4 × 2
+  p53_grade     n
+      &lt;dbl&gt; &lt;int&gt;
+1         3     7
+2         2     6
+3         1     3
+4         5     1</code></pre>
+<pre class="r"><code>MER61E_p53_overlaps %&gt;%
+  left_join(
+    as.data.frame(p53_RE_hg38) %&gt;%
+      mutate(p53_RE_index = row_number()) %&gt;%
+      dplyr::select(p53_RE_index, spacer.length, n.mismatches),
+    by = &quot;p53_RE_index&quot;
+  ) %&gt;%
+  dplyr::select(
+    MER61E_index,
+    p53_sequence,
+    p53_grade,
+    spacer.length,
+    n.mismatches
+  ) %&gt;%
+  arrange(p53_grade, MER61E_index)</code></pre>
+<pre><code># A tibble: 17 × 5
+   MER61E_index p53_sequence                p53_grade spacer.length n.mismatches
+          &lt;int&gt; &lt;chr&gt;                           &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
+ 1           65 GTGCAAGTTCCTTTATACGAGTATGC…         1             8            2
+ 2          254 GGGCTTGTGTCTCAGTGAAACCTGCCT         1             7            2
+ 3          254 GGGCTTGTGTCTCAGTGAAACCTGCCT         1             7            2
+ 4            7 GGGCATGTCT                          2             0            0
+ 5           72 AGGCTTTTATAAACAAGCCA                2             0            1
+ 6           72 AGACATGTCT                          2             0            0
+ 7          188 GGGCTTGCCTAAGACATCCCC               2             1            1
+ 8          254 AGACATGCCT                          2             0            0
+ 9          254 AGACATGCCT                          2             0            0
+10            7 AGGCATGTCTGGGTAAGTCA                3             0            2
+11           11 GGGCATGTTTCAAGCAAGCCC               3             1            0
+12           72 AGGCATGTTGTAGGCAAGCCC               3             1            1
+13          111 GGGCATGTCTTAGGCAAGCCC               3             1            0
+14          183 GGGCATCTCTGGGCAAGTCT                3             0            1
+15          183 GGACATGTCTAAGGCAAGCCT               3             1            0
+16          246 TGGCATGTCTTAGGCAAGCCA               3             1            2
+17          246 GGGCATGTCTGGGCAAGTCC                5             0            0</code></pre>
+<pre class="r"><code>NCI_unique &lt;- MER61E_p53_overlaps %&gt;%
+  distinct(
+    MER61E_index,
+    p53_start,
+    p53_end,
+    p53_sequence,
+    .keep_all = TRUE
+  )
+
+nrow(NCI_unique)</code></pre>
+<pre><code>[1] 15</code></pre>
+<pre class="r"><code>acute_only_MER61E_alignment_blocks &lt;- readRDS(&quot;data/RDS_files/acute_only_MER61E_alignment_blocks.RDS&quot;)
+
+all_MER61E_alignment_blocks &lt;- readRDS(&quot;data/RDS_files/all_MER61E_alignment_blocks.RDS&quot;)
+
+acute_p53_only_mapped_dif &lt;- readRDS(&quot;data/RDS_files/acute_p53_only_mapped_dif.RDS&quot;)
+
+MER61E_alignment_div &lt;- readRDS(&quot;data/RDS_files/MER61E_alignment_div.RDS&quot;) 
+
+MER61E_position_maps &lt;- readRDS(&quot;data/RDS_files/MER61E_position_maps.RDS&quot;)
+
+
+TE_facet_order &lt;- MER61E_alignment_div %&gt;%
+  mutate(TE_name = as.character(TE_name)) %&gt;%
+  distinct(TE_name, cluster, milliDiv) %&gt;%
+  group_by(cluster) %&gt;%
+  arrange(milliDiv, TE_name, .by_group = TRUE) %&gt;%
+  mutate(
+    TE_order_facet = row_number()
+  ) %&gt;%
+  ungroup()</code></pre>
+<pre class="r"><code>NCI_p53_MER61E &lt;- MER61E_p53_overlaps %&gt;%
+  mutate(
+    TE_name = as.character(
+      mcols(MER61E_regions)$name[MER61E_index]
+    ),
+    TE_strand = as.character(
+      strand(MER61E_regions)[MER61E_index]
+    )
+  ) %&gt;%
+  distinct(
+    TE_name,
+    p53_start,
+    p53_end,
+    .keep_all = TRUE
+  )
+
+NCI_p53_MER61E %&gt;%
+  mutate(
+    in_acute_alignment =
+      TE_name %in%
+      acute_only_MER61E_alignment_blocks$TE_name
+  ) %&gt;%
+  count(in_acute_alignment)</code></pre>
+<pre><code># A tibble: 2 × 2
+  in_acute_alignment     n
+  &lt;lgl&gt;              &lt;int&gt;
+1 FALSE                 12
+2 TRUE                   3</code></pre>
+<pre class="r"><code>NCI_p53_MER61E %&gt;%
+  mutate(
+    in_acute_alignment =
+      TE_name %in%
+      acute_only_MER61E_alignment_blocks$TE_name
+  ) %&gt;%
+  group_by(TE_name, in_acute_alignment) %&gt;%
+  summarise(
+    n_p53_RE = dplyr::n(),
+    grades = paste(sort(unique(p53_grade)), collapse = &quot;, &quot;),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  arrange(desc(in_acute_alignment), TE_name)</code></pre>
+<pre><code># A tibble: 9 × 4
+  TE_name                    in_acute_alignment n_p53_RE grades
+  &lt;chr&gt;                      &lt;lgl&gt;                 &lt;int&gt; &lt;chr&gt; 
+1 chr4:69649752-69650211:2   TRUE                      3 2, 3  
+2 chr11:17378688-17379258:5  FALSE                     2 3     
+3 chr11:56151159-56151681:6  FALSE                     1 2     
+4 chr17:10205618-10206195:1  FALSE                     2 3, 5  
+5 chr19:29712459-29712851:1  FALSE                     2 1, 2  
+6 chr1:115036804-115037516:1 FALSE                     1 3     
+7 chr1:86461466-86461862:1   FALSE                     2 2, 3  
+8 chr4:68954406-68954755:2   FALSE                     1 1     
+9 chr6:31390293-31390861:3   FALSE                     1 3     </code></pre>
+<pre class="r"><code>NCI_p53_MER61E &lt;- NCI_p53_MER61E %&gt;%
+  mutate(
+    in_alignment = TE_name %in%
+      all_MER61E_alignment_blocks$TE_name
+  )
+
+NCI_p53_MER61E %&gt;%
+  count(in_alignment)</code></pre>
+<pre><code># A tibble: 1 × 2
+  in_alignment     n
+  &lt;lgl&gt;        &lt;int&gt;
+1 TRUE            15</code></pre>
+<pre class="r"><code>MER61E_alignment_info &lt;- all_MER61E_alignment_blocks %&gt;%
+  distinct(
+    TE_name,
+    cluster,
+    milliDiv,
+    TE_order,
+    TE_order_facet
+  )
+
+NCI_p53_MER61E &lt;- NCI_p53_MER61E %&gt;%
+  left_join(
+    MER61E_alignment_info,
+    by = &quot;TE_name&quot;
+  )
+
+
+NCI_p53_MER61E %&gt;%
+  distinct(TE_name, cluster) %&gt;%
+  count(cluster)</code></pre>
+<pre><code># A tibble: 3 × 2
+  cluster          n
+  &lt;fct&gt;        &lt;int&gt;
+1 Set_3            1
+2 not_assigned     3
+3 NA               5</code></pre>
+<pre class="r"><code>NCI_p53_MER61E &lt;- NCI_p53_MER61E %&gt;%
+  mutate(
+    motif_start = if_else(
+      TE_strand == &quot;+&quot;,
+      p53_start - MER61E_start + 1L,
+      MER61E_end - p53_end + 1L
+    ),
+
+    motif_end = if_else(
+      TE_strand == &quot;+&quot;,
+      p53_end - MER61E_start + 1L,
+      MER61E_end - p53_start + 1L
+    ),
+
+    motif_width = motif_end - motif_start + 1L
+  )
+
+
+NCI_p53_MER61E %&gt;%
+  dplyr::select(
+    TE_name,
+    cluster,
+    TE_strand,
+    motif_start,
+    motif_end,
+    motif_width,
+    p53_sequence,
+    p53_grade
+  )</code></pre>
+<pre><code># A tibble: 15 × 8
+   TE_name      cluster TE_strand motif_start motif_end motif_width p53_sequence
+   &lt;chr&gt;        &lt;fct&gt;   &lt;chr&gt;           &lt;int&gt;     &lt;int&gt;       &lt;int&gt; &lt;chr&gt;       
+ 1 chr1:864614… NA      +                 216       235          20 AGGCATGTCTG…
+ 2 chr1:864614… NA      +                 267       276          10 GGGCATGTCT  
+ 3 chr1:115036… not_as… +                 441       461          21 GGGCATGTTTC…
+ 4 chr4:689544… NA      +                   1        28          28 GTGCAAGTTCC…
+ 5 chr4:696497… Set_3   +                 268       287          20 AGGCTTTTATA…
+ 6 chr4:696497… Set_3   +                  78        87          10 AGACATGTCT  
+ 7 chr4:696497… Set_3   +                  23        43          21 AGGCATGTTGT…
+ 8 chr6:313902… NA      +                 435       455          21 GGGCATGTCTT…
+ 9 chr11:17378… NA      +                 179       198          20 GGGCATCTCTG…
+10 chr11:17378… NA      +                 127       147          21 GGACATGTCTA…
+11 chr11:56151… NA      +                 387       407          21 GGGCTTGCCTA…
+12 chr17:10205… not_as… +                 179       198          20 GGGCATGTCTG…
+13 chr17:10205… not_as… +                 127       147          21 TGGCATGTCTT…
+14 chr19:29712… not_as… +                 391       417          27 GGGCTTGTGTC…
+15 chr19:29712… not_as… +                  19        28          10 AGACATGCCT  
+# ℹ 1 more variable: p53_grade &lt;dbl&gt;</code></pre>
+<pre class="r"><code>all_MER61E_alignment_blocks &lt;-
+  all_MER61E_alignment_blocks %&gt;%
+  dplyr::select(-any_of(&quot;TE_order_facet&quot;)) %&gt;%
+  left_join(
+    TE_facet_order %&gt;%
+      dplyr::select(TE_name, TE_order_facet),
+    by = &quot;TE_name&quot;
+  )
+
+
+NCI_p53_MER61E &lt;-
+  NCI_p53_MER61E %&gt;%
+  dplyr::select(-any_of(&quot;TE_order_facet&quot;)) %&gt;%
+  left_join(
+    TE_facet_order %&gt;%
+      dplyr::select(TE_name, TE_order_facet),
+    by = &quot;TE_name&quot;
+  )
+
+NCI_p53_relative &lt;- NCI_p53_MER61E %&gt;%
+  mutate(
+    relative_start = motif_start,
+    relative_end = motif_end
+  )</code></pre>
+<pre class="r"><code>map_NCI_p53 &lt;- function(TE_name, relative_start, relative_end) {
+
+  # Retrieve existing nucleotide-level alignment map
+  pos_map &lt;- MER61E_position_maps[[as.character(TE_name)]]
+
+  if (is.null(pos_map)) {
+    return(tibble(
+      consensus_start = NA_integer_,
+      consensus_end = NA_integer_,
+      mapped_bases = 0L,
+      mapping_status = &quot;No alignment map&quot;
+    ))
+  }
+
+  motif_width &lt;- relative_end - relative_start + 1L
+
+  mapped &lt;- pos_map %&gt;%
+    filter(
+      TE_position &gt;= relative_start,
+      TE_position &lt;= relative_end,
+      !is.na(consensus_position)
+    )
+
+  n_mapped &lt;- nrow(mapped)
+
+  tibble(
+    consensus_start = if (n_mapped &gt; 0)
+      min(mapped$consensus_position) else NA_integer_,
+
+    consensus_end = if (n_mapped &gt; 0)
+      max(mapped$consensus_position) else NA_integer_,
+
+    mapped_bases = n_mapped,
+
+    mapping_status = case_when(
+      n_mapped == 0 ~ &quot;Unmapped&quot;,
+      n_mapped == motif_width ~ &quot;Fully mapped&quot;,
+      TRUE ~ &quot;Partially mapped&quot;
+    )
+  )
+}</code></pre>
+<pre class="r"><code>NCI_p53_mapped &lt;- NCI_p53_relative %&gt;%
+  mutate(
+    mapping = pmap(
+      list(TE_name, relative_start, relative_end),
+      map_NCI_p53
+    )
+  ) %&gt;%
+  unnest(mapping)</code></pre>
+<pre class="r"><code>ggplot() +
+  geom_segment(
+    data = all_MER61E_alignment_blocks,
+    aes(
+      x = consensus_start,
+      xend = consensus_end,
+      y = TE_order_facet,
+      yend = TE_order_facet,
+      color = cluster
+    ),
+    linewidth = 1.2
+  ) +
+  geom_segment(
+    data = NCI_p53_mapped,
+    aes(
+      x = consensus_start,
+      xend = consensus_end,
+      y = TE_order_facet,
+      yend = TE_order_facet
+    ),
+    color = &quot;darkorange&quot;,
+    linewidth = 2.5
+  ) +
+  geom_vline(
+    xintercept = c(130, 181),
+    linetype = &quot;dashed&quot;,
+    color = &quot;grey40&quot;
+  ) +
+  facet_wrap(~cluster, scales = &quot;free_y&quot;) +
+  labs(
+    x = &quot;MER61E consensus position (bp)&quot;,
+    y = &quot;MER61E copy&quot;,
+    title = &quot;NCI p53 response elements mapped to MER61E consensus&quot;
+  ) +
+  theme_bw()</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/unnamed-chunk-16-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="additional-enrichment-of-p53-dbr" class="section level3">
+<h3>Additional enrichment of p53 DBR</h3>
+<pre class="r"><code>prop_plot &lt;- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data &lt;- data %&gt;%
+    mutate(cluster = tidyr::replace_na(cluster, &quot;NA&quot;),
+      cluster = factor(cluster,
+        levels = c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))) %&gt;%
+    filter(cluster %in% c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups &lt;- c(&quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;)
+
+  test_results &lt;- lapply(comparison_groups, function(g) {
+
+    test_df &lt;- plot_data %&gt;%
+      filter(cluster %in% c(&quot;Set_3&quot;, g))
+
+    tab &lt;- table(test_df$cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi &lt;- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected &lt; 5)) {
+      test &lt;- fisher.test(tab)
+      method &lt;- &quot;Fisher&quot;
+    } else {
+      test &lt;- chi
+      method &lt;- &quot;Chi-square&quot;
+    }
+
+    data.frame(comparison = paste(&quot;Set_3 vs&quot;, g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %&gt;%
+    bind_rows() %&gt;%
+    mutate(p_adj = p.adjust(p, method = &quot;BH&quot;),
+           label = paste0(&quot;p=&quot;, format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = c(1.10, 1.18, 1.26))
+
+
+  # Proportions
+  count_data &lt;- plot_data %&gt;%
+    count({{ group_col }}, {{ yes_no_col }}) %&gt;%
+    group_by({{ group_col }}) %&gt;%
+    mutate(prop = n / sum(n)) %&gt;%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), &quot;\n(n=&quot;, n, &quot;)&quot;)),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, &quot;Paired&quot;)[1:2]) +
+
+    labs(x = NULL,y = &quot;Proportion&quot;) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}
+
+prop_plot_LTR &lt;- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data &lt;- data %&gt;%
+    mutate(cluster = tidyr::replace_na(cluster, &quot;NA&quot;),
+      cluster = factor(cluster,
+        levels = c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))) %&gt;%
+    filter(cluster %in% c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups &lt;- c(&quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;)
+
+  test_results &lt;- lapply(comparison_groups, function(g) {
+
+    test_df &lt;- plot_data %&gt;%
+      filter(cluster %in% c(&quot;Set_3&quot;, g))
+
+    tab &lt;- table(test_df$cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi &lt;- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected &lt; 5)) {
+      test &lt;- fisher.test(tab)
+      method &lt;- &quot;Fisher&quot;
+    } else {
+      test &lt;- chi
+      method &lt;- &quot;Chi-square&quot;
+    }
+
+    data.frame(comparison = paste(&quot;Set_3 vs&quot;, g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %&gt;%
+    bind_rows() %&gt;%
+    mutate(p_adj = p.adjust(p, method = &quot;BH&quot;),
+           label = paste0(&quot;p=&quot;, format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = c(1.10, 1.18, 1.26))
+
+
+  # Proportions
+  count_data &lt;- plot_data %&gt;%
+    count({{ group_col }}, {{ yes_no_col }}) %&gt;%
+    group_by({{ group_col }}) %&gt;%
+    mutate(prop = n / sum(n)) %&gt;%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), &quot;\n(n=&quot;, n, &quot;)&quot;)),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, &quot;Paired&quot;)[3:4]) +
+
+    labs(x = NULL,y = &quot;Proportion&quot;) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}</code></pre>
+<pre class="r"><code>prop_plot_mod &lt;- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data &lt;- data %&gt;%
+    mutate(cluster = tidyr::replace_na(cluster, &quot;NA&quot;),
+      cluster = factor(cluster,
+        levels = c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))) %&gt;%
+    filter(cluster %in% c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;)) %&gt;% 
+    mutate(alt_cluster=if_else(cluster==&quot;Set_3&quot;,&quot;acute_TE&quot;,&quot;non_acute_TE&quot;),
+           alt_cluster=factor(alt_cluster, levels= c(&quot;acute_TE&quot;,&quot;non_acute_TE&quot;)))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups &lt;- c(&quot;non_acute_TE&quot;)
+
+  test_results &lt;- lapply(comparison_groups, function(g) {
+
+    test_df &lt;- plot_data %&gt;%
+      filter(alt_cluster %in% c(&quot;acute_TE&quot;, g))
+
+    tab &lt;- table(test_df$alt_cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi &lt;- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected &lt; 5)) {
+      test &lt;- fisher.test(tab)
+      method &lt;- &quot;Fisher&quot;
+    } else {
+      test &lt;- chi
+      method &lt;- &quot;Chi-square&quot;
+    }
+
+    data.frame(comparison = paste(&quot;acute_TE vs&quot;, g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %&gt;%
+    bind_rows() %&gt;%
+    mutate(p_adj = p.adjust(p, method = &quot;BH&quot;),
+           label = paste0(&quot;p=&quot;, format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = 1.10)
+
+
+  # Proportions
+  count_data &lt;- plot_data %&gt;%
+    count({{ group_col }}, {{ yes_no_col }}) %&gt;%
+    group_by({{ group_col }}) %&gt;%
+    mutate(prop = n / sum(n)) %&gt;%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), &quot;\n(n=&quot;, n, &quot;)&quot;)),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, &quot;Paired&quot;)[1:2]) +
+
+    labs(x = NULL,y = &quot;Proportion&quot;) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}
+
+prop_plot_mod_ltr &lt;- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data &lt;- data %&gt;%
+    mutate(cluster = tidyr::replace_na(cluster, &quot;NA&quot;),
+      cluster = factor(cluster,
+        levels = c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))) %&gt;%
+    filter(cluster %in% c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;)) %&gt;% 
+    mutate(alt_cluster=if_else(cluster==&quot;Set_3&quot;,&quot;acute_TE&quot;,&quot;non_acute_TE&quot;),
+           alt_cluster=factor(alt_cluster, levels= c(&quot;acute_TE&quot;,&quot;non_acute_TE&quot;)))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups &lt;- c(&quot;non_acute_TE&quot;)
+
+  test_results &lt;- lapply(comparison_groups, function(g) {
+
+    test_df &lt;- plot_data %&gt;%
+      filter(alt_cluster %in% c(&quot;acute_TE&quot;, g))
+
+    tab &lt;- table(test_df$alt_cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi &lt;- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected &lt; 5)) {
+      test &lt;- fisher.test(tab)
+      method &lt;- &quot;Fisher&quot;
+    } else {
+      test &lt;- chi
+      method &lt;- &quot;Chi-square&quot;
+    }
+
+    data.frame(comparison = paste(&quot;acute_TE vs&quot;, g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %&gt;%
+    bind_rows() %&gt;%
+    mutate(p_adj = p.adjust(p, method = &quot;BH&quot;),
+           label = paste0(&quot;p=&quot;, format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = 1.10)
+
+
+  # Proportions
+  count_data &lt;- plot_data %&gt;%
+    count({{ group_col }}, {{ yes_no_col }}) %&gt;%
+    group_by({{ group_col }}) %&gt;%
+    mutate(prop = n / sum(n)) %&gt;%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), &quot;\n(n=&quot;, n, &quot;)&quot;)),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, &quot;Paired&quot;)[3:4]) +
+
+    labs(x = NULL,y = &quot;Proportion&quot;) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}</code></pre>
+<p>Finish annotating the regions as up/down significant</p>
+<pre class="r"><code># 
+# DBR_p53_gr %&gt;% 
+#   as.data.frame() %&gt;% 
+#   anno
+# mint_anno
+
+
+p53_DE &lt;- topTable(
+  DBR_p53_results,
+  coef = &quot;DOX.VEH&quot;,
+  number = Inf,
+  adjust.method = &quot;BH&quot;
+)
+
+
+p53_DE &lt;- p53_DE %&gt;% 
+  dplyr::filter(adj.P.Val &lt; 0.05) %&gt;% 
+  mutate(dir.expr= if_else(logFC&gt;0,&quot;up&quot;,&quot;down&quot;))
+
+
+
+p53_DE%&gt;% 
+  group_by(dir.expr) %&gt;% 
+  tally()</code></pre>
+<pre><code># A tibble: 2 × 2
+  dir.expr     n
+  &lt;chr&gt;    &lt;int&gt;
+1 down       155
+2 up         150</code></pre>
+<pre class="r"><code>DBR_list &lt;- p53_DE %&gt;% pull(genes)
+
+DBR_up_list &lt;- p53_DE %&gt;% dplyr::filter(dir.expr==&quot;up&quot;) %&gt;% pull(genes)
+
+DBR_down_list &lt;- p53_DE %&gt;% dplyr::filter(dir.expr==&quot;down&quot;)%&gt;% pull(genes)</code></pre>
+<pre class="r"><code>MER61E_p53DB &lt;- mergeByOverlaps(
+  MER61E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_list]
+)
+
+MER61E_p53DB_up &lt;- mergeByOverlaps(
+  MER61E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_up_list]
+)
+
+MER61E_p53DB_down &lt;- mergeByOverlaps(
+  MER61E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_down_list]
+)
+mint_anno &lt;- mint_anno %&gt;% 
+  mutate(p53_chip_DBR=if_else(repID %in% MER61E_p53DB$name,&quot;yes&quot;,&quot;no&quot;),
+         p53_chip_DBR_up=if_else(repID %in% MER61E_p53DB_up$name,&quot;yes&quot;,&quot;no&quot;),
+         p53_chip_DBR_down=if_else(repID %in% MER61E_p53DB_down$name,&quot;yes&quot;,&quot;no&quot;))</code></pre>
+<pre class="r"><code>LTR10E_p53DB &lt;- mergeByOverlaps(
+  LTR10E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_list]
+)
+
+LTR10E_p53DB_up &lt;- mergeByOverlaps(
+  LTR10E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_up_list]
+)
+
+LTR10E_p53DB_down &lt;- mergeByOverlaps(
+  LTR10E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_down_list]
+)
+lint_anno &lt;- lint_anno %&gt;% 
+  mutate(p53_chip_DBR=if_else(repID %in% LTR10E_p53DB$name,&quot;yes&quot;,&quot;no&quot;), p53_chip_DBR_up=if_else(repID %in% LTR10E_p53DB_up$name,&quot;yes&quot;,&quot;no&quot;), 
+         p53_chip_DBR_down=if_else(repID %in% LTR10E_p53DB_down$name,&quot;yes&quot;,&quot;no&quot;)) </code></pre>
+</div>
+<div id="for-mer61e" class="section level3">
+<h3>For MER61E</h3>
+<pre class="r"><code>prop_plot(mint_anno,cluster,p53_chip_DBR)+
+  ggtitle(&quot;MER61E acute proportions of p53 Differential Binding regions&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/unnamed-chunk-21-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot_mod(mint_anno,alt_cluster, p53_chip_DBR)+
+  ggtitle(&quot;MER61E acute proportions of p53 Differential Binding regions&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/unnamed-chunk-21-2.png" alt="" width="672" style="display: block; margin: auto;" />
+### For LTR10E</p>
+<pre class="r"><code>prop_plot_LTR(lint_anno,cluster,p53_chip_DBR)+
+  ggtitle(&quot;LTR10E acute proportions of p53 Differential Binding regions&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/unnamed-chunk-22-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot_mod_ltr(lint_anno,alt_cluster, p53_chip_DBR)+
+  ggtitle(&quot;LTR10E acute proportions of p53 Differential Binding regions&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/unnamed-chunk-22-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot(mint_anno,cluster,p53_chip_DBR_up)+
+  ggtitle(&quot;MER61E acute proportions of p53 Differential Binding regions only up&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/only%20up-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot_mod(mint_anno,alt_cluster, p53_chip_DBR_up)+
+  ggtitle(&quot;MER61E acute proportions of p53 Differential Binding regions only up&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/only%20up-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot_LTR(lint_anno,cluster,p53_chip_DBR_up)+
+  ggtitle(&quot;LTR10E acute proportions of p53 Differential Binding regions only up&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/only%20up-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot_mod_ltr(lint_anno,alt_cluster, p53_chip_DBR_up)+
+  ggtitle(&quot;LTR10E acute proportions of p53 Differential Binding regions only up&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/only%20up-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot(mint_anno,cluster,p53_chip_DBR_down)+
+  ggtitle(&quot;MER61E acute proportions of p53 Differential Binding regions only down&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/only%20down-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot_mod(mint_anno,alt_cluster, p53_chip_DBR_down)+
+  ggtitle(&quot;MER61E acute proportions of p53 Differential Binding regions only down&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/only%20down-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot_LTR(lint_anno,cluster,p53_chip_DBR_down)+
+  ggtitle(&quot;LTR10E acute proportions of p53 Differential Binding regions only down&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/only%20down-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot_mod_ltr(lint_anno,alt_cluster, p53_chip_DBR_down)+
+  ggtitle(&quot;LTR10E acute proportions of p53 Differential Binding regions only down&quot;)</code></pre>
+<p><img src="figure/MER61E_build_4.Rmd/only%20down-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ltr10e-alignment-process" class="section level3">
+<h3>LTR10E alignment process:</h3>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26200)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] BSgenome.Hsapiens.UCSC.hg38_1.4.5 BSgenome_1.74.0                  
+ [3] BiocIO_1.16.0                     pwalign_1.2.0                    
+ [5] Biostrings_2.74.1                 XVector_0.46.0                   
+ [7] edgeR_4.4.2                       limma_3.62.2                     
+ [9] GenomicFeatures_1.58.0            readxl_1.5.0.1                   
+[11] MASS_7.3-66                       janitor_2.2.1                    
+[13] org.Hs.eg.db_3.20.0               AnnotationDbi_1.68.0             
+[15] Biobase_2.66.0                    circlize_0.4.18                  
+[17] ComplexHeatmap_2.22.0             DT_0.34.0                        
+[19] ggrepel_0.9.8                     rtracklayer_1.66.0               
+[21] genomation_1.38.0                 plyranges_1.26.0                 
+[23] GenomicRanges_1.58.0              GenomeInfoDb_1.42.3              
+[25] IRanges_2.40.1                    S4Vectors_0.44.0                 
+[27] BiocGenerics_0.52.0               lubridate_1.9.5                  
+[29] forcats_1.0.1                     stringr_1.6.0                    
+[31] dplyr_1.2.1                       purrr_1.2.2                      
+[33] readr_2.2.0                       tidyr_1.3.2                      
+[35] tibble_3.3.1                      ggplot2_4.0.3                    
+[37] tidyverse_2.0.0                   workflowr_1.7.2                  
+
+loaded via a namespace (and not attached):
+  [1] RColorBrewer_1.1-3          rstudioapi_0.19.0          
+  [3] jsonlite_2.0.0              shape_1.4.6.1              
+  [5] magrittr_2.0.5              farver_2.1.2               
+  [7] rmarkdown_2.32              GlobalOptions_0.1.4        
+  [9] fs_2.1.0                    zlibbioc_1.52.0            
+ [11] vctrs_0.7.3                 memoise_2.0.1              
+ [13] Rsamtools_2.22.0            RCurl_1.98-1.20            
+ [15] htmltools_0.5.9             S4Arrays_1.6.0             
+ [17] plotrix_3.8-14              curl_8.0.0                 
+ [19] cellranger_1.1.0            SparseArray_1.6.2          
+ [21] sass_0.4.10                 KernSmooth_2.23-27         
+ [23] bslib_0.12.0                htmlwidgets_1.6.4          
+ [25] plyr_1.8.9                  impute_1.80.0              
+ [27] cachem_1.1.0                GenomicAlignments_1.42.0   
+ [29] whisker_0.4.1               lifecycle_1.0.5            
+ [31] iterators_1.0.14            pkgconfig_2.0.3            
+ [33] Matrix_1.7-6                R6_2.6.1                   
+ [35] fastmap_1.2.0               snakecase_0.11.1           
+ [37] GenomeInfoDbData_1.2.13     MatrixGenerics_1.18.1      
+ [39] clue_0.3-68                 digest_0.6.39              
+ [41] colorspace_2.1-3            rprojroot_2.1.1            
+ [43] RSQLite_3.53.3              labeling_0.4.3             
+ [45] timechange_0.4.0            httr_1.4.9                 
+ [47] abind_1.4-8                 compiler_4.4.2             
+ [49] bit64_4.8.6                 withr_3.0.3                
+ [51] doParallel_1.0.17           S7_0.2.2                   
+ [53] BiocParallel_1.40.2         DBI_1.3.0                  
+ [55] DelayedArray_0.32.0         rjson_0.2.23               
+ [57] tools_4.4.2                 otel_0.2.0                 
+ [59] httpuv_1.6.17               glue_1.8.1                 
+ [61] restfulr_0.0.17             callr_3.8.0                
+ [63] promises_1.5.0              getPass_0.2-4              
+ [65] gridBase_0.4-7              cluster_2.1.8.3            
+ [67] reshape2_1.4.5              generics_0.1.4             
+ [69] gtable_0.3.6                tzdb_0.5.0                 
+ [71] seqPattern_1.38.0           data.table_1.18.6.1        
+ [73] hms_1.1.4                   utf8_1.2.6                 
+ [75] foreach_1.5.2               pillar_1.11.1              
+ [77] vroom_1.7.1                 later_1.4.8                
+ [79] lattice_0.23-1              bit_4.6.0                  
+ [81] tidyselect_1.2.1            locfit_1.5-9.12            
+ [83] knitr_1.52                  git2r_0.36.2               
+ [85] SummarizedExperiment_1.36.0 xfun_0.61                  
+ [87] statmod_1.5.2               matrixStats_1.5.0          
+ [89] stringi_1.8.9               UCSC.utils_1.2.0           
+ [91] yaml_2.3.12                 evaluate_1.0.5             
+ [93] codetools_0.2-20            cli_3.6.6                  
+ [95] processx_3.9.0              jquerylib_0.1.4            
+ [97] dichromat_2.0-1             Rcpp_1.1.2                 
+ [99] png_0.1-9                   XML_3.99-0.24              
+[101] parallel_4.4.2              blob_1.3.0                 
+[103] bitops_1.1-0                scales_1.4.0               
+[105] crayon_1.5.3                GetoptLong_1.1.1           
+[107] rlang_1.3.0                 KEGGREST_1.46.0            </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
