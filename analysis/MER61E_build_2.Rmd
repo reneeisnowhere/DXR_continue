@@ -45,6 +45,7 @@ library(readxl)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(GenomicFeatures)
 library(edgeR)
+library(Biostrings)
 ```
 
 The purpose of this page is to build a large dataframe for MER61E annotations.
@@ -478,9 +479,9 @@ test_pair_TE_repName <- function(df_long, rep_name, cluster1, cluster2) {
 Evaluate DAR and CAR overlap of TEs in ATAC data
 ```{r enrichment plot}
 repeatmasker_clean <- readRDS("data/RDS_files/repeatmasker_clean.RDS")
-
+# saveRDS(repeatmasker_clean,"data/RDS_files/repeatmasker_clean.RDS")
 sat_lowc_simrpt_repNames <- readRDS("data/RDS_files/sat_lowc_simrpt_repNames.RDS")
-
+repeatmasker_clean <- repeatmasker_clean %>%  mutate(RM_id=paste0(genoName,":",start,"-",end,":",id))
 rmskr_std_gr <- GRanges(
   seqnames = repeatmasker_clean$genoName,
   ranges   = IRanges(
@@ -900,10 +901,12 @@ MER61E_K27acLFC_age <-H3K27ac_ext200_anno %>%
   left_join(repeatmasker_clean, by=c("repID"="RM_id")) %>% 
   dplyr::rename("H3K27ac_peakid"=Peakid) %>% 
   left_join((H3K27ac_toplist$H3K27ac_24T %>% dplyr::select(genes, logFC)), by=c("H3K27ac_peakid"="genes")) %>% 
-  left_join((mint_anno %>% dplyr::select(repID, p53_halfsite, p53_fullsite)), by="repID")
+  left_join((mint_anno %>% dplyr::select(repID, p53_halfsite, p53_fullsite)), by="repID") %>% 
+ mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2)
 
 
-ggplot(MER61E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
+ggplot(MER61E_K27acLFC_age, aes(x=logFC,y=MYA_bourque))+
   geom_point(aes(color=p53_halfsite))+
   ggtitle("H3K27ac logFC at 0R which overlap a MER61E \nand the milliDiv of the MER61E, n=67")+
   theme_bw()
@@ -915,12 +918,12 @@ ggplot(MER61E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
 acute_MER61E_K27acLFC_age <- MER61E_K27acLFC_age %>% 
   dplyr::filter(cluster=="Set_3")
 
-ggplot(acute_MER61E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
-  geom_point(aes(color=p53_halfsite))+
+ggplot(acute_MER61E_K27acLFC_age, aes(x=logFC,y=MYA_bourque))+
+  geom_point(aes(color=p53_halfsite, size=4))+
   ggtitle("H3K27ac logFC at 0R which overlap an acute MER61E \nand the milliDiv of the MER61E, n=40")+
   theme_bw()
 
-ggplot(acute_MER61E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
+ggplot(acute_MER61E_K27acLFC_age, aes(x=logFC,y=MYA_bourque))+
   geom_point(aes(color=p53_fullsite), size=4)+
   ggtitle("H3K27ac logFC at 0R which overlap an acute MER61E \nand the milliDiv of the MER61E, n=40, full site")+
   theme_bw()
@@ -937,11 +940,13 @@ LTR10E_K27acLFC_age <-H3K27ac_ext200_anno %>%
   left_join(repeatmasker_clean, by=c("repID"="RM_id")) %>% 
   dplyr::rename("H3K27ac_peakid"=Peakid) %>% 
   left_join((H3K27ac_toplist$H3K27ac_24T %>% dplyr::select(genes, logFC)), by=c("H3K27ac_peakid"="genes")) %>% 
-  left_join((lint_anno %>% dplyr::select(repID, p53_halfsite, p53_fullsite)), by="repID")
+  left_join((lint_anno %>% dplyr::select(repID, p53_halfsite, p53_fullsite)), by="repID") %>% 
+  mutate(MYA_jukes_cantor=(-.75*log(1-4*(milliDiv/1000)/3))/(1000000*2*2.2E-9),
+         MYA_bourque=milliDiv/2.2)
 
 
-ggplot(LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
-  geom_point(aes(color=p53_halfsite))+
+ggplot(LTR10E_K27acLFC_age, aes(x=logFC,y=MYA_bourque))+
+  geom_point(aes(color=p53_halfsite,size=4))+
   ggtitle("H3K27ac logFC at 0R which overlap a LTR10E \nand the milliDiv of the LTR10E, n=35")+
   theme_bw()
 ```
@@ -952,14 +957,14 @@ ggplot(LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
 acute_LTR10E_K27acLFC_age <- LTR10E_K27acLFC_age %>% 
   dplyr::filter(cluster=="Set_3")
 
-ggplot(acute_LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
-  geom_point(aes(color=p53_halfsite))+
+ggplot(acute_LTR10E_K27acLFC_age, aes(x=logFC,y=MYA_bourque))+
+  geom_point(aes(color=p53_halfsite, size=4))+
   ggtitle("H3K27ac logFC at 0R which overlap an acute LTR10E \nand the milliDiv of the LTR10E, n=28")+
   theme_bw()+
   coord_cartesian(xlim=c(-2,5))
 
 
-ggplot(acute_LTR10E_K27acLFC_age, aes(x=logFC,y=milliDiv))+
+ggplot(acute_LTR10E_K27acLFC_age, aes(x=logFC,y=MYA_bourque))+
   geom_point(aes(color=p53_fullsite), size=4)+
   ggtitle("H3K27ac logFC at 0R which overlap an acute LTR10E \nand the milliDiv of the LTR10E, n=28, fullsite")+
   theme_bw()+
@@ -2360,7 +2365,7 @@ ggplot(MER61E_K27acLFC_age_sox11, aes(x=logFC,y=milliDiv))+
 
 
 ```{r LTR10E Sox11}
-ggplot(LTR10E_K27acLFC_age_sox11, aes(x=logFC,y=milliDiv))+
+ggplot(LTR10E_K27acLFC_age_sox11, aes(x=logFC,y=milliDiv/2.2))+
   geom_point(aes(color=SOX11))+
   ggtitle("H3K27ac logFC at 0R which overlap a LTR10E \nand the milliDiv of the LTR10E, n=35 colored for SOX11")+
   theme_bw()
@@ -2483,5 +2488,66 @@ prop_plot_mod(sox11_mint,alt_cluster, VEH_ATAC_overlap)+
 
 ```{r}
 
+mint_anno %>% 
+  mutate(cluster = tidyr::replace_na(cluster, "NA"),
+      cluster = factor(cluster,
+        levels = c("Set_3", "Set_1", "not_assigned", "NA"))) %>%
+    filter(cluster %in% c("Set_3", "Set_1", "not_assigned", "NA")) %>% 
+    mutate(alt_cluster=if_else(cluster=="Set_3","acute_TE","non_acute_TE"),
+           alt_cluster=factor(alt_cluster, levels= c("acute_TE","non_acute_TE"))) %>% 
+ggplot(., aes(x=alt_cluster, y=width))+
+  # geom_boxplot()+
+ smplot2::sm_boxplot(legends = TRUE)+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("acute_TE", "non_acute_TE")),
+    method = "wilcox.test")+
+   ggtitle("MER61E width of TEs")
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+
+```
+
+### Consensus remap
+
+```{r}
+MER61E_ref <- readDNAStringSet(
+  "C:/Users/renee/Other_projects_data/DXR_data/DF000000887_MER61E_consensus.fa")
+
+MER61E_rmsk <- repeatmasker_clean %>%
+  filter(repName == "MER61E") %>%
+  dplyr::select(
+    genoName, genoStart, genoEnd, strand,
+    repName, repStart, repEnd, repLeft,
+    milliDiv, milliDel, milliIns)
+
+nrow(MER61E_rmsk)
+
+MER61E_consensus <- repeatmasker_clean %>%
+  filter(repName == "MER61E") %>%
+  mutate(
+    consensus_start = if_else(
+      strand == "+", repStart, repLeft
+    ),
+    consensus_end = repEnd,
+    consensus_length = if_else(
+      strand == "+",
+      repEnd - repLeft,
+      repEnd - repStart
+    )
+  )
+
+MER61E_consensus %>%
+  summarise(
+    n = n(),
+    min_start = min(consensus_start),
+    max_end = max(consensus_end),
+    invalid = sum(
+      consensus_start > consensus_end |
+      consensus_start < 0,
+      na.rm = TRUE
+    )
+  )
 ```
 
