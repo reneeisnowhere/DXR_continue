@@ -1,0 +1,1118 @@
+---
+title: "MER61E_build_4"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+# library(ggalluvial)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(janitor)
+library(MASS)
+library(readxl)
+# library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(GenomicFeatures)
+library(edgeR)
+library(Biostrings)
+library(pwalign)
+library(BSgenome.Hsapiens.UCSC.hg38)
+```
+
+The purpose of this page is to build a large dataframe for MER61E annotations.
+
+```{r annotation data frames}
+# ZNF680 narrowpeak binding Hek293 ENCFF935XZI
+ZNF680_regions <- import("data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed",format = "narrowPeak")
+
+ZNF780A_regions <- import("data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed")
+MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
+
+LTR10E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/LTR10E_ERV1_LTR.bed")
+
+
+MER61E_p53_best_site_score <- import("C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61E_ERV1_LTR_fimo/best_site.narrowPeak")
+
+LTR10E_p53_best_site_score <- import("C:/Users/renee/Other_projects_data/DXR_data/fimo_results/LTR10E_ERV1_LTR_fimo/best_site.narrowPeak")
+
+H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+
+H3K27ac_summit_gr_ext <- GenomicRanges::resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
+# export(H3K27ac_summit_gr_ext,"data/Bed_exports/H3K27ac_summit_gr_ext.bed")
+# peakAnnoList_H3K27ac <- readRDS("data/motif_lists/H3K27ac_annotated_peaks.RDS")
+# 
+# peakAnnoList_H3K9me3 <- readRDS("data/motif_lists/H3K9me3_annotated_peaks.RDS")
+
+# H3K27ac_lookup <- imap_dfr(peakAnnoList_H3K27ac[1:3], ~
+#   tibble(Peakid = .x@anno$Peakid, cluster = .y))
+
+##assigning Peakid as name of ext summit region
+ mcols(H3K27ac_summit_gr_ext)$name <- mcols(H3K27ac_summit_gr_ext)$Peakid
+ 
+ H3K27ac_ext200_anno <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+ 
+ # MER61E_anno_genes <- readRDS("data/RDS_files/MER61E_anno_genes.RDS")
+ # MER61E_anno_chipseeker <- readRDS("data/RDS_files/MER61E_anno_chipseeker.RDS")
+ 
+ # LTR10E_anno_genes <- readRDS("data/RDS_files/LTR10E_anno_genes.RDS")
+ # LTR10E_anno_chipseeker <- readRDS("data/RDS_files/LTR10E_anno_chipseeker.RDS")
+ 
+# chipseeker_anno_MER61E <-  MER61E_anno_chipseeker %>% 
+#   as.data.frame() %>% 
+#   dplyr::select(name,annotation,geneId,distanceToTSS) %>% 
+#   dplyr::rename("repID"=name,"CS_MER61E_gene"=geneId,"CS_distanceToTSS"=distanceToTSS)
+# 
+# chipseeker_anno_LTR10E <-  LTR10E_anno_chipseeker %>% 
+#   as.data.frame() %>% 
+#   dplyr::select(name,annotation,geneId,distanceToTSS) %>% 
+#   dplyr::rename("repID"=name,"CS_MER61E_gene"=geneId,"CS_distanceToTSS"=distanceToTSS)
+
+ # MER61E_intermediat_protein <- readRDS("data/MER61intermediatemarking_protein.RDS")
+ 
+full_p53_canonical  <- readRDS("data/full_p53_canonical.RDS")
+
+p53halfsite_TE_ids <- readRDS("data/p53halfsite_TE_ids.RDS")
+
+# LTR_df <- readRDS("data/RDS_files/LTR_DF_hg38.RDS")
+
+# H3K27ac_toplist <- readRDS("data/DER_data/H3K27ac_toplist.RDS")
+
+# H3K27ac_toptable_list <- bind_rows(H3K27ac_toplist, .id = "group")
+
+# set_case_list_H3K27ac <-  H3K27ac_toptable_list %>% 
+#   dplyr::select(group,genes, logFC) %>% 
+#   pivot_wider(.,id_cols = genes, names_from = group, values_from = logFC) %>% 
+#   dplyr::left_join(H3K27ac_lookup,by =c("genes"="Peakid")) %>% 
+#   mutate(cluster= case_when (is.na(cluster)~"not_assigned",
+#                            TRUE ~ cluster),
+#          case= case_when(H3K27ac_24T > 0 & H3K27ac_24R >0 & H3K27ac_144R>0~"A",
+#                               H3K27ac_24T < 0 & H3K27ac_24R <0 & H3K27ac_144R<0~"B",
+#                               TRUE ~ "C"),
+#          alt_case= case_when(H3K27ac_24T > 0~"D",
+#                               H3K27ac_24T < 0~"E",
+#                               TRUE ~ "F")) %>% 
+#   mutate(set_case=paste0(cluster,"_",case),
+#          set_alt_case=paste0(cluster,"_",alt_case)) %>% 
+#   dplyr::select(genes, cluster,case,set_case,alt_case,set_alt_case)
+
+# LTR10E_trajectory_broad <- readRDS("data/RDS_files/LTR10E_trajectory_broad.RDS")
+
+# MER61E_trajectory_broad <- readRDS("data/RDS_files/MER61E_trajectory_broad.RDS")
+
+
+
+# DOX_24_ATAC <- readRDS("data/Other_paper_data/Matthews_2025_DOX_24h_ATAC.RDS")
+
+# DOX_24_DAR_gr <- DOX_24_ATAC %>% 
+#   dplyr::filter(adj.P.Val<0.05) %>% 
+#   dplyr::select(peak) %>%
+#   separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+#   mutate(start=as.numeric(start),
+#          stop=as.numeric(stop)) %>% 
+#   as_granges(seqnames = seqnames,
+#              start=start,
+#              end=stop,
+#              strand="*")
+
+
+# upDOX_24_DAR_gr <- DOX_24_ATAC %>% 
+#   dplyr::filter(adj.P.Val<0.05) %>% 
+#   dplyr::filter(logFC>0) %>% 
+#   dplyr::select(peak) %>%
+#   separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+#   mutate(start=as.numeric(start),
+#          stop=as.numeric(stop)) %>% 
+#   as_granges(seqnames = seqnames,
+#              start=start,
+#              end=stop,
+#              strand="*")
+# 
+# DOX_24_CAR_gr <- DOX_24_ATAC %>% 
+#   dplyr::filter(adj.P.Val>0.05) %>% 
+#   dplyr::select(peak) %>% 
+#   separate(peak, into = c("seqnames","start","stop"),remove = FALSE) %>% 
+#   mutate(start=as.numeric(start),
+#          stop=as.numeric(stop)) %>% 
+#   as_granges(seqnames = seqnames,
+#              start=start,
+#              end=stop,
+#              strand="*")
+
+# mcols(DOX_24_CAR_gr)$name <- mcols(DOX_24_CAR_gr)$peak
+# 
+# mcols(DOX_24_DAR_gr)$name <- mcols(DOX_24_DAR_gr)$peak
+
+H3K27ac_summit_gr_ext <- keepStandardChromosomes(
+  H3K27ac_summit_gr_ext,
+  pruning.mode = "coarse")
+
+# p53_sp_ChIP <- rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP57_VEH_p53_Ind6/MCW_SP_ChIP57_VEH_p53_Ind6_q0.05_peaks.narrowPeak",format = "narrowPeak")
+# 
+# CTCF_sp_ChIP <- rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP63_VEH_CTCF_Ind1/MCW_SP_ChIP63_VEH_CTCF_Ind1_q0.05_peaks.narrowPeak",format = "narrowPeak")
+# 
+# RAD21_sp_ChIP <-  rtracklayer::import("C:/Users/renee/Other_projects_data/DOX_CHIP/macs3_out/MCW_SP_ChIP69_VEH_RAD21_Ind1/MCW_SP_ChIP69_VEH_RAD21_Ind1_q0.05_peaks.narrowPeak",format = "narrowPeak")
+# 
+# TOP2B_sp_ChIP <-  rtracklayer::import("data/Other_paper_data/ChIP3_TOP2B_CM_87-1.bed")
+# 
+# ATAC_regions_Ind2 <- rtracklayer::import("C:/Users/renee/Other_projects_data/DXR_data/ATAC_peak_files/trimmed_Ind2_87V24h_S12_peaks.narrowPeak",format = "narrowPeak")
+
+mint_anno <- readRDS("data/RDS_files/MER61E_intermediate_dataframe.RDS")
+lint_anno <- readRDS("data/RDS_files/LTR10E_intermediate_dataframe.RDS")
+
+# 
+# K27ac_VEH_Ind4 <- rtracklayer::import("data/peaks/H3K27ac/MCW_CT_ROA_106_FINAL_peaks.narrowPeak",format = "narrowPeak")
+DBR_p53_results <- readRDS("C:/Users/renee/R_STUFF/DOX_ChIP_project/data/Omar_Revision/DE_results/efit2.RDS")
+
+DBR_p53_gr <- readRDS("C:/Users/renee/R_STUFF/DOX_ChIP_project/data/Omar_Revision/DE_results/peakID_gr_p53DBR.RDS")
+
+MER61E_site <- mergeByOverlaps(MER61E_regions,MER61E_p53_best_site_score)
+
+MER61E_best_site_signal <- MER61E_site %>% 
+  as.data.frame() %>% 
+  dplyr::select(MER61E_regions.name,MER61E_p53_best_site_score.signalValue,MER61E_p53_best_site_score.qValue) %>% 
+  dplyr::rename("repID"=1,"MER61E.signal"=2,"MER61E.qvalue"=3)
+
+
+LTR10E_site <- mergeByOverlaps(LTR10E_regions,LTR10E_p53_best_site_score)
+
+LTR10E_best_site_signal <- LTR10E_site %>% 
+  as.data.frame() %>% 
+  dplyr::select(LTR10E_regions.name,LTR10E_p53_best_site_score.signalValue,LTR10E_p53_best_site_score.qValue) %>% 
+  dplyr::rename("repID"=1,"LTR10E.signal"=2,"LTR10E.qvalue"=3)
+
+# SOX11_hg38_gr <- readRDS("data/Other_paper_data/SOX11_hg38_NIHMS686659_gr.RDS")
+
+p53_RE <- readr::read_tsv("C:/Users/renee/Downloads/12864_2015_1643_MOESM2_ESM/p53_response_element_File_Supplementary File 2.txt",
+  # "Tebaldi_Inga_SupplementaryFile2.txt",
+  show_col_types = FALSE)
+
+
+
+```
+
+```{r}
+sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
+
+# sampleinfo %>% 
+  # dplyr::filter(Histone_Mark=="H3K27ac" & Treatment=="VEH" & Timepoint=="24T")
+```
+
+```{r repeatmasker add it}
+repeatmasker <- read_delim("data/Other_paper_data/repeatmasker_20250911.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+```
+
+
+```{r repeatmasker add in}
+autosomes <- paste0("chr", 1:22)
+repeatmasker_clean <- repeatmasker %>%
+  mutate(
+    start = genoStart + 1,
+    end = genoEnd,
+    repFamily = stringr::str_remove(repFamily, "\\?$")
+  ) %>%
+  dplyr::filter(genoName %in% autosomes)%>% 
+  mutate(RM_id=paste0(genoName,":",start,"-",end,":",id))
+
+
+```
+
+
+### Looking into p53 response elements  
+
+
+```{r pull in hg19 coords}
+p53_RE_coords <- p53_RE %>%
+  mutate(
+    RE_id = row_number(),
+
+    pos1 = if_else(
+      strand == "+",
+      hg19.TSS.coord + TSS.rel.start,
+      hg19.TSS.coord - TSS.rel.start
+    ),
+
+    pos2 = if_else(
+      strand == "+",
+      hg19.TSS.coord + TSS.rel.stop,
+      hg19.TSS.coord - TSS.rel.stop
+    ),
+
+    genomic_start = pmin(pos1, pos2),
+    genomic_end   = pmax(pos1, pos2),
+
+    RE_width = genomic_end - genomic_start + 1,
+    sequence_width = nchar(sequence)
+  )
+```
+
+
+Confirm the locations match the width
+```{r}
+p53_RE_coords %>%
+  count(RE_width == sequence_width)
+```
+
+ Now in import to granges and liftover
+ 
+```{r}
+p53_RE_hg19 <- makeGRangesFromDataFrame(
+  p53_RE_coords,
+  seqnames.field = "chr",
+  start.field = "genomic_start",
+  end.field = "genomic_end",
+  strand.field = "strand",
+  keep.extra.columns = TRUE
+)
+```
+
+```{r making liftover file}
+download.file(
+  "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz",
+  destfile = "data/hg19ToHg38.over.chain.gz",
+  mode = "wb"
+)
+# library(R.utils)
+# 
+# gunzip(
+#   "data/hg19ToHg38.over.chain.gz",
+#   destname = "data/hg19ToHg38.over.chain",
+#   remove = FALSE,
+#   overwrite = TRUE
+# )
+chain <- import.chain("data/hg19ToHg38.over.chain")
+
+p53_RE_lifted <- liftOver(
+  p53_RE_hg19,
+  chain
+)
+```
+
+
+```{r}
+mapping_counts <- elementNROWS(p53_RE_lifted)
+
+table(mapping_counts)
+
+unique_idx <- which(mapping_counts == 1L)
+
+p53_RE_hg38 <- unlist(
+  p53_RE_lifted[unique_idx],
+  use.names = FALSE
+)
+
+length(p53_RE_hg38)
+original_width <- width(p53_RE_hg19)[unique_idx]
+lifted_width <- width(p53_RE_hg38)
+
+table(original_width == lifted_width)
+
+### excluding changed locations widths
+width_match <- original_width == lifted_width
+
+p53_RE_hg38 <- p53_RE_hg38[width_match]
+```
+
+Now to overlap with MER61E elements
+
+```{r}
+hits <- findOverlaps(
+  MER61E_regions,
+  p53_RE_hg38,
+  ignore.strand = TRUE
+)
+
+cat(
+  "Total overlaps:",
+  length(hits), "\n"
+)
+
+cat(
+  "MER61E copies with p53 response elements:",
+  length(unique(queryHits(hits))), "\n"
+)
+
+cat(
+  "Unique p53 response elements overlapping MER61E:",
+  length(unique(subjectHits(hits))), "\n"
+)
+```
+
+```{r}
+
+MER61E_p53_overlaps <- tibble(
+  MER61E_index = queryHits(hits),
+  p53_RE_index = subjectHits(hits),
+
+  MER61E_chr = as.character(
+      seqnames(MER61E_regions)[queryHits(hits)]
+  ),
+
+  MER61E_start = start(MER61E_regions)[queryHits(hits)],
+  MER61E_end = end(MER61E_regions)[queryHits(hits)],
+
+  p53_start = start(p53_RE_hg38)[subjectHits(hits)],
+  p53_end = end(p53_RE_hg38)[subjectHits(hits)],
+
+  p53_sequence = mcols(p53_RE_hg38)$sequence[subjectHits(hits)],
+  p53_grade = mcols(p53_RE_hg38)$grade[subjectHits(hits)]
+)
+
+head(MER61E_p53_overlaps)
+MER61E_p53_overlaps %>%
+  count(p53_grade, sort = TRUE)
+```
+```{r}
+MER61E_p53_overlaps %>%
+  left_join(
+    as.data.frame(p53_RE_hg38) %>%
+      mutate(p53_RE_index = row_number()) %>%
+      dplyr::select(p53_RE_index, spacer.length, n.mismatches),
+    by = "p53_RE_index"
+  ) %>%
+  dplyr::select(
+    MER61E_index,
+    p53_sequence,
+    p53_grade,
+    spacer.length,
+    n.mismatches
+  ) %>%
+  arrange(p53_grade, MER61E_index)
+```
+
+```{r}
+NCI_unique <- MER61E_p53_overlaps %>%
+  distinct(
+    MER61E_index,
+    p53_start,
+    p53_end,
+    p53_sequence,
+    .keep_all = TRUE
+  )
+
+nrow(NCI_unique)
+
+```
+```{r}
+acute_only_MER61E_alignment_blocks <- readRDS("data/RDS_files/acute_only_MER61E_alignment_blocks.RDS")
+
+all_MER61E_alignment_blocks <- readRDS("data/RDS_files/all_MER61E_alignment_blocks.RDS")
+
+acute_p53_only_mapped_dif <- readRDS("data/RDS_files/acute_p53_only_mapped_dif.RDS")
+
+MER61E_alignment_div <- readRDS("data/RDS_files/MER61E_alignment_div.RDS") 
+
+MER61E_position_maps <- readRDS("data/RDS_files/MER61E_position_maps.RDS")
+
+
+TE_facet_order <- MER61E_alignment_div %>%
+  mutate(TE_name = as.character(TE_name)) %>%
+  distinct(TE_name, cluster, milliDiv) %>%
+  group_by(cluster) %>%
+  arrange(milliDiv, TE_name, .by_group = TRUE) %>%
+  mutate(
+    TE_order_facet = row_number()
+  ) %>%
+  ungroup()
+
+```
+
+```{r}
+NCI_p53_MER61E <- MER61E_p53_overlaps %>%
+  mutate(
+    TE_name = as.character(
+      mcols(MER61E_regions)$name[MER61E_index]
+    ),
+    TE_strand = as.character(
+      strand(MER61E_regions)[MER61E_index]
+    )
+  ) %>%
+  distinct(
+    TE_name,
+    p53_start,
+    p53_end,
+    .keep_all = TRUE
+  )
+
+NCI_p53_MER61E %>%
+  mutate(
+    in_acute_alignment =
+      TE_name %in%
+      acute_only_MER61E_alignment_blocks$TE_name
+  ) %>%
+  count(in_acute_alignment)
+
+NCI_p53_MER61E %>%
+  mutate(
+    in_acute_alignment =
+      TE_name %in%
+      acute_only_MER61E_alignment_blocks$TE_name
+  ) %>%
+  group_by(TE_name, in_acute_alignment) %>%
+  summarise(
+    n_p53_RE = dplyr::n(),
+    grades = paste(sort(unique(p53_grade)), collapse = ", "),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(in_acute_alignment), TE_name)
+```
+
+```{r}
+NCI_p53_MER61E <- NCI_p53_MER61E %>%
+  mutate(
+    in_alignment = TE_name %in%
+      all_MER61E_alignment_blocks$TE_name
+  )
+
+NCI_p53_MER61E %>%
+  count(in_alignment)
+
+MER61E_alignment_info <- all_MER61E_alignment_blocks %>%
+  distinct(
+    TE_name,
+    cluster,
+    milliDiv,
+    TE_order,
+    TE_order_facet
+  )
+
+NCI_p53_MER61E <- NCI_p53_MER61E %>%
+  left_join(
+    MER61E_alignment_info,
+    by = "TE_name"
+  )
+
+
+NCI_p53_MER61E %>%
+  distinct(TE_name, cluster) %>%
+  count(cluster)
+```
+
+```{r}
+NCI_p53_MER61E <- NCI_p53_MER61E %>%
+  mutate(
+    motif_start = if_else(
+      TE_strand == "+",
+      p53_start - MER61E_start + 1L,
+      MER61E_end - p53_end + 1L
+    ),
+
+    motif_end = if_else(
+      TE_strand == "+",
+      p53_end - MER61E_start + 1L,
+      MER61E_end - p53_start + 1L
+    ),
+
+    motif_width = motif_end - motif_start + 1L
+  )
+
+
+NCI_p53_MER61E %>%
+  dplyr::select(
+    TE_name,
+    cluster,
+    TE_strand,
+    motif_start,
+    motif_end,
+    motif_width,
+    p53_sequence,
+    p53_grade
+  )
+
+all_MER61E_alignment_blocks <-
+  all_MER61E_alignment_blocks %>%
+  dplyr::select(-any_of("TE_order_facet")) %>%
+  left_join(
+    TE_facet_order %>%
+      dplyr::select(TE_name, TE_order_facet),
+    by = "TE_name"
+  )
+
+
+NCI_p53_MER61E <-
+  NCI_p53_MER61E %>%
+  dplyr::select(-any_of("TE_order_facet")) %>%
+  left_join(
+    TE_facet_order %>%
+      dplyr::select(TE_name, TE_order_facet),
+    by = "TE_name"
+  )
+
+NCI_p53_relative <- NCI_p53_MER61E %>%
+  mutate(
+    relative_start = motif_start,
+    relative_end = motif_end
+  )
+```
+
+
+```{r}
+map_NCI_p53 <- function(TE_name, relative_start, relative_end) {
+
+  # Retrieve existing nucleotide-level alignment map
+  pos_map <- MER61E_position_maps[[as.character(TE_name)]]
+
+  if (is.null(pos_map)) {
+    return(tibble(
+      consensus_start = NA_integer_,
+      consensus_end = NA_integer_,
+      mapped_bases = 0L,
+      mapping_status = "No alignment map"
+    ))
+  }
+
+  motif_width <- relative_end - relative_start + 1L
+
+  mapped <- pos_map %>%
+    filter(
+      TE_position >= relative_start,
+      TE_position <= relative_end,
+      !is.na(consensus_position)
+    )
+
+  n_mapped <- nrow(mapped)
+
+  tibble(
+    consensus_start = if (n_mapped > 0)
+      min(mapped$consensus_position) else NA_integer_,
+
+    consensus_end = if (n_mapped > 0)
+      max(mapped$consensus_position) else NA_integer_,
+
+    mapped_bases = n_mapped,
+
+    mapping_status = case_when(
+      n_mapped == 0 ~ "Unmapped",
+      n_mapped == motif_width ~ "Fully mapped",
+      TRUE ~ "Partially mapped"
+    )
+  )
+}
+
+```
+
+
+```{r}
+NCI_p53_mapped <- NCI_p53_relative %>%
+  mutate(
+    mapping = pmap(
+      list(TE_name, relative_start, relative_end),
+      map_NCI_p53
+    )
+  ) %>%
+  unnest(mapping)
+```
+
+
+```{r, fig.height=8}
+
+
+ggplot() +
+  geom_segment(
+    data = all_MER61E_alignment_blocks,
+    aes(
+      x = consensus_start,
+      xend = consensus_end,
+      y = TE_order_facet,
+      yend = TE_order_facet,
+      color = cluster
+    ),
+    linewidth = 1.2
+  ) +
+  geom_segment(
+    data = NCI_p53_mapped,
+    aes(
+      x = consensus_start,
+      xend = consensus_end,
+      y = TE_order_facet,
+      yend = TE_order_facet
+    ),
+    color = "darkorange",
+    linewidth = 2.5
+  ) +
+  geom_vline(
+    xintercept = c(130, 181),
+    linetype = "dashed",
+    color = "grey40"
+  ) +
+  facet_wrap(~cluster, scales = "free_y") +
+  labs(
+    x = "MER61E consensus position (bp)",
+    y = "MER61E copy",
+    title = "NCI p53 response elements mapped to MER61E consensus"
+  ) +
+  theme_bw()
+```
+```{r}
+
+
+
+```
+
+### Additional enrichment of p53 DBR
+
+
+```{r prop plot MER}
+prop_plot <- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data <- data %>%
+    mutate(cluster = tidyr::replace_na(cluster, "NA"),
+      cluster = factor(cluster,
+        levels = c("Set_3", "Set_1", "not_assigned", "NA"))) %>%
+    filter(cluster %in% c("Set_3", "Set_1", "not_assigned", "NA"))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups <- c("Set_1", "not_assigned", "NA")
+
+  test_results <- lapply(comparison_groups, function(g) {
+
+    test_df <- plot_data %>%
+      filter(cluster %in% c("Set_3", g))
+
+    tab <- table(test_df$cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi <- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected < 5)) {
+      test <- fisher.test(tab)
+      method <- "Fisher"
+    } else {
+      test <- chi
+      method <- "Chi-square"
+    }
+
+    data.frame(comparison = paste("Set_3 vs", g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %>%
+    bind_rows() %>%
+    mutate(p_adj = p.adjust(p, method = "BH"),
+           label = paste0("p=", format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = c(1.10, 1.18, 1.26))
+
+
+  # Proportions
+  count_data <- plot_data %>%
+    count({{ group_col }}, {{ yes_no_col }}) %>%
+    group_by({{ group_col }}) %>%
+    mutate(prop = n / sum(n)) %>%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), "\n(n=", n, ")")),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, "Paired")[1:2]) +
+
+    labs(x = NULL,y = "Proportion") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}
+
+prop_plot_LTR <- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data <- data %>%
+    mutate(cluster = tidyr::replace_na(cluster, "NA"),
+      cluster = factor(cluster,
+        levels = c("Set_3", "Set_1", "not_assigned", "NA"))) %>%
+    filter(cluster %in% c("Set_3", "Set_1", "not_assigned", "NA"))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups <- c("Set_1", "not_assigned", "NA")
+
+  test_results <- lapply(comparison_groups, function(g) {
+
+    test_df <- plot_data %>%
+      filter(cluster %in% c("Set_3", g))
+
+    tab <- table(test_df$cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi <- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected < 5)) {
+      test <- fisher.test(tab)
+      method <- "Fisher"
+    } else {
+      test <- chi
+      method <- "Chi-square"
+    }
+
+    data.frame(comparison = paste("Set_3 vs", g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %>%
+    bind_rows() %>%
+    mutate(p_adj = p.adjust(p, method = "BH"),
+           label = paste0("p=", format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = c(1.10, 1.18, 1.26))
+
+
+  # Proportions
+  count_data <- plot_data %>%
+    count({{ group_col }}, {{ yes_no_col }}) %>%
+    group_by({{ group_col }}) %>%
+    mutate(prop = n / sum(n)) %>%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), "\n(n=", n, ")")),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, "Paired")[3:4]) +
+
+    labs(x = NULL,y = "Proportion") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}
+
+
+
+```
+
+```{r function proplot change} 
+
+prop_plot_mod <- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data <- data %>%
+    mutate(cluster = tidyr::replace_na(cluster, "NA"),
+      cluster = factor(cluster,
+        levels = c("Set_3", "Set_1", "not_assigned", "NA"))) %>%
+    filter(cluster %in% c("Set_3", "Set_1", "not_assigned", "NA")) %>% 
+    mutate(alt_cluster=if_else(cluster=="Set_3","acute_TE","non_acute_TE"),
+           alt_cluster=factor(alt_cluster, levels= c("acute_TE","non_acute_TE")))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups <- c("non_acute_TE")
+
+  test_results <- lapply(comparison_groups, function(g) {
+
+    test_df <- plot_data %>%
+      filter(alt_cluster %in% c("acute_TE", g))
+
+    tab <- table(test_df$alt_cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi <- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected < 5)) {
+      test <- fisher.test(tab)
+      method <- "Fisher"
+    } else {
+      test <- chi
+      method <- "Chi-square"
+    }
+
+    data.frame(comparison = paste("acute_TE vs", g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %>%
+    bind_rows() %>%
+    mutate(p_adj = p.adjust(p, method = "BH"),
+           label = paste0("p=", format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = 1.10)
+
+
+  # Proportions
+  count_data <- plot_data %>%
+    count({{ group_col }}, {{ yes_no_col }}) %>%
+    group_by({{ group_col }}) %>%
+    mutate(prop = n / sum(n)) %>%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), "\n(n=", n, ")")),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, "Paired")[1:2]) +
+
+    labs(x = NULL,y = "Proportion") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}
+
+prop_plot_mod_ltr <- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data <- data %>%
+    mutate(cluster = tidyr::replace_na(cluster, "NA"),
+      cluster = factor(cluster,
+        levels = c("Set_3", "Set_1", "not_assigned", "NA"))) %>%
+    filter(cluster %in% c("Set_3", "Set_1", "not_assigned", "NA")) %>% 
+    mutate(alt_cluster=if_else(cluster=="Set_3","acute_TE","non_acute_TE"),
+           alt_cluster=factor(alt_cluster, levels= c("acute_TE","non_acute_TE")))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups <- c("non_acute_TE")
+
+  test_results <- lapply(comparison_groups, function(g) {
+
+    test_df <- plot_data %>%
+      filter(alt_cluster %in% c("acute_TE", g))
+
+    tab <- table(test_df$alt_cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi <- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected < 5)) {
+      test <- fisher.test(tab)
+      method <- "Fisher"
+    } else {
+      test <- chi
+      method <- "Chi-square"
+    }
+
+    data.frame(comparison = paste("acute_TE vs", g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %>%
+    bind_rows() %>%
+    mutate(p_adj = p.adjust(p, method = "BH"),
+           label = paste0("p=", format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = 1.10)
+
+
+  # Proportions
+  count_data <- plot_data %>%
+    count({{ group_col }}, {{ yes_no_col }}) %>%
+    group_by({{ group_col }}) %>%
+    mutate(prop = n / sum(n)) %>%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), "\n(n=", n, ")")),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, "Paired")[3:4]) +
+
+    labs(x = NULL,y = "Proportion") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}
+``` 
+
+Finish annotating the regions as up/down significant
+
+```{r}
+# 
+# DBR_p53_gr %>% 
+#   as.data.frame() %>% 
+#   anno
+# mint_anno
+
+
+p53_DE <- topTable(
+  DBR_p53_results,
+  coef = "DOX.VEH",
+  number = Inf,
+  adjust.method = "BH"
+)
+
+
+p53_DE <- p53_DE %>% 
+  dplyr::filter(adj.P.Val < 0.05) %>% 
+  mutate(dir.expr= if_else(logFC>0,"up","down"))
+
+
+
+p53_DE%>% 
+  group_by(dir.expr) %>% 
+  tally()
+
+DBR_list <- p53_DE %>% pull(genes)
+
+DBR_up_list <- p53_DE %>% dplyr::filter(dir.expr=="up") %>% pull(genes)
+
+DBR_down_list <- p53_DE %>% dplyr::filter(dir.expr=="down")%>% pull(genes)
+
+```
+
+```{r}
+MER61E_p53DB <- mergeByOverlaps(
+  MER61E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_list]
+)
+
+MER61E_p53DB_up <- mergeByOverlaps(
+  MER61E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_up_list]
+)
+
+MER61E_p53DB_down <- mergeByOverlaps(
+  MER61E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_down_list]
+)
+mint_anno <- mint_anno %>% 
+  mutate(p53_chip_DBR=if_else(repID %in% MER61E_p53DB$name,"yes","no"),
+         p53_chip_DBR_up=if_else(repID %in% MER61E_p53DB_up$name,"yes","no"),
+         p53_chip_DBR_down=if_else(repID %in% MER61E_p53DB_down$name,"yes","no"))
+```
+
+
+```{r}
+LTR10E_p53DB <- mergeByOverlaps(
+  LTR10E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_list]
+)
+
+LTR10E_p53DB_up <- mergeByOverlaps(
+  LTR10E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_up_list]
+)
+
+LTR10E_p53DB_down <- mergeByOverlaps(
+  LTR10E_regions,
+  DBR_p53_gr[names(DBR_p53_gr) %in% DBR_down_list]
+)
+lint_anno <- lint_anno %>% 
+  mutate(p53_chip_DBR=if_else(repID %in% LTR10E_p53DB$name,"yes","no"), p53_chip_DBR_up=if_else(repID %in% LTR10E_p53DB_up$name,"yes","no"), 
+         p53_chip_DBR_down=if_else(repID %in% LTR10E_p53DB_down$name,"yes","no")) 
+```
+###  For MER61E
+```{r}
+prop_plot(mint_anno,cluster,p53_chip_DBR)+
+  ggtitle("MER61E acute proportions of p53 Differential Binding regions")
+
+prop_plot_mod(mint_anno,alt_cluster, p53_chip_DBR)+
+  ggtitle("MER61E acute proportions of p53 Differential Binding regions")
+
+```
+### For LTR10E
+```{r}
+prop_plot_LTR(lint_anno,cluster,p53_chip_DBR)+
+  ggtitle("LTR10E acute proportions of p53 Differential Binding regions")
+
+prop_plot_mod_ltr(lint_anno,alt_cluster, p53_chip_DBR)+
+  ggtitle("LTR10E acute proportions of p53 Differential Binding regions")
+
+
+
+```
+
+
+```{r only up}
+prop_plot(mint_anno,cluster,p53_chip_DBR_up)+
+  ggtitle("MER61E acute proportions of p53 Differential Binding regions only up")
+prop_plot_mod(mint_anno,alt_cluster, p53_chip_DBR_up)+
+  ggtitle("MER61E acute proportions of p53 Differential Binding regions only up")
+
+prop_plot_LTR(lint_anno,cluster,p53_chip_DBR_up)+
+  ggtitle("LTR10E acute proportions of p53 Differential Binding regions only up")
+
+prop_plot_mod_ltr(lint_anno,alt_cluster, p53_chip_DBR_up)+
+  ggtitle("LTR10E acute proportions of p53 Differential Binding regions only up")
+
+
+```
+
+```{r only down}
+prop_plot(mint_anno,cluster,p53_chip_DBR_down)+
+  ggtitle("MER61E acute proportions of p53 Differential Binding regions only down")
+prop_plot_mod(mint_anno,alt_cluster, p53_chip_DBR_down)+
+  ggtitle("MER61E acute proportions of p53 Differential Binding regions only down")
+
+prop_plot_LTR(lint_anno,cluster,p53_chip_DBR_down)+
+  ggtitle("LTR10E acute proportions of p53 Differential Binding regions only down")
+
+prop_plot_mod_ltr(lint_anno,alt_cluster, p53_chip_DBR_down)+
+  ggtitle("LTR10E acute proportions of p53 Differential Binding regions only down")
+
+```
+
+
+### LTR10E alignment process:
+
+
