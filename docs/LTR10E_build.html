@@ -11,11 +11,11 @@
 
 <meta name="author" content="Renee Matthews" />
 
-<meta name="date" content="2026-08-10" />
+<meta name="date" content="2026-11-12" />
 
 <title>LTR10_building dataframe</title>
 
-<script src="site_libs/header-attrs-2.31/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.32/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -370,7 +370,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">LTR10_building dataframe</h1>
 <h4 class="author">Renee Matthews</h4>
-<h4 class="date">2026-08-10</h4>
+<h4 class="date">2026-11-12</h4>
 
 </div>
 
@@ -399,7 +399,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-08-10
+<strong>Last updated:</strong> 2026-11-12
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -530,15 +530,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeda4dfbc40f018f83fa89b6cf8867c44b9ce9cff3targetblankda4dfbca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree3c53fa926e64a47ee87eec20e60814408d408b0atargetblank3c53fa9a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/da4dfbc40f018f83fa89b6cf8867c44b9ce9cff3" target="_blank">da4dfbc</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/3c53fa926e64a47ee87eec20e60814408d408b0a" target="_blank">3c53fa9</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreeda4dfbc40f018f83fa89b6cf8867c44b9ce9cff3targetblankda4dfbca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree3c53fa926e64a47ee87eec20e60814408d408b0atargetblank3c53fa9a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -548,7 +548,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/da4dfbc40f018f83fa89b6cf8867c44b9ce9cff3" target="_blank">da4dfbc</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/3c53fa926e64a47ee87eec20e60814408d408b0a" target="_blank">3c53fa9</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -565,12 +565,14 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    data/Bed_exports/
     Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
     Ignored:    data/Cormotif_data/
     Ignored:    data/DER_data/
     Ignored:    data/H3K27ac_LTR10E_integrant_anno.RDS
     Ignored:    data/H3K27ac_MER61E_integrant_anno.RDS
+    Ignored:    data/MER61E_alignments.RDS
     Ignored:    data/MER61intermediatemarking_protein.RDS
     Ignored:    data/Other_paper_data/
     Ignored:    data/RDS_files/
@@ -580,6 +582,9 @@ Ignored files:
     Ignored:    data/cell_line_info_.tsv
     Ignored:    data/full_p53_canonical.RDS
     Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/hg19ToHg38.over.chain
+    Ignored:    data/hg19ToHg38.over.chain.gz
+    Ignored:    data/hg38_expressed_RNA_genes.bed
     Ignored:    data/lookup_table_andstuff.txt
     Ignored:    data/motif_lists/
     Ignored:    data/number_frag_peaks_summary.txt
@@ -589,6 +594,7 @@ Untracked files:
     Untracked:  H3K27ac_all_regions_test.bed
     Untracked:  H3K27ac_consensus_clusters_test.bed
     Untracked:  MER61C_ERV1_LTR.fa
+    Untracked:  MER61E_notSet3.bed
     Untracked:  analysis/GREAT_H3K27ac.Rmd
     Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
     Untracked:  analysis/H3K27ac_KZFP_motifs.Rmd
@@ -596,15 +602,16 @@ Untracked files:
     Untracked:  analysis/H3K27me3_TE_investigation.Rmd
     Untracked:  analysis/H3K36me3_TE_investigation.Rmd
     Untracked:  analysis/HIstone_supp_profiles.Rmd
-    Untracked:  analysis/Main_fig2.Rmd
     Untracked:  analysis/Top2a_Top2b_expression.Rmd
     Untracked:  analysis/drill_down_KZFPs.Rmd
     Untracked:  analysis/maps_and_plots.Rmd
     Untracked:  analysis/proteomics.Rmd
     Untracked:  code/For_john.R
     Untracked:  code/RNA_gene_locations.R
+    Untracked:  code/SOX11_excel_to_granges_coversion.R
     Untracked:  code/State_color_code_igv.R
     Untracked:  code/score_phylop.py
+    Untracked:  hg19ToHg38.over.chain.gz
     Untracked:  hg38_TSS_1bp.bed
     Untracked:  other_analysis/
 
@@ -613,10 +620,11 @@ Unstaged changes:
     Modified:   analysis/H3K27_TE_overlap_extend.Rmd
     Modified:   analysis/H3K27ac_TEtype.Rmd
     Modified:   analysis/H3K27ac_cisRE.Rmd
-    Modified:   analysis/LFC_regions_with_TEs.Rmd
-    Modified:   analysis/Main_fig1.Rmd
-    Modified:   analysis/chromHMM.Rmd
+    Modified:   analysis/MER61E_build.Rmd
+    Modified:   analysis/Main_fig2.Rmd
     Modified:   analysis/computeMatrixplots.Rmd
+    Modified:   analysis/distance_exam.Rmd
+    Modified:   analysis/repeatmasker_data.Rmd
     Modified:   analysis/supp_fig.Rmd
     Modified:   code/corMotifcustom.R
 
@@ -663,6 +671,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/3c53fa926e64a47ee87eec20e60814408d408b0a/analysis/LTR10E_build.Rmd" target="_blank">3c53fa9</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-11-12
+</td>
+<td>
+wflow_publish("analysis/LTR10E_build.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/LTR10E_build.html" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1195,7 +1237,7 @@ phyloP_LTR10E_df &lt;- phyloP_LTR10E_df %&gt;%
 peak_phyloP_by_id &lt;- phyloP_df %&gt;%
   group_by(Peakid) %&gt;%
   summarise(
-    n_summit_regions = n(),
+    n_summit_regions = dplyr::n(),
     total_summit_width = sum(width, na.rm = TRUE),
     peak_phyloP_mean = weighted.mean(phyloP_mean, w = width, na.rm = TRUE),
     peak_phyloP_max = ifelse(all(is.na(phyloP_max)),NA_real_,
@@ -2001,6 +2043,24 @@ reneeisnowhere
 </table>
 </div>
 </div>
+<pre class="r"><code>LTR10E_intermediate_data %&gt;% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), &quot;NA&quot;, cluster),
+    cluster = factor(cluster, levels = c(&quot;Set_1&quot;,&quot;Set_2&quot;, &quot;Set_3&quot;, &quot;not_assigned&quot;, &quot;NA&quot;)),
+    alt_cluster=if_else(cluster==&quot;Set_3&quot;,&quot;acute_TE&quot;,&quot;non-acute_TE&quot;),
+    alt_cluster= factor(alt_cluster, levels=c(&quot;acute_TE&quot;,&quot;non-acute_TE&quot;))
+  ) %&gt;% 
+  ggplot(aes(x=alt_cluster,y=milliDiv))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c(&quot;acute_TE&quot;,&quot;non-acute_TE&quot;)),
+    method = &quot;wilcox.test&quot;
+  ) +
+  labs(title = &quot;LTR10E milliDiv dispersion in groups&quot;,
+       subtitle=&quot;Pairwise Wilcoxon rank-sum tests&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/acute%20only%20boxplot-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>LTR10E_intermediate_data %&gt;% 
   mutate(
     cluster = as.character(cluster),
@@ -3797,6 +3857,43 @@ reneeisnowhere
 
 plot_trajectory_flow(filtered_trajectory_780A,&quot;any LTR10E with ZNF780A binding&quot;)</code></pre>
 <p><img src="figure/LTR10E_build.Rmd/780a%20plot-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-780a-plot-1">
+Past versions of "780a plot-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-780a-plot-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/780a plot-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>filtered_trajectory_680 &lt;- LTR10E_trajectory_broad %&gt;% 
   # dplyr::filter(te_id %in% Peakid_lookup_repID$repID) %&gt;% 
   dplyr::filter(te_id %in% ZNF680_overlaps_LTR10E)
@@ -3825,6 +3922,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-29-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-29-1.png" target="_blank">1fe9740</a>
@@ -3986,6 +4094,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-33-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-33-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -4029,6 +4148,43 @@ reneeisnowhere
                                                 method = &quot;wilcox.test&quot;)+
   ggtitle(&quot;distance to nearest gene no broken up by set&quot;)</code></pre>
 <p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-33-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-33-2">
+Past versions of unnamed-chunk-33-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-33-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-33-2.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="tf-enrichment" class="section level3">
@@ -4094,6 +4250,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-34-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-34-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -4142,6 +4309,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-35-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-35-1.png" target="_blank">1fe9740</a>
@@ -4323,6 +4501,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-40-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-40-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -4399,6 +4588,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-41-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-41-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -4445,8 +4645,45 @@ slice_min(EVALUE, with_ties = FALSE) %&gt;%
   theme_classic()+
   ylab(&quot;Enriched TF motif&quot;)+
   ggtitle(paste(&quot;Known Motifs enriched in Set 3 active \n LTR10E vs all others LTR10E n = 20&quot;))</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-41-2.png" alt="" width="672" style="display: block; margin: auto;" />
-Filtering for expressed TFs</p>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-41-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-41-2">
+Past versions of unnamed-chunk-41-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-41-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-41-2.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Filtering for expressed TFs</p>
 <pre class="r"><code>RNA_full_toptable &lt;-  readRDS(&quot;data/Other_paper_data/RNA_full_toptable.RDS&quot;)
 
 RNA_expressed &lt;- RNA_full_toptable %&gt;% 
@@ -4497,6 +4734,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-42-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-42-1.png" target="_blank">1fe9740</a>
@@ -4649,6 +4897,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-44-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-44-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -4730,6 +4989,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-45-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-45-1.png" target="_blank">1fe9740</a>
@@ -4879,6 +5149,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-47-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-47-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -4958,6 +5239,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-48-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-48-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -5034,6 +5326,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-49-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-49-1.png" target="_blank">1fe9740</a>
@@ -5127,6 +5430,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-50-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-50-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -5211,6 +5525,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-51-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-51-1.png" target="_blank">1fe9740</a>
@@ -5300,6 +5625,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-52-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-52-1.png" target="_blank">1fe9740</a>
@@ -5425,6 +5761,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-54-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-54-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -5512,6 +5859,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-55-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-55-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -5591,6 +5949,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-56-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-56-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -5660,6 +6029,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-57-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-57-1.png" target="_blank">1fe9740</a>
 </td>
 <td>
@@ -5717,6 +6097,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-58-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/1fe9740498924285a8a902691bcf819c7e95667a/docs/figure/LTR10E_build.Rmd/unnamed-chunk-58-1.png" target="_blank">1fe9740</a>
@@ -5809,6 +6200,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-60-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-60-1.png" target="_blank">8703347</a>
@@ -5926,6 +6328,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-62-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-62-1.png" target="_blank">8703347</a>
 </td>
 <td>
@@ -6027,6 +6440,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-63-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-63-1.png" target="_blank">8703347</a>
 </td>
 <td>
@@ -6095,6 +6519,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-64-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-64-1.png" target="_blank">8703347</a>
@@ -6195,6 +6630,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-65-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-65-1.png" target="_blank">8703347</a>
 </td>
 <td>
@@ -6283,6 +6729,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-66-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-66-1.png" target="_blank">8703347</a>
 </td>
 <td>
@@ -6368,6 +6825,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-67-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-67-1.png" target="_blank">8703347</a>
@@ -6466,6 +6934,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-68-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-68-1.png" target="_blank">8703347</a>
@@ -6588,6 +7067,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-69-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-69-1.png" target="_blank">8703347</a>
 </td>
 <td>
@@ -6664,6 +7154,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-70-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-70-1.png" target="_blank">8703347</a>
 </td>
 <td>
@@ -6727,6 +7228,43 @@ reneeisnowhere
     axis.text.x = element_text(angle = 45, hjust = 1)
   )</code></pre>
 <p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-71-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-71-1">
+Past versions of unnamed-chunk-71-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-71-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-71-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>halfsite_summary &lt;- what_ltr %&gt;% 
   dplyr::filter(
     my_LTR == &quot;yes&quot;,
@@ -6930,6 +7468,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-76-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-76-1.png" target="_blank">8703347</a>
 </td>
 <td>
@@ -7021,6 +7570,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-78-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/87033476e241e1ddbbbbd6b49da70ed9bdb9dc93/docs/figure/LTR10E_build.Rmd/unnamed-chunk-78-1.png" target="_blank">8703347</a>
 </td>
 <td>
@@ -7098,6 +7658,43 @@ Heatmap(
     if (!is.na(trans_sig_mat[i, j]) &amp;&amp; trans_sig_mat[i, j] &lt; 0.05) {
       grid::grid.text(&quot;*&quot;, x, y, gp = grid::gpar(fontsize = 10))}})</code></pre>
 <p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-80-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-80-1">
+Past versions of unnamed-chunk-80-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-80-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-80-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="tad-info" class="section level3">
 <h3>TAD info</h3>
@@ -7136,7 +7733,24 @@ K9me3_24T &lt;- K9me3_24T %&gt;%
                              logFC&lt;0&amp;adj.P.Val&lt;0.05~&quot;K9_DER_down&quot;,
                              TRUE~&quot;not_DER&quot;))  
 
+LTR10E_fimo &lt;- read_tsv(&quot;C:/Users/renee/Other_projects_data/DXR_data/SOX11_LTR10E_fimo/fimo.tsv&quot;, comment = &quot;#&quot;,  show_col_types = FALSE) %&gt;%
+  mutate(motif = case_when(
+    motif_id == 27 ~ &quot;LTR10E_MEME9&quot;,
+    motif_id == 42 ~ &quot;LTR10E_MEME14&quot;))
+
+LTR10E_fimo_gr &lt;- makeGRangesFromDataFrame(LTR10E_fimo,
+                                           seqnames.field = &quot;sequence_name&quot;,
+                                           start.field = &quot;start&quot;,
+                                           end.field = &quot;stop&quot;,
+                                           keep.extra.columns = TRUE)
+
+### &quot;within&quot; checks if the first granges is inside the second granges
+SOX11_sites &lt;-  mergeByOverlaps(LTR10E_fimo_gr,LTR10E_regions, type = &quot;within&quot;,
+  ignore.strand = TRUE)
+
 LTR10E_site &lt;- mergeByOverlaps(LTR10E_regions,LTR10E_p53_best_site_score)
+
+
 
 LTR10E_best_site_signal &lt;- LTR10E_site %&gt;% 
   as.data.frame() %&gt;% 
@@ -40526,15 +41140,79 @@ LTR10E_k9downder &lt;- mergeByOverlaps(LTR10E_regions,K9me3_split_gr$K9_DER_down
 LTR10E_k9notder &lt;- mergeByOverlaps(LTR10E_regions,K9me3_split_gr$not_DER)</code></pre>
 <pre class="r"><code>lint_anno &lt;- readRDS(&quot;data/RDS_files/LTR10E_intermediate_dataframe.RDS&quot;)
 
+cat(&quot;Checking LTR10E_k9notder\n&quot;)</code></pre>
+<pre><code>Checking LTR10E_k9notder</code></pre>
+<pre class="r"><code>print(class(LTR10E_k9notder))</code></pre>
+<pre><code>[1] &quot;DFrame&quot;
+attr(,&quot;package&quot;)
+[1] &quot;S4Vectors&quot;</code></pre>
+<pre class="r"><code>print(dim(LTR10E_k9notder))</code></pre>
+<pre><code>[1] 83 15</code></pre>
+<pre class="r"><code>print(colnames(LTR10E_k9notder))</code></pre>
+<pre><code> [1] &quot;LTR10E_regions&quot;         &quot;name&quot;                   &quot;score&quot;                 
+ [4] &quot;K9me3_split_gr$not_DER&quot; &quot;Peakid&quot;                 &quot;annotation&quot;            
+ [7] &quot;geneChr&quot;                &quot;geneStart&quot;              &quot;geneEnd&quot;               
+[10] &quot;geneLength&quot;             &quot;geneStrand&quot;             &quot;geneId&quot;                
+[13] &quot;transcriptId&quot;           &quot;distanceToTSS&quot;          &quot;LFC_split&quot;             </code></pre>
+<pre class="r"><code>stopifnot(
+  &quot;name&quot; %in% colnames(LTR10E_k9notder)
+)
+k9notder_names &lt;- as.character(LTR10E_k9notder[[&quot;name&quot;]])
+k9downder_names &lt;- as.character(LTR10E_k9downder[[&quot;name&quot;]])
+k9upder_names &lt;- as.character(LTR10E_k9upder[[&quot;name&quot;]])
+
+lint_anno &lt;- lint_anno %&gt;%
+  mutate(
+    heart_cRE = if_else(repID %in% LTR10E_cre_df$name, &quot;yes&quot;, &quot;no&quot;),
+    LV_TAD_overlap = if_else(repID %in% LTR10E_tad_df$LTR10E_regions.name, &quot;yes&quot;, &quot;no&quot;),
+    TP53_A549_overlap = if_else(repID %in% LTR10E_tp53_df$LTR10E_regions.name, &quot;yes&quot;, &quot;no&quot;),
+    TP53_HEPG2_overlap = if_else(repID %in% LTR10E_tp53_hepg2_df$LTR10E_regions.name, &quot;yes&quot;, &quot;no&quot;),
+    LTR10E_k9notder = if_else(repID %in% k9notder_names, &quot;yes&quot;, &quot;no&quot;),
+    LTR10E_k9downder = if_else(repID %in% k9downder_names, &quot;yes&quot;, &quot;no&quot;),
+    LTR10E_k9upder = if_else(repID %in% k9upder_names, &quot;yes&quot;, &quot;no&quot;)
+  )  
+
+# saveRDS(lint_anno,&quot;data/RDS_files/LTR10E_intermediate_dataframe.RDS&quot;)
+
 
 lint_anno &lt;- lint_anno %&gt;% 
-  mutate(heart_cRE=if_else(repID %in% LTR10E_cre_df$name,&quot;yes&quot;,&quot;no&quot;),
-          LV_TAD_overlap=if_else(repID %in% LTR10E_tad_df$LTR10E_regions.name,&quot;yes&quot;,&quot;no&quot;),
-         TP53_A549_overlap=if_else(repID %in% LTR10E_tp53_df$LTR10E_regions.name,&quot;yes&quot;,&quot;no&quot;),
-         TP53_HEPG2_overlap=if_else(repID %in% LTR10E_tp53_hepg2_df$LTR10E_regions.name,&quot;yes&quot;,&quot;no&quot;),
-          LTR10E_k9notder=if_else( repID %in% LTR10E_k9notder[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
-         LTR10E_k9downder=if_else( repID %in% LTR10E_k9downder[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;),
-         LTR10E_k9upder=if_else( repID %in% LTR10E_k9upder[[&quot;name&quot;]],&quot;yes&quot;,&quot;no&quot;))   </code></pre>
+  mutate(has_sox11_meme14=if_else(repID %in% (SOX11_sites %&gt;%
+                                               as.data.frame() %&gt;%                                          dplyr::filter(LTR10E_fimo_gr.motif==&quot;LTR10E_MEME14&quot;))$name, &quot;yes&quot;,&quot;no&quot;),
+         has_sox11_meme9=if_else(repID %in% (SOX11_sites %&gt;%
+                                               as.data.frame() %&gt;%                                          dplyr::filter(LTR10E_fimo_gr.motif==&quot;LTR10E_MEME9&quot;))$name, &quot;yes&quot;,&quot;no&quot;),
+         has_sox11_site=if_else(repID %in% (SOX11_sites %&gt;%
+                                               as.data.frame())$name, &quot;yes&quot;,&quot;no&quot;))
+
+# lint_anno %&gt;% group_by(has_sox11_site) %&gt;%  tally
+# 
+# SOX11_sites %&gt;%
+#   as.data.frame() %&gt;%
+#   group_by(LTR10E_fimo_gr.motif) %&gt;%
+#   summarise(
+#     total_overlaps = dplyr::n(),
+#     unique_TE = n_distinct(name),
+#     .groups = &quot;drop&quot;
+#   )
+# 
+# 
+# lint_anno %&gt;%
+#   mutate(
+#     group = if_else(
+#       cluster == &quot;Set_3&quot;,
+#       &quot;Set_3&quot;,
+#       &quot;Other&quot;,
+#       missing = &quot;Other&quot;
+#     )
+#   ) %&gt;%
+#   group_by(group) %&gt;%
+#   dplyr::summarise(
+#     total = dplyr::n(),
+#     MEME9_positive = sum(has_sox11_meme9 == &quot;yes&quot;),
+#     MEME9_percent = 100 * mean(has_sox11_meme9 == &quot;yes&quot;),
+#     MEME14_positive = sum(has_sox11_meme14 == &quot;yes&quot;),
+#     MEME14_percent = 100 * mean(has_sox11_meme14 == &quot;yes&quot;),
+#     .groups = &quot;drop&quot;
+#   )</code></pre>
 </div>
 <div id="additional-analysis" class="section level3">
 <h3>Additional analysis</h3>
@@ -40633,46 +41311,345 @@ prop_plot_LTR &lt;- function(data, group_col, yes_no_col) {
     theme(axis.text.x = element_text(angle = 90,
                                      hjust = 1))
 }</code></pre>
+<pre class="r"><code>prop_plot_mod_ltr &lt;- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data &lt;- data %&gt;%
+    mutate(cluster = tidyr::replace_na(cluster, &quot;NA&quot;),
+      cluster = factor(cluster,
+        levels = c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;))) %&gt;%
+    filter(cluster %in% c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;)) %&gt;% 
+    mutate(alt_cluster=if_else(cluster==&quot;Set_3&quot;,&quot;acute_TE&quot;,&quot;non_acute_TE&quot;),
+           alt_cluster=factor(alt_cluster, levels= c(&quot;acute_TE&quot;,&quot;non_acute_TE&quot;)))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups &lt;- c(&quot;non_acute_TE&quot;)
+
+  test_results &lt;- lapply(comparison_groups, function(g) {
+
+    test_df &lt;- plot_data %&gt;%
+      filter(alt_cluster %in% c(&quot;acute_TE&quot;, g))
+
+    tab &lt;- table(test_df$alt_cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi &lt;- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected &lt; 5)) {
+      test &lt;- fisher.test(tab)
+      method &lt;- &quot;Fisher&quot;
+    } else {
+      test &lt;- chi
+      method &lt;- &quot;Chi-square&quot;
+    }
+
+    data.frame(comparison = paste(&quot;acute_TE vs&quot;, g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %&gt;%
+    bind_rows() %&gt;%
+    mutate(p_adj = p.adjust(p, method = &quot;BH&quot;),
+           label = paste0(&quot;p=&quot;, format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = 1.10)
+
+
+  # Proportions
+  count_data &lt;- plot_data %&gt;%
+    count({{ group_col }}, {{ yes_no_col }}) %&gt;%
+    group_by({{ group_col }}) %&gt;%
+    mutate(prop = n / sum(n)) %&gt;%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), &quot;\n(n=&quot;, n, &quot;)&quot;)),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, &quot;Paired&quot;)[3:4]) +
+
+    labs(x = NULL,y = &quot;Proportion&quot;) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}</code></pre>
 <pre class="r"><code>prop_plot_LTR(lint_anno, cluster,p53_halfsite)+
   ggtitle(&quot;p53 halfsite proportion across LTR10E&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-87-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/LTR%20four%20plots-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot_LTR(lint_anno, cluster,p53_fullsite)+
   ggtitle(&quot;p53 fullsite proportion across LTR10E&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-87-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/LTR%20four%20plots-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot_LTR(lint_anno, cluster,sp_p53_binding)+
   ggtitle(&quot;DOX_ChIP p53_binding proportion across LTR10E&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-87-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/LTR%20four%20plots-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot_LTR(lint_anno, cluster,overlap_DAR)+
   ggtitle(&quot;DAR overlap proportion across LTR10E&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-87-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/LTR%20four%20plots-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot_LTR(lint_anno,cluster, LV_TAD_overlap)+
   ggtitle(&quot;LV TAD overlap of LTR10Es&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-87-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/LTR%20four%20plots-5.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot_LTR(lint_anno,cluster, heart_cRE)+
   ggtitle(&quot;Heart cRE overlap of LTR10Es&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-87-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/LTR%20four%20plots-6.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># prop_plot_LTR(lint_anno,cluster, TP53_A549_overlap)+
 #   ggtitle(&quot;Published TP53 regions from A549 cells and LTR10E overlaps&quot;)
 
 prop_plot_LTR(lint_anno,cluster, TP53_HEPG2_overlap)+
   ggtitle(&quot;Published TP53 regions from HepG2 cells and LTR10E overlaps&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-87-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/LTR%20four%20plots-7.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot_LTR(lint_anno, cluster,ZNF780A_binding)+
   ggtitle(&quot;ZNF780A binding proportion across LTR10E&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-87-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/LTR%20four%20plots-8.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot_LTR(lint_anno, cluster,ZNF680_binding)+
   ggtitle(&quot;ZNF680 binding proportion across LTR10E&quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-87-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/LTR10E_build.Rmd/LTR%20four%20plots-9.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>prop_plot_LTR(lint_anno,cluster, LTR10E_k9upder)+
   ggtitle(&quot;K9me3 overlapped LTRs by cluster up DER &quot;)</code></pre>
 <p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-88-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-88-1">
+Past versions of unnamed-chunk-88-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-88-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-88-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>  prop_plot_LTR(lint_anno,cluster, LTR10E_k9downder)+
   ggtitle(&quot;K9me3 overlapped LTRs by cluster down DER &quot;)</code></pre>
 <p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-88-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-88-2">
+Past versions of unnamed-chunk-88-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-88-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-88-2.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>prop_plot_LTR(lint_anno,cluster,LTR10E_k9notder)+
   ggtitle(&quot;K9me3 overlapped LTRs by cluster not DER &quot;)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-88-3.png" alt="" width="672" style="display: block; margin: auto;" />
-#### Looking at chronic/acute RNA repsonse enrichment in TAD</p>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-88-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-88-3">
+Past versions of unnamed-chunk-88-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-88-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-88-3.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="ltr-mod-plots" class="section level4">
+<h4>LTR mod plots</h4>
+<pre class="r"><code>prop_plot_mod_ltr(lint_anno, alt_cluster,p53_halfsite)+
+  ggtitle(&quot;p53 halfsite proportion across LTR10E&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-89-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-89-1">
+Past versions of unnamed-chunk-89-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-89-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/unnamed-chunk-89-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>prop_plot_mod_ltr(lint_anno, alt_cluster,p53_fullsite)+
+  ggtitle(&quot;p53 fullsite proportion across LTR10E&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-89-2.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>prop_plot_mod_ltr(lint_anno,alt_cluster, TP53_HEPG2_overlap)+
+  ggtitle(&quot;Published TP53 regions from HepG2 cells and LTR10E overlaps&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-89-3.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># prop_plot_mod_ltr(lint_anno,alt_cluster, has_sox11_site)+
+#   ggtitle(&quot;has either SOX11 site&quot;)
+
+prop_plot_mod_ltr(lint_anno,alt_cluster, has_sox11_meme9)+
+  ggtitle(&quot;has either SOX11 meme9&quot;)</code></pre>
+<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-89-4.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># prop_plot_mod_ltr(lint_anno,alt_cluster, has_sox11_meme14)+
+#   ggtitle(&quot;has either SOX11 meme14&quot;)
+
+
+### checking strength of FIMO sites:
+MEME9_scores &lt;- SOX11_sites %&gt;%
+  as.data.frame() %&gt;%
+  dplyr::filter(
+    LTR10E_fimo_gr.motif == &quot;LTR10E_MEME9&quot;
+  ) %&gt;%
+  dplyr::group_by(name) %&gt;%
+  dplyr::summarise(
+    max_score =max(LTR10E_fimo_gr.score),
+    n_sites = dplyr::n(),
+    .groups = &quot;drop&quot;
+  )
+
+
+# lint_anno &lt;- lint_anno %&gt;% 
+#   left_join(MEME9_scores,by = c(&quot;repID&quot;=&quot;name&quot;)) 
+# 
+# 
+# lint_anno%&gt;%
+#   filter(!is.na(max_score)) %&gt;%
+#   ggplot(aes(x = group, y = max_score, fill = group)) +
+#   geom_violin(trim = FALSE, alpha = 0.5) +
+#   geom_boxplot(width = 0.15, outlier.shape = NA) +
+#   labs(
+#     x = NULL,
+#     y = &quot;Maximum FIMO motif score&quot;,
+#     title = &quot;SOX11-like MEME-9 motif strength in LTR10E&quot;
+#   ) +
+#   theme_classic()
+# 
+# wilcox.test(
+#   max_score ~ group,
+#   data = lint_anno,
+#   exact = FALSE
+# )</code></pre>
+<pre class="r"><code># sea_sequences &lt;- read_tsv(
+#   &quot;C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/LTR10E_Set3_xstreme/sea_out/sequences.tsv&quot;,
+#   comment = &quot;#&quot;,
+#   show_col_types = FALSE
+# )
+### repTEs_sox11 from LTR10E data on MER61E_build_2.Rmd
+# repTEs_sox11 %&gt;% 
+#   dplyr::filter(TE_name==&quot;LTR10E_ERV1_LTR&quot;) %&gt;% 
+#   left_join(lint_anno,by =c(&quot;TE_id&quot;=&quot;repID&quot;)) %&gt;% 
+# 
+#   ggplot(aes(x = group, y = motif_score, fill = group)) +
+#   geom_violin(trim = FALSE, alpha = 0.5) +
+#   geom_boxplot(width = 0.15, outlier.shape = NA) +
+#   labs(
+#     x = NULL,
+#     y = &quot;Maximum FIMO motif score&quot;,
+#     title = &quot;SOX11_Canonical motif strength in LTR10E&quot;
+#   ) +
+#   theme_classic()</code></pre>
+</div>
+<div id="looking-at-chronicacute-rna-repsonse-enrichment-in-tad"
+class="section level4">
+<h4>Looking at chronic/acute RNA repsonse enrichment in TAD</h4>
 <pre class="r"><code>RNA_acute_cluster &lt;- read_excel(&quot;C:/Users/renee/Other_projects_data/DXR_data/DXR_RNA_data/Pfortmiller_S2_Appendix_251213.xlsx&quot;, 
     sheet = &quot;Table_S6&quot;, skip = 1)
 
@@ -40708,6 +41685,44 @@ lint_anno &lt;- lint_anno %&gt;%
 prop_plot_LTR(lint_anno,cluster,AC_TADs)+
   ggtitle(&quot;LTR10E that overlap a TAD with a chronic/acute gene&quot;)</code></pre>
 <p><img src="figure/LTR10E_build.Rmd/RNA-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-RNA-1">
+Past versions of RNA-1.png
+</button>
+</p>
+<div id="fig-RNA-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4f82a98f50ccd0538e7bf1eeb6f306e89c343271/docs/figure/LTR10E_build.Rmd/RNA-1.png" target="_blank">4f82a98</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-08-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 <div id="correlation-of-data" class="section level4">
 <h4>Correlation of data</h4>
 <pre class="r"><code>lint_md_df &lt;- lint_anno %&gt;% 
@@ -40736,7 +41751,6 @@ lint_md_cor &lt;- cor(lint_md_df,
 Heatmap(lint_md_cor,
         column_title = &quot;LTR10E correlation of factors&quot;,
   name = &quot;correlation&quot;,)</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-89-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>lint_t_cor &lt;- cor(t(lint_md_df),
   use = &quot;pairwise.complete.obs&quot;)
 
@@ -40746,7 +41760,6 @@ Heatmap(lint_t_cor,
   name = &quot;correlation&quot;,
   row_names_gp = gpar(fontsize = 4),
   column_names_gp = gpar(fontsize = 4))</code></pre>
-<p><img src="figure/LTR10E_build.Rmd/unnamed-chunk-90-1.png" alt="" width="1536" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -40786,8 +41799,8 @@ other attached packages:
  [6] ChIPseeker_1.42.1                       
  [7] TxDb.Hsapiens.UCSC.hg38.knownGene_3.20.0
  [8] GenomicFeatures_1.58.0                  
- [9] readxl_1.4.5                            
-[10] MASS_7.3-65                             
+ [9] readxl_1.5.0.1                          
+[10] MASS_7.3-66                             
 [11] janitor_2.2.1                           
 [12] org.Hs.eg.db_3.20.0                     
 [13] AnnotationDbi_1.68.0                    
@@ -40820,9 +41833,9 @@ other attached packages:
 loaded via a namespace (and not attached):
   [1] fs_2.1.0                               
   [2] matrixStats_1.5.0                      
-  [3] bitops_1.0-9                           
+  [3] bitops_1.1-0                           
   [4] enrichplot_1.26.6                      
-  [5] httr_1.4.8                             
+  [5] httr_1.4.9                             
   [6] RColorBrewer_1.1-3                     
   [7] doParallel_1.0.17                      
   [8] tools_4.4.2                            
@@ -40833,24 +41846,24 @@ loaded via a namespace (and not attached):
  [13] mgcv_1.9-4                             
  [14] lazyeval_0.2.3                         
  [15] GetoptLong_1.1.1                       
- [16] withr_3.0.2                            
- [17] gridExtra_2.3                          
+ [16] withr_3.0.3                            
+ [17] gridExtra_2.3.1                        
  [18] cli_3.6.6                              
  [19] Cairo_1.7-0                            
  [20] labeling_0.4.3                         
  [21] sass_0.4.10                            
  [22] S7_0.2.2                               
  [23] Rsamtools_2.22.0                       
- [24] yulab.utils_0.2.4                      
+ [24] yulab.utils_0.2.5                      
  [25] foreign_0.8-91                         
  [26] DOSE_4.0.1                             
  [27] R.utils_2.13.0                         
- [28] dichromat_2.0-0.1                      
+ [28] dichromat_2.0-1                        
  [29] plotrix_3.8-14                         
  [30] pwr_1.3-0                              
- [31] rstudioapi_0.18.0                      
+ [31] rstudioapi_0.19.0                      
  [32] impute_1.80.0                          
- [33] RSQLite_3.52.0                         
+ [33] RSQLite_3.53.3                         
  [34] generics_0.1.4                         
  [35] gridGraphics_0.5-1                     
  [36] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
@@ -40860,7 +41873,7 @@ loaded via a namespace (and not attached):
  [40] vroom_1.7.1                            
  [41] car_3.1-5                              
  [42] GO.db_3.20.0                           
- [43] Matrix_1.7-5                           
+ [43] Matrix_1.7-6                           
  [44] abind_1.4-8                            
  [45] R.methodsS3_1.8.2                      
  [46] lifecycle_1.0.5                        
@@ -40875,13 +41888,13 @@ loaded via a namespace (and not attached):
  [55] blob_1.3.0                             
  [56] promises_1.5.0                         
  [57] crayon_1.5.3                           
- [58] ggtangle_0.1.2                         
- [59] lattice_0.22-9                         
+ [58] ggtangle_0.1.4                         
+ [59] lattice_0.23-1                         
  [60] cowplot_1.2.0                          
  [61] KEGGREST_1.46.0                        
  [62] magick_2.9.1                           
  [63] pillar_1.11.1                          
- [64] knitr_1.51                             
+ [64] knitr_1.52                             
  [65] fgsea_1.32.4                           
  [66] rjson_0.2.23                           
  [67] boot_1.3-32                            
@@ -40889,96 +41902,96 @@ loaded via a namespace (and not attached):
  [69] fastmatch_1.1-8                        
  [70] glue_1.8.1                             
  [71] getPass_0.2-4                          
- [72] ggfun_0.2.0                            
- [73] data.table_1.18.4                      
+ [72] ggfun_0.2.2                            
+ [73] data.table_1.18.6.1                    
  [74] vctrs_0.7.3                            
  [75] png_0.1-9                              
  [76] treeio_1.30.0                          
  [77] cellranger_1.1.0                       
  [78] gtable_0.3.6                           
  [79] cachem_1.1.0                           
- [80] xfun_0.57                              
+ [80] xfun_0.61                              
  [81] S4Arrays_1.6.0                         
  [82] iterators_1.0.14                       
- [83] nlme_3.1-169                           
+ [83] nlme_3.1-171                           
  [84] ggtree_3.14.0                          
- [85] bit64_4.8.0                            
+ [85] bit64_4.8.6                            
  [86] rprojroot_2.1.1                        
- [87] bslib_0.10.0                           
- [88] KernSmooth_2.23-26                     
+ [87] bslib_0.12.0                           
+ [88] KernSmooth_2.23-27                     
  [89] otel_0.2.0                             
  [90] rpart_4.1.27                           
- [91] colorspace_2.1-2                       
+ [91] colorspace_2.1-3                       
  [92] DBI_1.3.0                              
- [93] Hmisc_5.2-5                            
+ [93] Hmisc_5.3-0                            
  [94] seqPattern_1.38.0                      
- [95] nnet_7.3-20                            
+ [95] nnet_7.3-21                            
  [96] tidyselect_1.2.1                       
  [97] processx_3.9.0                         
  [98] bit_4.6.0                              
  [99] compiler_4.4.2                         
-[100] curl_7.1.0                             
+[100] curl_8.0.0                             
 [101] git2r_0.36.2                           
 [102] htmlTable_2.5.0                        
 [103] DelayedArray_0.32.0                    
 [104] checkmate_2.3.4                        
 [105] scales_1.4.0                           
-[106] caTools_1.18.3                         
-[107] callr_3.7.6                            
+[106] caTools_1.18.4                         
+[107] callr_3.8.0                            
 [108] rappdirs_0.3.4                         
 [109] digest_0.6.39                          
-[110] rmarkdown_2.31                         
+[110] rmarkdown_2.32                         
 [111] htmltools_0.5.9                        
 [112] pkgconfig_2.0.3                        
 [113] base64enc_0.1-6                        
 [114] MatrixGenerics_1.18.1                  
 [115] fastmap_1.2.0                          
-[116] rlang_1.2.0                            
+[116] rlang_1.3.0                            
 [117] GlobalOptions_0.1.4                    
 [118] htmlwidgets_1.6.4                      
 [119] UCSC.utils_1.2.0                       
 [120] farver_2.1.2                           
 [121] jquerylib_0.1.4                        
-[122] zoo_1.8-15                             
+[122] zoo_1.9-0                              
 [123] jsonlite_2.0.0                         
 [124] BiocParallel_1.40.2                    
 [125] GOSemSim_2.32.0                        
 [126] R.oo_1.27.1                            
-[127] RCurl_1.98-1.18                        
+[127] RCurl_1.98-1.20                        
 [128] magrittr_2.0.5                         
-[129] Formula_1.2-5                          
+[129] Formula_1.2-6                          
 [130] GenomeInfoDbData_1.2.13                
-[131] ggplotify_0.1.3                        
+[131] ggplotify_0.1.4                        
 [132] patchwork_1.3.2                        
-[133] Rcpp_1.1.1-1.1                         
+[133] Rcpp_1.1.2                             
 [134] ape_5.8-1                              
-[135] stringi_1.8.7                          
+[135] stringi_1.8.9                          
 [136] zlibbioc_1.52.0                        
 [137] plyr_1.8.9                             
 [138] parallel_4.4.2                         
 [139] splines_4.4.2                          
 [140] hms_1.1.4                              
-[141] igraph_2.3.1                           
-[142] ggpubr_0.6.3                           
+[141] igraph_2.3.4                           
+[142] ggpubr_1.0.0                           
 [143] ggsignif_0.6.4                         
 [144] reshape2_1.4.5                         
-[145] XML_3.99-0.23                          
+[145] XML_3.99-0.24                          
 [146] evaluate_1.0.5                         
 [147] tzdb_0.5.0                             
 [148] foreach_1.5.2                          
 [149] httpuv_1.6.17                          
 [150] clue_0.3-68                            
 [151] gridBase_0.4-7                         
-[152] broom_1.0.12                           
-[153] restfulr_0.0.16                        
-[154] tidytree_0.4.7                         
-[155] rstatix_0.7.3                          
+[152] broom_1.0.13                           
+[153] restfulr_0.0.17                        
+[154] tidytree_0.4.8                         
+[155] rstatix_1.1.0                          
 [156] later_1.4.8                            
 [157] viridisLite_0.4.3                      
-[158] aplot_0.2.9                            
+[158] aplot_0.3.2                            
 [159] memoise_2.0.1                          
 [160] GenomicAlignments_1.42.0               
-[161] cluster_2.1.8.2                        
+[161] cluster_2.1.8.3                        
 [162] timechange_0.4.0                       </code></pre>
 </div>
 </div>
