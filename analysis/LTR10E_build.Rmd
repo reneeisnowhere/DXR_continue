@@ -192,7 +192,7 @@ phyloP_LTR10E_df <- phyloP_LTR10E_df %>%
 peak_phyloP_by_id <- phyloP_df %>%
   group_by(Peakid) %>%
   summarise(
-    n_summit_regions = n(),
+    n_summit_regions = dplyr::n(),
     total_summit_width = sum(width, na.rm = TRUE),
     peak_phyloP_mean = weighted.mean(phyloP_mean, w = width, na.rm = TRUE),
     peak_phyloP_max = ifelse(all(is.na(phyloP_max)),NA_real_,
@@ -677,6 +677,31 @@ LTR10E_intermediate_data %>%
 
 
 ```
+```{r acute only boxplot}
+LTR10E_intermediate_data %>% 
+  mutate(
+    cluster = as.character(cluster),
+    cluster = if_else(is.na(cluster), "NA", cluster),
+    cluster = factor(cluster, levels = c("Set_1","Set_2", "Set_3", "not_assigned", "NA")),
+    alt_cluster=if_else(cluster=="Set_3","acute_TE","non-acute_TE"),
+    alt_cluster= factor(alt_cluster, levels=c("acute_TE","non-acute_TE"))
+  ) %>% 
+  ggplot(aes(x=alt_cluster,y=milliDiv))+
+  smplot2::sm_boxplot()+
+  ggpubr::stat_compare_means(
+    comparisons = list(
+  c("acute_TE","non-acute_TE")),
+    method = "wilcox.test"
+  ) +
+  labs(title = "LTR10E milliDiv dispersion in groups",
+       subtitle="Pairwise Wilcoxon rank-sum tests")
+
+
+```
+
+
+
+
 ```{r}
 
 LTR10E_intermediate_data %>% 
@@ -2686,7 +2711,24 @@ K9me3_24T <- K9me3_24T %>%
                              logFC<0&adj.P.Val<0.05~"K9_DER_down",
                              TRUE~"not_DER"))  
 
+LTR10E_fimo <- read_tsv("C:/Users/renee/Other_projects_data/DXR_data/SOX11_LTR10E_fimo/fimo.tsv", comment = "#",  show_col_types = FALSE) %>%
+  mutate(motif = case_when(
+    motif_id == 27 ~ "LTR10E_MEME9",
+    motif_id == 42 ~ "LTR10E_MEME14"))
+
+LTR10E_fimo_gr <- makeGRangesFromDataFrame(LTR10E_fimo,
+                                           seqnames.field = "sequence_name",
+                                           start.field = "start",
+                                           end.field = "stop",
+                                           keep.extra.columns = TRUE)
+
+### "within" checks if the first granges is inside the second granges
+SOX11_sites <-  mergeByOverlaps(LTR10E_fimo_gr,LTR10E_regions, type = "within",
+  ignore.strand = TRUE)
+
 LTR10E_site <- mergeByOverlaps(LTR10E_regions,LTR10E_p53_best_site_score)
+
+
 
 LTR10E_best_site_signal <- LTR10E_site %>% 
   as.data.frame() %>% 
@@ -2754,18 +2796,75 @@ LTR10E_k9notder <- mergeByOverlaps(LTR10E_regions,K9me3_split_gr$not_DER)
 ```
 
 ```{r}
+
+
 lint_anno <- readRDS("data/RDS_files/LTR10E_intermediate_dataframe.RDS")
+
+cat("Checking LTR10E_k9notder\n")
+
+print(class(LTR10E_k9notder))
+print(dim(LTR10E_k9notder))
+print(colnames(LTR10E_k9notder))
+
+stopifnot(
+  "name" %in% colnames(LTR10E_k9notder)
+)
+k9notder_names <- as.character(LTR10E_k9notder[["name"]])
+k9downder_names <- as.character(LTR10E_k9downder[["name"]])
+k9upder_names <- as.character(LTR10E_k9upder[["name"]])
+
+lint_anno <- lint_anno %>%
+  mutate(
+    heart_cRE = if_else(repID %in% LTR10E_cre_df$name, "yes", "no"),
+    LV_TAD_overlap = if_else(repID %in% LTR10E_tad_df$LTR10E_regions.name, "yes", "no"),
+    TP53_A549_overlap = if_else(repID %in% LTR10E_tp53_df$LTR10E_regions.name, "yes", "no"),
+    TP53_HEPG2_overlap = if_else(repID %in% LTR10E_tp53_hepg2_df$LTR10E_regions.name, "yes", "no"),
+    LTR10E_k9notder = if_else(repID %in% k9notder_names, "yes", "no"),
+    LTR10E_k9downder = if_else(repID %in% k9downder_names, "yes", "no"),
+    LTR10E_k9upder = if_else(repID %in% k9upder_names, "yes", "no")
+  )  
+
+# saveRDS(lint_anno,"data/RDS_files/LTR10E_intermediate_dataframe.RDS")
 
 
 lint_anno <- lint_anno %>% 
-  mutate(heart_cRE=if_else(repID %in% LTR10E_cre_df$name,"yes","no"),
-          LV_TAD_overlap=if_else(repID %in% LTR10E_tad_df$LTR10E_regions.name,"yes","no"),
-         TP53_A549_overlap=if_else(repID %in% LTR10E_tp53_df$LTR10E_regions.name,"yes","no"),
-         TP53_HEPG2_overlap=if_else(repID %in% LTR10E_tp53_hepg2_df$LTR10E_regions.name,"yes","no"),
-          LTR10E_k9notder=if_else( repID %in% LTR10E_k9notder[["name"]],"yes","no"),
-         LTR10E_k9downder=if_else( repID %in% LTR10E_k9downder[["name"]],"yes","no"),
-         LTR10E_k9upder=if_else( repID %in% LTR10E_k9upder[["name"]],"yes","no"))   
-  
+  mutate(has_sox11_meme14=if_else(repID %in% (SOX11_sites %>%
+                                               as.data.frame() %>%                                          dplyr::filter(LTR10E_fimo_gr.motif=="LTR10E_MEME14"))$name, "yes","no"),
+         has_sox11_meme9=if_else(repID %in% (SOX11_sites %>%
+                                               as.data.frame() %>%                                          dplyr::filter(LTR10E_fimo_gr.motif=="LTR10E_MEME9"))$name, "yes","no"),
+         has_sox11_site=if_else(repID %in% (SOX11_sites %>%
+                                               as.data.frame())$name, "yes","no"))
+
+# lint_anno %>% group_by(has_sox11_site) %>%  tally
+# 
+# SOX11_sites %>%
+#   as.data.frame() %>%
+#   group_by(LTR10E_fimo_gr.motif) %>%
+#   summarise(
+#     total_overlaps = dplyr::n(),
+#     unique_TE = n_distinct(name),
+#     .groups = "drop"
+#   )
+# 
+# 
+# lint_anno %>%
+#   mutate(
+#     group = if_else(
+#       cluster == "Set_3",
+#       "Set_3",
+#       "Other",
+#       missing = "Other"
+#     )
+#   ) %>%
+#   group_by(group) %>%
+#   dplyr::summarise(
+#     total = dplyr::n(),
+#     MEME9_positive = sum(has_sox11_meme9 == "yes"),
+#     MEME9_percent = 100 * mean(has_sox11_meme9 == "yes"),
+#     MEME14_positive = sum(has_sox11_meme14 == "yes"),
+#     MEME14_percent = 100 * mean(has_sox11_meme14 == "yes"),
+#     .groups = "drop"
+#   )
 ```
 
 
@@ -2872,8 +2971,84 @@ prop_plot_LTR <- function(data, group_col, yes_no_col) {
 
 ```
 
-
 ```{r}
+prop_plot_mod_ltr <- function(data, group_col, yes_no_col) {
+
+  # Prepare data
+  plot_data <- data %>%
+    mutate(cluster = tidyr::replace_na(cluster, "NA"),
+      cluster = factor(cluster,
+        levels = c("Set_3", "Set_1", "not_assigned", "NA"))) %>%
+    filter(cluster %in% c("Set_3", "Set_1", "not_assigned", "NA")) %>% 
+    mutate(alt_cluster=if_else(cluster=="Set_3","acute_TE","non_acute_TE"),
+           alt_cluster=factor(alt_cluster, levels= c("acute_TE","non_acute_TE")))
+
+  
+  # Pairwise comparisons against Set_3
+  comparison_groups <- c("non_acute_TE")
+
+  test_results <- lapply(comparison_groups, function(g) {
+
+    test_df <- plot_data %>%
+      filter(alt_cluster %in% c("acute_TE", g))
+
+    tab <- table(test_df$alt_cluster,
+              test_df[[rlang::as_name(rlang::ensym(yes_no_col))]])
+
+    # Check expected counts
+    chi <- suppressWarnings(chisq.test(tab))
+
+    if (any(chi$expected < 5)) {
+      test <- fisher.test(tab)
+      method <- "Fisher"
+    } else {
+      test <- chi
+      method <- "Chi-square"
+    }
+
+    data.frame(comparison = paste("acute_TE vs", g),
+               group = g,
+               p = test$p.value,
+               method = method)}) %>%
+    bind_rows() %>%
+    mutate(p_adj = p.adjust(p, method = "BH"),
+           label = paste0("p=", format.pval(p_adj, digits = 2, eps = 0.001)),
+           y = 1.10)
+
+
+  # Proportions
+  count_data <- plot_data %>%
+    count({{ group_col }}, {{ yes_no_col }}) %>%
+    group_by({{ group_col }}) %>%
+    mutate(prop = n / sum(n)) %>%
+    ungroup()
+
+
+  # Plot
+  ggplot(count_data,aes(x = {{ group_col }},y = prop,
+      fill = {{ yes_no_col }})) +
+    geom_col() +
+    geom_text(aes(label = paste0(scales::percent(prop, accuracy = 1), "\n(n=", n, ")")),
+              position = position_stack(vjust = 0.5)) +
+
+    # p-values over comparison groups
+    geom_text(data = test_results,aes(x = group,y = y, label = label),
+              inherit.aes = FALSE,
+              size = 3.5) +
+    scale_y_continuous(labels = scales::percent,
+                       limits = c(0, 1.3),
+                       breaks = seq(0, 1, 0.25)) +
+    scale_fill_manual(values =RColorBrewer::brewer.pal(12, "Paired")[3:4]) +
+
+    labs(x = NULL,y = "Proportion") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1))
+}
+
+```
+
+```{r LTR four plots}
 prop_plot_LTR(lint_anno, cluster,p53_halfsite)+
   ggtitle("p53 halfsite proportion across LTR10E")
 
@@ -2924,6 +3099,92 @@ prop_plot_LTR(lint_anno,cluster,LTR10E_k9notder)+
   ggtitle("K9me3 overlapped LTRs by cluster not DER ")
 
 ```
+
+#### LTR mod plots
+
+```{r}
+prop_plot_mod_ltr(lint_anno, alt_cluster,p53_halfsite)+
+  ggtitle("p53 halfsite proportion across LTR10E")
+
+
+prop_plot_mod_ltr(lint_anno, alt_cluster,p53_fullsite)+
+  ggtitle("p53 fullsite proportion across LTR10E")
+
+prop_plot_mod_ltr(lint_anno,alt_cluster, TP53_HEPG2_overlap)+
+  ggtitle("Published TP53 regions from HepG2 cells and LTR10E overlaps")
+
+# prop_plot_mod_ltr(lint_anno,alt_cluster, has_sox11_site)+
+#   ggtitle("has either SOX11 site")
+
+prop_plot_mod_ltr(lint_anno,alt_cluster, has_sox11_meme9)+
+  ggtitle("has either SOX11 meme9")
+
+# prop_plot_mod_ltr(lint_anno,alt_cluster, has_sox11_meme14)+
+#   ggtitle("has either SOX11 meme14")
+
+
+### checking strength of FIMO sites:
+MEME9_scores <- SOX11_sites %>%
+  as.data.frame() %>%
+  dplyr::filter(
+    LTR10E_fimo_gr.motif == "LTR10E_MEME9"
+  ) %>%
+  dplyr::group_by(name) %>%
+  dplyr::summarise(
+    max_score =max(LTR10E_fimo_gr.score),
+    n_sites = dplyr::n(),
+    .groups = "drop"
+  )
+
+
+# lint_anno <- lint_anno %>% 
+#   left_join(MEME9_scores,by = c("repID"="name")) 
+# 
+# 
+# lint_anno%>%
+#   filter(!is.na(max_score)) %>%
+#   ggplot(aes(x = group, y = max_score, fill = group)) +
+#   geom_violin(trim = FALSE, alpha = 0.5) +
+#   geom_boxplot(width = 0.15, outlier.shape = NA) +
+#   labs(
+#     x = NULL,
+#     y = "Maximum FIMO motif score",
+#     title = "SOX11-like MEME-9 motif strength in LTR10E"
+#   ) +
+#   theme_classic()
+# 
+# wilcox.test(
+#   max_score ~ group,
+#   data = lint_anno,
+#   exact = FALSE
+# )
+
+```
+```{r}
+# sea_sequences <- read_tsv(
+#   "C:/Users/renee/Other_projects_data/DXR_data/TE_xstreme_TEset3v_therest_results/LTR10E_Set3_xstreme/sea_out/sequences.tsv",
+#   comment = "#",
+#   show_col_types = FALSE
+# )
+### repTEs_sox11 from LTR10E data on MER61E_build_2.Rmd
+# repTEs_sox11 %>% 
+#   dplyr::filter(TE_name=="LTR10E_ERV1_LTR") %>% 
+#   left_join(lint_anno,by =c("TE_id"="repID")) %>% 
+# 
+#   ggplot(aes(x = group, y = motif_score, fill = group)) +
+#   geom_violin(trim = FALSE, alpha = 0.5) +
+#   geom_boxplot(width = 0.15, outlier.shape = NA) +
+#   labs(
+#     x = NULL,
+#     y = "Maximum FIMO motif score",
+#     title = "SOX11_Canonical motif strength in LTR10E"
+#   ) +
+#   theme_classic()
+```
+
+
+
+
 #### Looking at chronic/acute RNA repsonse enrichment in TAD
 
 
@@ -2969,7 +3230,7 @@ prop_plot_LTR(lint_anno,cluster,AC_TADs)+
 
 
 #### Correlation of data
-```{r}
+```{r,, eval=FALSE}
 lint_md_df <- lint_anno %>% 
   dplyr::select(repID,width,milliDiv,CS_distanceToTSS,p53_halfsite,ZNF780A_binding,ZNF680_binding,overlap_DAR,cluster) %>% 
   mutate(MYA_bourque=milliDiv/2.2,
@@ -2999,7 +3260,7 @@ Heatmap(lint_md_cor,
 ```
 
 
-```{r, fig.height=16, fig.width=16}
+```{r, fig.height=16, fig.width=16, eval=FALSE}
 lint_t_cor <- cor(t(lint_md_df),
   use = "pairwise.complete.obs")
 
@@ -3010,4 +3271,6 @@ Heatmap(lint_t_cor,
   row_names_gp = gpar(fontsize = 4),
   column_names_gp = gpar(fontsize = 4))
 ```
+
+
 
