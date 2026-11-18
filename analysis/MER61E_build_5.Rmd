@@ -1,0 +1,2328 @@
+---
+title: "MER61E_build_5 p53 spacing"
+author: "Renee Matthews"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png","pdf")
+)
+```
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r package loading}
+library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(janitor)
+library(MASS)
+library(readxl)
+library(GenomicFeatures)
+library(edgeR)
+library(Biostrings)
+library(pwalign)
+library(BSgenome.Hsapiens.UCSC.hg38)
+```
+
+The purpose of this page is explore spacer distances for LTR10E and MER61E.
+
+```{r annotation data frames}
+# ZNF680 narrowpeak binding Hek293 ENCFF935XZI
+# ZNF680_regions <- import("data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed",format = "narrowPeak")
+# 
+# ZNF780A_regions <- import("data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed")
+MER61E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed")
+
+LTR10E_regions <- import("data/Bed_exports/repeatmasker_sets/ERV1/LTR10E_ERV1_LTR.bed")
+
+
+H3K27ac_summit_gr <- readRDS("data/RDS_files/H3K27ac_complete_summit_gr.RDS")
+
+H3K27ac_summit_gr_ext <- GenomicRanges::resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = "center")
+
+ mcols(H3K27ac_summit_gr_ext)$name <- mcols(H3K27ac_summit_gr_ext)$Peakid
+ 
+ H3K27ac_ext200_anno <- readRDS("data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS")
+ 
+ 
+full_p53_canonical  <- readRDS("data/full_p53_canonical.RDS")
+# 
+# p53halfsite_TE_ids <- readRDS("data/p53halfsite_TE_ids.RDS")
+
+
+H3K27ac_summit_gr_ext <- keepStandardChromosomes(
+  H3K27ac_summit_gr_ext,
+  pruning.mode = "coarse")
+
+
+
+repeatmasker_clean <- readRDS("data/RDS_files/repeatmasker_clean.RDS")
+
+
+mint_anno <- readRDS("data/RDS_files/MER61E_intermediate_dataframe.RDS")
+lint_anno <- readRDS("data/RDS_files/LTR10E_intermediate_dataframe.RDS")
+
+LTR10E_ref <- readDNAStringSet(
+  "C:/Users/renee/Other_projects_data/DXR_data/DF000000396_LTR10E_consensus.fa")
+
+LTR10E_rmsk <- repeatmasker_clean %>%
+  filter(repName == "LTR10E") %>%
+  dplyr::select(
+    genoName, genoStart, genoEnd, strand,
+    repName, repStart, repEnd, repLeft,
+    milliDiv, milliDel, milliIns,RM_id)
+
+LTR10E_consensus <- repeatmasker_clean %>%
+  dplyr::filter(repName == "LTR10E") %>%
+  mutate(
+    consensus_start = if_else(
+      strand == "+", repStart, repLeft),
+    consensus_end = repEnd,
+    consensus_length = if_else(strand == "+",
+                               repEnd - repLeft,
+                               repEnd - repStart))
+
+LTR10E_consensus %>%
+  summarise(n = dplyr::n(),
+            min_start = min(consensus_start),
+            max_end = max(consensus_end),
+            invalid = sum(consensus_start > consensus_end | consensus_start < 0,
+                          na.rm = TRUE))
+
+MER61E_ref <- readDNAStringSet(
+  "C:/Users/renee/Other_projects_data/DXR_data/DF000000887_MER61E_consensus.fa")
+
+MER61E_rmsk <- repeatmasker_clean %>%
+  filter(repName == "MER61E") %>%
+  dplyr::select(
+    genoName, genoStart, genoEnd, strand,
+    repName, repStart, repEnd, repLeft,
+    milliDiv, milliDel, milliIns)
+
+
+MER61E_consensus <- repeatmasker_clean %>%
+  filter(repName == "MER61E") %>%
+  mutate(
+    consensus_start = if_else(
+      strand == "+", repStart, repLeft
+    ),
+    consensus_end = repEnd,
+    consensus_length = if_else(
+      strand == "+",
+      repEnd - repLeft,
+      repEnd - repStart
+    )
+  )
+
+MER61E_consensus %>%
+  summarise(
+    n = n(),
+    min_start = min(consensus_start),
+    max_end = max(consensus_end),
+    invalid = sum(
+      consensus_start > consensus_end |
+      consensus_start < 0,
+      na.rm = TRUE
+    )
+  )
+
+hg38 <- BSgenome.Hsapiens.UCSC.hg38
+
+MER61E_sequences <- getSeq(hg38, MER61E_regions)
+names(MER61E_sequences) <-  MER61E_regions$name
+
+LTR10E_sequences <- getSeq(hg38, LTR10E_regions)
+names(LTR10E_sequences) <-  LTR10E_regions$name
+
+
+MER61E_cluster_df <- mint_anno %>% dplyr::select(repID,cluster)
+
+LTR10E_cluster_df <- lint_anno %>% dplyr::select(repID,cluster)
+```
+
+```{r functions}
+make_position_map <- function(aln) {
+
+  pat <- strsplit(
+    as.character(pwalign::alignedPattern(aln)[[1]]),
+    ""
+  )[[1]]
+
+  sub <- strsplit(
+    as.character(pwalign::alignedSubject(aln)[[1]]),
+    ""
+  )[[1]]
+
+  p_start <- as.integer(start(pattern(aln))[1])
+  s_start <- as.integer(start(subject(aln))[1])
+
+  p_pos <- p_start - 1L + cumsum(pat != "-")
+  s_pos <- s_start - 1L + cumsum(sub != "-")
+
+  tibble(
+    TE_position = p_pos[pat != "-" & sub != "-"],
+    consensus_position = s_pos[pat != "-" & sub != "-"]
+  )
+}
+
+make_LTR10E_position_map <- function(alignment) {
+
+  # Aligned nucleotide strings, including gaps
+  pat <- strsplit(
+    as.character(alignedPattern(alignment)),
+    ""
+  )[[1]]
+
+  subj <- strsplit(
+    as.character(alignedSubject(alignment)),
+    ""
+  )[[1]]
+
+  stopifnot(length(pat) == length(subj))
+
+  # Position counters
+  TE_pos <- cumsum(pat != "-")
+  consensus_pos <- cumsum(subj != "-")
+
+  # Obtain starting consensus position
+  consensus_start <- start(subject(alignment))[1]
+
+  # Construct map
+tibble(
+  TE_position = ifelse(
+    pat == "-",
+    NA_integer_,
+    TE_pos
+  ),
+  consensus_position = ifelse(
+    subj == "-",
+    NA_integer_,
+    consensus_start + consensus_pos - 1L
+  )
+) %>%
+  dplyr::filter(!is.na(TE_position))
+}
+```
+
+
+
+
+```{r}
+
+MER61E_position_maps <- readRDS("data/RDS_files/MER61E_position_maps.RDS")
+LTR10E_position_maps <- readRDS("data/RDS_files/LTR10E_position_maps.RDS")
+
+
+sampleinfo <- read_delim("data/sample_info.tsv", delim = "\t")
+
+MER61E_p53_fimo <- read_tsv(
+  "C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61E_ERV1_LTR_fimo/fimo.tsv",  comment = "#",
+  show_col_types = FALSE)
+
+MER61E_p53_fimo_gr <- makeGRangesFromDataFrame(
+  MER61E_p53_fimo,
+  seqnames.field = "sequence_name",
+  start.field = "start",
+  end.field = "stop",
+  strand.field = "strand",
+  keep.extra.columns = TRUE
+)
+
+LTR10E_p53_fimo <- read_tsv(
+  "C:/Users/renee/Other_projects_data/DXR_data/fimo_results/LTR10E_ERV1_LTR_fimo/fimo.tsv",  comment = "#",
+  show_col_types = FALSE)
+
+LTR10E_p53_fimo_gr <- makeGRangesFromDataFrame(
+  LTR10E_p53_fimo,
+  seqnames.field = "sequence_name",
+  start.field = "start",
+  end.field = "stop",
+  strand.field = "strand",
+  keep.extra.columns = TRUE
+)
+
+```
+
+
+
+
+
+
+```{r}
+TE_consensus <- DNAStringSet(
+  c(
+    MER61E = as.character(MER61E_ref),
+    LTR10E = as.character(LTR10E_ref)
+  )
+)
+names(TE_consensus) <- c("MER61E", "LTR10E")
+
+TE_consensus
+p53_halfsite <- DNAString("RRRCWWGYYY")
+
+find_p53_halfsite <- function(sequence, TE_name) {
+
+  hits <- matchPattern(
+    pattern = p53_halfsite,
+    subject = sequence,
+    fixed = FALSE
+  )
+
+  tibble(
+    TE_name = TE_name,
+    start = start(hits),
+    end = end(hits),
+    sequence = as.character(hits)
+  )
+}
+
+consensus_p53_canonical <- bind_rows(
+
+  find_p53_halfsite(
+    TE_consensus[["MER61E"]],
+    "MER61E"
+  ),
+
+  find_p53_halfsite(
+    TE_consensus[["LTR10E"]],
+    "LTR10E"
+  )
+)
+
+consensus_p53_canonical
+```
+So only MER61E contains a canonical p53 motif sequence in the consensus sequence
+
+```{r}
+MER61E_p53_reference <- consensus_p53_canonical %>%
+  filter(TE_name == "MER61E") %>%
+  arrange(start) %>%
+  mutate(
+    site_ID = paste0("Site_", row_number()),
+    core = substr(sequence, 4, 7)
+  )
+
+MER61E_p53_reference
+
+MER61E_p53_canonical <- map_dfr(
+  seq_along(MER61E_sequences),
+  function(i) {
+    find_p53_halfsite(
+      MER61E_sequences[[i]],
+      names(MER61E_sequences)[i]
+    )
+  }
+)
+
+MER61E_canonical_spacing <- MER61E_p53_canonical %>%
+  group_by(TE_name) %>%
+  arrange(start, .by_group = TRUE) %>%
+  mutate(
+    n_sites = n(),
+    next_start = lead(start),
+    next_sequence = lead(sequence),
+    spacer_bp = next_start - end - 1
+  ) %>%
+  filter(!is.na(next_start)) %>%
+  ungroup()
+
+MER61E_canonical_spacing %>%
+  count(spacer_bp, sort = TRUE)
+
+MER61E_canonical_spacing <- MER61E_canonical_spacing %>%
+  left_join(
+    MER61E_cluster_df,
+      
+    by = c("TE_name"="repID")
+  ) %>%
+  mutate(
+    Response = if_else(
+      cluster %in% "Set_3",
+      "Acute",
+      "Non-acute"
+    )
+  )
+
+MER61E_canonical_spacing %>%
+  group_by(cluster, Response) %>%
+  summarise(
+    n_TE = n_distinct(TE_name),
+    n_pairs = n(),
+    .groups = "drop"
+  )
+```
+
+```{r}
+MER61E_spacing_frequency <- MER61E_canonical_spacing %>%
+  count(Response, spacer_bp) %>%
+  group_by(Response) %>%
+  mutate(Percent = n / sum(n) * 100) %>%
+  ungroup()
+
+MER61E_spacing_frequency %>%
+  filter(spacer_bp %in% c(0, 1, 31, 41, 52)) %>%
+  arrange(spacer_bp, Response) %>%
+  pivot_wider(
+    names_from = Response,
+    values_from = c(n, Percent),
+    values_fill = 0
+  )
+```
+
+```{r}
+ggplot(
+  MER61E_spacing_frequency,
+  aes(x = spacer_bp, y = Percent, fill = Response)
+) +
+  geom_col(width = 0.85) +
+  geom_vline(
+    xintercept = c(1, 41),
+    linetype = "dashed",
+    color = "black"
+  ) +
+  facet_wrap(~Response, ncol = 1) +
+  coord_cartesian(xlim = c(-2, 60)) +
+  scale_fill_manual(
+    values = c(
+      "Acute" = "indianred3",
+      "Non-acute" = "steelblue"
+    )
+  ) +
+  labs(
+    title = "Canonical p53 half-site spacing in MER61E",
+    subtitle = "Dashed lines indicate consensus spacer lengths",
+    x = "p53 half-site spacer (bp)",
+    y = "Percentage of half-site pairs"
+  ) +
+  theme_classic() +
+  theme(legend.position = "none")
+```
+So MER61E acute TEs are more likely to contain multiple canonical p53 half-sites
+
+
+```{r}
+MER61E_spacing_per_TE <- MER61E_canonical_spacing %>%
+  group_by(TE_name, cluster, Response) %>%
+  summarise(
+    n_pairs = n(),
+    mean_spacer = mean(spacer_bp),
+    median_spacer = median(spacer_bp),
+    min_spacer = min(spacer_bp),
+    max_spacer = max(spacer_bp),
+    has_0bp = any(spacer_bp == 0),
+    has_1bp = any(spacer_bp == 1),
+    has_41bp = any(spacer_bp == 41),
+    has_52bp = any(spacer_bp == 52),
+    has_0_5bp = any(spacer_bp >= 0 & spacer_bp <= 5),
+    has_0_1bp = any(spacer_bp >= 0 & spacer_bp <= 1),
+    has_0_13bp = any(dplyr::between(spacer_bp, 0, 13)),
+    .groups = "drop"
+  )
+
+MER61E_spacing_per_TE %>%
+  group_by(Response) %>%
+  summarise(
+    n_TE = dplyr::n(),
+    Mean = mean(mean_spacer),
+    Median = median(mean_spacer),
+    SD = sd(mean_spacer),
+    Mean_min_spacer = mean(min_spacer),
+    Percent_1bp = mean(has_1bp) * 100,
+    Percent_41bp = mean(has_41bp) * 100,
+    Percent_0_13bp = mean(has_0_13bp) * 100,
+    .groups = "drop"
+  )
+
+fisher.test(
+  matrix(
+    c(33, 7,
+      66, 161),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      Response = c("Acute", "Non-acute"),
+      Half_sites = c("Multiple", "Zero_or_one")
+    )
+  )
+)
+```
+
+### LTR10E
+
+```{r}
+LTR10E_p53_canonical <- map_dfr(
+  seq_along(LTR10E_sequences),
+  function(i) {
+    find_p53_halfsite(
+      LTR10E_sequences[[i]],
+      names(LTR10E_sequences)[i]
+    )
+  }
+)
+
+head(LTR10E_p53_canonical)
+
+
+```
+
+```{r}
+LTR10E_canonical_counts <- tibble(
+  TE_name = names(LTR10E_sequences)
+) %>%
+  left_join(
+    LTR10E_p53_canonical %>%
+      count(TE_name, name = "n_sites"),
+    by = "TE_name"
+  ) %>%
+  mutate(
+    n_sites = coalesce(n_sites, 0L)
+  )
+
+LTR10E_canonical_counts %>%
+  count(n_sites, name = "n_TE") %>%
+  mutate(Percent = n_TE / sum(n_TE) * 100)
+
+LTR10E_canonical_spacing <- LTR10E_p53_canonical %>%
+  group_by(TE_name) %>%
+  arrange(start, .by_group = TRUE) %>%
+  mutate(
+    n_sites = dplyr::n(),
+    next_start = lead(start),
+    next_sequence = lead(sequence),
+    start_distance = next_start - start,
+    spacer_bp = next_start - end - 1
+  ) %>%
+  filter(!is.na(next_start)) %>%
+  ungroup()
+```
+
+
+```{r}
+LTR10E_canonical_spacing <- LTR10E_p53_canonical %>%
+  group_by(TE_name) %>%
+  arrange(start, .by_group = TRUE) %>%
+  mutate(
+    n_sites = n(),
+    next_start = lead(start),
+    next_sequence = lead(sequence),
+    start_distance = next_start - start,
+    spacer_bp = next_start - end - 1
+  ) %>%
+  filter(!is.na(next_start)) %>%
+  ungroup()
+
+LTR10E_canonical_spacing %>%
+  count(spacer_bp, sort = TRUE)
+```
+
+```{r}
+
+LTR10E_canonical_spacing <- LTR10E_canonical_spacing %>%
+  left_join(
+    LTR10E_cluster_df %>%
+      dplyr::select(repID, cluster) %>%
+      distinct(),
+    by = c("TE_name" = "repID"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    Response = if_else(
+      cluster %in% "Set_3",
+      "Acute",
+      "Non-acute"
+    )
+  )
+LTR10E_spacing_per_TE <- LTR10E_canonical_spacing %>%
+  # left_join(LTR10E_cluster_df, by=c("TE_name"="repID")) %>% 
+  group_by(TE_name, cluster, Response) %>%
+  summarise(
+    n_pairs = dplyr::n(),
+    mean_spacer = mean(spacer_bp),
+    median_spacer = median(spacer_bp),
+    min_spacer = min(spacer_bp),
+    max_spacer = max(spacer_bp),
+
+    has_0bp = any(spacer_bp == 0),
+    has_2bp = any(spacer_bp == 2),
+    has_10bp = any(spacer_bp == 10),
+    has_53bp = any(spacer_bp == 53),
+    has_65bp = any(spacer_bp == 65),
+
+    has_0_1bp = any(dplyr::between(spacer_bp, 0, 1)),
+    has_0_5bp = any(dplyr::between(spacer_bp, 0, 5)),
+    has_0_13bp = any(dplyr::between(spacer_bp, 0, 13)),
+
+    .groups = "drop"
+  )
+
+LTR10E_canonical_spacing %>%
+  group_by(cluster, Response) %>%
+  summarise(
+    n_TE = n_distinct(TE_name),
+    n_pairs = dplyr::n(),
+    .groups = "drop"
+  )
+
+LTR10E_spacing_per_TE <- LTR10E_canonical_spacing %>%
+  group_by(TE_name, cluster, Response) %>%
+  summarise(
+    n_pairs = n(),
+    mean_spacer = mean(spacer_bp),
+    median_spacer = median(spacer_bp),
+    min_spacer = min(spacer_bp),
+    max_spacer = max(spacer_bp),
+
+    has_0bp = any(spacer_bp == 0),
+    has_1bp = any(spacer_bp == 1),
+    has_41bp = any(spacer_bp == 41),
+    has_52bp = any(spacer_bp == 52),
+
+    has_0_1bp = any(dplyr::between(spacer_bp, 0, 1)),
+    has_0_5bp = any(dplyr::between(spacer_bp, 0, 5)),
+    has_0_13bp = any(dplyr::between(spacer_bp, 0, 13)),
+
+    .groups = "drop"
+  )
+```
+
+```{r}
+TE_canonical_spacing <- bind_rows(
+  MER61E_canonical_spacing %>%
+    mutate(family = "MER61E"),
+
+  LTR10E_canonical_spacing %>%
+    mutate(family = "LTR10E")
+)
+
+TE_canonical_spacing_frequency <- TE_canonical_spacing %>%
+  count(family, Response, spacer_bp) %>%
+  group_by(family, Response) %>%
+  mutate(
+    Percent = n / sum(n) * 100
+  ) %>%
+  ungroup()
+```
+
+```{r}
+ggplot(
+  TE_canonical_spacing_frequency,
+  aes(
+    x = spacer_bp,
+    y = Percent,
+    fill = Response
+  )
+) +
+  geom_col(width = 0.85) +
+  geom_vline(
+    data = data.frame(
+      family = "MER61E",
+      spacer = c(1, 41)
+    ),
+    aes(xintercept = spacer),
+    inherit.aes = FALSE,
+    color = "black",
+    linetype = "dashed"
+  ) +
+  facet_grid(Response ~ family) +
+  coord_cartesian(xlim = c(-2, 60)) +
+  scale_fill_manual(
+    values = c(
+      "Acute" = "indianred3",
+      "Non-acute" = "steelblue"
+    )
+  ) +
+  labs(
+    title = "Canonical p53 half-site spacing",
+    x = "p53 half-site spacer length (bp)",
+    y = "Percentage of half-site pairs"
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+```
+
+```{r}
+LTR10E_canonical_counts %>%
+  count(n_sites)
+
+LTR10E_canonical_spacing %>%
+  count(spacer_bp, sort = TRUE)
+```
+```{r}
+dim(MER61E_p53_fimo)
+colnames(MER61E_p53_fimo)
+head(MER61E_p53_fimo)
+
+dim(LTR10E_p53_fimo)
+colnames(LTR10E_p53_fimo)
+head(LTR10E_p53_fimo)
+```
+```{r}
+get_TE_fimo_sites <- function(fimo_gr, TE_regions, family_name) {
+
+  hits <- findOverlaps(
+    fimo_gr,
+    TE_regions,
+    type = "within",
+    ignore.strand = TRUE
+  )
+
+  q <- queryHits(hits)
+  s <- subjectHits(hits)
+
+  tibble(
+    family = family_name,
+    TE_name = TE_regions$name[s],
+    chr = as.character(seqnames(fimo_gr))[q],
+    TE_start = start(TE_regions)[s],
+    TE_end = end(TE_regions)[s],
+    TE_strand = as.character(strand(TE_regions))[s],
+    motif_start = start(fimo_gr)[q],
+    motif_end = end(fimo_gr)[q],
+    motif_strand = as.character(strand(fimo_gr))[q]
+  )
+}
+```
+
+```{r}
+MER61E_fimo_sites <- get_TE_fimo_sites(
+  MER61E_p53_fimo_gr,
+  MER61E_regions,
+  "MER61E"
+)
+
+LTR10E_fimo_sites <- get_TE_fimo_sites(
+  LTR10E_p53_fimo_gr,
+  LTR10E_regions,
+  "LTR10E"
+)
+
+TE_fimo_sites <- bind_rows(
+  MER61E_fimo_sites,
+  LTR10E_fimo_sites
+)
+
+head(TE_fimo_sites)
+```
+
+```{r}
+TE_fimo_sites <- bind_rows(
+  MER61E_fimo_sites,
+  LTR10E_fimo_sites
+)
+
+TE_fimo_sites %>%
+  group_by(family) %>%
+  summarise(
+    n_sites = dplyr::n(),
+    n_TE = n_distinct(TE_name)
+  )
+```
+
+```{r}
+TE_fimo_sites <- TE_fimo_sites %>%
+  mutate(
+    start = if_else(
+      TE_strand == "+",
+      motif_start - TE_start + 1L,
+      TE_end - motif_end + 1L
+    ),
+    end = if_else(
+      TE_strand == "+",
+      motif_end - TE_start + 1L,
+      TE_end - motif_start + 1L
+    ),
+    relative_strand = if_else(
+      TE_strand == motif_strand,
+      "+", "-"
+    )
+  )
+```
+
+```{r}
+TE_fimo_spacing <- TE_fimo_sites %>%
+  distinct(family, TE_name, start, end, .keep_all = TRUE) %>%
+  group_by(family, TE_name) %>%
+  arrange(start, .by_group = TRUE) %>%
+  mutate(
+    n_sites = n(),
+    next_start = lead(start),
+    next_end = lead(end),
+    start_distance = next_start - start,
+    spacer_bp = next_start - end - 1
+  ) %>%
+  filter(!is.na(next_start)) %>%
+  ungroup()
+
+TE_fimo_spacing %>%
+  count(family, spacer_bp, sort = TRUE) %>%
+  group_by(family) %>%
+  slice_max(n, n = 10) %>%
+  ungroup()
+```
+
+```{r}
+
+
+TE_cluster_df <- bind_rows(
+  MER61E_cluster_df %>%
+    dplyr::select(repID, cluster) %>%
+    mutate(family = "MER61E"),
+
+  LTR10E_cluster_df %>%
+    dplyr::select(repID, cluster) %>%
+    mutate(family = "LTR10E")
+) %>%
+  distinct()
+
+TE_fimo_spacing <- TE_fimo_spacing %>%
+  left_join(
+    TE_cluster_df,
+    by = c("TE_name" = "repID", "family"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    Response = if_else(
+      cluster %in% "Set_3",
+      "Acute",
+      "Non-acute"
+    )
+  )
+```
+
+```{r}
+
+
+TE_all_spacing <- bind_rows(
+
+  MER61E_canonical_spacing %>%
+    mutate(family = "MER61E",
+           Method = "Canonical"),
+
+  LTR10E_canonical_spacing %>%
+    mutate(family = "LTR10E",
+           Method = "Canonical"),
+
+  TE_fimo_spacing %>%
+    mutate(Method = "FIMO")
+)
+```
+
+```{r}
+TE_all_spacing %>%
+  group_by(family, Method, Response) %>%
+  summarise(
+    n_TE = n_distinct(TE_name),
+    n_pairs = n(),
+    .groups = "drop"
+  )
+
+```
+
+```{r}
+TE_all_spacing_frequency <- TE_all_spacing %>%
+  count(family, Method, Response, spacer_bp) %>%
+  group_by(family, Method, Response) %>%
+  mutate(Percent = n / sum(n) * 100) %>%
+  ungroup()
+
+ggplot(
+  TE_all_spacing_frequency,
+  aes(x = spacer_bp, y = Percent, fill = Response)
+) +
+  geom_col(width = 0.85) +
+  facet_grid(Method + Response ~ family) +
+  coord_cartesian(xlim = c(-5, 80)) +
+  scale_fill_manual(
+    values = c(
+      "Acute" = "indianred3",
+      "Non-acute" = "steelblue"
+    )
+  ) +
+  labs(
+    x = "p53 half-site spacer length (bp)",
+    y = "Percentage of adjacent half-site pairs"
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+```
+
+```{r}
+
+
+TE_spacing_per_TE <- TE_all_spacing %>%
+  group_by(family, Method, TE_name, cluster, Response) %>%
+  summarise(
+    n_pairs = dplyr::n(),
+    mean_spacer = mean(spacer_bp),
+    median_spacer = median(spacer_bp),
+    min_spacer = min(spacer_bp),
+    max_spacer = max(spacer_bp),
+
+    has_0bp = any(spacer_bp == 0),
+    has_1bp = any(spacer_bp == 1),
+    has_2bp = any(spacer_bp == 2),
+    has_10bp = any(spacer_bp == 10),
+    has_31bp = any(spacer_bp == 31),
+    has_41bp = any(spacer_bp == 41),
+    has_52bp = any(spacer_bp == 52),
+    has_53bp = any(spacer_bp == 53),
+    has_65bp = any(spacer_bp == 65),
+
+    has_0_1bp = any(dplyr::between(spacer_bp, 0, 1)),
+    has_0_5bp = any(dplyr::between(spacer_bp, 0, 5)),
+    has_0_13bp = any(dplyr::between(spacer_bp, 0, 13)),
+
+    .groups = "drop"
+  )
+```
+
+
+
+
+```{r}
+TE_spacing_per_TE_long <- TE_spacing_per_TE %>%
+  pivot_longer(
+    cols = matches("^has_[0-9]+bp$"),
+    names_to = "Spacer",
+    values_to = "Present"
+  ) %>%
+  mutate(
+    Spacer = readr::parse_number(Spacer)
+  ) %>%
+  group_by(family, Method, Response, Spacer) %>%
+  summarise(
+    n_TE = dplyr::n(),
+    n_with_spacer = sum(Present),
+    Percent = mean(Present) * 100,
+    .groups = "drop"
+  )
+```
+
+```{r}
+ggplot(
+  TE_spacing_per_TE_long,
+  aes(
+    x = factor(Spacer),
+    y = Percent,
+    fill = Response
+  )
+) +
+  geom_col(position = "dodge") +
+  facet_grid(Method ~ family) +
+  scale_fill_manual(
+    values = c(
+      "Acute" = "indianred3",
+      "Non-acute" = "steelblue"
+    )
+  ) +
+  labs(
+    x = "p53 half-site spacer length (bp)",
+    y = "Percentage of TEs with spacer",
+    fill = "Response"
+  ) +
+  theme_classic()
+```
+
+```{r}
+
+TE_spacing_per_TE %>%
+  group_by(family, Method, Response) %>%
+  summarise(
+    n_TE = dplyr::n(),
+    Mean_spacing = mean(mean_spacer),
+    SD_spacing = sd(mean_spacer),
+    Median_spacing = median(mean_spacer),
+    Mean_min_spacing = mean(min_spacer),
+    Median_min_spacing = median(min_spacer),
+    Percent_0bp = mean(has_0bp) * 100,
+    Percent_0_1bp = mean(has_0_1bp) * 100,
+    Percent_0_5bp = mean(has_0_5bp) * 100,
+    Percent_0_13bp = mean(has_0_13bp) * 100,
+    .groups = "drop"
+  )
+```
+
+```{r}
+
+
+TE_spacing_ttest <- TE_spacing_per_TE %>%
+  group_by(family, Method) %>%
+  group_modify(~ broom::tidy(
+    t.test(mean_spacer ~ Response, data = .x)
+  )) %>%
+  ungroup() %>%
+  mutate(p.adj = p.adjust(p.value, method = "BH"))
+
+TE_spacing_ttest
+```
+```{r}
+
+
+TE_spacing_wilcox <- TE_spacing_per_TE %>%
+  group_by(family, Method) %>%
+  group_modify(~ broom::tidy(
+    wilcox.test(
+      mean_spacer ~ Response,
+      data = .x,
+      exact = FALSE
+    )
+  )) %>%
+  ungroup() %>%
+  mutate(p.adj = p.adjust(p.value, method = "BH"))
+
+TE_spacing_wilcox
+```
+```{r}
+TE_min_spacing_wilcox <- TE_spacing_per_TE %>%
+  mutate(
+    min_spacer = if_else(
+      min_spacer < 0,
+      NA_real_,
+      as.numeric(min_spacer)
+    )
+  ) %>%
+  group_by(family, Method) %>%
+  group_modify(~ broom::tidy(
+    wilcox.test(
+      min_spacer ~ Response,
+      data = .x,
+      exact = FALSE
+    )
+  )) %>%
+  ungroup() %>%
+  mutate(p.adj = p.adjust(p.value, method = "BH"))
+
+TE_min_spacing_wilcox
+```
+```{r}
+TE_spacer_fisher <- TE_spacing_per_TE %>%
+  pivot_longer(
+    cols = starts_with("has_"),
+    names_to = "Spacer",
+    values_to = "Present"
+  ) %>%
+  group_by(family, Method, Spacer) %>%
+  group_modify(~ {
+
+    tbl <- table(
+      factor(.x$Response,
+             levels = c("Acute", "Non-acute")),
+      factor(.x$Present,
+             levels = c(TRUE, FALSE))
+    )
+
+    result <- fisher.test(tbl)
+
+    tibble(
+      Acute_present = tbl[1, 1],
+      Acute_absent = tbl[1, 2],
+      Nonacute_present = tbl[2, 1],
+      Nonacute_absent = tbl[2, 2],
+
+      Acute_percent = tbl[1, 1] / sum(tbl[1, ]) * 100,
+      Nonacute_percent = tbl[2, 1] / sum(tbl[2, ]) * 100,
+
+      OR = unname(result$estimate),
+      CI_lower = result$conf.int[1],
+      CI_upper = result$conf.int[2],
+      p.value = result$p.value
+    )
+  }) %>%
+  ungroup() %>%
+  mutate(
+    p.adj = p.adjust(p.value, method = "BH"),
+    log2OR = log2(OR)
+  ) %>%
+  arrange(p.adj)
+
+TE_spacer_fisher
+```
+
+
+```{r}
+
+
+ggplot(
+  TE_spacer_fisher,
+  aes(
+    x = Method,
+    y = Spacer,
+    fill = log2OR
+  )
+) +
+  geom_tile(color = "white") +
+  geom_text(
+    aes(label = ifelse(p.adj < 0.05, "*", "")),
+    size = 6
+  ) +
+  facet_wrap(~family) +
+  scale_fill_gradient2(
+    low = "steelblue",
+    mid = "white",
+    high = "indianred3",
+    midpoint = 0,
+    limits = c(-3, 3),
+    oob = scales::squish,
+    name = "log2(OR)"
+  ) +
+  labs(
+    x = NULL,
+    y = "p53 half-site spacer",
+    title = "Enrichment of p53 half-site spacing",
+    subtitle = "* BH-adjusted p-value < 0.05"
+  ) +
+  theme_classic()
+  
+```
+
+
+```{r}
+TE_all_copies <- bind_rows(
+  tibble(
+    TE_name = MER61E_regions$name,
+    family = "MER61E"
+  ),
+  tibble(
+    TE_name = LTR10E_regions$name,
+    family = "LTR10E"
+  )
+) %>%
+  distinct() %>%
+  left_join(
+    TE_cluster_df,
+    by = c("TE_name" = "repID", "family"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    Response = if_else(
+      cluster %in% "Set_3",
+      "Acute",
+      "Non-acute"
+    )
+  )
+```
+
+```{r}
+
+TE_all_copies_spacing <- TE_all_copies %>%
+  tidyr::crossing(
+    Method = c("Canonical", "FIMO")
+  ) %>%
+  left_join(
+    TE_spacing_per_TE %>%
+      dplyr::select(
+        family, Method, TE_name,
+        n_pairs, starts_with("has_")
+      ),
+    by = c("family", "Method", "TE_name"),
+    relationship = "one-to-one"
+  ) %>%
+  mutate(
+    n_pairs = coalesce(n_pairs, 0L),
+    across(
+      starts_with("has_"),
+      ~ coalesce(.x, FALSE)
+    ),
+    has_multiple = n_pairs > 0
+  )
+
+```
+
+```{r}
+TE_spacer_fisher_2 <- TE_all_copies_spacing %>%
+  pivot_longer(
+    cols = starts_with("has_"),
+    names_to = "Spacer",
+    values_to = "Present"
+  ) %>%
+  group_by(family, Method, Spacer) %>%
+  group_modify(~ {
+
+    tbl <- table(
+      factor(.x$Response,
+             levels = c("Acute", "Non-acute")),
+      factor(.x$Present,
+             levels = c(TRUE, FALSE))
+    )
+
+    result <- fisher.test(tbl)
+
+    tibble(
+      Acute_present = tbl[1, 1],
+      Acute_absent = tbl[1, 2],
+      Nonacute_present = tbl[2, 1],
+      Nonacute_absent = tbl[2, 2],
+
+      Acute_percent = tbl[1, 1] / sum(tbl[1, ]) * 100,
+      Nonacute_percent = tbl[2, 1] / sum(tbl[2, ]) * 100,
+
+      OR = unname(result$estimate),
+      CI_lower = result$conf.int[1],
+      CI_upper = result$conf.int[2],
+      p.value = result$p.value
+    )
+  }) %>%
+  ungroup() %>%
+  mutate(
+    p.adj = p.adjust(p.value, method = "BH"),
+    log2OR = log2(OR)
+  ) %>%
+  arrange(p.adj)
+
+TE_spacer_fisher_2
+```
+
+```{r}
+ggplot(
+  TE_spacer_fisher_2,
+  aes(
+    x = Method,
+    y = Spacer,
+    fill = log2OR
+  )
+) +
+  geom_tile(color = "white") +
+  geom_text(
+    aes(label = ifelse(p.adj < 0.05, "*", "")),
+    size = 6
+  ) +
+  facet_wrap(~family) +
+  scale_fill_gradient2(
+    low = "steelblue",
+    mid = "white",
+    high = "indianred3",
+    midpoint = 0,
+    limits = c(-3, 3),
+    oob = scales::squish,
+    name = "log2(OR)"
+  ) +
+  labs(
+    x = NULL,
+    y = "p53 half-site spacer",
+    title = "Enrichment of p53 half-site spacing",
+    subtitle = "* BH-adjusted p-value < 0.05"
+  ) +
+  theme_classic()
+  
+```
+
+
+```{r}
+
+TE_spacer_fisher_fimo_only <- TE_spacer_fisher_2 %>% dplyr::filter(Method=="FIMO")
+ggplot(
+  TE_spacer_fisher_fimo_only,
+  aes(
+    x = Method,
+    y = Spacer,
+    fill = log2OR
+  )
+) +
+  geom_tile(color = "white") +
+  geom_text(
+    aes(label = ifelse(p.adj < 0.05, "*", "")),
+    size = 6
+  ) +
+  facet_wrap(~family) +
+  scale_fill_gradient2(
+    low = "steelblue",
+    mid = "white",
+    high = "indianred3",
+    midpoint = 0,
+    limits = c(-3, 3),
+    oob = scales::squish,
+    name = "log2(OR)"
+  ) +
+  labs(
+    x = NULL,
+    y = "p53 half-site spacer",
+    title = "Enrichment of p53 half-site spacing\nTransient vs Consitutive",
+    subtitle = "* BH-adjusted p-value < 0.05"
+  ) +
+  theme_classic()
+  
+```
+
+```{r}
+MER61E_1bp_pairs <- MER61E_canonical_spacing %>%
+  filter(spacer_bp == 1) %>%
+  mutate(
+    site1_start = start,
+    site1_end = end,
+    site2_start = next_start,
+    site2_end = next_start + 9L
+  )
+
+dim(MER61E_1bp_pairs)
+```
+```{r}
+map_halfsite_to_consensus <- function(TE_name,
+                                      site_start,
+                                      site_end,
+                                      position_maps) {
+
+  pos_map <- position_maps[[TE_name]]
+
+  TE_pos <- seq.int(site_start, site_end)
+
+  mapped_pos <- pos_map$consensus_position[
+    match(TE_pos, pos_map$TE_position)
+  ]
+
+  mapped_pos
+}
+```
+
+
+```{r}
+
+
+MER61E_1bp_mapped <- MER61E_1bp_pairs %>%
+  mutate(
+    site1_consensus = pmap(
+      list(TE_name, site1_start, site1_end),
+      ~ map_halfsite_to_consensus(
+        ..1, ..2, ..3,
+        MER61E_position_maps
+      )
+    ),
+
+    site2_consensus = pmap(
+      list(TE_name, site2_start, site2_end),
+      ~ map_halfsite_to_consensus(
+        ..1, ..2, ..3,
+        MER61E_position_maps
+      )
+    )
+  )
+```
+
+```{r}
+MER61E_1bp_mapped <- MER61E_1bp_mapped %>%
+  mutate(
+    site1_n_mapped = map_int(
+      site1_consensus,
+      ~ sum(!is.na(.x))
+    ),
+
+    site2_n_mapped = map_int(
+      site2_consensus,
+      ~ sum(!is.na(.x))
+    ),
+
+    site1_conserved = map_lgl(
+      site1_consensus,
+      ~ identical(as.integer(.x), 115:124)
+    ),
+
+    site2_conserved = map_lgl(
+      site2_consensus,
+      ~ identical(as.integer(.x), 126:135)
+    ),
+
+    ancestral_RE = site1_conserved & site2_conserved,
+
+    mapping_status = case_when(
+      ancestral_RE ~ "Ancestral RE",
+
+      site1_n_mapped == 10 & site2_n_mapped == 10 ~
+        "Fully mapped - alternative configuration",
+
+      site1_n_mapped == 0 & site2_n_mapped == 0 ~
+        "Unmapped",
+
+      TRUE ~ "Partially mapped"
+    )
+  )
+```
+
+```{r}
+MER61E_1bp_mapped %>%
+  count(Response, mapping_status) %>%
+  group_by(Response) %>%
+  mutate(Percent = n / sum(n) * 100) %>%
+  ungroup()
+```
+```{r}
+ggplot(
+  MER61E_1bp_mapped,
+  aes(x = Response, fill = mapping_status)
+) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = "Percentage of 1 bp spacer pairs",
+    fill = "Mapping status",
+    title = "Conservation of MER61E p53 response elements"
+  ) +
+  theme_classic()
+```
+
+```{r}
+MER61E_ancestral_summary <- MER61E_1bp_mapped %>%
+  group_by(TE_name, Response) %>%
+  summarise(
+    ancestral_RE = any(ancestral_RE),
+    .groups = "drop"
+  )
+```
+
+```{r}
+MER61E_ancestral_RE <- TE_all_copies %>%
+  filter(family == "MER61E") %>%
+  left_join(
+    MER61E_ancestral_summary %>%
+      dplyr::select(TE_name, ancestral_RE),
+    by = "TE_name"
+  ) %>%
+  mutate(
+    ancestral_RE = coalesce(ancestral_RE, FALSE)
+  )
+
+fisher.test(
+  table(
+    MER61E_ancestral_RE$Response,
+    MER61E_ancestral_RE$ancestral_RE
+  )
+)
+```
+
+```{r}
+MER61E_ancestral_multiple <- TE_spacing_per_TE %>%
+  filter(
+    family == "MER61E",
+    Method == "Canonical"
+  ) %>%
+  left_join(
+    MER61E_ancestral_summary %>%
+      dplyr::select(TE_name, ancestral_RE),
+    by = "TE_name"
+  ) %>%
+  mutate(
+    ancestral_RE = coalesce(ancestral_RE, FALSE)
+  )
+
+fisher.test(
+  table(
+    MER61E_ancestral_multiple$Response,
+    MER61E_ancestral_multiple$ancestral_RE
+  )
+)
+```
+
+```{r}
+fisher.test(
+  table(
+    MER61E_ancestral_summary$Response,
+    MER61E_ancestral_summary$ancestral_RE
+  )
+)
+```
+
+#### Mapping p53 motifs again
+
+
+```{r}
+plot_TE_alignment_with_consensus <- function(alignment_blocks,
+                                             mapped_p53,
+                                             consensus_motifs,
+                                             consensus_length,
+                                             family_label) {
+
+  consensus_track <- alignment_blocks %>%
+    group_by(cluster) %>%
+    summarise(
+      consensus_y = max(TE_order, na.rm = TRUE) + 1,
+      .groups = "drop"
+    ) %>%
+    mutate(
+      consensus_start = 1,
+      consensus_end = consensus_length,
+      track_label = paste0(family_label, " consensus")
+    )
+
+  consensus_motifs_plot <- consensus_track %>%
+    select(cluster, consensus_y) %>%
+    tidyr::crossing(consensus_motifs) %>%
+    mutate(y = consensus_y)
+
+  ggplot() +
+    geom_segment(
+      data = alignment_blocks,
+      aes(
+        x = consensus_start,
+        xend = consensus_end,
+        y = TE_order,
+        yend = TE_order,
+        color = cluster
+      ),
+      linewidth = 1.2,
+      lineend = "butt"
+    ) +
+    geom_segment(
+      data = mapped_p53,
+      aes(
+        x = consensus_start,
+        xend = consensus_end,
+        y = TE_order,
+        yend = TE_order
+      ),
+      linewidth = 2.2,
+      color = "firebrick"
+    ) +
+    geom_segment(
+      data = consensus_track,
+      aes(
+        x = consensus_start,
+        xend = consensus_end,
+        y = consensus_y,
+        yend = consensus_y
+      ),
+      linewidth = 1.5,
+      color = "black"
+    ) +
+    geom_rect(
+      data = consensus_motifs_plot,
+      aes(
+        xmin = start,
+        xmax = end,
+        ymin = y - 0.25,
+        ymax = y + 0.25
+      ),
+      fill = "goldenrod2",
+      color = "black",
+      alpha = 0.8
+    ) +
+    geom_text(
+      data = consensus_track,
+      aes(
+        x = consensus_start,
+        y = consensus_y,
+        label = track_label
+      ),
+      hjust = 1.05,
+      size = 3.2
+    ) +
+    geom_text(
+      data = consensus_motifs_plot,
+      aes(
+        x = (start + end) / 2,
+        y = y + 0.45,
+        label = sequence
+      ),
+      size = 2.8
+    ) +
+    facet_wrap(~cluster, scales = "free_y") +
+    theme_classic() +
+    labs(
+      x = "Consensus position",
+      y = NULL,
+      title = paste0(family_label, " alignments with consensus p53 motifs")
+    )
+}
+```
+
+
+```{r}
+get_alignment_blocks <- function(position_maps) {
+
+  imap_dfr(position_maps, function(pos_map, TE_name) {
+
+    pos_map %>%
+      filter(
+        !is.na(TE_position),
+        !is.na(consensus_position)
+      ) %>%
+      arrange(TE_position) %>%
+      mutate(
+        new_block =
+          TE_position - lag(TE_position, default = -1L) != 1 |
+          consensus_position -
+            lag(consensus_position, default = -1L) != 1,
+
+        block_ID = cumsum(new_block)
+      ) %>%
+      group_by(block_ID) %>%
+      summarise(
+        TE_start = min(TE_position),
+        TE_end = max(TE_position),
+        consensus_start = min(consensus_position),
+        consensus_end = max(consensus_position),
+        block_width = dplyr::n(),
+        .groups = "drop"
+      ) %>%
+      mutate(TE_name = TE_name)
+
+  })
+}
+```
+
+
+```{r}
+MER61E_alignment_blocks <- get_alignment_blocks(
+  MER61E_position_maps
+)
+
+LTR10E_alignment_blocks <- get_alignment_blocks(
+  LTR10E_position_maps
+)
+cluster_levels <- c(
+  "Set_3",
+  "Set_1",
+  "not_assigned",
+  "NA"
+)
+cluster_colors <- c(
+  "Set_3" = "indianred3",
+  "Set_1" = "steelblue",
+  "not_assigned" = "darkseagreen3",
+  "NA" = "grey70"
+)
+
+```
+
+```{r}
+TE_alignment_blocks <- bind_rows(
+  MER61E_alignment_blocks %>%
+    mutate(family = "MER61E"),
+
+  LTR10E_alignment_blocks %>%
+    mutate(family = "LTR10E")
+) %>%
+  left_join(
+    TE_cluster_df,
+    by = c("TE_name" = "repID", "family"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    Response = if_else(
+      cluster %in% "Set_3",
+      "Acute",
+      "Non-acute"
+    )
+  )
+```
+
+```{r}
+TE_alignment_blocks <- TE_alignment_blocks %>%
+  dplyr::select(-any_of(c("TE_order", "aligned_width", "milliDiv"))) %>%
+  left_join(
+    (repeatmasker_clean %>%
+      dplyr::select(RM_id, milliDiv) %>%
+      distinct()),
+    by = c("TE_name" = "RM_id"),
+    relationship = "many-to-one"
+  ) 
+
+TE_alignment_blocks <- TE_alignment_blocks %>%
+  mutate(
+    cluster = coalesce(as.character(cluster), "NA"),
+    cluster = factor(cluster, levels = cluster_levels)
+  )
+
+TE_plot_order <- TE_alignment_blocks %>%
+  group_by(family, cluster, TE_name, milliDiv) %>%
+  summarise(
+    aligned_width = sum(block_width),
+    .groups = "drop"
+  ) %>%
+  group_by(family, cluster) %>%
+  arrange(
+    desc(is.na(milliDiv)),
+    desc(milliDiv),
+    desc(aligned_width),
+    TE_name,
+    .by_group = TRUE
+  ) %>%
+  mutate(
+    TE_order = row_number()
+  ) %>%
+  ungroup()
+
+TE_alignment_blocks <- TE_alignment_blocks %>%
+  dplyr::select(-any_of(c("TE_order", "aligned_width"))) %>%
+  left_join(
+    TE_plot_order %>%
+      dplyr::select(
+        family, cluster, TE_name,
+        TE_order, aligned_width
+      ),
+    by = c("family", "cluster", "TE_name"),
+    relationship = "many-to-one"
+  )
+
+
+```
+
+
+
+```{r}
+
+TE_consensus_lengths <- tibble(
+  family = names(TE_consensus),
+  consensus_length = width(TE_consensus)
+)
+
+TE_consensus_tracks <- TE_plot_order %>%
+  group_by(family, cluster) %>%
+  summarise(
+    consensus_y = max(TE_order) + 2,
+    .groups = "drop"
+  ) %>%
+  left_join(
+    TE_consensus_lengths,
+    by = "family"
+  ) %>%
+  mutate(
+    consensus_start = 1,
+    consensus_end = consensus_length
+  )
+
+TE_consensus_motif_tracks <- TE_consensus_tracks %>%
+  inner_join(
+    consensus_p53_canonical %>%
+      dplyr::rename(family = TE_name),
+    by = "family",
+    relationship = "many-to-many"
+  )
+```
+
+```{r}
+
+
+TE_alignment_plot <- ggplot() +
+
+  # Individual TE alignment blocks
+  geom_segment(
+    data = TE_alignment_blocks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = TE_order,
+      yend = TE_order,
+      color = cluster
+    ),
+    linewidth = 0.8,
+    lineend = "butt"
+  ) +
+
+  # Consensus backbone
+  geom_segment(
+    data = TE_consensus_tracks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 1.8,
+    color = "black",
+    lineend = "butt"
+  ) +
+
+  # Canonical p53 half-sites within consensus
+  geom_segment(
+    data = TE_consensus_motif_tracks,
+    aes(
+      x = start - 0.5,
+      xend = end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 2.5,
+    color = "goldenrod2",
+    lineend = "butt"
+  ) +
+
+  facet_grid(
+    cluster ~ family,
+    scales = "free_y",
+    space = "free_y"
+  ) +
+
+  scale_y_reverse() +
+
+  scale_color_manual(
+    values = cluster_colors
+  ) +
+
+  labs(
+    x = "Consensus position (bp)",
+    y = "TE copies"
+  ) +
+
+  theme_classic() +
+
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+
+TE_alignment_plot
+
+```
+
+
+
+```{r}
+map_fimo_to_consensus <- function(fimo_sites,
+                                  position_maps) {
+
+  fimo_sites %>%
+    mutate(
+      consensus_positions = pmap(
+        list(TE_name, start, end),
+        function(TE_name, start, end) {
+
+          pos_map <- position_maps[[TE_name]]
+
+          if (is.null(pos_map)) {
+            return(rep(NA_integer_, end - start + 1L))
+          }
+
+          pos_map$consensus_position[
+            match(
+              seq.int(start, end),
+              pos_map$TE_position
+            )
+          ]
+        }
+      )
+    ) %>%
+    mutate(
+      n_mapped = map_int(
+        consensus_positions,
+        ~ sum(!is.na(.x))
+      ),
+
+      motif_width = end - start + 1L,
+
+      contiguous = map_lgl(
+        consensus_positions,
+        ~ !anyNA(.x) && all(diff(.x) == 1)
+      ),
+
+      mapping_status = case_when(
+        n_mapped == 0 ~ "Not mapped",
+        n_mapped < motif_width ~ "Partially mapped",
+        contiguous ~ "Fully mapped - contiguous",
+        TRUE ~ "Fully mapped - discontinuous"
+      )
+    )
+}
+```
+
+
+```{r}
+
+
+MER61E_fimo_mapped <- map_fimo_to_consensus(
+  TE_fimo_sites %>%
+    filter(family == "MER61E"),
+  MER61E_position_maps
+)
+
+LTR10E_fimo_mapped <- map_fimo_to_consensus(
+  TE_fimo_sites %>%
+    filter(family == "LTR10E"),
+  LTR10E_position_maps
+)
+
+TE_fimo_mapped <- bind_rows(
+  MER61E_fimo_mapped,
+  LTR10E_fimo_mapped
+)
+```
+
+```{r}
+TE_fimo_mapped_blocks <- TE_fimo_mapped %>%
+  mutate(motif_ID = row_number()) %>%
+  dplyr::filter(n_mapped > 0) %>%
+  tidyr::unnest_longer(
+    consensus_positions,
+    indices_to = "motif_position"
+  ) %>%
+  dplyr::filter(!is.na(consensus_positions)) %>%
+  group_by(family, TE_name, motif_ID, mapping_status) %>%
+  arrange(motif_position, .by_group = TRUE) %>%
+  mutate(
+    new_block =
+      row_number() == 1 |
+      motif_position -
+        lag(motif_position, default = -1L) != 1 |
+      consensus_positions -
+        lag(consensus_positions, default = -1L) != 1,
+
+    block_ID = cumsum(new_block)
+  ) %>%
+  group_by(
+    family, TE_name, motif_ID,
+    mapping_status, block_ID
+  ) %>%
+  summarise(
+    consensus_start = min(consensus_positions),
+    consensus_end = max(consensus_positions),
+    .groups = "drop"
+  )
+
+TE_fimo_mapped_blocks <- TE_fimo_mapped_blocks %>%
+  dplyr::select(
+    -any_of(c(
+      "TE_order", "TE_order.x", "TE_order.y",
+      "cluster", "cluster.x", "cluster.y",
+      "milliDiv", "milliDiv.x", "milliDiv.y"
+    ))
+  ) %>%
+  left_join(
+    TE_plot_order %>%
+      dplyr::select(
+        family,
+        TE_name,
+        cluster,
+        TE_order,
+        milliDiv
+      ) %>%
+      distinct(),
+    by = c("family", "TE_name"),
+    relationship = "many-to-one"
+  )
+
+TE_fimo_mapped_blocks %>%
+  summarise(
+    n_blocks = dplyr::n(),
+    missing_TE_order = sum(is.na(TE_plot_order))
+  )
+```
+
+```{r, fig.height=12}
+p53_mapping_colors <- c(
+  "Fully aligned - no gap" = "black",
+  "Fully aligned - with gap" = "darkorange2",
+  "Partially mapped" = "purple3"
+)
+
+TE_alignment_plot <- ggplot() +
+
+  # Individual TE alignment blocks
+  geom_segment(
+    data = TE_alignment_blocks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = TE_order,
+      yend = TE_order,
+      color = cluster
+    ),
+    linewidth = 0.8,
+    lineend = "butt"
+  ) +
+
+  scale_color_manual(
+    values = cluster_colors,
+    name = "Cluster"
+  ) +
+
+  # Introduce a separate color scale for p53
+  ggnewscale::new_scale_color() +
+
+  # FIMO-predicted p53 half-sites
+  geom_segment(
+    data = TE_fimo_mapped_blocks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = TE_order,
+      yend = TE_order,
+      color = mapping_status
+    ),
+    linewidth = 1.5,
+    lineend = "butt"
+  ) +
+
+  scale_color_manual(
+    values = p53_mapping_colors,
+    name = "p53 half-site mapping"
+  ) +
+
+  # Consensus backbone
+  geom_segment(
+    data = TE_consensus_tracks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 1.8,
+    color = "black",
+    lineend = "butt"
+  ) +
+
+  # Canonical p53 half-sites in consensus
+  geom_segment(
+    data = TE_consensus_motif_tracks,
+    aes(
+      x = start - 0.5,
+      xend = end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 2.5,
+    color = "goldenrod2",
+    lineend = "butt"
+  ) +
+
+  facet_grid(
+    cluster ~ family,
+    scales = "free_y",
+    space = "free_y"
+  ) +
+
+  scale_y_reverse() +
+
+  labs(
+    x = "Consensus position (bp)",
+    y = "TE copies"
+  ) +
+
+  theme_classic() +
+
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    legend.position = "bottom",
+    legend.box = "vertical"
+  )
+
+TE_alignment_plot
+```
+```{r, eval=FALSE}
+writeXStringSet(
+  TE_consensus,
+  filepath = "data/Bed_exports/MER61E_LTR10E_consensus.fa"
+)
+```
+
+### align by percent TE coverage
+
+
+```{r}
+TE_lengths <- bind_rows(
+  tibble(
+    family = "MER61E",
+    TE_name = MER61E_regions$name,
+    TE_width = width(MER61E_regions)
+  ),
+  tibble(
+    family = "LTR10E",
+    TE_name = LTR10E_regions$name,
+    TE_width = width(LTR10E_regions)
+  )
+)
+```
+
+```{r}
+TE_alignment_coverage <- TE_alignment_blocks %>%
+  group_by(family, TE_name) %>%
+  summarise(
+    aligned_width = sum(block_width),
+    .groups = "drop"
+  ) %>%
+  left_join(
+    TE_lengths,
+    by = c("family", "TE_name")
+  ) %>%
+  left_join(
+    TE_consensus_lengths,
+    by = "family"
+  ) %>%
+  mutate(
+    pct_TE_coverage =
+      aligned_width / TE_width * 100,
+
+    pct_consensus_coverage =
+      aligned_width / consensus_length * 100
+  )
+```
+distribution check
+```{r}
+TE_alignment_coverage %>%
+  group_by(family) %>%
+  summarise(
+    n_TE = dplyr::n(),
+    mean_TE_coverage = mean(pct_TE_coverage),
+    median_TE_coverage = median(pct_TE_coverage),
+    mean_consensus_coverage = mean(pct_consensus_coverage),
+    median_consensus_coverage = median(pct_consensus_coverage),
+    .groups = "drop"
+  )
+
+```
+
+```{r}
+TE_plot_order_percentTE <- TE_alignment_blocks %>%
+  dplyr::select(
+    family, cluster, TE_name, milliDiv
+  ) %>%
+  distinct() %>%
+  left_join(
+    TE_alignment_coverage,
+    by = c("family", "TE_name"),
+    relationship = "one-to-one"
+  ) %>%
+  group_by(family, cluster) %>%
+  arrange(
+    desc(is.na(pct_TE_coverage)),
+    pct_TE_coverage,
+    desc(milliDiv),
+    TE_name,
+    .by_group = TRUE
+  ) %>%
+  mutate(
+    TE_order = row_number()
+  ) %>%
+  ungroup()
+```
+
+update alignment blocks
+```{r}
+TE_alignment_blocks_pct <- TE_alignment_blocks %>%
+  dplyr::select(
+    -any_of(c("TE_order", "aligned_width"))
+  ) %>%
+  left_join(
+    TE_plot_order_percentTE %>%
+      dplyr::select(
+        family, TE_name, TE_order, aligned_width
+      ),
+    by = c("family", "TE_name"),
+    relationship = "many-to-one"
+  )
+
+TE_fimo_mapped_blocks_pct <- TE_fimo_mapped_blocks %>%
+  dplyr::select(-any_of(c("TE_order", "cluster"))) %>%
+  left_join(
+    TE_plot_order_percentTE %>%
+      dplyr::select(
+        family, TE_name, cluster, TE_order
+      ),
+    by = c("family", "TE_name"),
+    relationship = "many-to-one"
+  )
+```
+
+```{r percentalign, fig.height=12}
+TE_alignment_plot_per <- ggplot() +
+
+  # Individual TE alignment blocks
+  geom_segment(
+    data = TE_alignment_blocks_pct,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = TE_order,
+      yend = TE_order,
+      color = cluster
+    ),
+    linewidth = 0.8,
+    lineend = "butt"
+  ) +
+
+  scale_color_manual(
+    values = cluster_colors,
+    name = "Cluster"
+  ) +
+
+  # Introduce a separate color scale for p53
+  ggnewscale::new_scale_color() +
+
+  # FIMO-predicted p53 half-sites
+  geom_segment(
+    data = TE_fimo_mapped_blocks_pct,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = TE_order,
+      yend = TE_order,
+      color = mapping_status
+    ),
+    linewidth = 1.5,
+    lineend = "butt"
+  ) +
+
+  scale_color_manual(
+    values = p53_mapping_colors,
+    name = "p53 half-site mapping"
+  ) +
+
+  # Consensus backbone
+  geom_segment(
+    data = TE_consensus_tracks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 1.8,
+    color = "black",
+    lineend = "butt"
+  ) +
+
+  # Canonical p53 half-sites in consensus
+  geom_segment(
+    data = TE_consensus_motif_tracks,
+    aes(
+      x = start - 0.5,
+      xend = end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 2.5,
+    color = "goldenrod2",
+    lineend = "butt"
+  ) +
+
+  facet_grid(
+    cluster ~ family,
+    scales = "free_y",
+    space = "free_y"
+  ) +
+
+  scale_y_reverse() +
+
+  labs(
+    x = "Consensus position (bp)",
+    y = "TE copies"
+  ) +
+
+  theme_classic() +
+
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold"),
+    legend.position = "bottom",
+    legend.box = "vertical"
+  )
+
+TE_alignment_plot_per
+```
+
+```{r}
+TE_plot_order_percentTE %>%
+  group_by(family, cluster) %>%
+  arrange(TE_order, .by_group = TRUE) %>%
+  summarise(
+    n_TE = dplyr::n(),
+    Top_coverage = dplyr::first(pct_TE_coverage),
+    Bottom_coverage = last(pct_TE_coverage),
+    Mean_coverage = mean(pct_TE_coverage),
+    Median_coverage = median(pct_TE_coverage),
+    missing_coverage = sum(is.na(pct_TE_coverage)),
+    .groups = "drop"
+  )
+```
+
+```{r}
+TE_order_comparison <- TE_alignment_blocks %>%
+  dplyr::select(family, cluster, TE_name, TE_order) %>%
+  distinct() %>%
+  dplyr::rename(order_milliDiv = TE_order) %>%
+  left_join(
+    TE_alignment_blocks_pct %>%
+      dplyr::select(family, cluster, TE_name, TE_order) %>%
+      distinct() %>%
+      dplyr::rename(order_pct = TE_order),
+    by = c("family", "cluster", "TE_name"),
+    relationship = "one-to-one"
+  ) %>%
+  mutate(
+    order_difference = order_pct - order_milliDiv,
+    order_changed = order_milliDiv != order_pct
+  )
+
+TE_order_comparison %>%
+  group_by(family, cluster) %>%
+  summarise(
+    n_TE = dplyr::n(),
+    n_changed = sum(order_changed),
+    Percent_changed = mean(order_changed) * 100,
+    Mean_position_change = mean(abs(order_difference)),
+    Max_position_change = max(abs(order_difference)),
+    .groups = "drop"
+  )
+```
+```{r}
+TE_plot_order_percentTE %>%
+  group_by(family, cluster) %>%
+  arrange(TE_order, .by_group = TRUE) %>%
+  summarise(
+    n_TE = dplyr::n(),
+    n_unique_pct = n_distinct(pct_TE_coverage),
+    top_pct = dplyr::first(pct_TE_coverage),
+    bottom_pct = dplyr::last(pct_TE_coverage),
+    correctly_ordered = all(diff(pct_TE_coverage) >= 0),
+    .groups = "drop"
+  )
+```
+
+```{r}
+TE_plot_order_percentTE %>%
+  group_by(family, cluster) %>%
+  slice_max(TE_order, n = 5) %>%
+  dplyr::select(
+    family,
+    cluster,
+    TE_name,
+    TE_order,
+    TE_width,
+    aligned_width,
+    consensus_length,
+    pct_TE_coverage,
+    pct_consensus_coverage,
+    milliDiv
+  ) %>%
+  arrange(family, cluster, desc(TE_order)) %>%
+  ungroup()
+```
+
