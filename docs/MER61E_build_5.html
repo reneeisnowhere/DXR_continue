@@ -1,0 +1,3323 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Renee Matthews" />
+
+<meta name="date" content="2026-11-18" />
+
+<title>MER61E_build_5 p53 spacing</title>
+
+<script src="site_libs/header-attrs-2.32/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">DXR_project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/reneeisnowhere/DXR_continue">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">MER61E_build_5 p53 spacing</h1>
+<h4 class="author">Renee Matthews</h4>
+<h4 class="date">2026-11-18</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-11-18
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>DXR_continue/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250701code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250701)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250701code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250701)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree24b6d02f6d176c36e351aad396c3c57c5aba1b95targetblank24b6d02a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/24b6d02f6d176c36e351aad396c3c57c5aba1b95" target="_blank">24b6d02</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree24b6d02f6d176c36e351aad396c3c57c5aba1b95targetblank24b6d02a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/24b6d02f6d176c36e351aad396c3c57c5aba1b95" target="_blank">24b6d02</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/Bed_exports/
+    Ignored:    data/Bed_exportsH3K27ac_summit_gr_ext200.bed
+    Ignored:    data/Cormotif_data/
+    Ignored:    data/DER_data/
+    Ignored:    data/H3K27ac_LTR10E_integrant_anno.RDS
+    Ignored:    data/H3K27ac_MER61E_integrant_anno.RDS
+    Ignored:    data/MER61E_alignments.RDS
+    Ignored:    data/MER61intermediatemarking_protein.RDS
+    Ignored:    data/Other_paper_data/
+    Ignored:    data/RDS_files/
+    Ignored:    data/TE_annotation/
+    Ignored:    data/alignment_summary.txt
+    Ignored:    data/all_peak_final_dataframe.txt
+    Ignored:    data/cell_line_info_.tsv
+    Ignored:    data/full_p53_canonical.RDS
+    Ignored:    data/full_summary_QC_metrics.txt
+    Ignored:    data/hg19ToHg38.over.chain
+    Ignored:    data/hg19ToHg38.over.chain.gz
+    Ignored:    data/hg38_expressed_RNA_genes.bed
+    Ignored:    data/lookup_table_andstuff.txt
+    Ignored:    data/motif_lists/
+    Ignored:    data/number_frag_peaks_summary.txt
+    Ignored:    data/p53halfsite_TE_ids.RDS
+
+Untracked files:
+    Untracked:  H3K27ac_all_regions_test.bed
+    Untracked:  H3K27ac_consensus_clusters_test.bed
+    Untracked:  MER61C_ERV1_LTR.fa
+    Untracked:  MER61E_notSet3.bed
+    Untracked:  analysis/GREAT_H3K27ac.Rmd
+    Untracked:  analysis/H3K27ac_ChromHMM_FC.Rmd
+    Untracked:  analysis/H3K27ac_KZFP_motifs.Rmd
+    Untracked:  analysis/H3K27ac_TE_investigation_200bp.Rmd
+    Untracked:  analysis/H3K27me3_TE_investigation.Rmd
+    Untracked:  analysis/H3K36me3_TE_investigation.Rmd
+    Untracked:  analysis/HIstone_supp_profiles.Rmd
+    Untracked:  analysis/Top2a_Top2b_expression.Rmd
+    Untracked:  analysis/drill_down_KZFPs.Rmd
+    Untracked:  analysis/maps_and_plots.Rmd
+    Untracked:  analysis/proteomics.Rmd
+    Untracked:  code/For_john.R
+    Untracked:  code/RNA_gene_locations.R
+    Untracked:  code/SOX11_excel_to_granges_coversion.R
+    Untracked:  code/State_color_code_igv.R
+    Untracked:  code/score_phylop.py
+    Untracked:  hg19ToHg38.over.chain.gz
+    Untracked:  hg38_TSS_1bp.bed
+    Untracked:  other_analysis/
+
+Unstaged changes:
+    Modified:   analysis/Goanalysis_TFs.Rmd
+    Modified:   analysis/H3K27_TE_overlap_extend.Rmd
+    Modified:   analysis/H3K27ac_TEtype.Rmd
+    Modified:   analysis/H3K27ac_cisRE.Rmd
+    Modified:   analysis/MER61E_build.Rmd
+    Modified:   analysis/Main_fig2.Rmd
+    Modified:   analysis/computeMatrixplots.Rmd
+    Modified:   analysis/distance_exam.Rmd
+    Modified:   analysis/repeatmasker_data.Rmd
+    Modified:   analysis/supp_fig.Rmd
+    Modified:   code/corMotifcustom.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/MER61E_build_5.Rmd</code>) and
+HTML (<code>docs/MER61E_build_5.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/24b6d02f6d176c36e351aad396c3c57c5aba1b95/analysis/MER61E_build_5.Rmd" target="_blank">24b6d02</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-11-18
+</td>
+<td>
+wflow_publish("analysis/MER61E_build_5.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+</style>
+<pre class="r"><code>library(tidyverse)
+library(GenomicRanges)
+library(plyranges)
+library(genomation)
+library(readr)
+library(rtracklayer)
+library(stringr)
+library(ggrepel)
+library(DT)
+library(ComplexHeatmap)
+library(circlize)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(janitor)
+library(MASS)
+library(readxl)
+library(GenomicFeatures)
+library(edgeR)
+library(Biostrings)
+library(pwalign)
+library(BSgenome.Hsapiens.UCSC.hg38)</code></pre>
+<p>The purpose of this page is explore spacer distances for LTR10E and
+MER61E.</p>
+<pre class="r"><code># ZNF680 narrowpeak binding Hek293 ENCFF935XZI
+# ZNF680_regions &lt;- import(&quot;data/Other_paper_data/ZNF680_CHIP_ENCFF935XZI.bed&quot;,format = &quot;narrowPeak&quot;)
+# 
+# ZNF780A_regions &lt;- import(&quot;data/Other_paper_data/GSM2466657_lifted_hg38_peaks_ZNF780A.bed&quot;)
+MER61E_regions &lt;- import(&quot;data/Bed_exports/repeatmasker_sets/ERV1/MER61E_ERV1_LTR.bed&quot;)
+
+LTR10E_regions &lt;- import(&quot;data/Bed_exports/repeatmasker_sets/ERV1/LTR10E_ERV1_LTR.bed&quot;)
+
+
+H3K27ac_summit_gr &lt;- readRDS(&quot;data/RDS_files/H3K27ac_complete_summit_gr.RDS&quot;)
+
+H3K27ac_summit_gr_ext &lt;- GenomicRanges::resize(H3K27ac_summit_gr, width(H3K27ac_summit_gr)+400, fix = &quot;center&quot;)
+
+ mcols(H3K27ac_summit_gr_ext)$name &lt;- mcols(H3K27ac_summit_gr_ext)$Peakid
+ 
+ H3K27ac_ext200_anno &lt;- readRDS(&quot;data/TE_annotation/annotated_H3K27ac_ext200_TE_overlaps.RDS&quot;)
+ 
+ 
+full_p53_canonical  &lt;- readRDS(&quot;data/full_p53_canonical.RDS&quot;)
+# 
+# p53halfsite_TE_ids &lt;- readRDS(&quot;data/p53halfsite_TE_ids.RDS&quot;)
+
+
+H3K27ac_summit_gr_ext &lt;- keepStandardChromosomes(
+  H3K27ac_summit_gr_ext,
+  pruning.mode = &quot;coarse&quot;)
+
+
+
+repeatmasker_clean &lt;- readRDS(&quot;data/RDS_files/repeatmasker_clean.RDS&quot;)
+
+
+mint_anno &lt;- readRDS(&quot;data/RDS_files/MER61E_intermediate_dataframe.RDS&quot;)
+lint_anno &lt;- readRDS(&quot;data/RDS_files/LTR10E_intermediate_dataframe.RDS&quot;)
+
+LTR10E_ref &lt;- readDNAStringSet(
+  &quot;C:/Users/renee/Other_projects_data/DXR_data/DF000000396_LTR10E_consensus.fa&quot;)
+
+LTR10E_rmsk &lt;- repeatmasker_clean %&gt;%
+  filter(repName == &quot;LTR10E&quot;) %&gt;%
+  dplyr::select(
+    genoName, genoStart, genoEnd, strand,
+    repName, repStart, repEnd, repLeft,
+    milliDiv, milliDel, milliIns,RM_id)
+
+LTR10E_consensus &lt;- repeatmasker_clean %&gt;%
+  dplyr::filter(repName == &quot;LTR10E&quot;) %&gt;%
+  mutate(
+    consensus_start = if_else(
+      strand == &quot;+&quot;, repStart, repLeft),
+    consensus_end = repEnd,
+    consensus_length = if_else(strand == &quot;+&quot;,
+                               repEnd - repLeft,
+                               repEnd - repStart))
+
+LTR10E_consensus %&gt;%
+  summarise(n = dplyr::n(),
+            min_start = min(consensus_start),
+            max_end = max(consensus_end),
+            invalid = sum(consensus_start &gt; consensus_end | consensus_start &lt; 0,
+                          na.rm = TRUE))</code></pre>
+<pre><code># A tibble: 1 × 4
+      n min_start max_end invalid
+  &lt;int&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
+1   255         1     633       0</code></pre>
+<pre class="r"><code>MER61E_ref &lt;- readDNAStringSet(
+  &quot;C:/Users/renee/Other_projects_data/DXR_data/DF000000887_MER61E_consensus.fa&quot;)
+
+MER61E_rmsk &lt;- repeatmasker_clean %&gt;%
+  filter(repName == &quot;MER61E&quot;) %&gt;%
+  dplyr::select(
+    genoName, genoStart, genoEnd, strand,
+    repName, repStart, repEnd, repLeft,
+    milliDiv, milliDel, milliIns)
+
+
+MER61E_consensus &lt;- repeatmasker_clean %&gt;%
+  filter(repName == &quot;MER61E&quot;) %&gt;%
+  mutate(
+    consensus_start = if_else(
+      strand == &quot;+&quot;, repStart, repLeft
+    ),
+    consensus_end = repEnd,
+    consensus_length = if_else(
+      strand == &quot;+&quot;,
+      repEnd - repLeft,
+      repEnd - repStart
+    )
+  )
+
+MER61E_consensus %&gt;%
+  summarise(
+    n = n(),
+    min_start = min(consensus_start),
+    max_end = max(consensus_end),
+    invalid = sum(
+      consensus_start &gt; consensus_end |
+      consensus_start &lt; 0,
+      na.rm = TRUE
+    )
+  )</code></pre>
+<pre><code># A tibble: 1 × 4
+      n min_start max_end invalid
+  &lt;int&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
+1   267         1     820       0</code></pre>
+<pre class="r"><code>hg38 &lt;- BSgenome.Hsapiens.UCSC.hg38
+
+MER61E_sequences &lt;- getSeq(hg38, MER61E_regions)
+names(MER61E_sequences) &lt;-  MER61E_regions$name
+
+LTR10E_sequences &lt;- getSeq(hg38, LTR10E_regions)
+names(LTR10E_sequences) &lt;-  LTR10E_regions$name
+
+
+MER61E_cluster_df &lt;- mint_anno %&gt;% dplyr::select(repID,cluster)
+
+LTR10E_cluster_df &lt;- lint_anno %&gt;% dplyr::select(repID,cluster)</code></pre>
+<pre class="r"><code>make_position_map &lt;- function(aln) {
+
+  pat &lt;- strsplit(
+    as.character(pwalign::alignedPattern(aln)[[1]]),
+    &quot;&quot;
+  )[[1]]
+
+  sub &lt;- strsplit(
+    as.character(pwalign::alignedSubject(aln)[[1]]),
+    &quot;&quot;
+  )[[1]]
+
+  p_start &lt;- as.integer(start(pattern(aln))[1])
+  s_start &lt;- as.integer(start(subject(aln))[1])
+
+  p_pos &lt;- p_start - 1L + cumsum(pat != &quot;-&quot;)
+  s_pos &lt;- s_start - 1L + cumsum(sub != &quot;-&quot;)
+
+  tibble(
+    TE_position = p_pos[pat != &quot;-&quot; &amp; sub != &quot;-&quot;],
+    consensus_position = s_pos[pat != &quot;-&quot; &amp; sub != &quot;-&quot;]
+  )
+}
+
+make_LTR10E_position_map &lt;- function(alignment) {
+
+  # Aligned nucleotide strings, including gaps
+  pat &lt;- strsplit(
+    as.character(alignedPattern(alignment)),
+    &quot;&quot;
+  )[[1]]
+
+  subj &lt;- strsplit(
+    as.character(alignedSubject(alignment)),
+    &quot;&quot;
+  )[[1]]
+
+  stopifnot(length(pat) == length(subj))
+
+  # Position counters
+  TE_pos &lt;- cumsum(pat != &quot;-&quot;)
+  consensus_pos &lt;- cumsum(subj != &quot;-&quot;)
+
+  # Obtain starting consensus position
+  consensus_start &lt;- start(subject(alignment))[1]
+
+  # Construct map
+tibble(
+  TE_position = ifelse(
+    pat == &quot;-&quot;,
+    NA_integer_,
+    TE_pos
+  ),
+  consensus_position = ifelse(
+    subj == &quot;-&quot;,
+    NA_integer_,
+    consensus_start + consensus_pos - 1L
+  )
+) %&gt;%
+  dplyr::filter(!is.na(TE_position))
+}</code></pre>
+<pre class="r"><code>MER61E_position_maps &lt;- readRDS(&quot;data/RDS_files/MER61E_position_maps.RDS&quot;)
+LTR10E_position_maps &lt;- readRDS(&quot;data/RDS_files/LTR10E_position_maps.RDS&quot;)
+
+
+sampleinfo &lt;- read_delim(&quot;data/sample_info.tsv&quot;, delim = &quot;\t&quot;)
+
+MER61E_p53_fimo &lt;- read_tsv(
+  &quot;C:/Users/renee/Other_projects_data/DXR_data/fimo_results/MER61E_ERV1_LTR_fimo/fimo.tsv&quot;,  comment = &quot;#&quot;,
+  show_col_types = FALSE)
+
+MER61E_p53_fimo_gr &lt;- makeGRangesFromDataFrame(
+  MER61E_p53_fimo,
+  seqnames.field = &quot;sequence_name&quot;,
+  start.field = &quot;start&quot;,
+  end.field = &quot;stop&quot;,
+  strand.field = &quot;strand&quot;,
+  keep.extra.columns = TRUE
+)
+
+LTR10E_p53_fimo &lt;- read_tsv(
+  &quot;C:/Users/renee/Other_projects_data/DXR_data/fimo_results/LTR10E_ERV1_LTR_fimo/fimo.tsv&quot;,  comment = &quot;#&quot;,
+  show_col_types = FALSE)
+
+LTR10E_p53_fimo_gr &lt;- makeGRangesFromDataFrame(
+  LTR10E_p53_fimo,
+  seqnames.field = &quot;sequence_name&quot;,
+  start.field = &quot;start&quot;,
+  end.field = &quot;stop&quot;,
+  strand.field = &quot;strand&quot;,
+  keep.extra.columns = TRUE
+)</code></pre>
+<pre class="r"><code>TE_consensus &lt;- DNAStringSet(
+  c(
+    MER61E = as.character(MER61E_ref),
+    LTR10E = as.character(LTR10E_ref)
+  )
+)
+names(TE_consensus) &lt;- c(&quot;MER61E&quot;, &quot;LTR10E&quot;)
+
+TE_consensus</code></pre>
+<pre><code>DNAStringSet object of length 2:
+    width seq                                               names               
+[1]   569 TGAGAGAGGAGAAAGGAAGAAAC...GTGGTGCATTGGCGAGACTAACA MER61E
+[2]   633 TGTAGAAAGTAAAAAGTTTCCTC...AAATAAACATTTTACTTATAACA LTR10E</code></pre>
+<pre class="r"><code>p53_halfsite &lt;- DNAString(&quot;RRRCWWGYYY&quot;)
+
+find_p53_halfsite &lt;- function(sequence, TE_name) {
+
+  hits &lt;- matchPattern(
+    pattern = p53_halfsite,
+    subject = sequence,
+    fixed = FALSE
+  )
+
+  tibble(
+    TE_name = TE_name,
+    start = start(hits),
+    end = end(hits),
+    sequence = as.character(hits)
+  )
+}
+
+consensus_p53_canonical &lt;- bind_rows(
+
+  find_p53_halfsite(
+    TE_consensus[[&quot;MER61E&quot;]],
+    &quot;MER61E&quot;
+  ),
+
+  find_p53_halfsite(
+    TE_consensus[[&quot;LTR10E&quot;]],
+    &quot;LTR10E&quot;
+  )
+)
+
+consensus_p53_canonical</code></pre>
+<pre><code># A tibble: 3 × 4
+  TE_name start   end sequence  
+  &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;chr&gt;     
+1 MER61E    115   124 GGGCTTGCCT
+2 MER61E    126   135 AGACATGCCC
+3 MER61E    177   186 AGACATGCCC</code></pre>
+<p>So only MER61E contains a canonical p53 motif sequence in the
+consensus sequence</p>
+<pre class="r"><code>MER61E_p53_reference &lt;- consensus_p53_canonical %&gt;%
+  filter(TE_name == &quot;MER61E&quot;) %&gt;%
+  arrange(start) %&gt;%
+  mutate(
+    site_ID = paste0(&quot;Site_&quot;, row_number()),
+    core = substr(sequence, 4, 7)
+  )
+
+MER61E_p53_reference</code></pre>
+<pre><code># A tibble: 3 × 6
+  TE_name start   end sequence   site_ID core 
+  &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;
+1 MER61E    115   124 GGGCTTGCCT Site_1  CTTG 
+2 MER61E    126   135 AGACATGCCC Site_2  CATG 
+3 MER61E    177   186 AGACATGCCC Site_3  CATG </code></pre>
+<pre class="r"><code>MER61E_p53_canonical &lt;- map_dfr(
+  seq_along(MER61E_sequences),
+  function(i) {
+    find_p53_halfsite(
+      MER61E_sequences[[i]],
+      names(MER61E_sequences)[i]
+    )
+  }
+)
+
+MER61E_canonical_spacing &lt;- MER61E_p53_canonical %&gt;%
+  group_by(TE_name) %&gt;%
+  arrange(start, .by_group = TRUE) %&gt;%
+  mutate(
+    n_sites = n(),
+    next_start = lead(start),
+    next_sequence = lead(sequence),
+    spacer_bp = next_start - end - 1
+  ) %&gt;%
+  filter(!is.na(next_start)) %&gt;%
+  ungroup()
+
+MER61E_canonical_spacing %&gt;%
+  count(spacer_bp, sort = TRUE)</code></pre>
+<pre><code># A tibble: 28 × 2
+   spacer_bp     n
+       &lt;dbl&gt; &lt;int&gt;
+ 1         1    52
+ 2        41    36
+ 3         0    12
+ 4        31     9
+ 5        52     7
+ 6        45     3
+ 7        21     2
+ 8        34     2
+ 9        40     2
+10        42     2
+# ℹ 18 more rows</code></pre>
+<pre class="r"><code>MER61E_canonical_spacing &lt;- MER61E_canonical_spacing %&gt;%
+  left_join(
+    MER61E_cluster_df,
+      
+    by = c(&quot;TE_name&quot;=&quot;repID&quot;)
+  ) %&gt;%
+  mutate(
+    Response = if_else(
+      cluster %in% &quot;Set_3&quot;,
+      &quot;Acute&quot;,
+      &quot;Non-acute&quot;
+    )
+  )
+
+MER61E_canonical_spacing %&gt;%
+  group_by(cluster, Response) %&gt;%
+  summarise(
+    n_TE = n_distinct(TE_name),
+    n_pairs = n(),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 4 × 4
+  cluster      Response   n_TE n_pairs
+  &lt;chr&gt;        &lt;chr&gt;     &lt;int&gt;   &lt;int&gt;
+1 NA           Non-acute    46      64
+2 Set_1        Non-acute     5       8
+3 Set_3        Acute        33      51
+4 not_assigned Non-acute    15      23</code></pre>
+<pre class="r"><code>MER61E_spacing_frequency &lt;- MER61E_canonical_spacing %&gt;%
+  count(Response, spacer_bp) %&gt;%
+  group_by(Response) %&gt;%
+  mutate(Percent = n / sum(n) * 100) %&gt;%
+  ungroup()
+
+MER61E_spacing_frequency %&gt;%
+  filter(spacer_bp %in% c(0, 1, 31, 41, 52)) %&gt;%
+  arrange(spacer_bp, Response) %&gt;%
+  pivot_wider(
+    names_from = Response,
+    values_from = c(n, Percent),
+    values_fill = 0
+  )</code></pre>
+<pre><code># A tibble: 5 × 5
+  spacer_bp n_Acute `n_Non-acute` Percent_Acute `Percent_Non-acute`
+      &lt;dbl&gt;   &lt;int&gt;         &lt;int&gt;         &lt;dbl&gt;               &lt;dbl&gt;
+1         0       5             7          9.80                7.37
+2         1      20            32         39.2                33.7 
+3        31       2             7          3.92                7.37
+4        41      14            22         27.5                23.2 
+5        52       2             5          3.92                5.26</code></pre>
+<pre class="r"><code>ggplot(
+  MER61E_spacing_frequency,
+  aes(x = spacer_bp, y = Percent, fill = Response)
+) +
+  geom_col(width = 0.85) +
+  geom_vline(
+    xintercept = c(1, 41),
+    linetype = &quot;dashed&quot;,
+    color = &quot;black&quot;
+  ) +
+  facet_wrap(~Response, ncol = 1) +
+  coord_cartesian(xlim = c(-2, 60)) +
+  scale_fill_manual(
+    values = c(
+      &quot;Acute&quot; = &quot;indianred3&quot;,
+      &quot;Non-acute&quot; = &quot;steelblue&quot;
+    )
+  ) +
+  labs(
+    title = &quot;Canonical p53 half-site spacing in MER61E&quot;,
+    subtitle = &quot;Dashed lines indicate consensus spacer lengths&quot;,
+    x = &quot;p53 half-site spacer (bp)&quot;,
+    y = &quot;Percentage of half-site pairs&quot;
+  ) +
+  theme_classic() +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-6-1.png" alt="" width="672" style="display: block; margin: auto;" />
+So MER61E acute TEs are more likely to contain multiple canonical p53
+half-sites</p>
+<pre class="r"><code>MER61E_spacing_per_TE &lt;- MER61E_canonical_spacing %&gt;%
+  group_by(TE_name, cluster, Response) %&gt;%
+  summarise(
+    n_pairs = n(),
+    mean_spacer = mean(spacer_bp),
+    median_spacer = median(spacer_bp),
+    min_spacer = min(spacer_bp),
+    max_spacer = max(spacer_bp),
+    has_0bp = any(spacer_bp == 0),
+    has_1bp = any(spacer_bp == 1),
+    has_41bp = any(spacer_bp == 41),
+    has_52bp = any(spacer_bp == 52),
+    has_0_5bp = any(spacer_bp &gt;= 0 &amp; spacer_bp &lt;= 5),
+    has_0_1bp = any(spacer_bp &gt;= 0 &amp; spacer_bp &lt;= 1),
+    has_0_13bp = any(dplyr::between(spacer_bp, 0, 13)),
+    .groups = &quot;drop&quot;
+  )
+
+MER61E_spacing_per_TE %&gt;%
+  group_by(Response) %&gt;%
+  summarise(
+    n_TE = dplyr::n(),
+    Mean = mean(mean_spacer),
+    Median = median(mean_spacer),
+    SD = sd(mean_spacer),
+    Mean_min_spacer = mean(min_spacer),
+    Percent_1bp = mean(has_1bp) * 100,
+    Percent_41bp = mean(has_41bp) * 100,
+    Percent_0_13bp = mean(has_0_13bp) * 100,
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 2 × 9
+  Response   n_TE  Mean Median    SD Mean_min_spacer Percent_1bp Percent_41bp
+  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;
+1 Acute        33  24.8     21  19.7            14.9        60.6         42.4
+2 Non-acute    66  37.6     21  48.9            28.7        48.5         33.3
+# ℹ 1 more variable: Percent_0_13bp &lt;dbl&gt;</code></pre>
+<pre class="r"><code>fisher.test(
+  matrix(
+    c(33, 7,
+      66, 161),
+    nrow = 2,
+    byrow = TRUE,
+    dimnames = list(
+      Response = c(&quot;Acute&quot;, &quot;Non-acute&quot;),
+      Half_sites = c(&quot;Multiple&quot;, &quot;Zero_or_one&quot;)
+    )
+  )
+)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  matrix(c(33, 7, 66, 161), nrow = 2, byrow = TRUE, dimnames = list(Response = c(&quot;Acute&quot;,     &quot;Non-acute&quot;), Half_sites = c(&quot;Multiple&quot;, &quot;Zero_or_one&quot;)))
+p-value = 2.189e-10
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+  4.654756 32.035649
+sample estimates:
+odds ratio 
+  11.38298 </code></pre>
+<div id="ltr10e" class="section level3">
+<h3>LTR10E</h3>
+<pre class="r"><code>LTR10E_p53_canonical &lt;- map_dfr(
+  seq_along(LTR10E_sequences),
+  function(i) {
+    find_p53_halfsite(
+      LTR10E_sequences[[i]],
+      names(LTR10E_sequences)[i]
+    )
+  }
+)
+
+head(LTR10E_p53_canonical)</code></pre>
+<pre><code># A tibble: 6 × 4
+  TE_name                  start   end sequence  
+  &lt;chr&gt;                    &lt;int&gt; &lt;int&gt; &lt;chr&gt;     
+1 chr1:3955922-3956539:4     438   447 AAACTTGCTT
+2 chr1:21396461-21397061:3   227   236 AGGCATGTCC
+3 chr1:21396461-21397061:3   589   598 AAACAAGCCT
+4 chr1:31466685-31467319:6   217   226 GGACATGCTC
+5 chr1:31466685-31467319:6   227   236 AGGCATGTCC
+6 chr1:42192164-42192539:8   135   144 GAACATGCCT</code></pre>
+<pre class="r"><code>LTR10E_canonical_counts &lt;- tibble(
+  TE_name = names(LTR10E_sequences)
+) %&gt;%
+  left_join(
+    LTR10E_p53_canonical %&gt;%
+      count(TE_name, name = &quot;n_sites&quot;),
+    by = &quot;TE_name&quot;
+  ) %&gt;%
+  mutate(
+    n_sites = coalesce(n_sites, 0L)
+  )
+
+LTR10E_canonical_counts %&gt;%
+  count(n_sites, name = &quot;n_TE&quot;) %&gt;%
+  mutate(Percent = n_TE / sum(n_TE) * 100)</code></pre>
+<pre><code># A tibble: 4 × 3
+  n_sites  n_TE Percent
+    &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;
+1       0    89   34.9 
+2       1    89   34.9 
+3       2    63   24.7 
+4       3    14    5.49</code></pre>
+<pre class="r"><code>LTR10E_canonical_spacing &lt;- LTR10E_p53_canonical %&gt;%
+  group_by(TE_name) %&gt;%
+  arrange(start, .by_group = TRUE) %&gt;%
+  mutate(
+    n_sites = dplyr::n(),
+    next_start = lead(start),
+    next_sequence = lead(sequence),
+    start_distance = next_start - start,
+    spacer_bp = next_start - end - 1
+  ) %&gt;%
+  filter(!is.na(next_start)) %&gt;%
+  ungroup()</code></pre>
+<pre class="r"><code>LTR10E_canonical_spacing &lt;- LTR10E_p53_canonical %&gt;%
+  group_by(TE_name) %&gt;%
+  arrange(start, .by_group = TRUE) %&gt;%
+  mutate(
+    n_sites = n(),
+    next_start = lead(start),
+    next_sequence = lead(sequence),
+    start_distance = next_start - start,
+    spacer_bp = next_start - end - 1
+  ) %&gt;%
+  filter(!is.na(next_start)) %&gt;%
+  ungroup()
+
+LTR10E_canonical_spacing %&gt;%
+  count(spacer_bp, sort = TRUE)</code></pre>
+<pre><code># A tibble: 21 × 2
+   spacer_bp     n
+       &lt;dbl&gt; &lt;int&gt;
+ 1         0    17
+ 2         2    15
+ 3        10    15
+ 4        53    12
+ 5        65    11
+ 6        63     4
+ 7         6     2
+ 8        62     2
+ 9        54     1
+10        66     1
+# ℹ 11 more rows</code></pre>
+<pre class="r"><code>LTR10E_canonical_spacing &lt;- LTR10E_canonical_spacing %&gt;%
+  left_join(
+    LTR10E_cluster_df %&gt;%
+      dplyr::select(repID, cluster) %&gt;%
+      distinct(),
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    Response = if_else(
+      cluster %in% &quot;Set_3&quot;,
+      &quot;Acute&quot;,
+      &quot;Non-acute&quot;
+    )
+  )
+LTR10E_spacing_per_TE &lt;- LTR10E_canonical_spacing %&gt;%
+  # left_join(LTR10E_cluster_df, by=c(&quot;TE_name&quot;=&quot;repID&quot;)) %&gt;% 
+  group_by(TE_name, cluster, Response) %&gt;%
+  summarise(
+    n_pairs = dplyr::n(),
+    mean_spacer = mean(spacer_bp),
+    median_spacer = median(spacer_bp),
+    min_spacer = min(spacer_bp),
+    max_spacer = max(spacer_bp),
+
+    has_0bp = any(spacer_bp == 0),
+    has_2bp = any(spacer_bp == 2),
+    has_10bp = any(spacer_bp == 10),
+    has_53bp = any(spacer_bp == 53),
+    has_65bp = any(spacer_bp == 65),
+
+    has_0_1bp = any(dplyr::between(spacer_bp, 0, 1)),
+    has_0_5bp = any(dplyr::between(spacer_bp, 0, 5)),
+    has_0_13bp = any(dplyr::between(spacer_bp, 0, 13)),
+
+    .groups = &quot;drop&quot;
+  )
+
+LTR10E_canonical_spacing %&gt;%
+  group_by(cluster, Response) %&gt;%
+  summarise(
+    n_TE = n_distinct(TE_name),
+    n_pairs = dplyr::n(),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 3 × 4
+  cluster Response   n_TE n_pairs
+  &lt;chr&gt;   &lt;chr&gt;     &lt;int&gt;   &lt;int&gt;
+1 Set_1   Non-acute     1       1
+2 Set_3   Acute        14      19
+3 &lt;NA&gt;    Non-acute    62      71</code></pre>
+<pre class="r"><code>LTR10E_spacing_per_TE &lt;- LTR10E_canonical_spacing %&gt;%
+  group_by(TE_name, cluster, Response) %&gt;%
+  summarise(
+    n_pairs = n(),
+    mean_spacer = mean(spacer_bp),
+    median_spacer = median(spacer_bp),
+    min_spacer = min(spacer_bp),
+    max_spacer = max(spacer_bp),
+
+    has_0bp = any(spacer_bp == 0),
+    has_1bp = any(spacer_bp == 1),
+    has_41bp = any(spacer_bp == 41),
+    has_52bp = any(spacer_bp == 52),
+
+    has_0_1bp = any(dplyr::between(spacer_bp, 0, 1)),
+    has_0_5bp = any(dplyr::between(spacer_bp, 0, 5)),
+    has_0_13bp = any(dplyr::between(spacer_bp, 0, 13)),
+
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre class="r"><code>TE_canonical_spacing &lt;- bind_rows(
+  MER61E_canonical_spacing %&gt;%
+    mutate(family = &quot;MER61E&quot;),
+
+  LTR10E_canonical_spacing %&gt;%
+    mutate(family = &quot;LTR10E&quot;)
+)
+
+TE_canonical_spacing_frequency &lt;- TE_canonical_spacing %&gt;%
+  count(family, Response, spacer_bp) %&gt;%
+  group_by(family, Response) %&gt;%
+  mutate(
+    Percent = n / sum(n) * 100
+  ) %&gt;%
+  ungroup()</code></pre>
+<pre class="r"><code>ggplot(
+  TE_canonical_spacing_frequency,
+  aes(
+    x = spacer_bp,
+    y = Percent,
+    fill = Response
+  )
+) +
+  geom_col(width = 0.85) +
+  geom_vline(
+    data = data.frame(
+      family = &quot;MER61E&quot;,
+      spacer = c(1, 41)
+    ),
+    aes(xintercept = spacer),
+    inherit.aes = FALSE,
+    color = &quot;black&quot;,
+    linetype = &quot;dashed&quot;
+  ) +
+  facet_grid(Response ~ family) +
+  coord_cartesian(xlim = c(-2, 60)) +
+  scale_fill_manual(
+    values = c(
+      &quot;Acute&quot; = &quot;indianred3&quot;,
+      &quot;Non-acute&quot; = &quot;steelblue&quot;
+    )
+  ) +
+  labs(
+    title = &quot;Canonical p53 half-site spacing&quot;,
+    x = &quot;p53 half-site spacer length (bp)&quot;,
+    y = &quot;Percentage of half-site pairs&quot;
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = &quot;none&quot;,
+    strip.background = element_blank(),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-13-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR10E_canonical_counts %&gt;%
+  count(n_sites)</code></pre>
+<pre><code># A tibble: 4 × 2
+  n_sites     n
+    &lt;int&gt; &lt;int&gt;
+1       0    89
+2       1    89
+3       2    63
+4       3    14</code></pre>
+<pre class="r"><code>LTR10E_canonical_spacing %&gt;%
+  count(spacer_bp, sort = TRUE)</code></pre>
+<pre><code># A tibble: 21 × 2
+   spacer_bp     n
+       &lt;dbl&gt; &lt;int&gt;
+ 1         0    17
+ 2         2    15
+ 3        10    15
+ 4        53    12
+ 5        65    11
+ 6        63     4
+ 7         6     2
+ 8        62     2
+ 9        54     1
+10        66     1
+# ℹ 11 more rows</code></pre>
+<pre class="r"><code>dim(MER61E_p53_fimo)</code></pre>
+<pre><code>[1] 285  10</code></pre>
+<pre class="r"><code>colnames(MER61E_p53_fimo)</code></pre>
+<pre><code> [1] &quot;motif_id&quot;         &quot;motif_alt_id&quot;     &quot;sequence_name&quot;    &quot;start&quot;           
+ [5] &quot;stop&quot;             &quot;strand&quot;           &quot;score&quot;            &quot;p-value&quot;         
+ [9] &quot;q-value&quot;          &quot;matched_sequence&quot;</code></pre>
+<pre class="r"><code>head(MER61E_p53_fimo)</code></pre>
+<pre><code># A tibble: 6 × 10
+  motif_id       motif_alt_id sequence_name  start   stop strand score `p-value`
+  &lt;chr&gt;          &lt;lgl&gt;        &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+1 TP53_half_mot… NA           chr6          1.60e7 1.60e7 +       11.2   9.54e-7
+2 TP53_half_mot… NA           chr7          4.65e7 4.65e7 +       11.2   9.54e-7
+3 TP53_half_mot… NA           chr4          6.96e7 6.96e7 +       11.2   9.54e-7
+4 TP53_half_mot… NA           chr14         8.38e7 8.38e7 +       11.2   9.54e-7
+5 TP53_half_mot… NA           chr3          1.47e8 1.47e8 +       11.2   9.54e-7
+6 TP53_half_mot… NA           chr2          1.64e8 1.64e8 +       11.2   9.54e-7
+# ℹ 2 more variables: `q-value` &lt;dbl&gt;, matched_sequence &lt;chr&gt;</code></pre>
+<pre class="r"><code>dim(LTR10E_p53_fimo)</code></pre>
+<pre><code>[1] 211  10</code></pre>
+<pre class="r"><code>colnames(LTR10E_p53_fimo)</code></pre>
+<pre><code> [1] &quot;motif_id&quot;         &quot;motif_alt_id&quot;     &quot;sequence_name&quot;    &quot;start&quot;           
+ [5] &quot;stop&quot;             &quot;strand&quot;           &quot;score&quot;            &quot;p-value&quot;         
+ [9] &quot;q-value&quot;          &quot;matched_sequence&quot;</code></pre>
+<pre class="r"><code>head(LTR10E_p53_fimo)</code></pre>
+<pre><code># A tibble: 6 × 10
+  motif_id       motif_alt_id sequence_name  start   stop strand score `p-value`
+  &lt;chr&gt;          &lt;lgl&gt;        &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+1 TP53_half_mot… NA           chr6          8.05e7 8.05e7 +       11.2   9.54e-7
+2 TP53_half_mot… NA           chr12         1.04e8 1.04e8 +       11.2   9.54e-7
+3 TP53_half_mot… NA           chr7          1.53e8 1.53e8 +       11.2   9.54e-7
+4 TP53_half_mot… NA           chr10         1.31e7 1.31e7 +       11.2   2.86e-6
+5 TP53_half_mot… NA           chr6          3.13e7 3.13e7 +       11.2   2.86e-6
+6 TP53_half_mot… NA           chr11         6.22e7 6.22e7 +       11.2   2.86e-6
+# ℹ 2 more variables: `q-value` &lt;dbl&gt;, matched_sequence &lt;chr&gt;</code></pre>
+<pre class="r"><code>get_TE_fimo_sites &lt;- function(fimo_gr, TE_regions, family_name) {
+
+  hits &lt;- findOverlaps(
+    fimo_gr,
+    TE_regions,
+    type = &quot;within&quot;,
+    ignore.strand = TRUE
+  )
+
+  q &lt;- queryHits(hits)
+  s &lt;- subjectHits(hits)
+
+  tibble(
+    family = family_name,
+    TE_name = TE_regions$name[s],
+    chr = as.character(seqnames(fimo_gr))[q],
+    TE_start = start(TE_regions)[s],
+    TE_end = end(TE_regions)[s],
+    TE_strand = as.character(strand(TE_regions))[s],
+    motif_start = start(fimo_gr)[q],
+    motif_end = end(fimo_gr)[q],
+    motif_strand = as.character(strand(fimo_gr))[q]
+  )
+}</code></pre>
+<pre class="r"><code>MER61E_fimo_sites &lt;- get_TE_fimo_sites(
+  MER61E_p53_fimo_gr,
+  MER61E_regions,
+  &quot;MER61E&quot;
+)
+
+LTR10E_fimo_sites &lt;- get_TE_fimo_sites(
+  LTR10E_p53_fimo_gr,
+  LTR10E_regions,
+  &quot;LTR10E&quot;
+)
+
+TE_fimo_sites &lt;- bind_rows(
+  MER61E_fimo_sites,
+  LTR10E_fimo_sites
+)
+
+head(TE_fimo_sites)</code></pre>
+<pre><code># A tibble: 6 × 9
+  family TE_name           chr   TE_start TE_end TE_strand motif_start motif_end
+  &lt;chr&gt;  &lt;chr&gt;             &lt;chr&gt;    &lt;int&gt;  &lt;int&gt; &lt;chr&gt;           &lt;int&gt;     &lt;int&gt;
+1 MER61E chr6:16031415-16… chr6    1.60e7 1.60e7 +            16031536  16031545
+2 MER61E chr7:46470946-46… chr7    4.65e7 4.65e7 +            46471406  46471415
+3 MER61E chr4:69649752-69… chr4    6.96e7 6.97e7 +            69649829  69649838
+4 MER61E chr14:83765264-8… chr14   8.38e7 8.38e7 +            83765555  83765564
+5 MER61E chr3:146582136-1… chr3    1.47e8 1.47e8 +           146582308 146582317
+6 MER61E chr2:163953194-1… chr2    1.64e8 1.64e8 +           163953566 163953575
+# ℹ 1 more variable: motif_strand &lt;chr&gt;</code></pre>
+<pre class="r"><code>TE_fimo_sites &lt;- bind_rows(
+  MER61E_fimo_sites,
+  LTR10E_fimo_sites
+)
+
+TE_fimo_sites %&gt;%
+  group_by(family) %&gt;%
+  summarise(
+    n_sites = dplyr::n(),
+    n_TE = n_distinct(TE_name)
+  )</code></pre>
+<pre><code># A tibble: 2 × 3
+  family n_sites  n_TE
+  &lt;chr&gt;    &lt;int&gt; &lt;int&gt;
+1 LTR10E     211   154
+2 MER61E     285   156</code></pre>
+<pre class="r"><code>TE_fimo_sites &lt;- TE_fimo_sites %&gt;%
+  mutate(
+    start = if_else(
+      TE_strand == &quot;+&quot;,
+      motif_start - TE_start + 1L,
+      TE_end - motif_end + 1L
+    ),
+    end = if_else(
+      TE_strand == &quot;+&quot;,
+      motif_end - TE_start + 1L,
+      TE_end - motif_start + 1L
+    ),
+    relative_strand = if_else(
+      TE_strand == motif_strand,
+      &quot;+&quot;, &quot;-&quot;
+    )
+  )</code></pre>
+<pre class="r"><code>TE_fimo_spacing &lt;- TE_fimo_sites %&gt;%
+  distinct(family, TE_name, start, end, .keep_all = TRUE) %&gt;%
+  group_by(family, TE_name) %&gt;%
+  arrange(start, .by_group = TRUE) %&gt;%
+  mutate(
+    n_sites = n(),
+    next_start = lead(start),
+    next_end = lead(end),
+    start_distance = next_start - start,
+    spacer_bp = next_start - end - 1
+  ) %&gt;%
+  filter(!is.na(next_start)) %&gt;%
+  ungroup()
+
+TE_fimo_spacing %&gt;%
+  count(family, spacer_bp, sort = TRUE) %&gt;%
+  group_by(family) %&gt;%
+  slice_max(n, n = 10) %&gt;%
+  ungroup()</code></pre>
+<pre><code># A tibble: 20 × 3
+   family spacer_bp     n
+   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;
+ 1 LTR10E         0    14
+ 2 LTR10E        10    14
+ 3 LTR10E         2    10
+ 4 LTR10E        65     9
+ 5 LTR10E        53     4
+ 6 LTR10E        63     2
+ 7 LTR10E        54     1
+ 8 LTR10E        62     1
+ 9 LTR10E       194     1
+10 LTR10E       216     1
+11 MER61E         1    41
+12 MER61E        41    38
+13 MER61E         0    10
+14 MER61E        31     9
+15 MER61E        52     7
+16 MER61E        40     3
+17 MER61E        34     2
+18 MER61E        42     2
+19 MER61E        45     2
+20 MER61E        51     2</code></pre>
+<pre class="r"><code>TE_cluster_df &lt;- bind_rows(
+  MER61E_cluster_df %&gt;%
+    dplyr::select(repID, cluster) %&gt;%
+    mutate(family = &quot;MER61E&quot;),
+
+  LTR10E_cluster_df %&gt;%
+    dplyr::select(repID, cluster) %&gt;%
+    mutate(family = &quot;LTR10E&quot;)
+) %&gt;%
+  distinct()
+
+TE_fimo_spacing &lt;- TE_fimo_spacing %&gt;%
+  left_join(
+    TE_cluster_df,
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;, &quot;family&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    Response = if_else(
+      cluster %in% &quot;Set_3&quot;,
+      &quot;Acute&quot;,
+      &quot;Non-acute&quot;
+    )
+  )</code></pre>
+<pre class="r"><code>TE_all_spacing &lt;- bind_rows(
+
+  MER61E_canonical_spacing %&gt;%
+    mutate(family = &quot;MER61E&quot;,
+           Method = &quot;Canonical&quot;),
+
+  LTR10E_canonical_spacing %&gt;%
+    mutate(family = &quot;LTR10E&quot;,
+           Method = &quot;Canonical&quot;),
+
+  TE_fimo_spacing %&gt;%
+    mutate(Method = &quot;FIMO&quot;)
+)</code></pre>
+<pre class="r"><code>TE_all_spacing %&gt;%
+  group_by(family, Method, Response) %&gt;%
+  summarise(
+    n_TE = n_distinct(TE_name),
+    n_pairs = n(),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 8 × 5
+  family Method    Response   n_TE n_pairs
+  &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;     &lt;int&gt;   &lt;int&gt;
+1 LTR10E Canonical Acute        14      19
+2 LTR10E Canonical Non-acute    63      72
+3 LTR10E FIMO      Acute        13      15
+4 LTR10E FIMO      Non-acute    39      42
+5 MER61E Canonical Acute        33      51
+6 MER61E Canonical Non-acute    66      95
+7 MER61E FIMO      Acute        33      49
+8 MER61E FIMO      Non-acute    59      80</code></pre>
+<pre class="r"><code>TE_all_spacing_frequency &lt;- TE_all_spacing %&gt;%
+  count(family, Method, Response, spacer_bp) %&gt;%
+  group_by(family, Method, Response) %&gt;%
+  mutate(Percent = n / sum(n) * 100) %&gt;%
+  ungroup()
+
+ggplot(
+  TE_all_spacing_frequency,
+  aes(x = spacer_bp, y = Percent, fill = Response)
+) +
+  geom_col(width = 0.85) +
+  facet_grid(Method + Response ~ family) +
+  coord_cartesian(xlim = c(-5, 80)) +
+  scale_fill_manual(
+    values = c(
+      &quot;Acute&quot; = &quot;indianred3&quot;,
+      &quot;Non-acute&quot; = &quot;steelblue&quot;
+    )
+  ) +
+  labs(
+    x = &quot;p53 half-site spacer length (bp)&quot;,
+    y = &quot;Percentage of adjacent half-site pairs&quot;
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = &quot;none&quot;,
+    strip.background = element_blank(),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-24-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>TE_spacing_per_TE &lt;- TE_all_spacing %&gt;%
+  group_by(family, Method, TE_name, cluster, Response) %&gt;%
+  summarise(
+    n_pairs = dplyr::n(),
+    mean_spacer = mean(spacer_bp),
+    median_spacer = median(spacer_bp),
+    min_spacer = min(spacer_bp),
+    max_spacer = max(spacer_bp),
+
+    has_0bp = any(spacer_bp == 0),
+    has_1bp = any(spacer_bp == 1),
+    has_2bp = any(spacer_bp == 2),
+    has_10bp = any(spacer_bp == 10),
+    has_31bp = any(spacer_bp == 31),
+    has_41bp = any(spacer_bp == 41),
+    has_52bp = any(spacer_bp == 52),
+    has_53bp = any(spacer_bp == 53),
+    has_65bp = any(spacer_bp == 65),
+
+    has_0_1bp = any(dplyr::between(spacer_bp, 0, 1)),
+    has_0_5bp = any(dplyr::between(spacer_bp, 0, 5)),
+    has_0_13bp = any(dplyr::between(spacer_bp, 0, 13)),
+
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre class="r"><code>TE_spacing_per_TE_long &lt;- TE_spacing_per_TE %&gt;%
+  pivot_longer(
+    cols = matches(&quot;^has_[0-9]+bp$&quot;),
+    names_to = &quot;Spacer&quot;,
+    values_to = &quot;Present&quot;
+  ) %&gt;%
+  mutate(
+    Spacer = readr::parse_number(Spacer)
+  ) %&gt;%
+  group_by(family, Method, Response, Spacer) %&gt;%
+  summarise(
+    n_TE = dplyr::n(),
+    n_with_spacer = sum(Present),
+    Percent = mean(Present) * 100,
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre class="r"><code>ggplot(
+  TE_spacing_per_TE_long,
+  aes(
+    x = factor(Spacer),
+    y = Percent,
+    fill = Response
+  )
+) +
+  geom_col(position = &quot;dodge&quot;) +
+  facet_grid(Method ~ family) +
+  scale_fill_manual(
+    values = c(
+      &quot;Acute&quot; = &quot;indianred3&quot;,
+      &quot;Non-acute&quot; = &quot;steelblue&quot;
+    )
+  ) +
+  labs(
+    x = &quot;p53 half-site spacer length (bp)&quot;,
+    y = &quot;Percentage of TEs with spacer&quot;,
+    fill = &quot;Response&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-27-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>TE_spacing_per_TE %&gt;%
+  group_by(family, Method, Response) %&gt;%
+  summarise(
+    n_TE = dplyr::n(),
+    Mean_spacing = mean(mean_spacer),
+    SD_spacing = sd(mean_spacer),
+    Median_spacing = median(mean_spacer),
+    Mean_min_spacing = mean(min_spacer),
+    Median_min_spacing = median(min_spacer),
+    Percent_0bp = mean(has_0bp) * 100,
+    Percent_0_1bp = mean(has_0_1bp) * 100,
+    Percent_0_5bp = mean(has_0_5bp) * 100,
+    Percent_0_13bp = mean(has_0_13bp) * 100,
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 8 × 13
+  family Method    Response   n_TE Mean_spacing SD_spacing Median_spacing
+  &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;     &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
+1 LTR10E Canonical Acute        14         26.8       41.8           10  
+2 LTR10E Canonical Non-acute    63         48.2       63.9           35.5
+3 LTR10E FIMO      Acute        13         12.7       30.5            2  
+4 LTR10E FIMO      Non-acute    39         29.4       32.3           10  
+5 MER61E Canonical Acute        33         24.8       19.7           21  
+6 MER61E Canonical Non-acute    66         37.6       48.9           21  
+7 MER61E FIMO      Acute        33         28.1       17.3           21  
+8 MER61E FIMO      Non-acute    59         36.3       47.4           23  
+# ℹ 6 more variables: Mean_min_spacing &lt;dbl&gt;, Median_min_spacing &lt;dbl&gt;,
+#   Percent_0bp &lt;dbl&gt;, Percent_0_1bp &lt;dbl&gt;, Percent_0_5bp &lt;dbl&gt;,
+#   Percent_0_13bp &lt;dbl&gt;</code></pre>
+<pre class="r"><code>TE_spacing_ttest &lt;- TE_spacing_per_TE %&gt;%
+  group_by(family, Method) %&gt;%
+  group_modify(~ broom::tidy(
+    t.test(mean_spacer ~ Response, data = .x)
+  )) %&gt;%
+  ungroup() %&gt;%
+  mutate(p.adj = p.adjust(p.value, method = &quot;BH&quot;))
+
+TE_spacing_ttest</code></pre>
+<pre><code># A tibble: 4 × 13
+  family Method    estimate estimate1 estimate2 statistic p.value parameter
+  &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;
+1 LTR10E Canonical   -21.4       26.8      48.2     -1.56  0.131       28.4
+2 LTR10E FIMO        -16.7       12.7      29.4     -1.68  0.106       21.6
+3 MER61E Canonical   -12.8       24.8      37.6     -1.84  0.0684      94.0
+4 MER61E FIMO         -8.21      28.1      36.3     -1.20  0.235       80.7
+# ℹ 5 more variables: conf.low &lt;dbl&gt;, conf.high &lt;dbl&gt;, method &lt;chr&gt;,
+#   alternative &lt;chr&gt;, p.adj &lt;dbl&gt;</code></pre>
+<pre class="r"><code>TE_spacing_wilcox &lt;- TE_spacing_per_TE %&gt;%
+  group_by(family, Method) %&gt;%
+  group_modify(~ broom::tidy(
+    wilcox.test(
+      mean_spacer ~ Response,
+      data = .x,
+      exact = FALSE
+    )
+  )) %&gt;%
+  ungroup() %&gt;%
+  mutate(p.adj = p.adjust(p.value, method = &quot;BH&quot;))
+
+TE_spacing_wilcox</code></pre>
+<pre><code># A tibble: 4 × 7
+  family Method    statistic p.value method                    alternative p.adj
+  &lt;chr&gt;  &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                     &lt;chr&gt;       &lt;dbl&gt;
+1 LTR10E Canonical      321   0.112  Wilcoxon rank sum test w… two.sided   0.224
+2 LTR10E FIMO           160.  0.0439 Wilcoxon rank sum test w… two.sided   0.176
+3 MER61E Canonical      990   0.460  Wilcoxon rank sum test w… two.sided   0.613
+4 MER61E FIMO           986.  0.925  Wilcoxon rank sum test w… two.sided   0.925</code></pre>
+<pre class="r"><code>TE_min_spacing_wilcox &lt;- TE_spacing_per_TE %&gt;%
+  mutate(
+    min_spacer = if_else(
+      min_spacer &lt; 0,
+      NA_real_,
+      as.numeric(min_spacer)
+    )
+  ) %&gt;%
+  group_by(family, Method) %&gt;%
+  group_modify(~ broom::tidy(
+    wilcox.test(
+      min_spacer ~ Response,
+      data = .x,
+      exact = FALSE
+    )
+  )) %&gt;%
+  ungroup() %&gt;%
+  mutate(p.adj = p.adjust(p.value, method = &quot;BH&quot;))
+
+TE_min_spacing_wilcox</code></pre>
+<pre><code># A tibble: 4 × 7
+  family Method    statistic p.value method                   alternative  p.adj
+  &lt;chr&gt;  &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                    &lt;chr&gt;        &lt;dbl&gt;
+1 LTR10E Canonical      278   0.0298 Wilcoxon rank sum test … two.sided   0.0596
+2 LTR10E FIMO           152.  0.0296 Wilcoxon rank sum test … two.sided   0.0596
+3 MER61E Canonical      933   0.222  Wilcoxon rank sum test … two.sided   0.297 
+4 MER61E FIMO           911   0.599  Wilcoxon rank sum test … two.sided   0.599 </code></pre>
+<pre class="r"><code>TE_spacer_fisher &lt;- TE_spacing_per_TE %&gt;%
+  pivot_longer(
+    cols = starts_with(&quot;has_&quot;),
+    names_to = &quot;Spacer&quot;,
+    values_to = &quot;Present&quot;
+  ) %&gt;%
+  group_by(family, Method, Spacer) %&gt;%
+  group_modify(~ {
+
+    tbl &lt;- table(
+      factor(.x$Response,
+             levels = c(&quot;Acute&quot;, &quot;Non-acute&quot;)),
+      factor(.x$Present,
+             levels = c(TRUE, FALSE))
+    )
+
+    result &lt;- fisher.test(tbl)
+
+    tibble(
+      Acute_present = tbl[1, 1],
+      Acute_absent = tbl[1, 2],
+      Nonacute_present = tbl[2, 1],
+      Nonacute_absent = tbl[2, 2],
+
+      Acute_percent = tbl[1, 1] / sum(tbl[1, ]) * 100,
+      Nonacute_percent = tbl[2, 1] / sum(tbl[2, ]) * 100,
+
+      OR = unname(result$estimate),
+      CI_lower = result$conf.int[1],
+      CI_upper = result$conf.int[2],
+      p.value = result$p.value
+    )
+  }) %&gt;%
+  ungroup() %&gt;%
+  mutate(
+    p.adj = p.adjust(p.value, method = &quot;BH&quot;),
+    log2OR = log2(OR)
+  ) %&gt;%
+  arrange(p.adj)
+
+TE_spacer_fisher</code></pre>
+<pre><code># A tibble: 48 × 15
+   family Method    Spacer     Acute_present Acute_absent Nonacute_present
+   &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;              &lt;int&gt;        &lt;int&gt;            &lt;int&gt;
+ 1 LTR10E Canonical has_0_13bp            13            1               34
+ 2 LTR10E Canonical has_0_1bp              6            8                9
+ 3 LTR10E Canonical has_0bp                6            8                9
+ 4 LTR10E Canonical has_10bp               6            8                9
+ 5 LTR10E FIMO      has_0_13bp            13            0               24
+ 6 LTR10E FIMO      has_0_1bp              6            7                7
+ 7 LTR10E FIMO      has_0bp                6            7                7
+ 8 LTR10E FIMO      has_10bp               6            7                8
+ 9 LTR10E FIMO      has_65bp               0           13                9
+10 MER61E FIMO      has_31bp               1           32                8
+# ℹ 38 more rows
+# ℹ 9 more variables: Nonacute_absent &lt;int&gt;, Acute_percent &lt;dbl&gt;,
+#   Nonacute_percent &lt;dbl&gt;, OR &lt;dbl&gt;, CI_lower &lt;dbl&gt;, CI_upper &lt;dbl&gt;,
+#   p.value &lt;dbl&gt;, p.adj &lt;dbl&gt;, log2OR &lt;dbl&gt;</code></pre>
+<pre class="r"><code>ggplot(
+  TE_spacer_fisher,
+  aes(
+    x = Method,
+    y = Spacer,
+    fill = log2OR
+  )
+) +
+  geom_tile(color = &quot;white&quot;) +
+  geom_text(
+    aes(label = ifelse(p.adj &lt; 0.05, &quot;*&quot;, &quot;&quot;)),
+    size = 6
+  ) +
+  facet_wrap(~family) +
+  scale_fill_gradient2(
+    low = &quot;steelblue&quot;,
+    mid = &quot;white&quot;,
+    high = &quot;indianred3&quot;,
+    midpoint = 0,
+    limits = c(-3, 3),
+    oob = scales::squish,
+    name = &quot;log2(OR)&quot;
+  ) +
+  labs(
+    x = NULL,
+    y = &quot;p53 half-site spacer&quot;,
+    title = &quot;Enrichment of p53 half-site spacing&quot;,
+    subtitle = &quot;* BH-adjusted p-value &lt; 0.05&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-33-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>TE_all_copies &lt;- bind_rows(
+  tibble(
+    TE_name = MER61E_regions$name,
+    family = &quot;MER61E&quot;
+  ),
+  tibble(
+    TE_name = LTR10E_regions$name,
+    family = &quot;LTR10E&quot;
+  )
+) %&gt;%
+  distinct() %&gt;%
+  left_join(
+    TE_cluster_df,
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;, &quot;family&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    Response = if_else(
+      cluster %in% &quot;Set_3&quot;,
+      &quot;Acute&quot;,
+      &quot;Non-acute&quot;
+    )
+  )</code></pre>
+<pre class="r"><code>TE_all_copies_spacing &lt;- TE_all_copies %&gt;%
+  tidyr::crossing(
+    Method = c(&quot;Canonical&quot;, &quot;FIMO&quot;)
+  ) %&gt;%
+  left_join(
+    TE_spacing_per_TE %&gt;%
+      dplyr::select(
+        family, Method, TE_name,
+        n_pairs, starts_with(&quot;has_&quot;)
+      ),
+    by = c(&quot;family&quot;, &quot;Method&quot;, &quot;TE_name&quot;),
+    relationship = &quot;one-to-one&quot;
+  ) %&gt;%
+  mutate(
+    n_pairs = coalesce(n_pairs, 0L),
+    across(
+      starts_with(&quot;has_&quot;),
+      ~ coalesce(.x, FALSE)
+    ),
+    has_multiple = n_pairs &gt; 0
+  )</code></pre>
+<pre class="r"><code>TE_spacer_fisher_2 &lt;- TE_all_copies_spacing %&gt;%
+  pivot_longer(
+    cols = starts_with(&quot;has_&quot;),
+    names_to = &quot;Spacer&quot;,
+    values_to = &quot;Present&quot;
+  ) %&gt;%
+  group_by(family, Method, Spacer) %&gt;%
+  group_modify(~ {
+
+    tbl &lt;- table(
+      factor(.x$Response,
+             levels = c(&quot;Acute&quot;, &quot;Non-acute&quot;)),
+      factor(.x$Present,
+             levels = c(TRUE, FALSE))
+    )
+
+    result &lt;- fisher.test(tbl)
+
+    tibble(
+      Acute_present = tbl[1, 1],
+      Acute_absent = tbl[1, 2],
+      Nonacute_present = tbl[2, 1],
+      Nonacute_absent = tbl[2, 2],
+
+      Acute_percent = tbl[1, 1] / sum(tbl[1, ]) * 100,
+      Nonacute_percent = tbl[2, 1] / sum(tbl[2, ]) * 100,
+
+      OR = unname(result$estimate),
+      CI_lower = result$conf.int[1],
+      CI_upper = result$conf.int[2],
+      p.value = result$p.value
+    )
+  }) %&gt;%
+  ungroup() %&gt;%
+  mutate(
+    p.adj = p.adjust(p.value, method = &quot;BH&quot;),
+    log2OR = log2(OR)
+  ) %&gt;%
+  arrange(p.adj)
+
+TE_spacer_fisher_2</code></pre>
+<pre><code># A tibble: 52 × 15
+   family Method    Spacer       Acute_present Acute_absent Nonacute_present
+   &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;                &lt;int&gt;        &lt;int&gt;            &lt;int&gt;
+ 1 MER61E FIMO      has_multiple            33            7               59
+ 2 MER61E Canonical has_multiple            33            7               66
+ 3 MER61E Canonical has_0_13bp              22           18               37
+ 4 MER61E Canonical has_0_1bp               22           18               36
+ 5 MER61E Canonical has_0_5bp               22           18               37
+ 6 MER61E Canonical has_1bp                 20           20               32
+ 7 MER61E FIMO      has_0_1bp               18           22               29
+ 8 MER61E FIMO      has_41bp                16           24               22
+ 9 LTR10E FIMO      has_0_13bp              13           15               24
+10 MER61E FIMO      has_0_13bp              18           22               30
+# ℹ 42 more rows
+# ℹ 9 more variables: Nonacute_absent &lt;int&gt;, Acute_percent &lt;dbl&gt;,
+#   Nonacute_percent &lt;dbl&gt;, OR &lt;dbl&gt;, CI_lower &lt;dbl&gt;, CI_upper &lt;dbl&gt;,
+#   p.value &lt;dbl&gt;, p.adj &lt;dbl&gt;, log2OR &lt;dbl&gt;</code></pre>
+<pre class="r"><code>ggplot(
+  TE_spacer_fisher_2,
+  aes(
+    x = Method,
+    y = Spacer,
+    fill = log2OR
+  )
+) +
+  geom_tile(color = &quot;white&quot;) +
+  geom_text(
+    aes(label = ifelse(p.adj &lt; 0.05, &quot;*&quot;, &quot;&quot;)),
+    size = 6
+  ) +
+  facet_wrap(~family) +
+  scale_fill_gradient2(
+    low = &quot;steelblue&quot;,
+    mid = &quot;white&quot;,
+    high = &quot;indianred3&quot;,
+    midpoint = 0,
+    limits = c(-3, 3),
+    oob = scales::squish,
+    name = &quot;log2(OR)&quot;
+  ) +
+  labs(
+    x = NULL,
+    y = &quot;p53 half-site spacer&quot;,
+    title = &quot;Enrichment of p53 half-site spacing&quot;,
+    subtitle = &quot;* BH-adjusted p-value &lt; 0.05&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-37-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>TE_spacer_fisher_fimo_only &lt;- TE_spacer_fisher_2 %&gt;% dplyr::filter(Method==&quot;FIMO&quot;)
+ggplot(
+  TE_spacer_fisher_fimo_only,
+  aes(
+    x = Method,
+    y = Spacer,
+    fill = log2OR
+  )
+) +
+  geom_tile(color = &quot;white&quot;) +
+  geom_text(
+    aes(label = ifelse(p.adj &lt; 0.05, &quot;*&quot;, &quot;&quot;)),
+    size = 6
+  ) +
+  facet_wrap(~family) +
+  scale_fill_gradient2(
+    low = &quot;steelblue&quot;,
+    mid = &quot;white&quot;,
+    high = &quot;indianred3&quot;,
+    midpoint = 0,
+    limits = c(-3, 3),
+    oob = scales::squish,
+    name = &quot;log2(OR)&quot;
+  ) +
+  labs(
+    x = NULL,
+    y = &quot;p53 half-site spacer&quot;,
+    title = &quot;Enrichment of p53 half-site spacing\nTransient vs Consitutive&quot;,
+    subtitle = &quot;* BH-adjusted p-value &lt; 0.05&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-38-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>MER61E_1bp_pairs &lt;- MER61E_canonical_spacing %&gt;%
+  filter(spacer_bp == 1) %&gt;%
+  mutate(
+    site1_start = start,
+    site1_end = end,
+    site2_start = next_start,
+    site2_end = next_start + 9L
+  )
+
+dim(MER61E_1bp_pairs)</code></pre>
+<pre><code>[1] 52 14</code></pre>
+<pre class="r"><code>map_halfsite_to_consensus &lt;- function(TE_name,
+                                      site_start,
+                                      site_end,
+                                      position_maps) {
+
+  pos_map &lt;- position_maps[[TE_name]]
+
+  TE_pos &lt;- seq.int(site_start, site_end)
+
+  mapped_pos &lt;- pos_map$consensus_position[
+    match(TE_pos, pos_map$TE_position)
+  ]
+
+  mapped_pos
+}</code></pre>
+<pre class="r"><code>MER61E_1bp_mapped &lt;- MER61E_1bp_pairs %&gt;%
+  mutate(
+    site1_consensus = pmap(
+      list(TE_name, site1_start, site1_end),
+      ~ map_halfsite_to_consensus(
+        ..1, ..2, ..3,
+        MER61E_position_maps
+      )
+    ),
+
+    site2_consensus = pmap(
+      list(TE_name, site2_start, site2_end),
+      ~ map_halfsite_to_consensus(
+        ..1, ..2, ..3,
+        MER61E_position_maps
+      )
+    )
+  )</code></pre>
+<pre class="r"><code>MER61E_1bp_mapped &lt;- MER61E_1bp_mapped %&gt;%
+  mutate(
+    site1_n_mapped = map_int(
+      site1_consensus,
+      ~ sum(!is.na(.x))
+    ),
+
+    site2_n_mapped = map_int(
+      site2_consensus,
+      ~ sum(!is.na(.x))
+    ),
+
+    site1_conserved = map_lgl(
+      site1_consensus,
+      ~ identical(as.integer(.x), 115:124)
+    ),
+
+    site2_conserved = map_lgl(
+      site2_consensus,
+      ~ identical(as.integer(.x), 126:135)
+    ),
+
+    ancestral_RE = site1_conserved &amp; site2_conserved,
+
+    mapping_status = case_when(
+      ancestral_RE ~ &quot;Ancestral RE&quot;,
+
+      site1_n_mapped == 10 &amp; site2_n_mapped == 10 ~
+        &quot;Fully mapped - alternative configuration&quot;,
+
+      site1_n_mapped == 0 &amp; site2_n_mapped == 0 ~
+        &quot;Unmapped&quot;,
+
+      TRUE ~ &quot;Partially mapped&quot;
+    )
+  )</code></pre>
+<pre class="r"><code>MER61E_1bp_mapped %&gt;%
+  count(Response, mapping_status) %&gt;%
+  group_by(Response) %&gt;%
+  mutate(Percent = n / sum(n) * 100) %&gt;%
+  ungroup()</code></pre>
+<pre><code># A tibble: 6 × 4
+  Response  mapping_status                               n Percent
+  &lt;chr&gt;     &lt;chr&gt;                                    &lt;int&gt;   &lt;dbl&gt;
+1 Acute     Ancestral RE                                10   50   
+2 Acute     Fully mapped - alternative configuration     8   40   
+3 Acute     Partially mapped                             2   10   
+4 Non-acute Ancestral RE                                11   34.4 
+5 Non-acute Fully mapped - alternative configuration    20   62.5 
+6 Non-acute Partially mapped                             1    3.12</code></pre>
+<pre class="r"><code>ggplot(
+  MER61E_1bp_mapped,
+  aes(x = Response, fill = mapping_status)
+) +
+  geom_bar(position = &quot;fill&quot;) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = &quot;Percentage of 1 bp spacer pairs&quot;,
+    fill = &quot;Mapping status&quot;,
+    title = &quot;Conservation of MER61E p53 response elements&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-44-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>MER61E_ancestral_summary &lt;- MER61E_1bp_mapped %&gt;%
+  group_by(TE_name, Response) %&gt;%
+  summarise(
+    ancestral_RE = any(ancestral_RE),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre class="r"><code>MER61E_ancestral_RE &lt;- TE_all_copies %&gt;%
+  filter(family == &quot;MER61E&quot;) %&gt;%
+  left_join(
+    MER61E_ancestral_summary %&gt;%
+      dplyr::select(TE_name, ancestral_RE),
+    by = &quot;TE_name&quot;
+  ) %&gt;%
+  mutate(
+    ancestral_RE = coalesce(ancestral_RE, FALSE)
+  )
+
+fisher.test(
+  table(
+    MER61E_ancestral_RE$Response,
+    MER61E_ancestral_RE$ancestral_RE
+  )
+)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  table(MER61E_ancestral_RE$Response, MER61E_ancestral_RE$ancestral_RE)
+p-value = 0.0002001
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.05421589 0.44285199
+sample estimates:
+odds ratio 
+ 0.1545026 </code></pre>
+<pre class="r"><code>MER61E_ancestral_multiple &lt;- TE_spacing_per_TE %&gt;%
+  filter(
+    family == &quot;MER61E&quot;,
+    Method == &quot;Canonical&quot;
+  ) %&gt;%
+  left_join(
+    MER61E_ancestral_summary %&gt;%
+      dplyr::select(TE_name, ancestral_RE),
+    by = &quot;TE_name&quot;
+  ) %&gt;%
+  mutate(
+    ancestral_RE = coalesce(ancestral_RE, FALSE)
+  )
+
+fisher.test(
+  table(
+    MER61E_ancestral_multiple$Response,
+    MER61E_ancestral_multiple$ancestral_RE
+  )
+)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  table(MER61E_ancestral_multiple$Response, MER61E_ancestral_multiple$ancestral_RE)
+p-value = 0.1273
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.1539193 1.4017841
+sample estimates:
+odds ratio 
+ 0.4639019 </code></pre>
+<pre class="r"><code>fisher.test(
+  table(
+    MER61E_ancestral_summary$Response,
+    MER61E_ancestral_summary$ancestral_RE
+  )
+)</code></pre>
+<pre><code>
+    Fisher&#39;s Exact Test for Count Data
+
+data:  table(MER61E_ancestral_summary$Response, MER61E_ancestral_summary$ancestral_RE)
+p-value = 0.3842
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.1444047 1.9031948
+sample estimates:
+odds ratio 
+ 0.5305459 </code></pre>
+<div id="mapping-p53-motifs-again" class="section level4">
+<h4>Mapping p53 motifs again</h4>
+<pre class="r"><code>plot_TE_alignment_with_consensus &lt;- function(alignment_blocks,
+                                             mapped_p53,
+                                             consensus_motifs,
+                                             consensus_length,
+                                             family_label) {
+
+  consensus_track &lt;- alignment_blocks %&gt;%
+    group_by(cluster) %&gt;%
+    summarise(
+      consensus_y = max(TE_order, na.rm = TRUE) + 1,
+      .groups = &quot;drop&quot;
+    ) %&gt;%
+    mutate(
+      consensus_start = 1,
+      consensus_end = consensus_length,
+      track_label = paste0(family_label, &quot; consensus&quot;)
+    )
+
+  consensus_motifs_plot &lt;- consensus_track %&gt;%
+    select(cluster, consensus_y) %&gt;%
+    tidyr::crossing(consensus_motifs) %&gt;%
+    mutate(y = consensus_y)
+
+  ggplot() +
+    geom_segment(
+      data = alignment_blocks,
+      aes(
+        x = consensus_start,
+        xend = consensus_end,
+        y = TE_order,
+        yend = TE_order,
+        color = cluster
+      ),
+      linewidth = 1.2,
+      lineend = &quot;butt&quot;
+    ) +
+    geom_segment(
+      data = mapped_p53,
+      aes(
+        x = consensus_start,
+        xend = consensus_end,
+        y = TE_order,
+        yend = TE_order
+      ),
+      linewidth = 2.2,
+      color = &quot;firebrick&quot;
+    ) +
+    geom_segment(
+      data = consensus_track,
+      aes(
+        x = consensus_start,
+        xend = consensus_end,
+        y = consensus_y,
+        yend = consensus_y
+      ),
+      linewidth = 1.5,
+      color = &quot;black&quot;
+    ) +
+    geom_rect(
+      data = consensus_motifs_plot,
+      aes(
+        xmin = start,
+        xmax = end,
+        ymin = y - 0.25,
+        ymax = y + 0.25
+      ),
+      fill = &quot;goldenrod2&quot;,
+      color = &quot;black&quot;,
+      alpha = 0.8
+    ) +
+    geom_text(
+      data = consensus_track,
+      aes(
+        x = consensus_start,
+        y = consensus_y,
+        label = track_label
+      ),
+      hjust = 1.05,
+      size = 3.2
+    ) +
+    geom_text(
+      data = consensus_motifs_plot,
+      aes(
+        x = (start + end) / 2,
+        y = y + 0.45,
+        label = sequence
+      ),
+      size = 2.8
+    ) +
+    facet_wrap(~cluster, scales = &quot;free_y&quot;) +
+    theme_classic() +
+    labs(
+      x = &quot;Consensus position&quot;,
+      y = NULL,
+      title = paste0(family_label, &quot; alignments with consensus p53 motifs&quot;)
+    )
+}</code></pre>
+<pre class="r"><code>get_alignment_blocks &lt;- function(position_maps) {
+
+  imap_dfr(position_maps, function(pos_map, TE_name) {
+
+    pos_map %&gt;%
+      filter(
+        !is.na(TE_position),
+        !is.na(consensus_position)
+      ) %&gt;%
+      arrange(TE_position) %&gt;%
+      mutate(
+        new_block =
+          TE_position - lag(TE_position, default = -1L) != 1 |
+          consensus_position -
+            lag(consensus_position, default = -1L) != 1,
+
+        block_ID = cumsum(new_block)
+      ) %&gt;%
+      group_by(block_ID) %&gt;%
+      summarise(
+        TE_start = min(TE_position),
+        TE_end = max(TE_position),
+        consensus_start = min(consensus_position),
+        consensus_end = max(consensus_position),
+        block_width = dplyr::n(),
+        .groups = &quot;drop&quot;
+      ) %&gt;%
+      mutate(TE_name = TE_name)
+
+  })
+}</code></pre>
+<pre class="r"><code>MER61E_alignment_blocks &lt;- get_alignment_blocks(
+  MER61E_position_maps
+)
+
+LTR10E_alignment_blocks &lt;- get_alignment_blocks(
+  LTR10E_position_maps
+)
+cluster_levels &lt;- c(
+  &quot;Set_3&quot;,
+  &quot;Set_1&quot;,
+  &quot;not_assigned&quot;,
+  &quot;NA&quot;
+)
+cluster_colors &lt;- c(
+  &quot;Set_3&quot; = &quot;indianred3&quot;,
+  &quot;Set_1&quot; = &quot;steelblue&quot;,
+  &quot;not_assigned&quot; = &quot;darkseagreen3&quot;,
+  &quot;NA&quot; = &quot;grey70&quot;
+)</code></pre>
+<pre class="r"><code>TE_alignment_blocks &lt;- bind_rows(
+  MER61E_alignment_blocks %&gt;%
+    mutate(family = &quot;MER61E&quot;),
+
+  LTR10E_alignment_blocks %&gt;%
+    mutate(family = &quot;LTR10E&quot;)
+) %&gt;%
+  left_join(
+    TE_cluster_df,
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;, &quot;family&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    Response = if_else(
+      cluster %in% &quot;Set_3&quot;,
+      &quot;Acute&quot;,
+      &quot;Non-acute&quot;
+    )
+  )</code></pre>
+<pre class="r"><code>TE_alignment_blocks &lt;- TE_alignment_blocks %&gt;%
+  dplyr::select(-any_of(c(&quot;TE_order&quot;, &quot;aligned_width&quot;, &quot;milliDiv&quot;))) %&gt;%
+  left_join(
+    (repeatmasker_clean %&gt;%
+      dplyr::select(RM_id, milliDiv) %&gt;%
+      distinct()),
+    by = c(&quot;TE_name&quot; = &quot;RM_id&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) 
+
+TE_alignment_blocks &lt;- TE_alignment_blocks %&gt;%
+  mutate(
+    cluster = coalesce(as.character(cluster), &quot;NA&quot;),
+    cluster = factor(cluster, levels = cluster_levels)
+  )
+
+TE_plot_order &lt;- TE_alignment_blocks %&gt;%
+  group_by(family, cluster, TE_name, milliDiv) %&gt;%
+  summarise(
+    aligned_width = sum(block_width),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  group_by(family, cluster) %&gt;%
+  arrange(
+    desc(is.na(milliDiv)),
+    desc(milliDiv),
+    desc(aligned_width),
+    TE_name,
+    .by_group = TRUE
+  ) %&gt;%
+  mutate(
+    TE_order = row_number()
+  ) %&gt;%
+  ungroup()
+
+TE_alignment_blocks &lt;- TE_alignment_blocks %&gt;%
+  dplyr::select(-any_of(c(&quot;TE_order&quot;, &quot;aligned_width&quot;))) %&gt;%
+  left_join(
+    TE_plot_order %&gt;%
+      dplyr::select(
+        family, cluster, TE_name,
+        TE_order, aligned_width
+      ),
+    by = c(&quot;family&quot;, &quot;cluster&quot;, &quot;TE_name&quot;),
+    relationship = &quot;many-to-one&quot;
+  )</code></pre>
+<pre class="r"><code>TE_consensus_lengths &lt;- tibble(
+  family = names(TE_consensus),
+  consensus_length = width(TE_consensus)
+)
+
+TE_consensus_tracks &lt;- TE_plot_order %&gt;%
+  group_by(family, cluster) %&gt;%
+  summarise(
+    consensus_y = max(TE_order) + 2,
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  left_join(
+    TE_consensus_lengths,
+    by = &quot;family&quot;
+  ) %&gt;%
+  mutate(
+    consensus_start = 1,
+    consensus_end = consensus_length
+  )
+
+TE_consensus_motif_tracks &lt;- TE_consensus_tracks %&gt;%
+  inner_join(
+    consensus_p53_canonical %&gt;%
+      dplyr::rename(family = TE_name),
+    by = &quot;family&quot;,
+    relationship = &quot;many-to-many&quot;
+  )</code></pre>
+<pre class="r"><code>TE_alignment_plot &lt;- ggplot() +
+
+  # Individual TE alignment blocks
+  geom_segment(
+    data = TE_alignment_blocks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = TE_order,
+      yend = TE_order,
+      color = cluster
+    ),
+    linewidth = 0.8,
+    lineend = &quot;butt&quot;
+  ) +
+
+  # Consensus backbone
+  geom_segment(
+    data = TE_consensus_tracks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 1.8,
+    color = &quot;black&quot;,
+    lineend = &quot;butt&quot;
+  ) +
+
+  # Canonical p53 half-sites within consensus
+  geom_segment(
+    data = TE_consensus_motif_tracks,
+    aes(
+      x = start - 0.5,
+      xend = end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 2.5,
+    color = &quot;goldenrod2&quot;,
+    lineend = &quot;butt&quot;
+  ) +
+
+  facet_grid(
+    cluster ~ family,
+    scales = &quot;free_y&quot;,
+    space = &quot;free_y&quot;
+  ) +
+
+  scale_y_reverse() +
+
+  scale_color_manual(
+    values = cluster_colors
+  ) +
+
+  labs(
+    x = &quot;Consensus position (bp)&quot;,
+    y = &quot;TE copies&quot;
+  ) +
+
+  theme_classic() +
+
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    legend.position = &quot;none&quot;,
+    strip.background = element_blank(),
+    strip.text = element_text(face = &quot;bold&quot;)
+  )
+
+TE_alignment_plot</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-55-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>map_fimo_to_consensus &lt;- function(fimo_sites,
+                                  position_maps) {
+
+  fimo_sites %&gt;%
+    mutate(
+      consensus_positions = pmap(
+        list(TE_name, start, end),
+        function(TE_name, start, end) {
+
+          pos_map &lt;- position_maps[[TE_name]]
+
+          if (is.null(pos_map)) {
+            return(rep(NA_integer_, end - start + 1L))
+          }
+
+          pos_map$consensus_position[
+            match(
+              seq.int(start, end),
+              pos_map$TE_position
+            )
+          ]
+        }
+      )
+    ) %&gt;%
+    mutate(
+      n_mapped = map_int(
+        consensus_positions,
+        ~ sum(!is.na(.x))
+      ),
+
+      motif_width = end - start + 1L,
+
+      contiguous = map_lgl(
+        consensus_positions,
+        ~ !anyNA(.x) &amp;&amp; all(diff(.x) == 1)
+      ),
+
+      mapping_status = case_when(
+        n_mapped == 0 ~ &quot;Not mapped&quot;,
+        n_mapped &lt; motif_width ~ &quot;Partially mapped&quot;,
+        contiguous ~ &quot;Fully mapped - contiguous&quot;,
+        TRUE ~ &quot;Fully mapped - discontinuous&quot;
+      )
+    )
+}</code></pre>
+<pre class="r"><code>MER61E_fimo_mapped &lt;- map_fimo_to_consensus(
+  TE_fimo_sites %&gt;%
+    filter(family == &quot;MER61E&quot;),
+  MER61E_position_maps
+)
+
+LTR10E_fimo_mapped &lt;- map_fimo_to_consensus(
+  TE_fimo_sites %&gt;%
+    filter(family == &quot;LTR10E&quot;),
+  LTR10E_position_maps
+)
+
+TE_fimo_mapped &lt;- bind_rows(
+  MER61E_fimo_mapped,
+  LTR10E_fimo_mapped
+)</code></pre>
+<pre class="r"><code>TE_fimo_mapped_blocks &lt;- TE_fimo_mapped %&gt;%
+  mutate(motif_ID = row_number()) %&gt;%
+  dplyr::filter(n_mapped &gt; 0) %&gt;%
+  tidyr::unnest_longer(
+    consensus_positions,
+    indices_to = &quot;motif_position&quot;
+  ) %&gt;%
+  dplyr::filter(!is.na(consensus_positions)) %&gt;%
+  group_by(family, TE_name, motif_ID, mapping_status) %&gt;%
+  arrange(motif_position, .by_group = TRUE) %&gt;%
+  mutate(
+    new_block =
+      row_number() == 1 |
+      motif_position -
+        lag(motif_position, default = -1L) != 1 |
+      consensus_positions -
+        lag(consensus_positions, default = -1L) != 1,
+
+    block_ID = cumsum(new_block)
+  ) %&gt;%
+  group_by(
+    family, TE_name, motif_ID,
+    mapping_status, block_ID
+  ) %&gt;%
+  summarise(
+    consensus_start = min(consensus_positions),
+    consensus_end = max(consensus_positions),
+    .groups = &quot;drop&quot;
+  )
+
+TE_fimo_mapped_blocks &lt;- TE_fimo_mapped_blocks %&gt;%
+  dplyr::select(
+    -any_of(c(
+      &quot;TE_order&quot;, &quot;TE_order.x&quot;, &quot;TE_order.y&quot;,
+      &quot;cluster&quot;, &quot;cluster.x&quot;, &quot;cluster.y&quot;,
+      &quot;milliDiv&quot;, &quot;milliDiv.x&quot;, &quot;milliDiv.y&quot;
+    ))
+  ) %&gt;%
+  left_join(
+    TE_plot_order %&gt;%
+      dplyr::select(
+        family,
+        TE_name,
+        cluster,
+        TE_order,
+        milliDiv
+      ) %&gt;%
+      distinct(),
+    by = c(&quot;family&quot;, &quot;TE_name&quot;),
+    relationship = &quot;many-to-one&quot;
+  )
+
+TE_fimo_mapped_blocks %&gt;%
+  summarise(
+    n_blocks = dplyr::n(),
+    missing_TE_order = sum(is.na(TE_plot_order))
+  )</code></pre>
+<pre><code># A tibble: 1 × 2
+  n_blocks missing_TE_order
+     &lt;int&gt;            &lt;int&gt;
+1      620                0</code></pre>
+<pre class="r"><code>p53_mapping_colors &lt;- c(
+  &quot;Fully aligned - no gap&quot; = &quot;black&quot;,
+  &quot;Fully aligned - with gap&quot; = &quot;darkorange2&quot;,
+  &quot;Partially mapped&quot; = &quot;purple3&quot;
+)
+
+TE_alignment_plot &lt;- ggplot() +
+
+  # Individual TE alignment blocks
+  geom_segment(
+    data = TE_alignment_blocks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = TE_order,
+      yend = TE_order,
+      color = cluster
+    ),
+    linewidth = 0.8,
+    lineend = &quot;butt&quot;
+  ) +
+
+  scale_color_manual(
+    values = cluster_colors,
+    name = &quot;Cluster&quot;
+  ) +
+
+  # Introduce a separate color scale for p53
+  ggnewscale::new_scale_color() +
+
+  # FIMO-predicted p53 half-sites
+  geom_segment(
+    data = TE_fimo_mapped_blocks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = TE_order,
+      yend = TE_order,
+      color = mapping_status
+    ),
+    linewidth = 1.5,
+    lineend = &quot;butt&quot;
+  ) +
+
+  scale_color_manual(
+    values = p53_mapping_colors,
+    name = &quot;p53 half-site mapping&quot;
+  ) +
+
+  # Consensus backbone
+  geom_segment(
+    data = TE_consensus_tracks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 1.8,
+    color = &quot;black&quot;,
+    lineend = &quot;butt&quot;
+  ) +
+
+  # Canonical p53 half-sites in consensus
+  geom_segment(
+    data = TE_consensus_motif_tracks,
+    aes(
+      x = start - 0.5,
+      xend = end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 2.5,
+    color = &quot;goldenrod2&quot;,
+    lineend = &quot;butt&quot;
+  ) +
+
+  facet_grid(
+    cluster ~ family,
+    scales = &quot;free_y&quot;,
+    space = &quot;free_y&quot;
+  ) +
+
+  scale_y_reverse() +
+
+  labs(
+    x = &quot;Consensus position (bp)&quot;,
+    y = &quot;TE copies&quot;
+  ) +
+
+  theme_classic() +
+
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = &quot;bold&quot;),
+    legend.position = &quot;bottom&quot;,
+    legend.box = &quot;vertical&quot;
+  )
+
+TE_alignment_plot</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-59-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>writeXStringSet(
+  TE_consensus,
+  filepath = &quot;data/Bed_exports/MER61E_LTR10E_consensus.fa&quot;
+)</code></pre>
+</div>
+</div>
+<div id="align-by-percent-te-coverage" class="section level3">
+<h3>align by percent TE coverage</h3>
+<pre class="r"><code>TE_lengths &lt;- bind_rows(
+  tibble(
+    family = &quot;MER61E&quot;,
+    TE_name = MER61E_regions$name,
+    TE_width = width(MER61E_regions)
+  ),
+  tibble(
+    family = &quot;LTR10E&quot;,
+    TE_name = LTR10E_regions$name,
+    TE_width = width(LTR10E_regions)
+  )
+)</code></pre>
+<pre class="r"><code>TE_alignment_coverage &lt;- TE_alignment_blocks %&gt;%
+  group_by(family, TE_name) %&gt;%
+  summarise(
+    aligned_width = sum(block_width),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  left_join(
+    TE_lengths,
+    by = c(&quot;family&quot;, &quot;TE_name&quot;)
+  ) %&gt;%
+  left_join(
+    TE_consensus_lengths,
+    by = &quot;family&quot;
+  ) %&gt;%
+  mutate(
+    pct_TE_coverage =
+      aligned_width / TE_width * 100,
+
+    pct_consensus_coverage =
+      aligned_width / consensus_length * 100
+  )</code></pre>
+<p>distribution check</p>
+<pre class="r"><code>TE_alignment_coverage %&gt;%
+  group_by(family) %&gt;%
+  summarise(
+    n_TE = dplyr::n(),
+    mean_TE_coverage = mean(pct_TE_coverage),
+    median_TE_coverage = median(pct_TE_coverage),
+    mean_consensus_coverage = mean(pct_consensus_coverage),
+    median_consensus_coverage = median(pct_consensus_coverage),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 2 × 6
+  family  n_TE mean_TE_coverage median_TE_coverage mean_consensus_coverage
+  &lt;chr&gt;  &lt;int&gt;            &lt;dbl&gt;              &lt;dbl&gt;                   &lt;dbl&gt;
+1 LTR10E   255             93.1               94.2                    62.3
+2 MER61E   267             93.8               97.4                    63.7
+# ℹ 1 more variable: median_consensus_coverage &lt;dbl&gt;</code></pre>
+<pre class="r"><code>TE_plot_order_percentTE &lt;- TE_alignment_blocks %&gt;%
+  dplyr::select(
+    family, cluster, TE_name, milliDiv
+  ) %&gt;%
+  distinct() %&gt;%
+  left_join(
+    TE_alignment_coverage,
+    by = c(&quot;family&quot;, &quot;TE_name&quot;),
+    relationship = &quot;one-to-one&quot;
+  ) %&gt;%
+  group_by(family, cluster) %&gt;%
+  arrange(
+    desc(is.na(pct_TE_coverage)),
+    pct_TE_coverage,
+    desc(milliDiv),
+    TE_name,
+    .by_group = TRUE
+  ) %&gt;%
+  mutate(
+    TE_order = row_number()
+  ) %&gt;%
+  ungroup()</code></pre>
+<p>update alignment blocks</p>
+<pre class="r"><code>TE_alignment_blocks_pct &lt;- TE_alignment_blocks %&gt;%
+  dplyr::select(
+    -any_of(c(&quot;TE_order&quot;, &quot;aligned_width&quot;))
+  ) %&gt;%
+  left_join(
+    TE_plot_order_percentTE %&gt;%
+      dplyr::select(
+        family, TE_name, TE_order, aligned_width
+      ),
+    by = c(&quot;family&quot;, &quot;TE_name&quot;),
+    relationship = &quot;many-to-one&quot;
+  )
+
+TE_fimo_mapped_blocks_pct &lt;- TE_fimo_mapped_blocks %&gt;%
+  dplyr::select(-any_of(c(&quot;TE_order&quot;, &quot;cluster&quot;))) %&gt;%
+  left_join(
+    TE_plot_order_percentTE %&gt;%
+      dplyr::select(
+        family, TE_name, cluster, TE_order
+      ),
+    by = c(&quot;family&quot;, &quot;TE_name&quot;),
+    relationship = &quot;many-to-one&quot;
+  )</code></pre>
+<pre class="r"><code>TE_alignment_plot_per &lt;- ggplot() +
+
+  # Individual TE alignment blocks
+  geom_segment(
+    data = TE_alignment_blocks_pct,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = TE_order,
+      yend = TE_order,
+      color = cluster
+    ),
+    linewidth = 0.8,
+    lineend = &quot;butt&quot;
+  ) +
+
+  scale_color_manual(
+    values = cluster_colors,
+    name = &quot;Cluster&quot;
+  ) +
+
+  # Introduce a separate color scale for p53
+  ggnewscale::new_scale_color() +
+
+  # FIMO-predicted p53 half-sites
+  geom_segment(
+    data = TE_fimo_mapped_blocks_pct,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = TE_order,
+      yend = TE_order,
+      color = mapping_status
+    ),
+    linewidth = 1.5,
+    lineend = &quot;butt&quot;
+  ) +
+
+  scale_color_manual(
+    values = p53_mapping_colors,
+    name = &quot;p53 half-site mapping&quot;
+  ) +
+
+  # Consensus backbone
+  geom_segment(
+    data = TE_consensus_tracks,
+    aes(
+      x = consensus_start - 0.5,
+      xend = consensus_end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 1.8,
+    color = &quot;black&quot;,
+    lineend = &quot;butt&quot;
+  ) +
+
+  # Canonical p53 half-sites in consensus
+  geom_segment(
+    data = TE_consensus_motif_tracks,
+    aes(
+      x = start - 0.5,
+      xend = end + 0.5,
+      y = consensus_y,
+      yend = consensus_y
+    ),
+    linewidth = 2.5,
+    color = &quot;goldenrod2&quot;,
+    lineend = &quot;butt&quot;
+  ) +
+
+  facet_grid(
+    cluster ~ family,
+    scales = &quot;free_y&quot;,
+    space = &quot;free_y&quot;
+  ) +
+
+  scale_y_reverse() +
+
+  labs(
+    x = &quot;Consensus position (bp)&quot;,
+    y = &quot;TE copies&quot;
+  ) +
+
+  theme_classic() +
+
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = &quot;bold&quot;),
+    legend.position = &quot;bottom&quot;,
+    legend.box = &quot;vertical&quot;
+  )
+
+TE_alignment_plot_per</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/percentalign-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>TE_plot_order_percentTE %&gt;%
+  group_by(family, cluster) %&gt;%
+  arrange(TE_order, .by_group = TRUE) %&gt;%
+  summarise(
+    n_TE = dplyr::n(),
+    Top_coverage = dplyr::first(pct_TE_coverage),
+    Bottom_coverage = last(pct_TE_coverage),
+    Mean_coverage = mean(pct_TE_coverage),
+    Median_coverage = median(pct_TE_coverage),
+    missing_coverage = sum(is.na(pct_TE_coverage)),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 8 × 8
+  family cluster       n_TE Top_coverage Bottom_coverage Mean_coverage
+  &lt;chr&gt;  &lt;fct&gt;        &lt;int&gt;        &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;
+1 LTR10E Set_3           28         84.7           100            92.5
+2 LTR10E Set_1            4         81.8            97.9          88.4
+3 LTR10E not_assigned     3         86.3            95.1          91.1
+4 LTR10E NA             220         74.1           100            93.3
+5 MER61E Set_3           40         57.9           100            95.9
+6 MER61E Set_1           11         72.1            99.8          88.8
+7 MER61E not_assigned    16         77.4           100            95.8
+8 MER61E NA             200         65.4           100            93.5
+# ℹ 2 more variables: Median_coverage &lt;dbl&gt;, missing_coverage &lt;int&gt;</code></pre>
+<pre class="r"><code>TE_order_comparison &lt;- TE_alignment_blocks %&gt;%
+  dplyr::select(family, cluster, TE_name, TE_order) %&gt;%
+  distinct() %&gt;%
+  dplyr::rename(order_milliDiv = TE_order) %&gt;%
+  left_join(
+    TE_alignment_blocks_pct %&gt;%
+      dplyr::select(family, cluster, TE_name, TE_order) %&gt;%
+      distinct() %&gt;%
+      dplyr::rename(order_pct = TE_order),
+    by = c(&quot;family&quot;, &quot;cluster&quot;, &quot;TE_name&quot;),
+    relationship = &quot;one-to-one&quot;
+  ) %&gt;%
+  mutate(
+    order_difference = order_pct - order_milliDiv,
+    order_changed = order_milliDiv != order_pct
+  )
+
+TE_order_comparison %&gt;%
+  group_by(family, cluster) %&gt;%
+  summarise(
+    n_TE = dplyr::n(),
+    n_changed = sum(order_changed),
+    Percent_changed = mean(order_changed) * 100,
+    Mean_position_change = mean(abs(order_difference)),
+    Max_position_change = max(abs(order_difference)),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 8 × 7
+  family cluster       n_TE n_changed Percent_changed Mean_position_change
+  &lt;chr&gt;  &lt;fct&gt;        &lt;int&gt;     &lt;int&gt;           &lt;dbl&gt;                &lt;dbl&gt;
+1 LTR10E Set_3           28        27            96.4                9.57 
+2 LTR10E Set_1            4         2            50                  1    
+3 LTR10E not_assigned     3         2            66.7                0.667
+4 LTR10E NA             220       218            99.1               68.3  
+5 MER61E Set_3           40        39            97.5                8.9  
+6 MER61E Set_1           11         9            81.8                1.45 
+7 MER61E not_assigned    16        14            87.5                3.12 
+8 MER61E NA             200       197            98.5               34.2  
+# ℹ 1 more variable: Max_position_change &lt;int&gt;</code></pre>
+<pre class="r"><code>TE_plot_order_percentTE %&gt;%
+  group_by(family, cluster) %&gt;%
+  arrange(TE_order, .by_group = TRUE) %&gt;%
+  summarise(
+    n_TE = dplyr::n(),
+    n_unique_pct = n_distinct(pct_TE_coverage),
+    top_pct = dplyr::first(pct_TE_coverage),
+    bottom_pct = dplyr::last(pct_TE_coverage),
+    correctly_ordered = all(diff(pct_TE_coverage) &gt;= 0),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 8 × 7
+  family cluster       n_TE n_unique_pct top_pct bottom_pct correctly_ordered
+  &lt;chr&gt;  &lt;fct&gt;        &lt;int&gt;        &lt;int&gt;   &lt;dbl&gt;      &lt;dbl&gt; &lt;lgl&gt;            
+1 LTR10E Set_3           28           24    84.7      100   TRUE             
+2 LTR10E Set_1            4            4    81.8       97.9 TRUE             
+3 LTR10E not_assigned     3            3    86.3       95.1 TRUE             
+4 LTR10E NA             220          195    74.1      100   TRUE             
+5 MER61E Set_3           40           34    57.9      100   TRUE             
+6 MER61E Set_1           11           11    72.1       99.8 TRUE             
+7 MER61E not_assigned    16           11    77.4      100   TRUE             
+8 MER61E NA             200          158    65.4      100   TRUE             </code></pre>
+<pre class="r"><code>TE_plot_order_percentTE %&gt;%
+  group_by(family, cluster) %&gt;%
+  slice_max(TE_order, n = 5) %&gt;%
+  dplyr::select(
+    family,
+    cluster,
+    TE_name,
+    TE_order,
+    TE_width,
+    aligned_width,
+    consensus_length,
+    pct_TE_coverage,
+    pct_consensus_coverage,
+    milliDiv
+  ) %&gt;%
+  arrange(family, cluster, desc(TE_order)) %&gt;%
+  ungroup()</code></pre>
+<pre><code># A tibble: 37 × 10
+   family cluster      TE_name  TE_order TE_width aligned_width consensus_length
+   &lt;chr&gt;  &lt;fct&gt;        &lt;chr&gt;       &lt;int&gt;    &lt;int&gt;         &lt;int&gt;            &lt;int&gt;
+ 1 LTR10E Set_3        chr11:9…       28       76            76              633
+ 2 LTR10E Set_3        chr17:3…       27       81            81              633
+ 3 LTR10E Set_3        chr11:6…       26      591           585              633
+ 4 LTR10E Set_3        chr2:19…       25      511           502              633
+ 5 LTR10E Set_3        chr5:10…       24       81            79              633
+ 6 LTR10E Set_1        chr3:58…        4      616           603              633
+ 7 LTR10E Set_1        chr8:94…        3      399           359              633
+ 8 LTR10E Set_1        chr10:1…        2      560           470              633
+ 9 LTR10E Set_1        chr7:76…        1      324           265              633
+10 LTR10E not_assigned chr14:2…        3       81            77              633
+# ℹ 27 more rows
+# ℹ 3 more variables: pct_TE_coverage &lt;dbl&gt;, pct_consensus_coverage &lt;dbl&gt;,
+#   milliDiv &lt;dbl&gt;</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.2 (2024-10-31 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26200)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] BSgenome.Hsapiens.UCSC.hg38_1.4.5 BSgenome_1.74.0                  
+ [3] BiocIO_1.16.0                     pwalign_1.2.0                    
+ [5] Biostrings_2.74.1                 XVector_0.46.0                   
+ [7] edgeR_4.4.2                       limma_3.62.2                     
+ [9] GenomicFeatures_1.58.0            readxl_1.5.0.1                   
+[11] MASS_7.3-66                       janitor_2.2.1                    
+[13] org.Hs.eg.db_3.20.0               AnnotationDbi_1.68.0             
+[15] Biobase_2.66.0                    circlize_0.4.18                  
+[17] ComplexHeatmap_2.22.0             DT_0.34.0                        
+[19] ggrepel_0.9.8                     rtracklayer_1.66.0               
+[21] genomation_1.38.0                 plyranges_1.26.0                 
+[23] GenomicRanges_1.58.0              GenomeInfoDb_1.42.3              
+[25] IRanges_2.40.1                    S4Vectors_0.44.0                 
+[27] BiocGenerics_0.52.0               lubridate_1.9.5                  
+[29] forcats_1.0.1                     stringr_1.6.0                    
+[31] dplyr_1.2.1                       purrr_1.2.2                      
+[33] readr_2.2.0                       tidyr_1.3.2                      
+[35] tibble_3.3.1                      ggplot2_4.0.3                    
+[37] tidyverse_2.0.0                   workflowr_1.7.2                  
+
+loaded via a namespace (and not attached):
+  [1] RColorBrewer_1.1-3          rstudioapi_0.19.0          
+  [3] jsonlite_2.0.0              shape_1.4.6.1              
+  [5] magrittr_2.0.5              farver_2.1.2               
+  [7] rmarkdown_2.32              GlobalOptions_0.1.4        
+  [9] fs_2.1.0                    zlibbioc_1.52.0            
+ [11] vctrs_0.7.3                 memoise_2.0.1              
+ [13] Rsamtools_2.22.0            RCurl_1.98-1.20            
+ [15] htmltools_0.5.9             S4Arrays_1.6.0             
+ [17] plotrix_3.8-14              curl_8.0.0                 
+ [19] broom_1.0.13                cellranger_1.1.0           
+ [21] SparseArray_1.6.2           sass_0.4.10                
+ [23] KernSmooth_2.23-27          bslib_0.12.0               
+ [25] htmlwidgets_1.6.4           plyr_1.8.9                 
+ [27] impute_1.80.0               cachem_1.1.0               
+ [29] GenomicAlignments_1.42.0    whisker_0.4.1              
+ [31] lifecycle_1.0.5             iterators_1.0.14           
+ [33] pkgconfig_2.0.3             Matrix_1.7-6               
+ [35] R6_2.6.1                    fastmap_1.2.0              
+ [37] snakecase_0.11.1            GenomeInfoDbData_1.2.13    
+ [39] MatrixGenerics_1.18.1       clue_0.3-68                
+ [41] digest_0.6.39               ggnewscale_0.5.2           
+ [43] colorspace_2.1-3            rprojroot_2.1.1            
+ [45] RSQLite_3.53.3              labeling_0.4.3             
+ [47] timechange_0.4.0            httr_1.4.9                 
+ [49] abind_1.4-8                 compiler_4.4.2             
+ [51] bit64_4.8.6                 withr_3.0.3                
+ [53] doParallel_1.0.17           backports_1.5.1            
+ [55] S7_0.2.2                    BiocParallel_1.40.2        
+ [57] DBI_1.3.0                   DelayedArray_0.32.0        
+ [59] rjson_0.2.23                tools_4.4.2                
+ [61] otel_0.2.0                  httpuv_1.6.17              
+ [63] glue_1.8.1                  restfulr_0.0.17            
+ [65] callr_3.8.0                 promises_1.5.0             
+ [67] getPass_0.2-4               gridBase_0.4-7             
+ [69] cluster_2.1.8.3             reshape2_1.4.5             
+ [71] generics_0.1.4              gtable_0.3.6               
+ [73] tzdb_0.5.0                  seqPattern_1.38.0          
+ [75] data.table_1.18.6.1         hms_1.1.4                  
+ [77] utf8_1.2.6                  foreach_1.5.2              
+ [79] pillar_1.11.1               vroom_1.7.1                
+ [81] later_1.4.8                 lattice_0.23-1             
+ [83] bit_4.6.0                   tidyselect_1.2.1           
+ [85] locfit_1.5-9.12             knitr_1.52                 
+ [87] git2r_0.36.2                SummarizedExperiment_1.36.0
+ [89] xfun_0.61                   statmod_1.5.2              
+ [91] matrixStats_1.5.0           stringi_1.8.9              
+ [93] UCSC.utils_1.2.0            yaml_2.3.12                
+ [95] evaluate_1.0.5              codetools_0.2-20           
+ [97] cli_3.6.6                   processx_3.9.0             
+ [99] jquerylib_0.1.4             dichromat_2.0-1            
+[101] Rcpp_1.1.2                  png_0.1-9                  
+[103] XML_3.99-0.24               parallel_4.4.2             
+[105] blob_1.3.0                  bitops_1.1-0               
+[107] scales_1.4.0                crayon_1.5.3               
+[109] GetoptLong_1.1.1            rlang_1.3.0                
+[111] KEGGREST_1.46.0            </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
