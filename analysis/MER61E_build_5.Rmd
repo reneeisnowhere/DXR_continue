@@ -1553,6 +1553,7 @@ plot_TE_alignment_with_consensus <- function(alignment_blocks,
       title = paste0(family_label, " alignments with consensus p53 motifs")
     )
 }
+
 ```
 
 
@@ -1841,8 +1842,8 @@ map_fimo_to_consensus <- function(fimo_sites,
       mapping_status = case_when(
         n_mapped == 0 ~ "Not mapped",
         n_mapped < motif_width ~ "Partially mapped",
-        contiguous ~ "Fully mapped - contiguous",
-        TRUE ~ "Fully mapped - discontinuous"
+        contiguous ~ "Fully aligned - no gap",
+        TRUE ~ "Fully aligned - with gap"
       )
     )
 }
