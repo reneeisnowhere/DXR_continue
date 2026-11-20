@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee0e15f1c940a2869931756b24ec531e3407cd8d3targetblanke0e15f1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree4bc6d87ce3ddeed60d78775b998a9edb4abd9be4targetblank4bc6d87a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e0e15f1c940a2869931756b24ec531e3407cd8d3" target="_blank">e0e15f1</a>
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/4bc6d87ce3ddeed60d78775b998a9edb4abd9be4" target="_blank">4bc6d87</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetreee0e15f1c940a2869931756b24ec531e3407cd8d3targetblanke0e15f1a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomreneeisnowhereDXRcontinuetree4bc6d87ce3ddeed60d78775b998a9edb4abd9be4targetblank4bc6d87a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/reneeisnowhere/DXR_continue/tree/e0e15f1c940a2869931756b24ec531e3407cd8d3" target="_blank">e0e15f1</a>.
+<a href="https://github.com/reneeisnowhere/DXR_continue/tree/4bc6d87ce3ddeed60d78775b998a9edb4abd9be4" target="_blank">4bc6d87</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -661,6 +661,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/4bc6d87ce3ddeed60d78775b998a9edb4abd9be4/analysis/MER61E_build_5.Rmd" target="_blank">4bc6d87</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-11-20
+</td>
+<td>
+wflow_publish("analysis/MER61E_build_5.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/reneeisnowhere/DXR_continue/dbfedb1c6a970a401408a68ee79d6616989fbf1d/docs/MER61E_build_5.html" target="_blank">dbfedb1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-11-20
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -3185,6 +3219,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dbfedb1c6a970a401408a68ee79d6616989fbf1d/docs/figure/MER61E_build_5.Rmd/unnamed-chunk-59-1.png" target="_blank">dbfedb1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-11-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6145b05241276975fed7a14e53961f2ba8ca27b5/docs/figure/MER61E_build_5.Rmd/unnamed-chunk-59-1.png" target="_blank">6145b05</a>
 </td>
 <td>
@@ -3423,6 +3468,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/reneeisnowhere/DXR_continue/blob/dbfedb1c6a970a401408a68ee79d6616989fbf1d/docs/figure/MER61E_build_5.Rmd/percentalign-1.png" target="_blank">dbfedb1</a>
+</td>
+<td>
+reneeisnowhere
+</td>
+<td>
+2026-11-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/reneeisnowhere/DXR_continue/blob/6145b05241276975fed7a14e53961f2ba8ca27b5/docs/figure/MER61E_build_5.Rmd/percentalign-1.png" target="_blank">6145b05</a>
 </td>
 <td>
@@ -3554,6 +3610,724 @@ TE_order_comparison %&gt;%
 # ℹ 27 more rows
 # ℹ 3 more variables: pct_TE_coverage &lt;dbl&gt;, pct_consensus_coverage &lt;dbl&gt;,
 #   milliDiv &lt;dbl&gt;</code></pre>
+</div>
+<div id="ltr10e-architecture-plot" class="section level3">
+<h3>LTR10E architecture plot</h3>
+<pre class="r"><code>LTR10E_fimo_arch &lt;- TE_fimo_mapped %&gt;%
+  dplyr::filter(family == &quot;LTR10E&quot;) %&gt;%
+  left_join(
+    TE_cluster_df %&gt;%
+      dplyr::filter(family == &quot;LTR10E&quot;) %&gt;%
+      dplyr::select(repID, cluster) %&gt;%
+      distinct(),
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    cluster = dplyr::coalesce(as.character(cluster), &quot;NA&quot;),
+    cluster = factor(
+      cluster,
+      levels = c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;)
+    )
+  )</code></pre>
+<pre class="r"><code>LTR10E_consensus_positions &lt;- TE_fimo_mapped %&gt;%
+  filter(family == &quot;LTR10E&quot;) %&gt;%
+  mutate(motif_ID = row_number()) %&gt;%
+  dplyr::select(
+    TE_name,
+    motif_ID,
+    mapping_status,
+    consensus_positions
+  ) %&gt;%
+  tidyr::unnest_longer(
+    consensus_positions,
+    indices_to = &quot;motif_position&quot;
+  ) %&gt;%
+  filter(!is.na(consensus_positions)) %&gt;%
+  dplyr::rename(
+    consensus_position = consensus_positions
+  )</code></pre>
+<p>adding in cluster info</p>
+<pre class="r"><code>LTR10E_consensus_positions &lt;- LTR10E_consensus_positions %&gt;%
+  left_join(
+    TE_cluster_df %&gt;%
+      filter(family == &quot;LTR10E&quot;) %&gt;%
+      dplyr::select(repID, cluster) %&gt;%
+      distinct(),
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    cluster = coalesce(as.character(cluster), &quot;NA&quot;),
+    cluster = factor(
+      cluster,
+      levels = c(
+        &quot;Set_3&quot;,
+        &quot;Set_1&quot;,
+        &quot;not_assigned&quot;,
+        &quot;NA&quot;
+      )
+    )
+  )
+
+LTR10E_consensus_positions %&gt;%
+  group_by(mapping_status) %&gt;%
+  summarise(
+    n_TE = n_distinct(TE_name),
+    n_motifs = n_distinct(motif_ID),
+    min_position = min(consensus_position),
+    max_position = max(consensus_position),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 3 × 5
+  mapping_status            n_TE n_motifs min_position max_position
+  &lt;chr&gt;                    &lt;int&gt;    &lt;int&gt;        &lt;int&gt;        &lt;int&gt;
+1 Fully aligned - no gap      71       82          215          496
+2 Fully aligned - with gap    51       53          102          422
+3 Partially mapped            65       76          156          530</code></pre>
+<p>extract LTR10E consensus position</p>
+<pre class="r"><code>LTR10E_consensus_positions &lt;- TE_fimo_mapped %&gt;%
+  filter(family == &quot;LTR10E&quot;) %&gt;%
+  mutate(motif_ID = row_number()) %&gt;%
+  dplyr::select(
+    TE_name, motif_ID, mapping_status,
+    consensus_positions
+  ) %&gt;%
+  tidyr::unnest_longer(consensus_positions) %&gt;%
+  filter(!is.na(consensus_positions)) %&gt;%
+  dplyr::rename(
+    consensus_position = consensus_positions
+  ) %&gt;%
+  left_join(
+    TE_cluster_df %&gt;%
+      filter(family == &quot;LTR10E&quot;) %&gt;%
+      dplyr::select(repID, cluster) %&gt;%
+      distinct(),
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    cluster = factor(
+      coalesce(as.character(cluster), &quot;NA&quot;),
+      levels = c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;)
+    )
+  )</code></pre>
+<p>calculating proportion of TEs with mapped p53 motif</p>
+<pre class="r"><code>LTR10E_cluster_totals &lt;- tibble(
+  TE_name = LTR10E_regions$name
+) %&gt;%
+  distinct() %&gt;%
+  left_join(
+    TE_cluster_df %&gt;%
+      filter(family == &quot;LTR10E&quot;) %&gt;%
+      dplyr::select(repID, cluster) %&gt;%
+      distinct(),
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    cluster = factor(
+      coalesce(as.character(cluster), &quot;NA&quot;),
+      levels = c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;)
+    )
+  ) %&gt;%
+  count(cluster, name = &quot;n_TE&quot;)</code></pre>
+<pre class="r"><code>LTR10E_p53_architecture &lt;- LTR10E_consensus_positions %&gt;%
+  distinct(
+    TE_name, cluster, mapping_status,
+    consensus_position
+  ) %&gt;%
+  count(
+    cluster, mapping_status,
+    consensus_position,
+    name = &quot;n_TE_with_motif&quot;
+  ) %&gt;%
+  left_join(
+    LTR10E_cluster_totals,
+    by = &quot;cluster&quot;
+  ) %&gt;%
+  mutate(
+    proportion = n_TE_with_motif / n_TE
+  )</code></pre>
+<pre class="r"><code>ggplot(
+  LTR10E_p53_architecture,
+  aes(
+    x = consensus_position,
+    y = proportion,
+    color = mapping_status
+  )
+) +
+  geom_line(linewidth = 0.9) +
+  facet_wrap(
+    ~cluster,
+    ncol = 1
+  ) +
+  scale_color_manual(
+    values = p53_mapping_colors
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    title = &quot;LTR10E p53 half-site architecture&quot;,
+    subtitle = &quot;Distribution of FIMO-predicted p53 motifs along the consensus&quot;,
+    x = &quot;LTR10E consensus position (bp)&quot;,
+    y = &quot;Proportion of LTR10E copies&quot;,
+    color = &quot;Motif mapping&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-76-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<p>I see “hotspots” where the p53 motifs seem to occur</p>
+<pre class="r"><code>LTR10E_p53_architecture %&gt;%
+  group_by(cluster, mapping_status) %&gt;%
+  slice_max(
+    order_by = proportion,
+    n = 10,
+    with_ties = FALSE
+  ) %&gt;%
+  arrange(cluster, mapping_status, consensus_position) %&gt;%
+  dplyr::select(
+    cluster,
+    mapping_status,
+    consensus_position,
+    n_TE_with_motif,
+    n_TE,
+    proportion
+  )</code></pre>
+<pre><code># A tibble: 87 × 6
+# Groups:   cluster, mapping_status [9]
+   cluster mapping_status    consensus_position n_TE_with_motif  n_TE proportion
+   &lt;fct&gt;   &lt;chr&gt;                          &lt;int&gt;           &lt;int&gt; &lt;int&gt;      &lt;dbl&gt;
+ 1 Set_3   Fully aligned - …                227               4    28      0.143
+ 2 Set_3   Fully aligned - …                228               4    28      0.143
+ 3 Set_3   Fully aligned - …                229               4    28      0.143
+ 4 Set_3   Fully aligned - …                230               4    28      0.143
+ 5 Set_3   Fully aligned - …                231               4    28      0.143
+ 6 Set_3   Fully aligned - …                232               4    28      0.143
+ 7 Set_3   Fully aligned - …                233               4    28      0.143
+ 8 Set_3   Fully aligned - …                234               4    28      0.143
+ 9 Set_3   Fully aligned - …                235               4    28      0.143
+10 Set_3   Fully aligned - …                236               4    28      0.143
+# ℹ 77 more rows</code></pre>
+<pre class="r"><code>LTR10E_p53_architecture %&gt;%
+  filter(
+    dplyr::between(consensus_position, 120, 260) |
+    dplyr::between(consensus_position, 370, 440)
+  ) %&gt;%
+  mutate(
+    Region = if_else(
+      consensus_position &lt; 300,
+      &quot;Region 1 (~200 bp)&quot;,
+      &quot;Region 2 (~400 bp)&quot;
+    )
+  ) %&gt;%
+  ggplot(
+    aes(
+      x = consensus_position,
+      y = proportion,
+      color = mapping_status
+    )
+  ) +
+  geom_line(linewidth = 1) +
+  facet_grid(
+    cluster ~ Region,
+    scales = &quot;free_x&quot;
+  ) +
+  scale_color_manual(
+    values = p53_mapping_colors
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = &quot;LTR10E consensus position (bp)&quot;,
+    y = &quot;Proportion of LTR10E copies&quot;,
+    color = &quot;Mapping status&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-78-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR10E_hotspot_per_TE &lt;- LTR10E_consensus_positions %&gt;%
+  mutate(
+    hotspot = case_when(
+      dplyr::between(consensus_position, 180, 260) ~ &quot;Region_1&quot;,
+      dplyr::between(consensus_position, 370, 440) ~ &quot;Region_2&quot;,
+      TRUE ~ NA_character_
+    )
+  ) %&gt;%
+  filter(!is.na(hotspot)) %&gt;%
+  distinct(TE_name, cluster, hotspot) %&gt;%
+  mutate(has_motif = TRUE)
+LTR10E_hotspot_all &lt;- tibble(
+  TE_name = LTR10E_regions$name
+) %&gt;%
+  distinct() %&gt;%
+  left_join(
+    TE_cluster_df %&gt;%
+      filter(family == &quot;LTR10E&quot;) %&gt;%
+      dplyr::select(repID, cluster) %&gt;%
+      distinct(),
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    cluster = factor(
+      coalesce(as.character(cluster), &quot;NA&quot;),
+      levels = c(&quot;Set_3&quot;, &quot;Set_1&quot;, &quot;not_assigned&quot;, &quot;NA&quot;)
+    )
+  ) %&gt;%
+  tidyr::crossing(
+    hotspot = c(&quot;Region_1&quot;, &quot;Region_2&quot;)
+  ) %&gt;%
+  left_join(
+    LTR10E_hotspot_per_TE %&gt;%
+      dplyr::select(TE_name, hotspot, has_motif),
+    by = c(&quot;TE_name&quot;, &quot;hotspot&quot;),
+    relationship = &quot;one-to-one&quot;
+  ) %&gt;%
+  mutate(
+    has_motif = coalesce(has_motif, FALSE)
+  )
+
+LTR10E_hotspot_all %&gt;%
+  group_by(cluster, hotspot) %&gt;%
+  summarise(
+    n_TE = dplyr::n(),
+    n_with_motif = sum(has_motif),
+    Percent = mean(has_motif) * 100,
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 8 × 5
+  cluster      hotspot   n_TE n_with_motif Percent
+  &lt;fct&gt;        &lt;chr&gt;    &lt;int&gt;        &lt;int&gt;   &lt;dbl&gt;
+1 Set_3        Region_1    28           10    35.7
+2 Set_3        Region_2    28           10    35.7
+3 Set_1        Region_1     4            0     0  
+4 Set_1        Region_2     4            0     0  
+5 not_assigned Region_1     3            1    33.3
+6 not_assigned Region_2     3            1    33.3
+7 NA           Region_1   220           69    31.4
+8 NA           Region_2   220           47    21.4</code></pre>
+<pre class="r"><code>LTR10E_hotspot_tests &lt;- LTR10E_hotspot_all %&gt;%
+  filter(cluster %in% c(&quot;Set_3&quot;, &quot;NA&quot;)) %&gt;%
+  group_by(hotspot) %&gt;%
+  group_modify(~ {
+    tab &lt;- table(
+      factor(.x$cluster, levels = c(&quot;Set_3&quot;, &quot;NA&quot;)),
+      factor(.x$has_motif, levels = c(TRUE, FALSE))
+    )
+
+    test &lt;- fisher.test(tab)
+
+    tibble(
+      OR = unname(test$estimate),
+      p.value = test$p.value
+    )
+  }) %&gt;%
+  ungroup() %&gt;%
+  mutate(
+    p.adj = p.adjust(p.value, method = &quot;BH&quot;)
+  )
+
+LTR10E_hotspot_tests</code></pre>
+<pre><code># A tibble: 2 × 4
+  hotspot     OR p.value p.adj
+  &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+1 Region_1  1.21  0.669  0.669
+2 Region_2  2.04  0.0983 0.197</code></pre>
+<pre class="r"><code>LTR10E_hotspot_regions &lt;- tibble(
+  hotspot = c(&quot;Region_150&quot;, &quot;Region_200&quot;, &quot;Region_400&quot;),
+  start = c(130, 180, 370),
+  end = c(175, 260, 440)
+)
+
+LTR10E_hotspot_hits &lt;- LTR10E_consensus_positions %&gt;%
+  inner_join(
+    LTR10E_hotspot_regions,
+    by = character(),
+    relationship = &quot;many-to-many&quot;
+  ) %&gt;%
+  filter(
+    consensus_position &gt;= start,
+    consensus_position &lt;= end
+  ) %&gt;%
+  distinct(
+    TE_name,
+    cluster,
+    hotspot,
+    mapping_status
+  )
+
+LTR10E_hotspot_hits %&gt;%
+  group_by(hotspot, cluster, mapping_status) %&gt;%
+  summarise(
+    n_TE = n_distinct(TE_name),
+    .groups = &quot;drop&quot;
+  )</code></pre>
+<pre><code># A tibble: 18 × 4
+   hotspot    cluster      mapping_status            n_TE
+   &lt;chr&gt;      &lt;fct&gt;        &lt;chr&gt;                    &lt;int&gt;
+ 1 Region_150 Set_3        Fully aligned - with gap     1
+ 2 Region_150 Set_1        Partially mapped             1
+ 3 Region_150 NA           Fully aligned - with gap    17
+ 4 Region_150 NA           Partially mapped             5
+ 5 Region_200 Set_3        Fully aligned - no gap       6
+ 6 Region_200 Set_3        Fully aligned - with gap     2
+ 7 Region_200 Set_3        Partially mapped             8
+ 8 Region_200 not_assigned Fully aligned - no gap       1
+ 9 Region_200 NA           Fully aligned - no gap      44
+10 Region_200 NA           Fully aligned - with gap    24
+11 Region_200 NA           Partially mapped             7
+12 Region_400 Set_3        Fully aligned - no gap       4
+13 Region_400 Set_3        Fully aligned - with gap     3
+14 Region_400 Set_3        Partially mapped             7
+15 Region_400 not_assigned Fully aligned - no gap       1
+16 Region_400 NA           Fully aligned - no gap      12
+17 Region_400 NA           Fully aligned - with gap    16
+18 Region_400 NA           Partially mapped            24</code></pre>
+<pre class="r"><code>LTR10E_hotspot_summary &lt;- LTR10E_hotspot_hits %&gt;%
+  group_by(hotspot, cluster, mapping_status) %&gt;%
+  summarise(
+    n_TE_with_motif = n_distinct(TE_name),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  left_join(
+    LTR10E_cluster_totals %&gt;%
+      dplyr::select(cluster, n_TE) %&gt;%
+      dplyr::rename(n_TE_cluster = n_TE),
+    by = &quot;cluster&quot;
+  ) %&gt;%
+  mutate(
+    Percent = n_TE_with_motif / n_TE_cluster * 100
+  )
+
+LTR10E_hotspot_summary</code></pre>
+<pre><code># A tibble: 18 × 6
+   hotspot    cluster      mapping_status   n_TE_with_motif n_TE_cluster Percent
+   &lt;chr&gt;      &lt;fct&gt;        &lt;chr&gt;                      &lt;int&gt;        &lt;int&gt;   &lt;dbl&gt;
+ 1 Region_150 Set_3        Fully aligned -…               1           28    3.57
+ 2 Region_150 Set_1        Partially mapped               1            4   25   
+ 3 Region_150 NA           Fully aligned -…              17          220    7.73
+ 4 Region_150 NA           Partially mapped               5          220    2.27
+ 5 Region_200 Set_3        Fully aligned -…               6           28   21.4 
+ 6 Region_200 Set_3        Fully aligned -…               2           28    7.14
+ 7 Region_200 Set_3        Partially mapped               8           28   28.6 
+ 8 Region_200 not_assigned Fully aligned -…               1            3   33.3 
+ 9 Region_200 NA           Fully aligned -…              44          220   20   
+10 Region_200 NA           Fully aligned -…              24          220   10.9 
+11 Region_200 NA           Partially mapped               7          220    3.18
+12 Region_400 Set_3        Fully aligned -…               4           28   14.3 
+13 Region_400 Set_3        Fully aligned -…               3           28   10.7 
+14 Region_400 Set_3        Partially mapped               7           28   25   
+15 Region_400 not_assigned Fully aligned -…               1            3   33.3 
+16 Region_400 NA           Fully aligned -…              12          220    5.45
+17 Region_400 NA           Fully aligned -…              16          220    7.27
+18 Region_400 NA           Partially mapped              24          220   10.9 </code></pre>
+<pre class="r"><code>ggplot(
+  LTR10E_hotspot_summary,
+  aes(
+    x = hotspot,
+    y = Percent,
+    fill = mapping_status
+  )
+) +
+  geom_col(
+    position = position_dodge(width = 0.8),
+    width = 0.7
+  ) +
+  facet_wrap(
+    ~cluster,
+    ncol = 1,
+    drop = FALSE
+  ) +
+  scale_fill_manual(
+    values = p53_mapping_colors
+  ) +
+  labs(
+    x = &quot;LTR10E consensus region&quot;,
+    y = &quot;Percentage of LTR10E copies&quot;,
+    fill = &quot;Mapping status&quot;,
+    title = &quot;LTR10E p53 half-site distribution&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-82-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR10E_hotspot_prop &lt;- LTR10E_hotspot_hits %&gt;%
+  group_by(hotspot, cluster) %&gt;%
+  summarise(
+    n_with_motif = n_distinct(TE_name),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  left_join(
+    LTR10E_cluster_totals %&gt;%
+      dplyr::select(cluster, n_TE) %&gt;%
+      dplyr::rename(n_total = n_TE),
+    by = &quot;cluster&quot;
+  ) %&gt;%
+  mutate(
+    proportion = n_with_motif / n_total,
+    Percent = proportion * 100
+  )
+
+ggplot(
+  LTR10E_hotspot_prop,
+  aes(
+    x = hotspot,
+    y = proportion,
+    fill = cluster
+  )
+) +
+  geom_col(
+    position = position_dodge(width = 0.8),
+    width = 0.7
+  ) +
+  scale_fill_manual(values = cluster_colors) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = &quot;LTR10E consensus region&quot;,
+    y = &quot;Proportion of LTR10E copies with a p53 half-site&quot;,
+    fill = &quot;Cluster&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-83-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR10E_hotspot_prop &lt;- LTR10E_hotspot_hits %&gt;%
+  mutate(
+    Response = if_else(
+      as.character(cluster) == &quot;Set_3&quot;,
+      &quot;Acute&quot;,
+      &quot;Non-acute&quot;
+    )
+  ) %&gt;%
+  group_by(hotspot, Response) %&gt;%
+  summarise(
+    n_with_motif = n_distinct(TE_name),
+    .groups = &quot;drop&quot;
+  )
+
+LTR10E_response_totals &lt;- tibble(
+  TE_name = LTR10E_regions$name
+) %&gt;%
+  distinct() %&gt;%
+  left_join(
+    TE_cluster_df %&gt;%
+      filter(family == &quot;LTR10E&quot;) %&gt;%
+      dplyr::select(repID, cluster) %&gt;%
+      distinct(),
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    Response = if_else(
+      coalesce(as.character(cluster), &quot;NA&quot;) == &quot;Set_3&quot;,
+      &quot;Acute&quot;,
+      &quot;Non-acute&quot;
+    )
+  ) %&gt;%
+  count(Response, name = &quot;n_total&quot;)
+
+LTR10E_hotspot_prop &lt;- LTR10E_hotspot_prop %&gt;%
+  tidyr::complete(
+    hotspot = LTR10E_hotspot_regions$hotspot,
+    Response = c(&quot;Acute&quot;, &quot;Non-acute&quot;),
+    fill = list(n_with_motif = 0)
+  ) %&gt;%
+  left_join(
+    LTR10E_response_totals,
+    by = &quot;Response&quot;
+  ) %&gt;%
+  mutate(
+    proportion = n_with_motif / n_total,
+    Response = factor(
+      Response,
+      levels = c(&quot;Acute&quot;, &quot;Non-acute&quot;)
+    ),
+    hotspot = factor(
+      hotspot,
+      levels = LTR10E_hotspot_regions$hotspot
+    )
+  )
+
+ggplot(
+  LTR10E_hotspot_prop,
+  aes(
+    x = hotspot,
+    y = proportion,
+    fill = Response
+  )
+) +
+  geom_col(
+    position = position_dodge(width = 0.8),
+    width = 0.7,
+    color = &quot;black&quot;
+  ) +
+  geom_text(
+    aes(label = paste0(
+      n_with_motif, &quot;/&quot;, n_total
+    )),
+    position = position_dodge(width = 0.8),
+    vjust = -0.4,
+    size = 3
+  ) +
+  scale_fill_manual(
+    values = c(
+      &quot;Acute&quot; = &quot;indianred3&quot;,
+      &quot;Non-acute&quot; = &quot;steelblue&quot;
+    )
+  ) +
+  scale_y_continuous(
+    labels = scales::percent,
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    x = &quot;LTR10E consensus region&quot;,
+    y = &quot;Proportion of LTR10E copies with p53 half-site&quot;,
+    fill = &quot;Response&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-84-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>LTR10E_hotspot_tests &lt;- LTR10E_hotspot_prop %&gt;%
+  group_by(hotspot) %&gt;%
+  summarise(
+    p.value = fisher.test(
+      matrix(
+        c(
+          n_with_motif[Response == &quot;Acute&quot;],
+          n_total[Response == &quot;Acute&quot;] -
+            n_with_motif[Response == &quot;Acute&quot;],
+          n_with_motif[Response == &quot;Non-acute&quot;],
+          n_total[Response == &quot;Non-acute&quot;] -
+            n_with_motif[Response == &quot;Non-acute&quot;]
+        ),
+        nrow = 2,
+        byrow = TRUE
+      )
+    )$p.value,
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  mutate(
+    p.adj = p.adjust(p.value, method = &quot;BH&quot;)
+  )
+
+LTR10E_hotspot_tests</code></pre>
+<pre><code># A tibble: 3 × 3
+  hotspot    p.value p.adj
+  &lt;fct&gt;        &lt;dbl&gt; &lt;dbl&gt;
+1 Region_150  0.489  0.667
+2 Region_200  0.667  0.667
+3 Region_400  0.0957 0.287</code></pre>
+<pre class="r"><code># all LTR10E copies with Acute vs Non-acute grouping
+LTR10E_all_TEs &lt;- tibble(
+  TE_name = LTR10E_regions$name
+) %&gt;%
+  distinct() %&gt;%
+  left_join(
+    TE_cluster_df %&gt;%
+      filter(family == &quot;LTR10E&quot;) %&gt;%
+      dplyr::select(repID, cluster) %&gt;%
+      distinct(),
+    by = c(&quot;TE_name&quot; = &quot;repID&quot;),
+    relationship = &quot;many-to-one&quot;
+  ) %&gt;%
+  mutate(
+    Response = if_else(
+      coalesce(as.character(cluster), &quot;NA&quot;) == &quot;Set_3&quot;,
+      &quot;Acute&quot;,
+      &quot;Non-acute&quot;
+    ),
+    Response = factor(Response, levels = c(&quot;Acute&quot;, &quot;Non-acute&quot;))
+  )
+
+LTR10E_hotspot_binary &lt;- LTR10E_hotspot_hits %&gt;%
+  distinct(TE_name, hotspot) %&gt;%
+  mutate(has_hotspot = TRUE) %&gt;%
+  pivot_wider(
+    names_from = hotspot,
+    values_from = has_hotspot,
+    values_fill = FALSE
+  )
+
+LTR10E_hotspot_combo &lt;- LTR10E_all_TEs %&gt;%
+  left_join(
+    LTR10E_hotspot_binary,
+    by = &quot;TE_name&quot;,
+    relationship = &quot;one-to-one&quot;
+  ) %&gt;%
+  mutate(
+    Region_150 = coalesce(Region_150, FALSE),
+    Region_200 = coalesce(Region_200, FALSE),
+    Region_400 = coalesce(Region_400, FALSE)
+  )
+
+
+LTR10E_hotspot_combo &lt;- LTR10E_hotspot_combo %&gt;%
+  mutate(
+    hotspot_pattern = case_when(
+      !Region_150 &amp; !Region_200 &amp; !Region_400 ~ &quot;None&quot;,
+      Region_150 &amp; !Region_200 &amp; !Region_400 ~ &quot;Region_150 only&quot;,
+      !Region_150 &amp; Region_200 &amp; !Region_400 ~ &quot;Region_200 only&quot;,
+      !Region_150 &amp; !Region_200 &amp; Region_400 ~ &quot;Region_400 only&quot;,
+      Region_150 &amp; Region_200 &amp; !Region_400 ~ &quot;Region_150 + Region_200&quot;,
+      Region_150 &amp; !Region_200 &amp; Region_400 ~ &quot;Region_150 + Region_400&quot;,
+      !Region_150 &amp; Region_200 &amp; Region_400 ~ &quot;Region_200 + Region_400&quot;,
+      Region_150 &amp; Region_200 &amp; Region_400 ~ &quot;All three&quot;
+    ),
+    hotspot_pattern = factor(
+      hotspot_pattern,
+      levels = c(
+        &quot;None&quot;,
+        &quot;Region_150 only&quot;,
+        &quot;Region_200 only&quot;,
+        &quot;Region_400 only&quot;,
+        &quot;Region_150 + Region_200&quot;,
+        &quot;Region_150 + Region_400&quot;,
+        &quot;Region_200 + Region_400&quot;,
+        &quot;All three&quot;
+      )
+    )
+  )
+
+
+LTR10E_hotspot_combo_sum &lt;- LTR10E_hotspot_combo %&gt;%
+  count(Response, hotspot_pattern, name = &quot;n_TE&quot;) %&gt;%
+  group_by(Response) %&gt;%
+  mutate(
+    n_total = sum(n_TE),
+    proportion = n_TE / n_total
+  ) %&gt;%
+  ungroup()
+
+LTR10E_hotspot_combo_sum</code></pre>
+<pre><code># A tibble: 10 × 5
+   Response  hotspot_pattern          n_TE n_total proportion
+   &lt;fct&gt;     &lt;fct&gt;                   &lt;int&gt;   &lt;int&gt;      &lt;dbl&gt;
+ 1 Acute     None                        8      28    0.286  
+ 2 Acute     Region_200 only             9      28    0.321  
+ 3 Acute     Region_400 only            10      28    0.357  
+ 4 Acute     Region_150 + Region_200     1      28    0.0357 
+ 5 Non-acute None                      107     227    0.471  
+ 6 Non-acute Region_150 only             3     227    0.0132 
+ 7 Non-acute Region_200 only            49     227    0.216  
+ 8 Non-acute Region_400 only            47     227    0.207  
+ 9 Non-acute Region_150 + Region_200    20     227    0.0881 
+10 Non-acute Region_200 + Region_400     1     227    0.00441</code></pre>
+<pre class="r"><code>ggplot(
+  LTR10E_hotspot_combo_sum,
+  aes(
+    x = Response,
+    y = proportion,
+    fill = hotspot_pattern
+  )
+) +
+  geom_col(color = &quot;black&quot;, width = 0.7) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = &quot;Proportion of LTR10E copies&quot;,
+    fill = &quot;Hotspot combination&quot;,
+    title = &quot;LTR10E p53 hotspot combinations&quot;
+  ) +
+  theme_classic()</code></pre>
+<p><img src="figure/MER61E_build_5.Rmd/unnamed-chunk-87-1.png" alt="" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
