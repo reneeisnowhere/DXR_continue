@@ -3006,4 +3006,179 @@ ggplot(
   ) +
   theme_classic()
 ```
+```{r}
+LTR10E_hotspot_combo %>%
+  count(Region_200, Region_400)
+
+tab <- with(
+  LTR10E_hotspot_combo,
+  table(Region_200, Region_400)
+)
+
+fisher.test(tab)
+```
+
+```{r}
+MER61E_hotspot_regions <- tibble(
+  hotspot = c("Site_115", "Site_126", "Site_177"),
+  start = c(115L, 126L, 177L),
+  end = c(124L, 135L, 186L)
+)
+```
+
+
+
+```{r}
+MER61E_hotspot_hits <- TE_fimo_mapped %>%
+  filter(family == "MER61E") %>%
+  mutate(motif_ID = row_number()) %>%
+  dplyr::select(
+    TE_name,
+    motif_ID,
+    mapping_status,
+    consensus_positions
+  ) %>%
+  tidyr::unnest_longer(consensus_positions) %>%
+  filter(!is.na(consensus_positions)) %>%
+  dplyr::rename(
+    consensus_position = consensus_positions
+  ) %>%
+  tidyr::crossing(MER61E_hotspot_regions) %>%
+  filter(
+    consensus_position >= start,
+    consensus_position <= end
+  ) %>%
+  distinct(TE_name, hotspot, motif_ID)
+```
+
+```{r}
+MER61E_all_TEs <- tibble(
+  TE_name = MER61E_regions$name
+) %>%
+  distinct() %>%
+  left_join(
+    TE_cluster_df %>%
+      filter(family == "MER61E") %>%
+      dplyr::select(repID, cluster) %>%
+      distinct(),
+    by = c("TE_name" = "repID"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    Response = factor(
+      if_else(
+        coalesce(as.character(cluster), "NA") == "Set_3",
+        "Acute",
+        "Non-acute"
+      ),
+      levels = c("Acute", "Non-acute")
+    )
+  )
+```
+
+```{r}
+
+
+MER61E_hotspot_combo <- MER61E_all_TEs %>%
+  left_join(
+    MER61E_hotspot_hits %>%
+      distinct(TE_name, hotspot) %>%
+      mutate(present = TRUE) %>%
+      pivot_wider(
+        names_from = hotspot,
+        values_from = present,
+        values_fill = FALSE
+      ),
+    by = "TE_name",
+    relationship = "one-to-one"
+  ) %>%
+  mutate(
+    across(
+      c(Site_115, Site_126, Site_177),
+      ~coalesce(.x, FALSE)
+    )
+  ) %>%
+  mutate(
+    motif_architecture = case_when(
+      !Site_115 & !Site_126 & !Site_177 ~ "None",
+      Site_115 & !Site_126 & !Site_177 ~ "115 only",
+      !Site_115 & Site_126 & !Site_177 ~ "126 only",
+      !Site_115 & !Site_126 & Site_177 ~ "177 only",
+      Site_115 & Site_126 & !Site_177 ~ "115 + 126",
+      Site_115 & !Site_126 & Site_177 ~ "115 + 177",
+      !Site_115 & Site_126 & Site_177 ~ "126 + 177",
+      Site_115 & Site_126 & Site_177 ~ "All three"
+    ),
+    motif_architecture = factor(
+      motif_architecture,
+      levels = c(
+        "None",
+        "115 only",
+        "126 only",
+        "177 only",
+        "115 + 126",
+        "115 + 177",
+        "126 + 177",
+        "All three"
+      )
+    )
+  )
+
+MER61E_hotspot_combo_sum <- MER61E_hotspot_combo %>%
+  count(Response, motif_architecture, name = "n_TE") %>%
+  group_by(Response) %>%
+  mutate(
+    n_total = sum(n_TE),
+    proportion = n_TE / n_total
+  ) %>%
+  ungroup()
+```
+
+```{r}
+ggplot(
+  MER61E_hotspot_combo_sum,
+  aes(
+    x = Response,
+    y = proportion,
+    fill = motif_architecture
+  )
+) +
+  geom_col(
+    width = 0.7,
+    color = "black"
+  ) +
+  geom_text(
+    aes(
+      label = if_else(
+        proportion >= 0.03,
+        scales::percent(proportion, accuracy = 0.1),
+        ""
+      )
+    ),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = "Proportion of MER61E copies",
+    fill = "p53 half-site architecture",
+    title = "MER61E p53 half-site architecture"
+  ) +
+  theme_classic()
+```
+```{r}
+
+
+MER61E_hotspot_combo %>%
+  group_by(Response) %>%
+  summarise(
+    n_TE = dplyr::n(),
+    n_both_115_126 = sum(Site_115 & Site_126),
+    Percent_both = mean(Site_115 & Site_126) * 100,
+    .groups = "drop"
+  )
+```
 
