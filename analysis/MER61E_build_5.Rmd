@@ -2327,3 +2327,683 @@ TE_plot_order_percentTE %>%
   ungroup()
 ```
 
+### LTR10E architecture plot
+
+```{r}
+LTR10E_fimo_arch <- TE_fimo_mapped %>%
+  dplyr::filter(family == "LTR10E") %>%
+  left_join(
+    TE_cluster_df %>%
+      dplyr::filter(family == "LTR10E") %>%
+      dplyr::select(repID, cluster) %>%
+      distinct(),
+    by = c("TE_name" = "repID"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    cluster = dplyr::coalesce(as.character(cluster), "NA"),
+    cluster = factor(
+      cluster,
+      levels = c("Set_3", "Set_1", "not_assigned", "NA")
+    )
+  )
+```
+
+```{r}
+
+LTR10E_consensus_positions <- TE_fimo_mapped %>%
+  filter(family == "LTR10E") %>%
+  mutate(motif_ID = row_number()) %>%
+  dplyr::select(
+    TE_name,
+    motif_ID,
+    mapping_status,
+    consensus_positions
+  ) %>%
+  tidyr::unnest_longer(
+    consensus_positions,
+    indices_to = "motif_position"
+  ) %>%
+  filter(!is.na(consensus_positions)) %>%
+  dplyr::rename(
+    consensus_position = consensus_positions
+  )
+```
+
+adding in cluster info
+
+```{r}
+LTR10E_consensus_positions <- LTR10E_consensus_positions %>%
+  left_join(
+    TE_cluster_df %>%
+      filter(family == "LTR10E") %>%
+      dplyr::select(repID, cluster) %>%
+      distinct(),
+    by = c("TE_name" = "repID"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    cluster = coalesce(as.character(cluster), "NA"),
+    cluster = factor(
+      cluster,
+      levels = c(
+        "Set_3",
+        "Set_1",
+        "not_assigned",
+        "NA"
+      )
+    )
+  )
+
+LTR10E_consensus_positions %>%
+  group_by(mapping_status) %>%
+  summarise(
+    n_TE = n_distinct(TE_name),
+    n_motifs = n_distinct(motif_ID),
+    min_position = min(consensus_position),
+    max_position = max(consensus_position),
+    .groups = "drop"
+  )
+```
+
+
+
+
+extract LTR10E consensus position
+```{r}
+LTR10E_consensus_positions <- TE_fimo_mapped %>%
+  filter(family == "LTR10E") %>%
+  mutate(motif_ID = row_number()) %>%
+  dplyr::select(
+    TE_name, motif_ID, mapping_status,
+    consensus_positions
+  ) %>%
+  tidyr::unnest_longer(consensus_positions) %>%
+  filter(!is.na(consensus_positions)) %>%
+  dplyr::rename(
+    consensus_position = consensus_positions
+  ) %>%
+  left_join(
+    TE_cluster_df %>%
+      filter(family == "LTR10E") %>%
+      dplyr::select(repID, cluster) %>%
+      distinct(),
+    by = c("TE_name" = "repID"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    cluster = factor(
+      coalesce(as.character(cluster), "NA"),
+      levels = c("Set_3", "Set_1", "not_assigned", "NA")
+    )
+  )
+```
+
+calculating proportion of TEs with mapped p53 motif
+
+```{r}
+LTR10E_cluster_totals <- tibble(
+  TE_name = LTR10E_regions$name
+) %>%
+  distinct() %>%
+  left_join(
+    TE_cluster_df %>%
+      filter(family == "LTR10E") %>%
+      dplyr::select(repID, cluster) %>%
+      distinct(),
+    by = c("TE_name" = "repID"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    cluster = factor(
+      coalesce(as.character(cluster), "NA"),
+      levels = c("Set_3", "Set_1", "not_assigned", "NA")
+    )
+  ) %>%
+  count(cluster, name = "n_TE")
+```
+
+```{r}
+LTR10E_p53_architecture <- LTR10E_consensus_positions %>%
+  distinct(
+    TE_name, cluster, mapping_status,
+    consensus_position
+  ) %>%
+  count(
+    cluster, mapping_status,
+    consensus_position,
+    name = "n_TE_with_motif"
+  ) %>%
+  left_join(
+    LTR10E_cluster_totals,
+    by = "cluster"
+  ) %>%
+  mutate(
+    proportion = n_TE_with_motif / n_TE
+  )
+```
+
+```{r}
+ggplot(
+  LTR10E_p53_architecture,
+  aes(
+    x = consensus_position,
+    y = proportion,
+    color = mapping_status
+  )
+) +
+  geom_line(linewidth = 0.9) +
+  facet_wrap(
+    ~cluster,
+    ncol = 1
+  ) +
+  scale_color_manual(
+    values = p53_mapping_colors
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    title = "LTR10E p53 half-site architecture",
+    subtitle = "Distribution of FIMO-predicted p53 motifs along the consensus",
+    x = "LTR10E consensus position (bp)",
+    y = "Proportion of LTR10E copies",
+    color = "Motif mapping"
+  ) +
+  theme_classic()
+```
+
+I see "hotspots" where the p53 motifs seem to occur
+
+```{r}
+LTR10E_p53_architecture %>%
+  group_by(cluster, mapping_status) %>%
+  slice_max(
+    order_by = proportion,
+    n = 10,
+    with_ties = FALSE
+  ) %>%
+  arrange(cluster, mapping_status, consensus_position) %>%
+  dplyr::select(
+    cluster,
+    mapping_status,
+    consensus_position,
+    n_TE_with_motif,
+    n_TE,
+    proportion
+  )
+```
+
+
+
+
+```{r}
+LTR10E_p53_architecture %>%
+  filter(
+    dplyr::between(consensus_position, 120, 260) |
+    dplyr::between(consensus_position, 370, 440)
+  ) %>%
+  mutate(
+    Region = if_else(
+      consensus_position < 300,
+      "Region 1 (~200 bp)",
+      "Region 2 (~400 bp)"
+    )
+  ) %>%
+  ggplot(
+    aes(
+      x = consensus_position,
+      y = proportion,
+      color = mapping_status
+    )
+  ) +
+  geom_line(linewidth = 1) +
+  facet_grid(
+    cluster ~ Region,
+    scales = "free_x"
+  ) +
+  scale_color_manual(
+    values = p53_mapping_colors
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = "LTR10E consensus position (bp)",
+    y = "Proportion of LTR10E copies",
+    color = "Mapping status"
+  ) +
+  theme_classic()
+```
+
+
+```{r}
+LTR10E_hotspot_per_TE <- LTR10E_consensus_positions %>%
+  mutate(
+    hotspot = case_when(
+      dplyr::between(consensus_position, 180, 260) ~ "Region_1",
+      dplyr::between(consensus_position, 370, 440) ~ "Region_2",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(hotspot)) %>%
+  distinct(TE_name, cluster, hotspot) %>%
+  mutate(has_motif = TRUE)
+LTR10E_hotspot_all <- tibble(
+  TE_name = LTR10E_regions$name
+) %>%
+  distinct() %>%
+  left_join(
+    TE_cluster_df %>%
+      filter(family == "LTR10E") %>%
+      dplyr::select(repID, cluster) %>%
+      distinct(),
+    by = c("TE_name" = "repID"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    cluster = factor(
+      coalesce(as.character(cluster), "NA"),
+      levels = c("Set_3", "Set_1", "not_assigned", "NA")
+    )
+  ) %>%
+  tidyr::crossing(
+    hotspot = c("Region_1", "Region_2")
+  ) %>%
+  left_join(
+    LTR10E_hotspot_per_TE %>%
+      dplyr::select(TE_name, hotspot, has_motif),
+    by = c("TE_name", "hotspot"),
+    relationship = "one-to-one"
+  ) %>%
+  mutate(
+    has_motif = coalesce(has_motif, FALSE)
+  )
+
+LTR10E_hotspot_all %>%
+  group_by(cluster, hotspot) %>%
+  summarise(
+    n_TE = dplyr::n(),
+    n_with_motif = sum(has_motif),
+    Percent = mean(has_motif) * 100,
+    .groups = "drop"
+  )
+```
+
+
+```{r}
+LTR10E_hotspot_tests <- LTR10E_hotspot_all %>%
+  filter(cluster %in% c("Set_3", "NA")) %>%
+  group_by(hotspot) %>%
+  group_modify(~ {
+    tab <- table(
+      factor(.x$cluster, levels = c("Set_3", "NA")),
+      factor(.x$has_motif, levels = c(TRUE, FALSE))
+    )
+
+    test <- fisher.test(tab)
+
+    tibble(
+      OR = unname(test$estimate),
+      p.value = test$p.value
+    )
+  }) %>%
+  ungroup() %>%
+  mutate(
+    p.adj = p.adjust(p.value, method = "BH")
+  )
+
+LTR10E_hotspot_tests
+```
+
+```{r}
+LTR10E_hotspot_regions <- tibble(
+  hotspot = c("Region_150", "Region_200", "Region_400"),
+  start = c(130, 180, 370),
+  end = c(175, 260, 440)
+)
+
+LTR10E_hotspot_hits <- LTR10E_consensus_positions %>%
+  inner_join(
+    LTR10E_hotspot_regions,
+    by = character(),
+    relationship = "many-to-many"
+  ) %>%
+  filter(
+    consensus_position >= start,
+    consensus_position <= end
+  ) %>%
+  distinct(
+    TE_name,
+    cluster,
+    hotspot,
+    mapping_status
+  )
+
+LTR10E_hotspot_hits %>%
+  group_by(hotspot, cluster, mapping_status) %>%
+  summarise(
+    n_TE = n_distinct(TE_name),
+    .groups = "drop"
+  )
+
+LTR10E_hotspot_summary <- LTR10E_hotspot_hits %>%
+  group_by(hotspot, cluster, mapping_status) %>%
+  summarise(
+    n_TE_with_motif = n_distinct(TE_name),
+    .groups = "drop"
+  ) %>%
+  left_join(
+    LTR10E_cluster_totals %>%
+      dplyr::select(cluster, n_TE) %>%
+      dplyr::rename(n_TE_cluster = n_TE),
+    by = "cluster"
+  ) %>%
+  mutate(
+    Percent = n_TE_with_motif / n_TE_cluster * 100
+  )
+
+LTR10E_hotspot_summary
+```
+
+```{r}
+ggplot(
+  LTR10E_hotspot_summary,
+  aes(
+    x = hotspot,
+    y = Percent,
+    fill = mapping_status
+  )
+) +
+  geom_col(
+    position = position_dodge(width = 0.8),
+    width = 0.7
+  ) +
+  facet_wrap(
+    ~cluster,
+    ncol = 1,
+    drop = FALSE
+  ) +
+  scale_fill_manual(
+    values = p53_mapping_colors
+  ) +
+  labs(
+    x = "LTR10E consensus region",
+    y = "Percentage of LTR10E copies",
+    fill = "Mapping status",
+    title = "LTR10E p53 half-site distribution"
+  ) +
+  theme_classic()
+```
+```{r}
+LTR10E_hotspot_prop <- LTR10E_hotspot_hits %>%
+  group_by(hotspot, cluster) %>%
+  summarise(
+    n_with_motif = n_distinct(TE_name),
+    .groups = "drop"
+  ) %>%
+  left_join(
+    LTR10E_cluster_totals %>%
+      dplyr::select(cluster, n_TE) %>%
+      dplyr::rename(n_total = n_TE),
+    by = "cluster"
+  ) %>%
+  mutate(
+    proportion = n_with_motif / n_total,
+    Percent = proportion * 100
+  )
+
+ggplot(
+  LTR10E_hotspot_prop,
+  aes(
+    x = hotspot,
+    y = proportion,
+    fill = cluster
+  )
+) +
+  geom_col(
+    position = position_dodge(width = 0.8),
+    width = 0.7
+  ) +
+  scale_fill_manual(values = cluster_colors) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = "LTR10E consensus region",
+    y = "Proportion of LTR10E copies with a p53 half-site",
+    fill = "Cluster"
+  ) +
+  theme_classic()
+```
+
+```{r}
+
+
+LTR10E_hotspot_prop <- LTR10E_hotspot_hits %>%
+  mutate(
+    Response = if_else(
+      as.character(cluster) == "Set_3",
+      "Acute",
+      "Non-acute"
+    )
+  ) %>%
+  group_by(hotspot, Response) %>%
+  summarise(
+    n_with_motif = n_distinct(TE_name),
+    .groups = "drop"
+  )
+
+LTR10E_response_totals <- tibble(
+  TE_name = LTR10E_regions$name
+) %>%
+  distinct() %>%
+  left_join(
+    TE_cluster_df %>%
+      filter(family == "LTR10E") %>%
+      dplyr::select(repID, cluster) %>%
+      distinct(),
+    by = c("TE_name" = "repID"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    Response = if_else(
+      coalesce(as.character(cluster), "NA") == "Set_3",
+      "Acute",
+      "Non-acute"
+    )
+  ) %>%
+  count(Response, name = "n_total")
+
+LTR10E_hotspot_prop <- LTR10E_hotspot_prop %>%
+  tidyr::complete(
+    hotspot = LTR10E_hotspot_regions$hotspot,
+    Response = c("Acute", "Non-acute"),
+    fill = list(n_with_motif = 0)
+  ) %>%
+  left_join(
+    LTR10E_response_totals,
+    by = "Response"
+  ) %>%
+  mutate(
+    proportion = n_with_motif / n_total,
+    Response = factor(
+      Response,
+      levels = c("Acute", "Non-acute")
+    ),
+    hotspot = factor(
+      hotspot,
+      levels = LTR10E_hotspot_regions$hotspot
+    )
+  )
+
+ggplot(
+  LTR10E_hotspot_prop,
+  aes(
+    x = hotspot,
+    y = proportion,
+    fill = Response
+  )
+) +
+  geom_col(
+    position = position_dodge(width = 0.8),
+    width = 0.7,
+    color = "black"
+  ) +
+  geom_text(
+    aes(label = paste0(
+      n_with_motif, "/", n_total
+    )),
+    position = position_dodge(width = 0.8),
+    vjust = -0.4,
+    size = 3
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Acute" = "indianred3",
+      "Non-acute" = "steelblue"
+    )
+  ) +
+  scale_y_continuous(
+    labels = scales::percent,
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    x = "LTR10E consensus region",
+    y = "Proportion of LTR10E copies with p53 half-site",
+    fill = "Response"
+  ) +
+  theme_classic()
+```
+```{r}
+LTR10E_hotspot_tests <- LTR10E_hotspot_prop %>%
+  group_by(hotspot) %>%
+  summarise(
+    p.value = fisher.test(
+      matrix(
+        c(
+          n_with_motif[Response == "Acute"],
+          n_total[Response == "Acute"] -
+            n_with_motif[Response == "Acute"],
+          n_with_motif[Response == "Non-acute"],
+          n_total[Response == "Non-acute"] -
+            n_with_motif[Response == "Non-acute"]
+        ),
+        nrow = 2,
+        byrow = TRUE
+      )
+    )$p.value,
+    .groups = "drop"
+  ) %>%
+  mutate(
+    p.adj = p.adjust(p.value, method = "BH")
+  )
+
+LTR10E_hotspot_tests
+```
+```{r}
+# all LTR10E copies with Acute vs Non-acute grouping
+LTR10E_all_TEs <- tibble(
+  TE_name = LTR10E_regions$name
+) %>%
+  distinct() %>%
+  left_join(
+    TE_cluster_df %>%
+      filter(family == "LTR10E") %>%
+      dplyr::select(repID, cluster) %>%
+      distinct(),
+    by = c("TE_name" = "repID"),
+    relationship = "many-to-one"
+  ) %>%
+  mutate(
+    Response = if_else(
+      coalesce(as.character(cluster), "NA") == "Set_3",
+      "Acute",
+      "Non-acute"
+    ),
+    Response = factor(Response, levels = c("Acute", "Non-acute"))
+  )
+
+LTR10E_hotspot_binary <- LTR10E_hotspot_hits %>%
+  distinct(TE_name, hotspot) %>%
+  mutate(has_hotspot = TRUE) %>%
+  pivot_wider(
+    names_from = hotspot,
+    values_from = has_hotspot,
+    values_fill = FALSE
+  )
+
+LTR10E_hotspot_combo <- LTR10E_all_TEs %>%
+  left_join(
+    LTR10E_hotspot_binary,
+    by = "TE_name",
+    relationship = "one-to-one"
+  ) %>%
+  mutate(
+    Region_150 = coalesce(Region_150, FALSE),
+    Region_200 = coalesce(Region_200, FALSE),
+    Region_400 = coalesce(Region_400, FALSE)
+  )
+
+
+LTR10E_hotspot_combo <- LTR10E_hotspot_combo %>%
+  mutate(
+    hotspot_pattern = case_when(
+      !Region_150 & !Region_200 & !Region_400 ~ "None",
+      Region_150 & !Region_200 & !Region_400 ~ "Region_150 only",
+      !Region_150 & Region_200 & !Region_400 ~ "Region_200 only",
+      !Region_150 & !Region_200 & Region_400 ~ "Region_400 only",
+      Region_150 & Region_200 & !Region_400 ~ "Region_150 + Region_200",
+      Region_150 & !Region_200 & Region_400 ~ "Region_150 + Region_400",
+      !Region_150 & Region_200 & Region_400 ~ "Region_200 + Region_400",
+      Region_150 & Region_200 & Region_400 ~ "All three"
+    ),
+    hotspot_pattern = factor(
+      hotspot_pattern,
+      levels = c(
+        "None",
+        "Region_150 only",
+        "Region_200 only",
+        "Region_400 only",
+        "Region_150 + Region_200",
+        "Region_150 + Region_400",
+        "Region_200 + Region_400",
+        "All three"
+      )
+    )
+  )
+
+
+LTR10E_hotspot_combo_sum <- LTR10E_hotspot_combo %>%
+  count(Response, hotspot_pattern, name = "n_TE") %>%
+  group_by(Response) %>%
+  mutate(
+    n_total = sum(n_TE),
+    proportion = n_TE / n_total
+  ) %>%
+  ungroup()
+
+LTR10E_hotspot_combo_sum
+```
+
+
+```{r}
+ggplot(
+  LTR10E_hotspot_combo_sum,
+  aes(
+    x = Response,
+    y = proportion,
+    fill = hotspot_pattern
+  )
+) +
+  geom_col(color = "black", width = 0.7) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = "Proportion of LTR10E copies",
+    fill = "Hotspot combination",
+    title = "LTR10E p53 hotspot combinations"
+  ) +
+  theme_classic()
+```
+
