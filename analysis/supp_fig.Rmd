@@ -72,7 +72,7 @@ fragment_count_totals_final <- read_delim("C:/Users/renee/Other_projects_data/DX
     delim = "\t", escape_double = FALSE,
     trim_ws = TRUE)
 
-# creating the fragmenfile
+# creating the fragmentfile
 
 H3K27acfrag_summary_file <- fastq_fragments %>% 
   mutate(file=str_remove(file, "_R[12]\\.fastq\\.gz$")) %>% 
@@ -166,7 +166,7 @@ standardizeAnnoList <- function(annoList, categories, color_pal = NULL) {
 
 Basics of supplemental data in the context of H3K27ac data first.
 
-### Current Fig 1  
+### Figure S1  
 
 ```{r SF1, fig.width=8}
 H3K27acfrag_summary_file %>% 
@@ -190,7 +190,7 @@ H3K27acfrag_summary_file %>%
 ```
 
 
-### Current Fig 2
+### Figure S2
 Fragment lengths
 ```{r SF2, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
 
@@ -231,7 +231,7 @@ geom_violin(bw = 5) +
 
 ```
 
-### Current Fig 3
+### Figure S3
 
 ```{r SF3}
 profile_all <- read.delim(
@@ -285,9 +285,9 @@ ggplot(profile_long, aes(x = position,y = signal, group = Individual,
 ```
 
 
-### Current Fig 4 
+### Figure S4 
 
-
+Frip
 ```{r SF4}
 
 ```
@@ -792,11 +792,298 @@ geom_violin(bw = 5) +
 ```
 ### Current Fig 14 
  
-```{r SF14}
+```{r SF14 K9me3}
+profile_H3K9me3 <- read.delim(
+  "c:/Users/renee/Other_projects_data/DXR_data/Promoter_enrichment/H3K9me3_TSS_enrichment/H3K9me3_TSS_profile_values.tsv",
+  header = FALSE,
+  sep = "\t",
+  fill = TRUE,
+  quote = "",
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+sample_rows_H3K9me3 <- profile_H3K9me3[-c(1, 2), ]
+profile_long_H3K9me3 <- sample_rows_H3K9me3 %>%
+  as_tibble(.name_repair = "minimal") %>%
+  dplyr::rename(sample = 1,region_group = 2) %>%
+  mutate(across(-c(sample, region_group), as.character)) %>% 
+  pivot_longer(cols = -c(sample, region_group),
+    names_to = "matrix_column",
+    values_to = "signal") %>%
+  mutate(
+    matrix_column = as.integer(str_remove(matrix_column, "^V")),
+    signal = suppressWarnings(as.numeric(signal))) %>%
+  filter(!is.na(signal))%>%
+  group_by(sample, region_group) %>%
+  arrange(matrix_column, .by_group = TRUE) %>%
+  mutate(bin = row_number(),
+    position = -3000 + (bin - 0.5) * 25) %>%
+  ungroup() %>% 
+   mutate(
+    sample_id = sub("_noM_final$", "", sample)) %>% 
+  left_join(sampleinfo, by=c("sample_id"="Library ID")) %>% 
+  mutate(group=paste0(Treatment,"_",Timepoint)) %>% 
+  mutate(group=factor(group, levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T","DOX_24R","DOX_144R")),Treatment=factor(Treatment,levels = c("VEH","DOX")))
+  
+ggplot(profile_long_H3K9me3, aes(x = position,y = signal, group = Individual,
+    color = Individual)) +
+  geom_line(linewidth = 0.7, alpha= 0.85) +
+  geom_vline(xintercept = 0,linetype = "dashed") +
+  ggplot2::facet_wrap(
+    facets = vars(group),
+    nrow = 2) +
+  scale_x_continuous(
+    breaks = c(-3000, 0, 3000),
+    labels = c("-3 kb", "TSS", "+3 kb")) +
+  labs(title="H3K9me3 promoter region signal",
+       x = "Distance from TSS",
+       y = "CPM-normalized H3K9me3 signal",
+       color = "Sample") +
+  theme_classic() +
+  scale_color_brewer(palette = "Set2")
 
 ```
  
  
+```{r SF14 K27me3}
+profile_H3K27me3 <- read.delim(
+  "c:/Users/renee/Other_projects_data/DXR_data/Promoter_enrichment/H3K27me3_TSS_enrichment/H3K27me3_TSS_profile_values.tsv",
+  header = FALSE,
+  sep = "\t",
+  fill = TRUE,
+  quote = "",
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+sample_rows_H3K27me3 <- profile_H3K27me3[-c(1, 2), ]
+profile_long_H3K27me3 <- sample_rows_H3K27me3 %>%
+  as_tibble(.name_repair = "minimal") %>%
+  dplyr::rename(sample = 1,region_group = 2) %>%
+  mutate(across(-c(sample, region_group), as.character)) %>% 
+  pivot_longer(cols = -c(sample, region_group),
+    names_to = "matrix_column",
+    values_to = "signal") %>%
+  mutate(
+    matrix_column = as.integer(str_remove(matrix_column, "^V")),
+    signal = suppressWarnings(as.numeric(signal))) %>%
+  filter(!is.na(signal))%>%
+  group_by(sample, region_group) %>%
+  arrange(matrix_column, .by_group = TRUE) %>%
+  mutate(bin = row_number(),
+    position = -3000 + (bin - 0.5) * 25) %>%
+  ungroup() %>% 
+   mutate(
+    sample_id = sub("_noM_final$", "", sample)) %>% 
+  left_join(sampleinfo, by=c("sample_id"="Library ID")) %>% 
+  mutate(group=paste0(Treatment,"_",Timepoint)) %>% 
+  mutate(group=factor(group, levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T","DOX_24R","DOX_144R")),Treatment=factor(Treatment,levels = c("VEH","DOX")))
+  
+ggplot(profile_long_H3K27me3, aes(x = position,y = signal, group = Individual,
+    color = Individual)) +
+  geom_line(linewidth = 0.7, alpha= 0.85) +
+  geom_vline(xintercept = 0,linetype = "dashed") +
+  ggplot2::facet_wrap(
+    facets = vars(group),
+    nrow = 2) +
+  scale_x_continuous(
+    breaks = c(-3000, 0, 3000),
+    labels = c("-3 kb", "TSS", "+3 kb")) +
+  labs(title="H3K27me3 promoter region signal",
+       x = "Distance from TSS",
+       y = "CPM-normalized H3K27me3 signal",
+       color = "Sample") +
+  theme_classic() +
+  scale_color_brewer(palette = "Set2")
+
+```
+ 
+ 
+```{r SF14 K36me3}
+profile_H3K36me3_gb <- read.delim(
+  "c:/Users/renee/Other_projects_data/DXR_data/Promoter_enrichment/H3K36me3_gene_enrichment_5kb/H3K36me3_geneBody_5kb_profile_values.tsv",
+  header = FALSE,
+  sep = "\t",
+  fill = TRUE,
+  quote = "",
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+sample_rows_H3K36me3_gb <- profile_H3K36me3_gb[-c(1, 2), ]
+
+profile_long_H3K36me3_gb <- sample_rows_H3K36me3_gb %>%
+  as_tibble(.name_repair = "minimal") %>%
+  dplyr::rename(sample = 1,region_group = 2) %>%
+  mutate(across(-c(sample, region_group), as.character)) %>% 
+  pivot_longer(cols = -c(sample, region_group),
+    names_to = "matrix_column",
+    values_to = "signal") %>%
+  mutate(
+    matrix_column = as.integer(str_remove(matrix_column, "^V")),
+      bin = matrix_column - 2L,
+    signal = suppressWarnings(as.numeric(signal))) %>%
+  filter(!is.na(signal),
+    bin >= 1,
+    bin <= 300) %>%
+  group_by(sample, region_group) %>%
+   arrange(bin, .by_group = TRUE) %>%
+  mutate(plot_position = case_when(# 5 kb upstream of TSS
+    bin <= 100 ~-5000 + (bin - 0.5) * 50,
+      # scaled 5 kb gene body
+      bin <= 200 ~(bin - 100 - 0.5) * 50,
+      # 5 kb downstream of TES
+      TRUE ~5000 + (bin - 200 - 0.5) * 50)) %>%
+  ungroup() %>% 
+   mutate(
+    sample_id = sub("_noM_final$", "", sample)) %>% 
+  left_join(sampleinfo, by=c("sample_id"="Library ID")) %>% 
+  mutate(group=paste0(Treatment,"_",Timepoint)) %>% 
+  mutate(group=factor(group, levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T","DOX_24R","DOX_144R")),
+         Treatment=factor(Treatment,levels = c("VEH","DOX")))
+  
+ggplot(profile_long_H3K36me3_gb, aes(x = plot_position,y = signal, group = Individual,
+    color = Individual)) +
+  geom_line(linewidth = 0.7, alpha= 0.85) +
+  geom_vline( xintercept = c(0, 5000),linetype = "dashed") +
+  # geom_hline(yintercept=0, linetype="solid",linewidth=0.4)+
+  ggplot2::facet_wrap(
+    facets = vars(group),
+    nrow = 2) +
+   scale_x_continuous(
+    limits = c(-5000, 10000),
+    breaks = c(-5000, 0, 5000, 10000),
+    labels = c("-5 kb", "TSS", "TES", "+5 kb"),
+    expand = expansion(mult = 0)) +
+  labs(title="H3K36me3 gene body region signal",
+       x = "Relative gene body distance",
+       y = "CPM-normalized H3K36me3 signal",
+       color = "Sample") +
+  theme_classic() +
+  scale_color_brewer(palette = "Set2")+
+  theme(axis.text.x=element_text(angle=45))+
+  coord_cartesian(xlim=c(-3000,-2000))
+
+
+
+profile_long_H3K36me3_gb %>%
+  filter(bin >= 90, bin <= 115) %>%
+  ggplot(
+    aes(
+      x = plot_position,
+      y = signal,
+      color = Individual,
+      group = Individual
+    )
+  ) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed"
+  ) +
+  facet_wrap(~ group, nrow = 2) +
+  scale_x_continuous(
+    breaks = seq(-500, 750, 250)
+  ) +
+  labs(
+    x = "Position relative to TSS",
+    y = "CPM-normalized H3K36me3 signal"
+  ) +
+  theme_classic()
+
+profile_long_H3K36me3_gb %>%
+  filter(plot_position < 0) %>%
+  group_by(sample, group) %>%
+  slice_max(signal, n = 5, with_ties = FALSE) %>%
+  dplyr::select(sample, group, bin, plot_position, signal)
+
+profile_long_H3K36me3_gb %>%
+  filter(plot_position >= -3000, plot_position <= -2000) %>%
+  ggplot(
+    aes(
+      x = plot_position,
+      y = signal,
+      group = Individual,
+      color = Individual
+    )
+  ) +
+  geom_hline(yintercept = 0, linewidth = 0.3) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    linewidth = 0.5
+  ) +
+  geom_line(linewidth = 0.8, alpha = 0.9) +
+  facet_wrap(~ group, nrow = 2) +
+  coord_cartesian(xlim = c(-3000, -2000)) +
+  scale_x_continuous(
+    breaks = c(-1000, -500, 0, 500, 1000),
+    labels = c("-1 kb", "-500", "TSS", "500", "1 kb")
+  ) +
+  labs(
+    x = "Position relative to TSS",
+    y = "CPM-normalized H3K36me3 signal",
+    color = "Individual"
+  ) +
+  theme_classic()
+
+```
+ 
+```{r SF14 K36me3 2}
+profile_H3K36me3 <- read.delim(
+  "c:/Users/renee/Other_projects_data/DXR_data/Promoter_enrichment/H3K36me3_TSS_enrichment/H3K36me3_TSS_profile_values.tsv",
+  header = FALSE,
+  sep = "\t",
+  fill = TRUE,
+  quote = "",
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+sample_rows_H3K36me3 <- profile_H3K36me3[-c(1, 2), ]
+profile_long_H3K36me3 <- sample_rows_H3K36me3 %>%
+  as_tibble(.name_repair = "minimal") %>%
+  dplyr::rename(sample = 1,region_group = 2) %>%
+  mutate(across(-c(sample, region_group), as.character)) %>% 
+  pivot_longer(cols = -c(sample, region_group),
+    names_to = "matrix_column",
+    values_to = "signal") %>%
+  mutate(
+    matrix_column = as.integer(str_remove(matrix_column, "^V")),
+    signal = suppressWarnings(as.numeric(signal))) %>%
+  filter(!is.na(signal))%>%
+  group_by(sample, region_group) %>%
+  arrange(matrix_column, .by_group = TRUE) %>%
+  mutate(bin = row_number(),
+    position = -3000 + (bin - 0.5) * 25) %>%
+  ungroup() %>% 
+   mutate(
+    sample_id = sub("_noM_final$", "", sample)) %>% 
+  left_join(sampleinfo, by=c("sample_id"="Library ID")) %>% 
+  mutate(group=paste0(Treatment,"_",Timepoint)) %>% 
+  mutate(group=factor(group, levels=c("VEH_24T","VEH_24R","VEH_144R","DOX_24T","DOX_24R","DOX_144R")),Treatment=factor(Treatment,levels = c("VEH","DOX")))
+  
+ggplot(profile_long_H3K36me3, aes(x = position,y = signal, group = Individual,
+    color = Individual)) +
+  geom_line(linewidth = 0.7, alpha= 0.85) +
+  geom_vline(xintercept = 0,linetype = "dashed") +
+  ggplot2::facet_wrap(
+    facets = vars(group),
+    nrow = 2) +
+  scale_x_continuous(
+    breaks = c(-3000, 0, 3000),
+    labels = c("-3 kb", "TSS", "+3 kb")) +
+  labs(title="H3K36me3 promoter region signal",
+       x = "Distance from TSS",
+       y = "CPM-normalized H3K36me3 signal",
+       color = "Sample") +
+  theme_classic() +
+  scale_color_brewer(palette = "Set2")
+
+
+
+```
 ### Current Fig 15  
 
 ```{r SF15,fig.width=6,fig.height=10}
